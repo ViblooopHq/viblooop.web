@@ -1,0 +1,54 @@
+<section class="vl-tabs-section">
+    <div class="vl-tabs">
+        <button class="vl-tabs__item" [class.vl-tabs__item--active]="activeTab === 'created'"
+            (click)="setActiveTab('created')">
+            Created Events
+        </button>
+
+        <button class="vl-tabs__item" [class.vl-tabs__item--active]="activeTab === 'requested'"
+            (click)="setActiveTab('requested')">
+            Requested Events
+        </button>
+
+        <button class="vl-tabs__item" [class.vl-tabs__item--active]="activeTab === 'joined'"
+            (click)="setActiveTab('joined')">
+            Joined Events
+        </button>
+    </div>
+</section>
+
+<section class="vl-events-grid">
+    @for (event of events; track event._id) {
+    <article class="vl-card">
+        <div class="vl-card__inner">
+
+            <div class="vl-card__media">
+                <img class="vl-card__image" [src]="event.image" [alt]="event.title">
+                <span class="vl-card__badge" [ngClass]="'vl-card__badge--' + event.badgeColor">
+                    {{ event.badgeText }}
+                </span>
+            </div>
+
+            <div class="vl-card__content">
+                <h3 class="vl-card__title">{{ event.title }}</h3>
+
+                <div class="vl-card__meta">
+                    <div class="vl-card__meta-item">
+                        <span class="material-symbols-outlined vl-card__meta-icon" translate="no">calendar_today</span>
+                        <span class="vl-card__meta-text">{{ event.date }}</span>
+                    </div>
+                    <div class="vl-card__meta-item">
+                        <span class="material-symbols-outlined vl-card__meta-icon" translate="no">schedule</span>
+                        <span class="vl-card__meta-text">{{ event.time }}</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </article>
+    } @empty {
+    <div class="vl-events-empty">
+        <p>No events found for this category.</p>
+    </div>
+    }
+</section>

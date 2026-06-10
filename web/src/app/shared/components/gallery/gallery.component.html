@@ -1,0 +1,45 @@
+<div class="vl-gallery">
+  <div class="vl-gallery__header">
+    <h3>Gallery</h3>
+  </div>
+
+  <div class="vl-gallery__grid">
+    @for(img of images; track img) {
+    <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
+      <img [src]="img.url" alt="gallery" (click)="onImageSelect(img)" />
+
+      <div class="vl-gallery__overlay">
+        <button (click)="toggleArchive(img)">
+          {{ img.archived ? 'Unarchive' : 'Archive' }}
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+
+  <!-- Modal Preview -->
+  <!-- Modal Preview (Desktop Only) -->
+@if(selectedImage && isDesktop) {
+    <div class="vl-gallery__modal">
+      <div class="vl-gallery__modal-content">
+        <!-- Close Button -->
+        <span class="close" (click)="closePreview()">&times;</span>
+  
+        <!-- Left Arrow (hide if at first image) -->
+        @if(currentIndex > 0) {
+          <button class="vl-gallery__nav vl-gallery__nav--left" (click)="showPrevImage()">&#10094;</button>
+        }
+  
+        <!-- Image -->
+        <img [src]="selectedImage.url" alt="preview" />
+        <p>{{ selectedImage.title }}</p>
+  
+        <!-- Right Arrow (hide if at last image) -->
+        @if(currentIndex < images.length - 1) {
+          <button class="vl-gallery__nav vl-gallery__nav--right" (click)="showNextImage()">&#10095;</button>
+        }
+      </div>
+    </div>
+  }
+  
+</div>

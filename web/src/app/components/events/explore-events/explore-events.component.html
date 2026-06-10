@@ -1,0 +1,79 @@
+<div class="explore-container vl-section-wrapper vl-section-top-padding">
+  <!-- Header & Search -->
+  <header class="explore-header">
+
+    <vl-section-headers [label]="'Vibes'" [title]="'Explore'"
+      [description]="'Find your vibe. Join the moment. Enjoy life.'">
+    </vl-section-headers>
+
+    <div class="search-bar surface-container-lowest ghost-border">
+      <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
+      <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
+      <div class="location-pill ghost-border">
+        <i class="fa-solid fa-location-dot"></i>
+        <span>Near You</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters/Pills -->
+  <section class="filter-tags-scroll">
+    <div class="filter-tags">
+      <button *ngFor="let filter of filters; let i = index" class="filter-tag"
+        [class.active]="activeFilterId === filter.id" (click)="setActiveFilter(filter.id)">
+        {{filter.label}}
+      </button>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="categories-section mb-4 sm:mb-12">
+    <h2 class="section-title">Explore by Vibe</h2>
+    <div class="categories-scroll">
+      <button class="category-item" type="button" *ngFor="let cat of categories"
+        [class.active]="activeCategoryId === cat.id"
+        (click)="setActiveCategory(cat.id)">
+        <div class="image-wrapper">
+          <img [src]="cat.cover" [alt]="cat.label" class="category-image">
+          <div class="icon-badge">
+            <i [class]="cat.icon"></i>
+          </div>
+        </div>
+        <span class="category-name">{{cat.label}}</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Trending Events -->
+  <section class="trending-section mb-4 sm:mb-12">
+    <div class="section-header">
+      <h2 class="section-title">Recomended</h2>
+    </div>
+    <div class="trending-scroll" [class.single-result]="trendingEvents.length === 1"
+      [class.empty-result]="trendingEvents.length === 0">
+      <div class="trending-card ghost-border" *ngFor="let event of trendingEvents">
+        <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+      </div>
+      <vl-empty-state *ngIf="trendingEvents.length === 0" [subject]="emptyStateSubject"
+        [context]="emptyStateContext" [contextPrefix]="emptyStateContextPrefix"
+        (exploreAll)="resetFilters()">
+      </vl-empty-state>
+    </div>
+  </section>
+
+  <!-- Just for You Grid -->
+  <section class="just-for-you-section">
+    <div class="section-header">
+      <h2 class="section-title">Just for you</h2>
+    </div>
+    <div class="trending-scroll" [class.single-result]="justForYouEvents.length === 1"
+      [class.empty-result]="justForYouEvents.length === 0">
+      <div class="trending-card ghost-border" *ngFor="let event of justForYouEvents">
+        <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+      </div>
+      <vl-empty-state *ngIf="justForYouEvents.length === 0" subject="events" context="near you"
+        contextPrefix="" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+    </div>
+  </section>
+</div>

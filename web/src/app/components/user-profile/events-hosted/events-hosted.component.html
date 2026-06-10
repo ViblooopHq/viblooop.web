@@ -1,0 +1,33 @@
+@if(eventHosted.length > 0) {
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (event of eventHosted; track $index) {
+        <div
+            class="bg-[var(--background-color)] rounded-lg p-4 border border-[var(--border-color)] flex flex-col hover:shadow-lg transition-shadow duration-200">
+            <img alt="Event Thumbnail" class="w-full h-40 rounded-md object-cover mb-4" [src]="event.image" />
+            <div class="flex-1">
+                <h4 class="font-semibold text-sm text-[var(--text-primary)]">{{event.title}}</h4>
+                <p class="text-sm text-[var(--text-secondary)]">{{event.location}}</p>
+                <p class="text-sm text-[var(--text-secondary)]">{{event.eventDate | date : 'mediumDate'}}</p>
+                <p class="text-sm text-[var(--text-secondary)] mt-2">{{event.description}}</p>
+            </div>
+            <a class="text-[var(--primary-color)] hover:underline font-medium mt-4 self-start"
+                routerLink="/events/{{event._id}}">View Event</a>
+        </div>
+        }
+    </div>
+
+} @else {
+
+
+<div class="vl-event-hosted-empty">
+    <div class="vl-event-hosted-empty__icon">
+        <i class="fa-solid fa-calendar-days"></i>
+    </div>
+    <div class="vl-event-hosted-empty__discription">
+        <h2 class="vl-event-hosted-empty__heading">Events Hosted</h2>
+        <p class="vl-event-hosted-empty__message">No events Hosted to display yet. Check back later!</p>
+        <button class="vl-event-hosted-empty__button">Explore Event Hosted</button>
+    </div>
+</div>
+}

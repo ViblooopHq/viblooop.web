@@ -1,0 +1,14 @@
+<header class="vl-section-header mb-8 sm:mb-16" [ngClass]="'vl-section-header--' + alignment">
+
+    @if (label) {
+    <div class="vl-section-header__label">
+        <span class="vl-section-header__label-text">{{ label }}</span>
+    </div>
+    }
+
+    <h2 class="vl-section-header__title">{{ title }}</h2>
+
+    @if (description) {
+    <p class="vl-section-header__description">{{ description }}</p>
+    }
+</header>

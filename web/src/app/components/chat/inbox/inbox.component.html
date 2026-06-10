@@ -1,0 +1,58 @@
+<div class="inbox-container" [class.has-selection]="selectedEventId">
+  <aside class="inbox-sidebar" aria-label="Chat conversations">
+    @if (conversations.length === 0) {
+      <div class="no-chats">
+        <span class="material-symbols-outlined" translate="no">forum</span>
+        <h2>No chats yet</h2>
+        <p>Your event conversations will show up here once you join or host an event.</p>
+      </div>
+    } @else {
+      <div class="section-label">Your Events</div>
+
+      <div class="conversation-list">
+        @for (conv of conversations; track conv.eventId) {
+          <button
+            class="conversation-item"
+            type="button"
+            [class.active]="selectedEventId === conv.eventId"
+            (click)="selectConversation(conv.eventId)"
+          >
+            <img [src]="getImageUrl(conv.image)" alt="">
+            <span class="conv-info">
+              <span class="conv-header">
+                <span class="title">{{ conv.title }}</span>
+                @if (conv.unreadCount > 0) {
+                  <span class="unread-badge">{{ conv.unreadCount }}</span>
+                } @else if (conv.lastMessage) {
+                  <span class="time">{{ conv.lastMessage.createdAt | date:'shortTime' }}</span>
+                }
+              </span>
+              <span class="last-msg">
+                {{ conv.lastMessage ? conv.lastMessage.text : 'No messages yet' }}
+              </span>
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </aside>
+
+  <main class="chat-detail">
+    @if (selectedEventId) {
+      <vl-chat
+        [eventId]="selectedEventId"
+        [isEmbedded]="true"
+        [chatTitle]="selectedConversation?.title || 'Event Chat'"
+        [chatSubtitle]="getMemberLabel(selectedConversation)"
+        [showBackButton]="true"
+        (backToInbox)="clearSelection()"
+      ></vl-chat>
+    } @else {
+      <div class="empty-state">
+        <span class="material-symbols-outlined" translate="no">mark_chat_unread</span>
+        <h1>Your Messages</h1>
+        <p>Select a group to start chatting with other attendees.</p>
+      </div>
+    }
+  </main>
+</div>

@@ -1,0 +1,36 @@
+<div class="space-y-4">
+  <!-- Selected Chips -->
+  <!-- <div *ngIf="selectedInterests.length > 0">
+  <label class="block text-sm font-medium text-gray-900 mb-1">
+    Selected Interests
+  </label>
+  <div class="flex flex-wrap gap-2">
+    <span *ngFor="let selected of selectedInterests"
+      class="bg-blue-600 text-white px-3 py-1 rounded-full flex items-center gap-2 text-sm">
+      {{ selected }}
+      <button type="button" (click)="toggleInterest(selected)" class="hover:text-gray-200">
+        ✕
+      </button>
+    </span>
+  </div>
+</div> -->
+
+<!-- Available Chips -->
+<div>
+  <!-- <label class="block text-sm font-medium text-gray-900 mb-1">
+  Choose Your Interests
+</label> -->
+<div class="flex flex-wrap gap-2 max-h-40 overflow-y-auto">
+  @for (interest of allInterests; track interest) {
+    <span (click)="toggleInterest(interest)"
+      class="cursor-pointer px-4 py-1.5 rounded-full border text-sm font-medium transition active:scale-95"
+                [ngClass]="{'bg-blue-600 text-white border-blue-600 shadow-sm': selectedInterests.includes(interest),
+                            'border-gray-300 text-gray-700 hover:shadow-md hover:scale-105 hover:bg-blue-50': !selectedInterests.includes(interest)}">
+      {{ interest.label }}
+    </span>
+  }
+
+
+</div>
+</div>
+</div>

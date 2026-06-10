@@ -1,0 +1,24 @@
+<!-- <div class="picker">
+  <div class="search-row">
+    <input class="input" #search type="text" placeholder="Search address or place..."
+      (input)="onSearchInput(search.value)" class="input" />
+    <button class="btn btn-default" (click)="tryGeolocation()">Use my location</button>
+  </div>
+
+  @if (search.value.length > 0) {
+  <div class="dropdown dropdown-open w-[82%]">
+    <ul tabindex="0" class=" dropdown-content menu bg-base-100 rounded-box z-1 w-full max-h-[500px] p-2 shadow-sm overflow-y-auto">
+      @for (r of searchResults; track $index) {
+      <li (click)="selectSearchResult(r)" [className]="$index % 2 == 0 ? 'bg-gray-200' : 'border-bottom-2'">
+        {{ r.display_name }}
+      </li>
+      }
+    </ul>
+  </div>
+}
+
+@if (!searchResults?.length) {
+  <div id="map" class="map"></div>
+}
+
+</div> -->

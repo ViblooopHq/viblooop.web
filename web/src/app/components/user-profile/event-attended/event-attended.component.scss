@@ -1,0 +1,29 @@
+@use "../../../../styles/abstracts/mixins" as *;
+
+.vl-event-attented-empty {
+
+    &__icon {
+        font-size: 2rem;
+        color: #7e3af2;
+    }
+
+    &__discription {
+        @include flex($direction: column, $align: center, $justify: center, $gap: 1rem);
+    }
+
+    &__button {
+        padding: 0.5rem 1rem;
+        border: 1px solid #d1d5db;
+        border-radius: 8px;
+        background: #fff;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: #f3f4f6;
+        }
+
+    }
+
+}

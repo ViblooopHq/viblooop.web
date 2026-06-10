@@ -1,0 +1,111 @@
+:host {
+  display: block;
+}
+
+.vl-form-drawer {
+  display: contents;
+}
+
+.vl-form-drawer__handle {
+  display: none;
+}
+
+.vl-form-drawer__close {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  :host {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    min-height: 100dvh;
+    padding: 0;
+    background:
+      radial-gradient(circle at 82% 16%, rgba(124, 58, 237, 0.18), transparent 22rem),
+      rgba(3, 6, 15, 0.72);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .vl-form-drawer {
+    position: absolute;
+    inset: 0 0 0 auto;
+    display: block;
+    width: min(100%, 760px);
+    height: 100dvh;
+    margin-left: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    border-right: 0;
+    border-radius: 0;
+    background:
+      linear-gradient(180deg, rgba(10, 15, 32, 0.98), rgba(5, 10, 24, 0.99));
+    box-shadow: -28px 0 90px rgba(0, 0, 0, 0.5);
+    animation: vl-form-drawer-roll-in 0.32s cubic-bezier(0.2, 0.86, 0.2, 1) both;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(168, 85, 247, 0.58) rgba(15, 23, 42, 0.5);
+
+    &--closing {
+      animation: vl-form-drawer-roll-out 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+    }
+  }
+
+  .vl-form-drawer__close {
+    position: absolute;
+    top: 1rem;
+    left: 0.9rem;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    width: 2.65rem;
+    height: 2.65rem;
+    margin: 0;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.82);
+    color: #dbe4ff;
+    cursor: pointer;
+    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+
+    .material-symbols-outlined {
+      font-size: 1.35rem;
+    }
+  }
+
+  .vl-form-drawer__handle {
+    display: block;
+    width: 3.8rem;
+    height: 0.28rem;
+    margin: 0.85rem auto 0;
+    border-radius: 999px;
+    background: rgba(196, 201, 231, 0.34);
+  }
+}
+
+@keyframes vl-form-drawer-roll-in {
+  from {
+    opacity: 0.8;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes vl-form-drawer-roll-out {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  to {
+    opacity: 0.8;
+    transform: translateX(100%);
+  }
+}

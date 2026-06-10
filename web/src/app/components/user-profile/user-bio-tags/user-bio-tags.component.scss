@@ -1,0 +1,39 @@
+@use "../../../../styles/abstracts/mixins" as *;
+@use "../../../../styles.scss" as *;
+.vl-user-bio-tags {
+    margin-top: 24px;
+  
+    &__bio {
+      font-size: 18px;
+      color: var(--text-color); // dark gray
+      margin-bottom: 16px;
+    }
+  
+    &__tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  
+    &__tag {
+      background-color: var(--bg-tag-color);
+      color: var(--tag-text-color);
+      padding: 2px 12px;
+      border-radius: 2rem;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease-in-out;
+  
+      i {
+        color: var(--tag-text-color);
+      }
+  
+      &:hover {
+        background-color: var(--bg-color);
+        cursor: pointer;
+      }
+    }
+  }
+  

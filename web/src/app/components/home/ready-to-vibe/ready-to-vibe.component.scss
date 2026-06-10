@@ -1,0 +1,113 @@
+// --- Theme Variables ---
+$surface: #070d1f;
+$primary: #bd9dff;
+$primary-dim: #8a4cfc;
+$secondary: #34b5fa;
+$on-surface: #dfe4fe;
+$on-surface-variant: #a5aac2;
+
+.vl-cta {
+  position: relative;
+  padding: 8rem 1.5rem;
+  text-align: center;
+  overflow: hidden;
+
+  &__container {
+    position: relative;
+    z-index: 10;
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__tagline {
+    font-size: 1.125rem;
+    font-weight: 400;
+    color: $on-surface-variant;
+    margin: 0 0 2.5rem;
+    font-family: 'Inter', sans-serif;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+
+    @media (min-width: 640px) {
+      flex-direction: row;
+    }
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.85rem 2rem;
+    font-size: 0.9rem;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border: none;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    &--primary {
+      font-weight: 800;
+      color: #fff;
+      background: linear-gradient(to right, $primary-dim, $primary);
+      box-shadow: 0 0 30px rgba($primary, 0.3);
+
+      &:hover {
+        transform: scale(1.03);
+        box-shadow: 0 0 40px rgba($primary, 0.5);
+      }
+    }
+
+    &--glass {
+      font-weight: 600;
+      color: $on-surface;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+      }
+    }
+  }
+
+  // Ambient glow blobs
+  &__glow {
+    position: absolute;
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
+
+    &--left {
+      width: 20rem;
+      height: 20rem;
+      top: -5rem;
+      left: -5rem;
+      background: rgba($primary, 0.08);
+      filter: blur(80px);
+    }
+
+    &--right {
+      width: 16rem;
+      height: 16rem;
+      bottom: -4rem;
+      right: -4rem;
+      background: rgba($secondary, 0.06);
+      filter: blur(80px);
+    }
+  }
+}

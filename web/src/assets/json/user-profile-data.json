@@ -1,0 +1,46 @@
+{
+    "userId": "1",
+    "name": "Riya Sharma",
+    "avatar": "https://images.unsplash.com/photo-1607746882042-944635dfe10e?crop=faces&fit=crop&h=200&w=200",
+    "coverImage": "https://images.unsplash.com/photo-1503264116251-35a269479413?fit=crop&w=1200&q=80",
+    "age": 26,
+    "bio": "Travel junkie ✈️ | Fashion lover 💃 | Food explorer 🍣 | Dog mom 🐶",
+    "tags": ["travel", "fashion", "foodie", "pets", "blogger"],
+    "reviews": [
+      {
+        "reviewId": "r101",
+        "reviewer": "Amit Singh",
+        "rating": 4.8,
+        "comment": "Riya is super fun and reliable. Loved going shopping with her!",
+        "date": "2025-06-10"
+      },
+      {
+        "reviewId": "r102",
+        "reviewer": "Neha Verma",
+        "rating": 5.0,
+        "comment": "Great vibes and energy at the house party she hosted!",
+        "date": "2025-06-15"
+      }
+    ],
+    "comments": [
+      {
+        "commentId": "c501",
+        "user": "Rahul Jain",
+        "text": "That Goa trip post was amazing! 😍",
+        "date": "2025-06-18"
+      },
+      {
+        "commentId": "c502",
+        "user": "Simran Kapoor",
+        "text": "Love your style! Where did you get that jacket?",
+        "date": "2025-06-20"
+      }
+    ],
+    "gallery": [
+      "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?fit=crop&w=600&q=80",
+      "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?fit=crop&w=600&q=80"
+    ]
+}
+  

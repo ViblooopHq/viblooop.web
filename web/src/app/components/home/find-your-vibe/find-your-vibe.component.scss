@@ -1,0 +1,150 @@
+// --- Theme Variables (Mapped from your configuration) ---
+$surface-container-highest: #1c253e;
+$primary: #bd9dff;
+$secondary: #34b5fa;
+$tertiary: #ff86c3;
+$on-surface: #dfe4fe;
+$outline-variant: #41475b;
+
+// --- Categories Section Styles ---
+.vl-categories {
+  padding: 8rem 1.5rem; // py-32 px-6
+  max-width: 80rem; // max-w-7xl
+  margin: 0 auto;
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem; // gap-8
+
+    @media (min-width: 768px) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &__card {
+    position: relative;
+    overflow: hidden;
+    height: 20rem; // h-80
+    border-radius: 2rem; // rounded-[2rem]
+    background: rgba(255, 255, 255, 0.02); // Base Glass
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    cursor: pointer;
+    // Optimize hover animations
+    will-change: transform;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    // The "Featured" Card (e.g., Sports)
+    &--featured {
+      @media (min-width: 768px) {
+        grid-column: span 2;
+        height: auto;
+        aspect-ratio: auto;
+        border-radius: 2.5rem; // Slightly larger radius for the big card
+      }
+    }
+
+    // The "Wide" Card (e.g., Shopping)
+    &--wide {
+      @media (min-width: 768px) {
+        grid-column: span 2;
+      }
+    }
+
+    // Hover State
+    &:hover,
+    &:focus-visible {
+      border-color: rgba(255, 255, 255, 0.2);
+      outline: none;
+
+      .vl-categories__image {
+        transform: scale(1.1);
+        opacity: 0.8;
+      }
+    }
+  }
+
+  &__image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+    transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.7s ease;
+    transform: translateZ(0); // Hardware acceleration
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    // Matches the tailwind bg-gradient-to-t
+    background: linear-gradient(to top,
+        $surface-container-highest 0%,
+        rgba($surface-container-highest, 0) 60%);
+  }
+
+  &__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 2rem; // p-8
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+
+    // Extra padding for the featured big card
+    .vl-categories__card--featured & {
+      padding: 2.5rem; // p-10
+    }
+  }
+
+  &__icon {
+    font-size: 1.5rem; // text-2xl
+    margin-bottom: 0.5rem; // mb-2
+    color: $primary; // Default color
+
+    // Larger icon for the featured card
+    .vl-categories__card--featured & {
+      font-size: 2.25rem; // text-4xl
+      margin-bottom: 1rem;
+    }
+
+    // Auto-cycle colors based on the card's position in the grid
+    .vl-categories__card:nth-child(4n + 2) & {
+      color: $secondary;
+    }
+
+    .vl-categories__card:nth-child(4n + 3) & {
+      color: $tertiary;
+    }
+  }
+
+  &__title {
+    font-size: 1.25rem; // text-xl
+    font-weight: 700; // font-bold
+    color: #ffffff;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+
+    // Distinct typography for the featured card
+    .vl-categories__card--featured & {
+      font-size: 2.25rem; // text-4xl
+      font-weight: 900; // font-black
+      font-style: italic;
+      letter-spacing: -0.05em;
+    }
+  }
+
+  &__empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem;
+    color: $outline-variant;
+    font-family: 'Inter', sans-serif;
+  }
+}

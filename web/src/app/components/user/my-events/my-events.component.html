@@ -1,0 +1,29 @@
+<vl-my-event-landing-page></vl-my-event-landing-page>
+<vl-my-event-tabs></vl-my-event-tabs>
+
+<section class="vl-discovery">
+    <vl-section-headers [label]="'Discover'" [title]="'Find Your Next Journey'"
+        [description]="'Manage your created events, track your requests, and relive your journeys in the neon pulse.'">
+    </vl-section-headers>
+
+    <div class="vl-discovery__grid">
+        @for (category of discoveryCategories; track category.title) {
+        <article class="vl-category-card" [ngClass]="'vl-category-card--hover-' + category.hoverColor" tabindex="0"
+            role="button">
+
+            <img class="vl-category-card__image" [src]="category.image" [alt]="category.title + ' category'">
+
+            <div class="vl-category-card__overlay"></div>
+
+            <div class="vl-category-card__content">
+                <div class="vl-category-card__icon-wrapper">
+                    <span class="material-symbols-outlined vl-category-card__icon" translate="no">{{ category.icon
+                        }}</span>
+                </div>
+                <h4 class="vl-category-card__title">{{ category.title }}</h4>
+            </div>
+
+        </article>
+        }
+    </div>
+</section>

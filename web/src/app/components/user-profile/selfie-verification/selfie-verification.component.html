@@ -1,0 +1,156 @@
+<div
+  class="vl-selfie-verification"
+  [class.vl-selfie-verification--open]="isOpen"
+  [attr.aria-hidden]="!isOpen"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="selfie-verification-title">
+  <section class="vl-selfie-verification__dialog">
+    @if (selfieVerificationStep === 'profile-photo') {
+      <header class="vl-selfie-verification__header">
+        <span>
+          <small class="vl-selfie-verification__step-pill">Step 1 of 3</small>
+          <span class="vl-selfie-verification__progress" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <h2 id="selfie-verification-title">Add Profile Photo</h2>
+          <p>This photo will be used to verify your identity.</p>
+        </span>
+        <button type="button" aria-label="Close verification" (click)="closeSelfieCamera()">
+          <span class="material-symbols-outlined" translate="no">close</span>
+        </button>
+      </header>
+
+      <label class="vl-selfie-verification__upload">
+        <input #verificationPhotoInput type="file" accept="image/jpeg,image/png,image/heic,image/heif,.heic,.heif" (change)="onVerificationPhotoSelected($event)" />
+        @if (verificationProfilePhotoPreview) {
+          <img [src]="verificationProfilePhotoPreview" alt="Selected profile photo" />
+        } @else {
+          <span class="material-symbols-outlined" translate="no">add_photo_alternate</span>
+          <strong>Upload a clear photo of yourself</strong>
+          <small>JPG or PNG - Max 5MB</small>
+        }
+      </label>
+
+      @if (selfieCameraError) {
+        <p class="vl-selfie-verification__error">{{ selfieCameraError }}</p>
+      }
+
+      <section class="vl-selfie-verification__guidelines" aria-label="Photo guidelines">
+        <h3>Photo guidelines</h3>
+        <span><span class="material-symbols-outlined" translate="no">center_focus_strong</span>Face clearly visible</span>
+        <span><span class="material-symbols-outlined" translate="no">light_mode</span>Good lighting</span>
+        <span><span class="material-symbols-outlined" translate="no">groups</span>No group photos</span>
+      </section>
+
+      <button type="button" class="vl-selfie-verification__primary vl-selfie-verification__upload-action" (click)="verificationPhotoInput.click()">
+        Upload Photo
+      </button>
+    } @else if (selfieVerificationStep === 'selfie') {
+      <header class="vl-selfie-verification__header">
+        <span>
+          <small class="vl-selfie-verification__step-pill">Step 2 of 3</small>
+          <span class="vl-selfie-verification__progress vl-selfie-verification__progress--selfie" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <h2 id="selfie-verification-title">Verify Your Identity</h2>
+          <p>Take a clear selfie to get your Photo Verified badge</p>
+        </span>
+        <button type="button" aria-label="Close camera" (click)="closeSelfieCamera()">
+          <span class="material-symbols-outlined" translate="no">close</span>
+        </button>
+      </header>
+
+      <div class="vl-selfie-verification__compare">
+        <img [src]="verificationProfilePhotoPreview || compareImage || defaultImage" alt="Profile photo" />
+        <span>
+          <small>Comparing with your</small>
+          <strong>profile photo</strong>
+        </span>
+        <span class="vl-selfie-verification__shield">
+          <span class="material-symbols-outlined" translate="no">verified_user</span>
+        </span>
+      </div>
+
+      <div class="vl-selfie-verification__frame">
+        @if (hasCapturedSelfie) {
+          <img class="vl-selfie-verification__preview" [src]="selfiePreviewUrl" alt="Captured selfie preview" />
+          <div class="vl-selfie-verification__status vl-selfie-verification__status--preview">
+            <span></span>
+            Selfie Captured
+          </div>
+        } @else {
+          <video #selfieVideo autoplay muted playsinline></video>
+          <svg class="vl-selfie-verification__mask" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <mask id="selfieVerificationOvalMask">
+                <rect width="100" height="100" fill="white"></rect>
+                <ellipse cx="50" cy="50" rx="27" ry="30" fill="black"></ellipse>
+              </mask>
+            </defs>
+            <rect width="100" height="100" fill="black" mask="url(#selfieVerificationOvalMask)"></rect>
+          </svg>
+          <div #selfieOval class="vl-selfie-verification__oval" aria-hidden="true"></div>
+          @if (!selfieCameraError) {
+            <div class="vl-selfie-verification__status">
+              <span></span>
+              Camera Ready
+            </div>
+          }
+        }
+        @if (selfieCameraError) {
+          <p>{{ selfieCameraError }}</p>
+        }
+      </div>
+
+      <div class="vl-selfie-verification__actions">
+        <button type="button" class="vl-selfie-verification__secondary" (click)="cancelSelfieStep()">Cancel</button>
+        <button type="button" class="vl-selfie-verification__primary" [disabled]="!!selfieCameraError" (click)="onSelfiePrimaryAction()">
+          <span class="material-symbols-outlined" translate="no">{{ hasCapturedSelfie ? 'verified_user' : 'photo_camera' }}</span>
+          {{ hasCapturedSelfie ? 'Verify Now' : 'Take Selfie' }}
+        </button>
+      </div>
+
+      <p class="vl-selfie-verification__privacy">
+        <span class="material-symbols-outlined" translate="no">lock</span>
+        <span>Used only for verification purposes.</span>
+      </p>
+    } @else {
+      <header class="vl-selfie-verification__header">
+        <span>
+          <small class="vl-selfie-verification__step-pill">Step 3 of 3</small>
+          <span class="vl-selfie-verification__progress vl-selfie-verification__progress--progress" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </span>
+          <h2 id="selfie-verification-title">
+            {{ selfieVerificationStep === 'verified' ? 'Photo Verified' : 'Verification in Progress' }}
+          </h2>
+          <p>
+            {{ selfieVerificationStep === 'verified' ? 'Your verified badge is ready.' : 'Submitting your profile photo and selfie.' }}
+          </p>
+        </span>
+        <button type="button" aria-label="Close verification" [disabled]="isVerificationSubmitting" (click)="closeSelfieCamera()">
+          <span class="material-symbols-outlined" translate="no">close</span>
+        </button>
+      </header>
+
+      <section class="vl-selfie-verification__progress-panel" [class.vl-selfie-verification__progress-panel--verified]="selfieVerificationStep === 'verified'">
+        @if (selfieVerificationStep === 'verified') {
+          <div class="vl-selfie-verification__verified-gif" aria-hidden="true">
+            <span class="material-symbols-outlined" translate="no">verified</span>
+          </div>
+          <strong>Verified successfully</strong>
+          <small>Redirecting to your profile...</small>
+        } @else {
+          <div class="vl-selfie-verification__loader" aria-hidden="true"></div>
+          <strong>Checking your photos</strong>
+          <small>Please keep this window open.</small>
+        }
+      </section>
+
+      @if (selfieCameraError) {
+        <p class="vl-selfie-verification__error">{{ selfieCameraError }}</p>
+      }
+    }
+  </section>
+</div>

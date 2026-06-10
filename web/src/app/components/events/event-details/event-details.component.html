@@ -1,0 +1,523 @@
+<div class="vl-ed">
+  <div class="vl-ed__layout">
+    <main class="vl-ed__main">
+      <section class="vl-ed__hero">
+        <img [src]="eventDetails?.image || ''" class="hero-img" alt="{{ eventDetails?.title || 'Event' }}">
+        <div class="hero-gradient"></div>
+
+        <button type="button" class="hero-back" (click)="goBack()">
+          <i class="fa-solid fa-arrow-left"></i>
+          <span>Back</span>
+        </button>
+
+        <div class="hero-bottom">
+          <h1 class="hero-title">{{ eventDetails?.title }}</h1>
+
+          <div class="hero-meta">
+            <span class="meta-badge">
+              <i [class]="isEscapeEvent ? 'fa-regular fa-calendar' : 'fa-regular fa-clock'"></i>
+              {{ isEventEnded ? (eventDetails?.eventDate | date:'EEEE, d MMMM y') : getTimeLeftString() }}
+            </span>
+            <span class="meta-badge">
+              <i class="fa-solid fa-location-dot"></i>
+              {{ eventDetails?.address?.city || 'TBA' }}
+            </span>
+          </div>
+
+          @if (isEventEnded) {
+            <div class="hero-status-row">
+              <span class="event-status-pill event-status-pill--ended">
+                <i class="fa-solid fa-circle-check event-status-pill__icon"></i>
+                Event ended
+              </span>
+            </div>
+          }
+
+          <div class="hero-action-row">
+            <div class="hero-attendance">
+              <div class="avatar-stack">
+                <img [src]="eventDetails?.createdBy?.profileImage ? (eventDetails.createdBy.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                     (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                     [matTooltip]="'Creator: ' + eventDetails?.createdBy?.username">
+                @for (att of attendessProfiles | slice:0:5; track $index) {
+                  <img [src]="att.profileImage ? (att.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                       (error)="$any($event.target).src = 'assets/images/default-profile.png'">
+                }
+                @if (getTotalAttendeesCount() > 6) {
+                  <span class="more-count">+{{ getTotalAttendeesCount() - 6 }}</span>
+                }
+              </div>
+              <span class="hero-attendance-label">
+                <i class="fa-solid fa-users"></i>
+                {{ attendanceSummaryLabel }}
+              </span>
+            </div>
+
+            @if (!isEventEnded) {
+              @if (!isEventCreator()) {
+                <button class="btn-join-hero"
+                        (click)="requestJoinEvent()"
+                        [disabled]="joinRequestStatus() !== 'Request Join'">
+                  <i class="fa-solid fa-fire"></i>
+                  {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel : joinRequestStatus() }}
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              } @else {
+                <button class="btn-join-hero" routerLink="/notifications">
+                  <i class="fa-solid fa-bell"></i>
+                  View Requests
+                  <i class="fa-solid fa-chevron-right"></i>
+                </button>
+              }
+            }
+          </div>
+        </div>
+      </section>
+
+      <div class="mobile-event-overview">
+        <section class="ed-section host-panel host-panel--mobile">
+          @let mobileCreator = eventDetails?.createdBy;
+          <button class="host-heading-row host-profile-link" type="button" (click)="redirectToHostProfile()">
+            <h3 class="host-heading">
+              Hosted by <strong>{{ mobileCreator?.username || 'Host' }}</strong>
+            </h3>
+            <i class="fa-solid fa-circle-check verified-check"></i>
+          </button>
+
+          <div class="host-summary">
+            <img class="host-avatar"
+                 [src]="mobileCreator?.profileImage ? (mobileCreator.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                 (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                 (click)="redirectToHostProfile()"
+                 [matTooltip]="'View Profile'"
+                 alt="Host">
+
+            <div class="host-summary__content">
+              <div class="host-trust-row">
+                @if (isNewHost) {
+                  <span class="host-trust-pill host-trust-pill--new">
+                    <i class="fa-regular fa-star"></i>
+                    New Host
+                  </span>
+                } @else if (shouldShowHostRating) {
+                  <span class="host-trust-pill host-trust-pill--rating">
+                    <i class="fa-solid fa-star"></i>
+                    {{ hostRating | number:'1.1-1' }} rating
+                  </span>
+                }
+                <span class="host-trust-pill host-trust-pill--verified">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  Verified Host
+                </span>
+              </div>
+
+              <div class="host-proof-list">
+                <div class="host-proof-item">
+                  <span class="host-proof-icon">
+                    <i class="fa-regular fa-calendar-days"></i>
+                  </span>
+                  <span>Hosted {{ hostEventCount }} {{ hostEventCount === 1 ? 'event' : 'events' }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ed-section event-facts event-facts--mobile">
+          <div class="info-rows">
+            <div class="info-row">
+              <i class="fa-regular fa-calendar"></i>
+              <span>{{ isEscapeEvent ? tripDateRangeLabel : (eventDetails?.eventDate | date:'EEEE, d MMMM y') }}</span>
+            </div>
+            @if (!isEscapeEvent) {
+              <div class="info-row">
+                <i class="fa-regular fa-clock"></i>
+                <span>{{ eventDetails?.eventTime }} onwards</span>
+              </div>
+            }
+            <div class="info-row">
+              <i class="fa-solid fa-ticket"></i>
+              <span><strong>{{ eventPriceLabel }}</strong> per person</span>
+            </div>
+            <div class="info-row">
+              <i [class]="audiencePreferenceIcon"></i>
+              <span>{{ audiencePreferenceLabel }}</span>
+            </div>
+            <div class="info-row">
+              <i class="fa-solid fa-users"></i>
+              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ getRemainingSpots() }} left</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="ed-section about-description">
+        <h3 class="ed-section-title">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          About this Vibe
+        </h3>
+        <p>{{ eventDetails?.description }}</p>
+
+        <div class="features-grid">
+          <div class="feature-item">
+            <span class="emoji">🎵</span>
+            <span>Live {{ eventDetails?.category?.title || 'Event' }} music</span>
+          </div>
+          <div class="feature-item">
+            <span class="emoji">🍸</span>
+            <span>Drinks &amp; cocktails available</span>
+          </div>
+          <div class="feature-item">
+            <span class="emoji">🎉</span>
+            <span>Gorgeous rooftop views</span>
+          </div>
+          <div class="feature-item">
+            <span class="emoji">🧑‍🤝‍🧑</span>
+            <span>Meet <strong>{{ eventDetails?.attendeeLimit || '20' }}</strong> new people</span>
+          </div>
+        </div>
+      </section>
+
+      @if (eventDetails?.gallery?.length > 0) {
+        <section class="ed-section">
+          <h3 class="ed-section-title">Event Gallery</h3>
+          <div class="gallery-scroll">
+            @for (eImage of eventDetails?.gallery; track $index) {
+              <img [src]="eImage" alt="Gallery">
+            }
+          </div>
+          <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)" hidden />
+          <button class="btn-upload" (click)="triggerPhotoUpload()">
+            <i class="fa-solid fa-camera"></i> Upload Photos
+          </button>
+        </section>
+      }
+
+      <section class="ed-section map-panel map-panel--mobile">
+        <div class="map-card">
+          <div class="map-copy">
+            <h3 class="ed-section-title">
+              <i class="fa-solid fa-location-dot"></i>
+              Location
+            </h3>
+            <p class="map-title">{{ locationLabel }}</p>
+            <p class="map-subtitle">Exact address shared after joining</p>
+
+            <div class="map-trust-row">
+              <span class="map-trust-pill">
+                <i class="fa-solid fa-shield-halved"></i>
+                Safe &amp; Verified
+              </span>
+              <span class="map-trust-pill">
+                <i class="fa-solid fa-users"></i>
+                Visible to accepted users
+              </span>
+            </div>
+          </div>
+
+          @if (isMapVisible) {
+            <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
+              (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
+              <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
+                <map-marker [position]="position" />
+              </google-map>
+            </div>
+          }
+        </div>
+      </section>
+
+      @if (isUserAttendee()) {
+        <section class="ed-section chat-card chat-card--mobile">
+          <button class="btn-chat" (click)="toggleChat()">
+            <i class="fa-regular fa-comments"></i>
+            <span class="chat-copy">
+              <span class="chat-title-row">
+                <strong>Event Chat</strong>
+                <small>{{ getTotalAttendeesCount() }}</small>
+              </span>
+              <span class="chat-subtitle">Keep in touch with attendees</span>
+            </span>
+            <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+          </button>
+        </section>
+      }
+
+      <div class="review-grid" [class.review-grid--single]="!canLeaveReview()">
+        @if (canLeaveReview()) {
+          <section class="ed-section review-card review-card--compose" id="add-comment">
+            <div class="review-card__header">
+              <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+              <div>
+                <h3>Leave a Review <span aria-hidden="true">✨</span></h3>
+                <p>Share your vibe! Attendees can rate and review after the event.</p>
+              </div>
+            </div>
+
+            <form class="review-form" [formGroup]="reviewForm" (ngSubmit)="addReviewComment()">
+              <div class="review-rating-panel">
+                <div class="stars-row">
+                  @for (star of stars; track $index) {
+                    @let starValue = $index + 1;
+                    <input type="radio" [id]="'rating-' + starValue" formControlName="rating" [value]="starValue" hidden />
+                    <label [for]="'rating-' + starValue"
+                      (mouseenter)="hoverRating = starValue"
+                      (mouseleave)="hoverRating = 0"
+                      [class.is-active]="hoverRating >= starValue || reviewForm.get('rating')?.value >= starValue">
+                      <i [class]="(hoverRating >= starValue || reviewForm.get('rating')?.value >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                    </label>
+                  }
+                </div>
+                <div class="tap-to-rate">
+                  <span></span>
+                  Tap to rate
+                  <span></span>
+                </div>
+              </div>
+
+              <div class="review-text-panel">
+                <div class="review-textarea-wrap">
+                  <textarea formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
+                  <span class="review-char-count">{{ reviewCommentLength }}/250</span>
+                </div>
+              </div>
+
+              <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting">
+                @if (isSubmitting) { <i class="fa-solid fa-spinner fa-spin"></i> }
+                @else { <i class="fa-regular fa-paper-plane"></i> }
+                {{ isSubmitting ? 'Posting...' : 'Post Review' }}
+              </button>
+
+              <p class="review-privacy">
+                <i class="fa-solid fa-lock"></i>
+                Your review is public and will help others.
+              </p>
+            </form>
+          </section>
+        }
+
+        <section class="ed-section reviews-panel">
+          <div class="reviews-panel__header">
+            <div class="reviews-panel__title">
+              <span class="review-card__icon"><i class="fa-regular fa-comment"></i></span>
+              <div>
+                <h3>Reviews &amp; Comments</h3>
+                <p>See what other attendees thought about this event.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="reviews-panel__stats">
+            <div class="review-stat">
+              <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star"></i></span>
+              <span class="review-stat__copy">
+                <strong>{{ eventAverageRating | number:'1.1-1' }}</strong>
+                <small>Average rating</small>
+              </span>
+            </div>
+            <div class="review-stat">
+              <span class="review-stat__icon"><i class="fa-regular fa-comment-dots"></i></span>
+              <span class="review-stat__copy">
+                <strong>{{ reviewCount }}</strong>
+                <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
+              </span>
+            </div>
+          </div>
+
+          @if (reviewCount === 0) {
+            <div class="empty-comments">
+              <div class="empty-icon"><i class="fa-regular fa-comments"></i></div>
+              <p class="empty-title">No reviews yet</p>
+              <p class="empty-subtitle">Be the first to review this vibe</p>
+            </div>
+          } @else {
+            <div class="comment-list">
+            @for (review of visibleReviews; track $index) {
+              <div class="comment-item">
+                <img class="comment-avatar"
+                     [src]="review.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                     (error)="$any($event.target).src = 'assets/images/default-profile.png'">
+
+                <div class="comment-body">
+                  <div class="comment-header">
+                    <div class="comment-author">
+                      <span class="username">{{ review.raterUserId?.username || 'Guest' }}</span>
+                      <i class="fa-solid fa-circle-check reviewer-check"></i>
+                      <span class="attended-badge">
+                        <i class="fa-solid fa-certificate"></i>
+                        Attended
+                      </span>
+                    </div>
+                    <span class="timestamp">
+                      <i class="fa-regular fa-clock"></i>
+                      {{ getTimeAgo(review.updatedAt || review.createdAt) }}
+                    </span>
+                  </div>
+                  <div class="comment-stars">
+                    @for (i of [1, 2, 3, 4, 5]; track $index) {
+                      <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                    }
+                  </div>
+                  <p class="comment-text">{{ review.comment }}</p>
+                </div>
+
+                <button type="button" class="comment-more" aria-label="More options">
+                  <i class="fa-solid fa-ellipsis"></i>
+                </button>
+              </div>
+            }
+            </div>
+
+            @if (shouldShowReviewToggle) {
+              <button type="button" class="btn-view-comments" (click)="toggleReviews()">
+                {{ showAllReviews ? 'Show fewer comments' : 'View all comments' }}
+                <i [class]="showAllReviews ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+              </button>
+            }
+          }
+        </section>
+      </div>
+    </main>
+
+    <aside class="vl-ed__sidebar">
+      <section class="ed-section host-panel host-panel--desktop">
+        @let creator = eventDetails?.createdBy;
+        <button class="host-heading-row host-profile-link" type="button" (click)="redirectToHostProfile()">
+          <h3 class="host-heading">
+            Hosted by <strong>{{ creator?.username || 'Host' }}</strong>
+          </h3>
+          <i class="fa-solid fa-circle-check verified-check"></i>
+        </button>
+
+        <div class="host-summary">
+          <img class="host-avatar"
+               [src]="creator?.profileImage ? (creator?.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+               (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+               (click)="redirectToHostProfile()"
+               [matTooltip]="'View Profile'"
+               alt="Host">
+
+          <div class="host-summary__content">
+            <div class="host-trust-row">
+              @if (isNewHost) {
+                <span class="host-trust-pill host-trust-pill--new">
+                  <i class="fa-regular fa-star"></i>
+                  New Host
+                </span>
+              } @else if (shouldShowHostRating) {
+                <span class="host-trust-pill host-trust-pill--rating">
+                  <i class="fa-solid fa-star"></i>
+                  {{ hostRating | number:'1.1-1' }} rating
+                </span>
+              }
+              <span class="host-trust-pill host-trust-pill--verified">
+                <i class="fa-solid fa-shield-halved"></i>
+                Verified Host
+              </span>
+            </div>
+
+            <div class="host-proof-list">
+              <div class="host-proof-item">
+                <span class="host-proof-icon">
+                  <i class="fa-regular fa-calendar-days"></i>
+                </span>
+                <span>Hosted {{ hostEventCount }} {{ hostEventCount === 1 ? 'event' : 'events' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-section event-facts event-facts--desktop">
+        <div class="info-rows">
+          <div class="info-row">
+            <i class="fa-regular fa-calendar"></i>
+            <span>{{ isEscapeEvent ? tripDateRangeLabel : (eventDetails?.eventDate | date:'EEEE, d MMMM y') }}</span>
+          </div>
+          @if (!isEscapeEvent) {
+          <div class="info-row">
+            <i class="fa-regular fa-clock"></i>
+            <span>{{ eventDetails?.eventTime }} onwards</span>
+          </div>
+          }
+          <div class="info-row">
+            <i class="fa-solid fa-ticket"></i>
+            <span><strong>{{ eventPriceLabel }}</strong> per person</span>
+          </div>
+          <div class="info-row">
+            <i [class]="audiencePreferenceIcon"></i>
+            <span>{{ audiencePreferenceLabel }}</span>
+          </div>
+          <div class="info-row">
+            <i class="fa-solid fa-users"></i>
+            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ getRemainingSpots() }} left</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="ed-section map-panel map-panel--desktop">
+        <div class="map-card">
+          <div class="map-copy">
+            <h3 class="ed-section-title">
+              <i class="fa-solid fa-location-dot"></i>
+              Location
+            </h3>
+            <p class="map-title">{{ locationLabel }}</p>
+            <p class="map-subtitle">Exact address shared after joining</p>
+
+            <div class="map-trust-row">
+              <span class="map-trust-pill">
+                <i class="fa-solid fa-shield-halved"></i>
+                Safe &amp; Verified
+              </span>
+              <span class="map-trust-pill">
+                <i class="fa-solid fa-users"></i>
+                Visible to accepted users
+              </span>
+            </div>
+          </div>
+
+          @if (isMapVisible) {
+            <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
+              (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
+              <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
+                <map-marker [position]="position" />
+              </google-map>
+            </div>
+          }
+        </div>
+      </section>
+
+      @if (isUserAttendee()) {
+        <section class="ed-section chat-card chat-card--desktop">
+          <button class="btn-chat" (click)="toggleChat()">
+            <i class="fa-regular fa-comments"></i>
+            <span class="chat-copy">
+              <span class="chat-title-row">
+                <strong>Event Chat</strong>
+                <small>{{ getTotalAttendeesCount() }}</small>
+              </span>
+              <span class="chat-subtitle">Keep in touch with attendees</span>
+            </span>
+            <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+          </button>
+        </section>
+      }
+    </aside>
+  </div>
+</div>
+
+@if (isOpen) {
+<div class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
+  <div class="bg-white rounded-2xl shadow-xl w-[95%] h-[95%] p-6 relative overflow-y-auto">
+    <button (click)="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
+      <i class="fa-solid fa-xmark text-xl"></i>
+    </button>
+    <h2 class="text-xl font-semibold mb-4">User Profile</h2>
+    <vl-profile [userId]="eventDetails?.createdBy && eventDetails.createdBy._id"></vl-profile>
+  </div>
+</div>
+}
+
+@if (isChatVisible) {
+  <vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
+}

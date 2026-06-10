@@ -1,0 +1,303 @@
+@use "../../../../styles/index" as *;
+
+.vl-events-list {
+  padding: 2% 10%;
+  background: var(--events-list-bg);
+
+  &__header {
+    padding: 24px;
+    background-color: var(--events-list-header-bg);
+    box-shadow: var(--card-shadow);
+    border-radius: 8px;
+    height: 220px;
+
+    @include flex($align: center, $gap: 1rem);
+
+    .category-image {
+      height: 100%;
+      width: 240px;
+      border-radius: inherit;
+
+      img {
+        height: 100%;
+        width: 100%;
+        border-radius: inherit;
+        object-fit: cover;
+      }
+    }
+
+    .category-info {
+      padding: 8px 16px;
+    }
+
+  }
+
+  &__cards {
+    padding: 32px 16px;
+    margin-top: 1rem;
+    border-radius: 8px;
+
+    @include flex($gap: 2rem, $align: center, $justify: center, $wrap: wrap);
+  }
+
+  @include screenSize(sm) {
+    padding: 2% 5%;
+
+    &__header {
+      padding: 16px;
+      height: auto;
+      @include flex($direction: column, $align: center, $gap: 1rem);
+
+      .category-image {
+        width: 100%;
+      }
+
+      .category-info {
+        padding: 0;
+      }
+    }
+
+    &__cards {
+      padding: 16px;
+    }
+  }
+}
+
+// --- Theme Variables ---
+$background: #070d1f; // Main page background
+$primary: #bd9dff;
+$secondary: #34b5fa;
+$tertiary: #ff86c3;
+$on-surface: #dfe4fe;
+$on-surface-variant: #a5aac2;
+
+// --- Main Layout ---
+// --- Breadcrumb Navigation ---
+.vl-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem; // gap-2
+  margin-bottom: 2rem; // mb-8
+  font-size: 0.625rem; // text-[10px]
+  text-transform: uppercase;
+  letter-spacing: 0.1em; // tracking-widest
+  font-weight: 700; // font-bold
+  color: rgba($on-surface-variant, 0.6); // text-on-surface-variant/60
+  font-family: 'Inter', sans-serif;
+
+  &__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__separator {
+    font-size: 0.75rem; // text-[12px]
+  }
+
+  &__current {
+    color: $primary;
+  }
+}
+
+// --- Category Header Banner ---
+.vl-banner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; // gap-8
+  padding: 2rem; // p-8
+  margin-bottom: 3rem; // mb-12
+  border-radius: 2rem; // rounded-[2rem]
+  overflow: hidden; // Keeps glows contained
+
+  // Glassmorphism base
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    align-items: center;
+    padding: 3rem; // md:p-12
+    gap: 3rem; // md:gap-12
+  }
+
+  // --- Atmospheric Glows ---
+  &__glow {
+    position: absolute;
+    width: 20rem; // w-80
+    height: 20rem; // h-80
+    border-radius: 50%;
+    filter: blur(100px);
+    z-index: 0;
+
+    &--primary {
+      top: -5rem; // -top-20
+      right: -5rem; // -right-20
+      background-color: rgba($primary, 0.1);
+    }
+
+    &--secondary {
+      bottom: -5rem; // -bottom-20
+      left: -5rem; // -left-20
+      background-color: rgba($secondary, 0.1);
+    }
+  }
+
+  // --- Thumbnail Media ---
+  &__media {
+    position: relative;
+    z-index: 10;
+    width: 12rem; // w-48
+    height: 12rem; // h-48
+    flex-shrink: 0;
+    border-radius: 2.5rem;
+    overflow: hidden;
+    transform: rotate(3deg);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); // shadow-2xl
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &:hover {
+      transform: rotate(0deg);
+    }
+
+    @media (min-width: 768px) {
+      width: 16rem; // md:w-64
+      height: 16rem; // md:h-64
+    }
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba($background, 0.6), transparent);
+  }
+
+  // --- Banner Content ---
+  &__content {
+    position: relative;
+    z-index: 10;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem; // space-y-6
+  }
+
+  &__text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem; // space-y-2
+  }
+
+  &__title {
+    font-size: 3rem; // text-5xl
+    font-weight: 900; // font-black
+    line-height: 1; // leading-none
+    letter-spacing: -0.025em; // tracking-tight
+    color: $on-surface;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+
+    @media (min-width: 768px) {
+      font-size: 4.5rem; // md:text-7xl
+    }
+  }
+
+  &__description {
+    font-size: 1.125rem; // text-lg
+    font-weight: 300; // font-light
+    line-height: 1.625; // leading-relaxed
+    color: $on-surface-variant;
+    max-width: 42rem; // max-w-2xl
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+
+  // --- Dynamic Tags ---
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem; // gap-3
+  }
+
+  &__tag {
+    padding: 0.375rem 1rem; // py-1.5 px-4
+    border-radius: 9999px;
+    font-size: 0.75rem; // text-xs
+    font-weight: 700; // font-bold
+    text-transform: uppercase;
+    letter-spacing: 0.1em; // tracking-widest
+    font-family: 'Inter', sans-serif;
+
+    // Modifiers matching TS data
+    &--primary {
+      background-color: rgba($primary, 0.1);
+      border: 1px solid rgba($primary, 0.2);
+      color: $primary;
+    }
+
+    &--secondary {
+      background-color: rgba($secondary, 0.1);
+      border: 1px solid rgba($secondary, 0.2);
+      color: $secondary;
+    }
+
+    &--tertiary {
+      background-color: rgba($tertiary, 0.1);
+      border: 1px solid rgba($tertiary, 0.2);
+      color: $tertiary;
+    }
+  }
+}
+
+// --- Section Controls (Title & Filters) ---
+.vl-section-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2rem; // mb-8
+
+  &__title {
+    font-size: 1.5rem; // text-2xl
+    font-weight: 700; // font-bold
+    letter-spacing: -0.025em; // tracking-tight
+    color: $on-surface;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.5rem; // gap-2
+  }
+}
+
+// Shared circular icon button
+.vl-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem; // p-2
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.02);
+  color: $on-surface;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1); // hover:bg-white/10
+  }
+}

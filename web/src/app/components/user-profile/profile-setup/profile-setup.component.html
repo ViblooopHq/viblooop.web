@@ -1,0 +1,74 @@
+<div class="vl-profile-setup">
+    <h2>{{ mode === 'setup' ? 'Set Up Your Profile' : 'Edit Profile' }}</h2>
+  
+    <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Profile Photo -->
+      <div class="vl-form-group">
+        <label>Profile Photo</label>
+        <input type="file" accept="image/*,.heic,.heif" (change)="onFileSelect($event, 'profilePhoto')" />
+        @if (profilePhotoPreview) {
+        <img [src]="profilePhotoPreview" class="vl-preview-img"/>
+        }
+      </div>
+  
+      <!-- Cover Image -->
+      <div class="vl-form-group">
+        <label>Cover Image</label>
+        <input type="file" accept="image/*,.heic,.heif" (change)="onFileSelect($event, 'coverImage')" />
+        @if (coverImagePreview) {
+        <img [src]="coverImagePreview" class="vl-preview-img"/>
+        }
+      </div>
+  
+      <!-- DOB -->
+      <div class="vl-form-group">
+        <label>Date of Birth</label>
+        <input type="date" formControlName="dob" />
+      </div>
+  
+      <!-- Gender -->
+      <div class="vl-form-group">
+        <label>Gender</label>
+        <select formControlName="gender">
+          <option value="" disabled>Select gender</option>
+          @for(g of genders; track g) {
+          <option [value]="g">{{ g }}</option>
+          }
+        </select>
+      </div>
+  
+      <!-- Pronoun -->
+      <div class="vl-form-group">
+        <label>Pronoun</label>
+        <select formControlName="pronoun">
+          <option value="" disabled>Select pronoun</option>
+          @for( p of pronouns; track p) {
+          <option [value]="p">{{ p }}</option>
+          }
+        </select>
+      </div>
+  
+      <!-- Interests -->
+      <div class="vl-form-group">
+        <label>Interests</label>
+        <select formControlName="interests" multiple>
+            @for( i of selectedInterests; track i) {
+          <option [value]="i">{{ i }}</option>
+            }
+        </select>
+      </div>
+  
+      <!-- Bio -->
+      <div class="vl-form-group">
+        <label>Bio</label>
+        <textarea formControlName="bio" rows="3"></textarea>
+      </div>
+  
+      <!-- Submit -->
+      <button type="submit">
+        {{ mode === 'setup' ? 'Save Profile' : 'Update Profile' }}
+      </button>
+    </form>
+  </div>
+  

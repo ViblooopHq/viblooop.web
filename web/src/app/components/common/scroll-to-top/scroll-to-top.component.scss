@@ -1,0 +1,68 @@
+@use "sass:color";
+
+// --- Theme Variables ---
+$primary: #bd9dff;
+$secondary: #34b5fa;
+$surface: #1c253e;
+
+.vl-scroll-top {
+  position: fixed;
+  bottom: 12rem;
+  right: 16px;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  z-index: 150;
+
+  // Glassmorphism
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: $primary;
+
+  // Transitions
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+
+  // Hover effects
+  &:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba($primary, 0.4);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 20px rgba($primary, 0.2);
+    color: color.adjust($primary, $lightness: 5%);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.75rem;
+    font-weight: 600;
+  }
+}
+
+// Fade entrance animation
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Apply animation on mount (handled partially by @if in template)
+.vl-scroll-top {
+  animation: fadeInUp 0.4s ease-out forwards;
+}

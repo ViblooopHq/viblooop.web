@@ -1,0 +1,171 @@
+<main class="vl-user-profile-container">
+  <section class="vl-user-profile">
+    <div class="vl-user-profile__hero" [style.--profile-banner]="'url(' + userProfile?.profileBanner + ')'">
+      <div class="vl-user-profile__avatar-wrap">
+        <img class="vl-user-profile__avatar" [src]="userProfile?.profileImage || defaultProfileImage"
+          alt="Profile" referrerpolicy="no-referrer" (error)="useDefaultProfileImage($event)" />
+
+        @if (isCurrentUser) {
+          <button class="vl-user-profile__edit-avatar" type="button" (click)="editProfile()" aria-label="Edit profile">
+            <span class="material-symbols-outlined" translate="no">edit</span>
+          </button>
+        }
+      </div>
+
+      <div class="vl-user-profile__identity">
+        <h1>{{ displayName }}</h1>
+        <p class="vl-user-profile__handle">{{ handle }}</p>
+        <p class="vl-user-profile__bio">{{ shortBio }}</p>
+
+        <div class="vl-user-profile__vibes">
+          @for (interest of previewInterests; track interest; let i = $index) {
+            <span class="vl-pill" [class]="'vl-pill vl-pill--' + getInterestTone(i)">
+              <i [class]="getInterestIconClass(interest)" aria-hidden="true"></i>
+              {{ getInterestLabel(interest) }}
+            </span>
+          }
+        </div>
+      </div>
+    </div>
+
+    @if (isCurrentUser) {
+      <section
+        class="vl-user-profile__photo-verification"
+        [class.vl-user-profile__photo-verification--verified]="isVerified"
+        aria-label="Photo verification">
+        <span class="vl-user-profile__photo-verification-icon">
+          <span class="material-symbols-outlined" translate="no">{{ isVerified ? 'verified' : 'person_check' }}</span>
+        </span>
+
+        <span class="vl-user-profile__photo-verification-copy">
+          <span class="vl-user-profile__photo-verification-heading">
+            <strong>Photo Verification</strong>
+            <span>{{ isVerified ? 'Verified' : 'Pending' }}</span>
+          </span>
+          <small>{{ isVerified ? 'Your profile has the verified badge' : 'Verify your selfie to get the verified badge' }}</small>
+        </span>
+
+        @if (!isVerified) {
+          <button class="vl-user-profile__photo-verification-action" type="button" (click)="verifyGovernmentID()">
+            Verify Selfie
+            <span class="material-symbols-outlined" translate="no">chevron_right</span>
+          </button>
+        }
+      </section>
+    }
+
+    <div class="vl-user-profile__stats" aria-label="Profile stats">
+      <div class="vl-user-profile__stat">
+        <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">star</span>
+        <strong>{{ averageRating | number:'1.1-1' }}</strong>
+        <span>{{ totalRatings }} {{ totalRatings === 1 ? 'Rating' : 'Ratings' }}</span>
+      </div>
+
+      <div class="vl-user-profile__stat">
+        <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">event_available</span>
+        <strong>{{ attendedEvents.length }}</strong>
+        <span>Joined Events</span>
+      </div>
+
+      <div class="vl-user-profile__stat">
+        <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">edit_calendar</span>
+        <strong>{{ hostedEvents.length }}</strong>
+        <span>Hosted Events</span>
+      </div>
+    </div>
+
+    <section class="vl-user-profile__panel">
+      <div class="vl-user-profile__tabs" role="tablist">
+        @for(tab of tabs; track tab) {
+          <button type="button" role="tab" [class.active]="activeTab === tab" (click)="setActiveTab(tab)">
+            <span class="material-symbols-outlined" translate="no">{{ getTabIcon(tab) }}</span>
+            {{ tab }}
+          </button>
+        }
+      </div>
+
+      <div class="vl-user-profile__tab-content">
+        @switch (activeTab) {
+          @case ('Joined') {
+            @if (visibleJoinedEvents.length > 0) {
+              <div class="vl-user-profile__event-list">
+                @for (event of visibleJoinedEvents; track event?._id || $index) {
+                  <vl-event-card [config]="event" presentation="profile" profileStatus="attended"></vl-event-card>
+                }
+              </div>
+              @if (attendedEvents.length > visibleJoinedEvents.length) {
+                <button class="vl-user-profile__view-all" type="button" (click)="showAllJoined()">
+                  Show more
+                  <span class="material-symbols-outlined" translate="no">chevron_right</span>
+                </button>
+              }
+            } @else {
+              <div class="vl-user-profile__empty">
+                <span class="material-symbols-outlined" translate="no">event_busy</span>
+                <p>No joined events to display yet.</p>
+              </div>
+            }
+          }
+          @case ('Hosted') {
+            @if (visibleHostedEvents.length > 0) {
+              <div class="vl-user-profile__event-list">
+                @for (event of visibleHostedEvents; track event?._id || $index) {
+                  <vl-event-card [config]="event" presentation="profile" profileStatus="hosted"></vl-event-card>
+                }
+              </div>
+              @if (hostedEvents.length > visibleHostedEvents.length) {
+                <button class="vl-user-profile__view-all" type="button" (click)="showAllHosted()">
+                  Show more
+                  <span class="material-symbols-outlined" translate="no">chevron_right</span>
+                </button>
+              }
+            } @else {
+              <div class="vl-user-profile__empty">
+                <span class="material-symbols-outlined" translate="no">event_busy</span>
+                <p>No hosted events to display yet.</p>
+              </div>
+            }
+          }
+          @case ('Photos') {
+            @if (userGallery.length > 0) {
+              <vl-gallery [images]="userGallery"></vl-gallery>
+            } @else {
+              <div class="vl-user-profile__empty">
+                <span class="material-symbols-outlined" translate="no">photo_library</span>
+                <p>No photos to display yet.</p>
+              </div>
+            }
+          }
+        }
+      </div>
+
+      <div class="vl-user-profile__interests">
+        <h2>Interests</h2>
+        <div class="vl-user-profile__interest-list">
+          @for (interest of visibleInterests; track interest; let i = $index) {
+            <span class="vl-pill" [class]="'vl-pill vl-pill--' + getInterestTone(i)">
+              <i [class]="getInterestIconClass(interest)" aria-hidden="true"></i>
+              {{ getInterestLabel(interest) }}
+            </span>
+          }
+
+          @if (hiddenInterestCount > 0) {
+            <span class="vl-pill vl-pill--muted">+{{ hiddenInterestCount }} more</span>
+          }
+        </div>
+      </div>
+    </section>
+
+    @if (userReviews.length > 0) {
+      <vl-reviews [reviews]="userReviews"></vl-reviews>
+    }
+  </section>
+
+  <vl-selfie-verification
+    [isOpen]="isSelfieVerificationOpen"
+    [compareImage]="userProfile?.profileImage || defaultProfileImage"
+    [defaultImage]="defaultProfileImage"
+    (closed)="closeSelfieVerification()"
+    (verified)="onSelfieVerified()">
+  </vl-selfie-verification>
+</main>

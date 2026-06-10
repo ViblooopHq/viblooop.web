@@ -1,0 +1,23 @@
+@if (!hideHeader) {
+  <vl-header />
+}
+
+<div class="vl-body-container">
+  <router-outlet />
+</div>
+
+<router-outlet name="drawer" />
+
+<vl-global-loader />
+
+@if ((completeProfileService.showPopup$ | async)) {
+  <vl-complete-profile
+    >
+  </vl-complete-profile>
+}
+
+
+@if (!hideFooter) {
+  <vl-footer />
+}
+<vl-scroll-to-top />
