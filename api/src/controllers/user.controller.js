@@ -1,9 +1,11 @@
 import bcrypt from "bcryptjs";
+import fs from "fs";
 import User from "../models/user/user.model.js";
 import Events from "../models/event/event.model.js";
 import InterestCategory from "../models/user/interestCategory.model.js";
 import { sendResponse } from "../utils/response.util.js";
 import { cleanupFiles } from "../utils/deleteFile.util.js";
+import { verifyFace } from "../services/verify-user.service.js";
 
 export async function getUserProfile(req, res) {
   try {
@@ -208,7 +210,14 @@ export async function verifySelfieProfile(req, res) {
       return sendResponse(res, 400, false, "Profile photo and selfie are required");
     }
 
-    user.verified = true;
+    const verified = await verifyFace(userId, selfieImage.path, profileImage.path);
+
+    if (!verified.verified) {
+      await cleanupFiles([profileImage.path, selfieImage.path]);
+      return sendResponse(res, 400, false, "Selfie verification failed");
+    }
+
+    user.verified = verified.verified;
     await user.save();
     await cleanupFiles([profileImage.path, selfieImage.path]);
 
