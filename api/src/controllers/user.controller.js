@@ -30,10 +30,12 @@ export async function getUserProfile(req, res) {
       email: user.email,
       profileImage: user.profileImage,
       profileBanner: user.profileBanner,
+      profilePhotos: normalizeProfilePhotos(user.profilePhotos),
       bio: user.bio,
       location: user.location,
       pronoun: user.pronoun,
       gender: user.gender,
+      socialLinks: normalizeSocialLinks(user.socialLinks),
       averageRating: user.averageRating,
       totalRatings: user.totalRatings,
       verified: user.verified,
@@ -117,6 +119,7 @@ export async function updateUserProfile(req, res) {
   const profileImage = req.files?.profileImage?.[0];
   const profileBanner = req.files?.profileBanner?.[0];
   const selfieImage = req.files?.selfieImage?.[0];
+  const profilePhotoFiles = req.files?.profilePhotos ?? [];
 
   try {
     const {
@@ -129,6 +132,8 @@ export async function updateUserProfile(req, res) {
       pronoun,
       gender,
       dob,
+      socialLinks,
+      existingProfilePhotos,
     } = req.body;
 
     const userId = req.user.id;
@@ -139,6 +144,7 @@ export async function updateUserProfile(req, res) {
       if (profileImage) allFiles.push(profileImage.path);
       if (profileBanner) allFiles.push(profileBanner.path);
       if (selfieImage) allFiles.push(selfieImage.path);
+      if (profilePhotoFiles.length) allFiles.push(...profilePhotoFiles.map((file) => file.path));
 
       await cleanupFiles(allFiles);
       return sendResponse(res, 404, false, "User not found");
@@ -152,6 +158,7 @@ export async function updateUserProfile(req, res) {
     if (Object.hasOwn(req.body, "dob")) user.dob = dob;
     if (Object.hasOwn(req.body, "pronoun")) user.pronoun = pronoun;
     if (Object.hasOwn(req.body, "gender")) user.gender = gender;
+    if (Object.hasOwn(req.body, "socialLinks")) user.socialLinks = parseSocialLinks(socialLinks);
 
     if (profileImage) {
       if (user.profileImage && user.profileImage.startsWith("uploads")) {
@@ -167,6 +174,31 @@ export async function updateUserProfile(req, res) {
       user.profileBanner = profileBanner.path;
     }
 
+    if (Object.hasOwn(req.body, "existingProfilePhotos") || profilePhotoFiles.length) {
+      const keptProfilePhotos = Object.hasOwn(req.body, "existingProfilePhotos")
+        ? parseStringArray(existingProfilePhotos)
+        : normalizeProfilePhotos(user.profilePhotos);
+      const removedProfilePhotos = normalizeProfilePhotos(user.profilePhotos)
+        .filter((photo) => photo.startsWith("uploads") && !keptProfilePhotos.includes(photo));
+
+      if (removedProfilePhotos.length) {
+        await cleanupFiles(removedProfilePhotos);
+      }
+
+      const newProfilePhotos = profilePhotoFiles.map((file) => file.path);
+      const nextProfilePhotos = [
+        ...keptProfilePhotos,
+        ...newProfilePhotos,
+      ].slice(0, 12);
+      const unusedNewProfilePhotos = newProfilePhotos.filter((photo) => !nextProfilePhotos.includes(photo));
+
+      if (unusedNewProfilePhotos.length) {
+        await cleanupFiles(unusedNewProfilePhotos);
+      }
+
+      user.profilePhotos = nextProfilePhotos;
+    }
+
     if (interests) user.interests = JSON.parse(interests);
     await user.save();
     if (selfieImage) await cleanupFiles([selfieImage.path]);
@@ -177,11 +209,51 @@ export async function updateUserProfile(req, res) {
     if (profileImage) allFiles.push(profileImage.path);
     if (profileBanner) allFiles.push(profileBanner.path);
     if (selfieImage) allFiles.push(selfieImage.path);
+    if (profilePhotoFiles.length) allFiles.push(...profilePhotoFiles.map((file) => file.path));
 
     await cleanupFiles(allFiles);
 
     return sendResponse(res, 500, false, e.message || "Internal Server Error");
   }
+}
+
+function parseSocialLinks(value) {
+  try {
+    const links = typeof value === "string" ? JSON.parse(value) : value;
+    return normalizeSocialLinks(links);
+  } catch {
+    return [];
+  }
+}
+
+function normalizeSocialLinks(links) {
+  if (!Array.isArray(links)) return [];
+
+  return links
+    .map((link) => ({
+      platform: String(link?.platform || "").trim().toLowerCase(),
+      url: String(link?.url || "").trim(),
+    }))
+    .filter((link) => link.platform && /^https?:\/\/\S+\.\S+/i.test(link.url))
+    .slice(0, 6);
+}
+
+function parseStringArray(value) {
+  try {
+    const items = typeof value === "string" ? JSON.parse(value) : value;
+    return normalizeProfilePhotos(items);
+  } catch {
+    return [];
+  }
+}
+
+function normalizeProfilePhotos(photos) {
+  if (!Array.isArray(photos)) return [];
+
+  return photos
+    .map((photo) => String(photo || "").trim())
+    .filter(Boolean)
+    .slice(0, 12);
 }
 
 export async function verifySelfieProfile(req, res) {

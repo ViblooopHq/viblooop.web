@@ -12,6 +12,13 @@ $tertiary: #ff86c3;
 $on-surface: #dfe4fe;
 $outline-variant: rgba(255, 255, 255, 0.15);
 
+:host {
+  display: block;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: $surface;
+}
+
 // Mixins
 @mixin ghost-border {
   border: 1px solid $outline-variant;
@@ -33,7 +40,6 @@ $outline-variant: rgba(255, 255, 255, 0.15);
 }
 
 .explore-container {
-  background-color: $surface;
   min-height: 100vh;
   color: $on-surface;
   position: relative;
@@ -124,9 +130,18 @@ header {
     margin-bottom: 2rem;
   }
 
+  .explore-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+  }
+
   .search-bar {
     display: flex;
     align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
     border-radius: 9999px;
     padding: 0.5rem 1rem;
     background: $surface-container-lowest;
@@ -176,14 +191,16 @@ header {
 
 // Filter Tags
 .filter-tags-scroll {
-  padding: 0 0 2rem 0;
+  flex: 0 0 auto;
+  max-width: 45%;
+  padding: 0;
   overflow-x: auto;
   @include hide-scrollbar;
 
   .filter-tags {
     display: flex;
     gap: 0.75rem;
-    padding-right: 1.5rem;
+    padding-right: 0;
 
     .filter-tag {
       white-space: nowrap;
@@ -210,6 +227,24 @@ header {
       }
     }
   }
+}
+
+@media (max-width: 1024px) {
+  .explore-header {
+    .explore-controls {
+      align-items: stretch;
+      flex-direction: column;
+    }
+  }
+
+  .filter-tags-scroll {
+    max-width: 100%;
+    padding-bottom: 2rem;
+  }
+}
+
+.featured-vibes-section {
+  display: none;
 }
 
 // Explore By Vibe Categories
@@ -308,11 +343,219 @@ header {
   }
 }
 
+@media (min-width: 768px) {
+  .featured-vibes-section {
+    display: block;
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      color: #ffffff;
+      font-size: 1.35rem;
+      line-height: 1.15;
+
+      i {
+        color: #a855f7;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .featured-vibes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.85rem;
+    overflow: hidden;
+    padding: 0.15rem 0 0.6rem;
+  }
+
+  .featured-vibe-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 5.5rem;
+    overflow: hidden;
+    border: 1px solid rgba(112, 125, 185, 0.42);
+    border-radius: 1.2rem;
+    color: #ffffff;
+    background: rgba(7, 13, 31, 0.86);
+    padding: 0.75rem;
+    text-align: left;
+    font: inherit;
+    cursor: pointer;
+    scroll-snap-align: start;
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+
+    &:hover,
+    &.active {
+      transform: translateY(-2px);
+      border-color: rgba(192, 132, 252, 0.58);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+    }
+  }
+
+  .featured-vibe-card__image,
+  .featured-vibe-card__shade {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .featured-vibe-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.42;
+    filter: saturate(1.08) contrast(1.05);
+    transition: transform 0.55s ease, opacity 0.2s ease;
+  }
+
+  .featured-vibe-card:hover .featured-vibe-card__image {
+    transform: scale(1.04);
+    opacity: 0.52;
+  }
+
+  .featured-vibe-card__shade {
+    background:
+      linear-gradient(90deg, rgba(8, 12, 28, 0.96) 0%, rgba(8, 12, 28, 0.82) 42%, rgba(8, 12, 28, 0.42) 100%),
+      radial-gradient(circle at 0% 50%, rgba(139, 92, 246, 0.24), transparent 58%);
+  }
+
+  .featured-vibe-card__icon,
+  .featured-vibe-card__content,
+  .featured-vibe-card__arrow {
+    position: relative;
+    z-index: 1;
+  }
+
+  .featured-vibe-card__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 0.85rem;
+    color: #ffffff;
+    background: linear-gradient(135deg, #fb4d73, #b91c6a);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.22),
+      0 14px 30px rgba(139, 92, 246, 0.2);
+
+    i {
+      font-size: 1.2rem;
+    }
+  }
+
+  .featured-vibe-card--games .featured-vibe-card__icon {
+    background: linear-gradient(135deg, #9b5cff, #4c1d95);
+  }
+
+  .featured-vibe-card--travel .featured-vibe-card__icon {
+    background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+  }
+
+  .featured-vibe-card__content {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    strong {
+      color: #ffffff;
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.05;
+    }
+
+    > span {
+      color: rgba($on-surface, 0.78);
+      font-size: 0.66rem;
+      font-weight: 600;
+      line-height: 1.35;
+    }
+
+    small {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-top: 0.25rem;
+      color: rgba($on-surface, 0.78);
+      font-size: 0.58rem;
+      font-weight: 800;
+
+      i {
+        color: #e879f9;
+      }
+    }
+  }
+
+  .featured-vibe-card__arrow {
+    display: grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.11);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(10px);
+  }
+
+  .categories-section {
+    display: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  .featured-vibes-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+
+  .featured-vibe-card {
+    gap: 1rem;
+    min-height: 6.6rem;
+    padding: 1rem 0.95rem 1rem 1.05rem;
+  }
+
+  .featured-vibe-card__icon {
+    width: 3.85rem;
+    height: 3.85rem;
+
+    i {
+      font-size: 1.55rem;
+    }
+  }
+
+  .featured-vibe-card__content {
+    strong {
+      font-size: 1.08rem;
+    }
+
+    > span {
+      font-size: 0.78rem;
+    }
+
+    small {
+      font-size: 0.68rem;
+    }
+  }
+
+  .featured-vibe-card__arrow {
+    width: 2.45rem;
+    height: 2.45rem;
+  }
+}
+
 // Trending Carousel
 .trending-scroll {
   display: flex;
   gap: 1.5rem;
-  padding: 0 1.5rem 1rem;
+  padding: 0 0 1rem;
   overflow-x: auto;
   @include hide-scrollbar;
   scroll-snap-type: x mandatory;
@@ -326,9 +569,11 @@ header {
 
   &.single-result {
     .trending-card {
-      flex: 0 0 100%;
-      min-width: 100%;
-      max-width: 100%;
+      @media (max-width: 767px) {
+        flex: 0 0 100%;
+        min-width: 100%;
+        max-width: 100%;
+      }
     }
   }
 
@@ -425,6 +670,52 @@ header {
           }
         }
       }
+    }
+  }
+}
+
+.just-for-you-section {
+  margin-bottom: 2rem;
+}
+
+.past-vibes-section {
+  padding-bottom: 2.5rem;
+}
+
+.past-vibes-grid {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding: 0 0 0.8rem;
+  scroll-snap-type: x mandatory;
+  @include hide-scrollbar;
+
+  vl-past-event-card {
+    flex: 0 0 min(76vw, 15.8rem);
+    scroll-snap-align: start;
+  }
+
+  &.empty-result {
+    display: block;
+  }
+}
+
+@media (min-width: 768px) {
+  .past-vibes-grid {
+    gap: 1.15rem;
+
+    vl-past-event-card {
+      flex-basis: 15.6rem;
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .past-vibes-grid {
+    gap: 1.25rem;
+
+    vl-past-event-card {
+      flex-basis: 15.8rem;
     }
   }
 }

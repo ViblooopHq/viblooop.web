@@ -100,7 +100,8 @@ p {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.65rem;
-  margin-top: 1.05rem;
+  width: min(100%, 34rem);
+  margin: 1.05rem auto 0;
 }
 
 .empty-state__button {

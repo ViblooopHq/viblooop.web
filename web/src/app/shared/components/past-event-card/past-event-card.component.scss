@@ -1,0 +1,226 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 10.9rem;
+}
+
+.past-event-card {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  border-radius: 1rem;
+  background: #0b1020;
+  color: #eef2ff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
+.past-event-card__image,
+.past-event-card__scrim {
+  position: absolute;
+  inset: 0;
+}
+
+.past-event-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(0.82) brightness(0.58) contrast(1.08);
+  transform: scale(1.02);
+}
+
+.past-event-card__scrim {
+  background:
+    linear-gradient(180deg, rgba(5, 8, 18, 0.16) 0%, rgba(5, 8, 18, 0.62) 48%, rgba(5, 8, 18, 0.92) 100%),
+    radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.2), transparent 32%),
+    radial-gradient(circle at 95% 90%, rgba(168, 85, 247, 0.22), transparent 40%);
+}
+
+.past-event-card__top,
+.past-event-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+.past-event-card__top {
+  position: absolute;
+  inset: 0.65rem 0.65rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.past-event-card__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.32rem;
+  min-height: 1.35rem;
+  padding: 0 0.58rem;
+  border-radius: 999px;
+  color: #d1fae5;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.86), rgba(5, 150, 105, 0.72));
+  box-shadow: 0 10px 22px rgba(5, 150, 105, 0.28);
+  font-size: 0.66rem;
+  font-weight: 650;
+  line-height: 1;
+}
+
+.past-event-card__date {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.68rem;
+  font-weight: 600;
+  line-height: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.past-event-card__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-self: flex-end;
+  min-width: 0;
+  height: 100%;
+  padding: 3.35rem 0.9rem 0.85rem;
+}
+
+.past-event-card h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.past-event-card__meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.28rem;
+  margin: 0.32rem 0 0.6rem;
+  color: rgba(226, 232, 240, 0.76);
+  font-size: 0.66rem;
+  line-height: 1.25;
+  min-width: 0;
+  overflow: hidden;
+
+  span {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.past-event-card__dot {
+  color: rgba(226, 232, 240, 0.5);
+}
+
+.past-event-card__verified {
+  color: #22d3ee;
+  font-size: 0.66rem;
+}
+
+.past-event-card__stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.52rem;
+  min-height: 2.25rem;
+  max-height: 2.25rem;
+  overflow: hidden;
+  color: rgba(226, 232, 240, 0.82);
+  font-size: 0.64rem;
+  font-weight: 500;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.26rem;
+    white-space: nowrap;
+  }
+
+  i {
+    color: rgba(226, 232, 240, 0.86);
+    font-size: 0.72rem;
+  }
+
+  .past-event-card__star {
+    color: #fbbf24;
+  }
+}
+
+.past-event-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  width: fit-content;
+  margin-top: auto;
+  border: 0;
+  color: #d56cff;
+  background: transparent;
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+
+  &:hover {
+    color: #f0abfc;
+    transform: translateX(2px);
+  }
+
+  i {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 520px) {
+  :host {
+    height: 10.5rem;
+  }
+
+  .past-event-card {
+    border-radius: 0.9rem;
+  }
+
+  .past-event-card__top {
+    inset: 0.65rem 0.65rem auto;
+  }
+
+  .past-event-card__status {
+    min-height: 1.3rem;
+    padding: 0 0.55rem;
+    font-size: 0.64rem;
+  }
+
+  .past-event-card__date {
+    font-size: 0.64rem;
+  }
+
+  .past-event-card__content {
+    padding: 3.25rem 0.82rem 0.78rem;
+  }
+
+  .past-event-card__meta,
+  .past-event-card__stats {
+    font-size: 0.62rem;
+  }
+
+  .past-event-card__stats {
+    gap: 0.48rem;
+  }
+
+  .past-event-card__cta {
+    margin-top: 0.56rem;
+    font-size: 0.68rem;
+  }
+}
