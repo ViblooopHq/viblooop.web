@@ -13,7 +13,15 @@
       </div>
 
       <div class="vl-user-profile__identity">
-        <h1>{{ displayName }}</h1>
+        <h1>
+          <span>{{ displayName }}</span>
+          @if (isVerified) {
+            <span class="vl-user-profile__verified-badge" aria-label="Verified profile">
+              <span class="material-symbols-outlined" translate="no">verified</span>
+              <span>Verified</span>
+            </span>
+          }
+        </h1>
         <p class="vl-user-profile__handle">{{ handle }}</p>
         <p class="vl-user-profile__bio">{{ shortBio }}</p>
 
@@ -26,9 +34,46 @@
           }
         </div>
       </div>
+
+      @if (photoPreviewItems.length > 0) {
+        <section class="vl-user-profile__photo-strip" aria-label="Profile photos">
+          <header class="vl-user-profile__photo-strip-header">
+            <h2>
+              <span class="material-symbols-outlined" translate="no">photo_camera</span>
+              Photos
+            </h2>
+          </header>
+
+          <div class="vl-user-profile__photo-preview-list">
+            @for (photo of photoPreviewItems; track photo.url; let last = $last) {
+              <button
+                class="vl-user-profile__photo-preview"
+                type="button"
+                (click)="openProfilePhoto(photo.index)"
+                [attr.aria-label]="'Open profile photo ' + (photo.index + 1)">
+                <img [src]="photo.url" [alt]="photo.label || 'Profile photo'" />
+                @if (last && hiddenPhotoCount > 0) {
+                  <span>+{{ hiddenPhotoCount }}</span>
+                }
+              </button>
+            }
+          </div>
+        </section>
+      }
     </div>
 
-    @if (isCurrentUser) {
+    @if (profilePhotoGallery.length > 0) {
+      <vl-gallery
+        #profilePhotoViewer
+        class="vl-user-profile__profile-photo-gallery"
+        [images]="profilePhotoGallery"
+        [showHeader]="false"
+        [showGrid]="false"
+        [showArchiveAction]="false">
+      </vl-gallery>
+    }
+
+    @if (isCurrentUser && !isVerified) {
       <section
         class="vl-user-profile__photo-verification"
         [class.vl-user-profile__photo-verification--verified]="isVerified"
@@ -126,13 +171,13 @@
               </div>
             }
           }
-          @case ('Photos') {
+          @case ('Gallery') {
             @if (userGallery.length > 0) {
               <vl-gallery [images]="userGallery"></vl-gallery>
             } @else {
               <div class="vl-user-profile__empty">
                 <span class="material-symbols-outlined" translate="no">photo_library</span>
-                <p>No photos to display yet.</p>
+                <p>No event gallery to display yet.</p>
               </div>
             }
           }
@@ -158,6 +203,27 @@
 
     @if (userReviews.length > 0) {
       <vl-reviews [reviews]="userReviews"></vl-reviews>
+    }
+
+    @if (visibleSocialLinks.length > 0) {
+      <section class="vl-user-profile__footer-socials" aria-label="Social links">
+        <p>Find me on</p>
+        <div class="vl-user-profile__footer-social-list">
+          @for (link of visibleSocialLinks; track link.platform) {
+            <a
+              [href]="link.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              [attr.aria-label]="getSocialLabel(link.platform)">
+              <span class="vl-user-profile__footer-social-icon" [class]="'vl-user-profile__footer-social-icon vl-user-profile__footer-social-icon--' + link.platform">
+                <i [class]="getSocialIcon(link.platform)" aria-hidden="true"></i>
+              </span>
+              <span>{{ getSocialLabel(link.platform) }}</span>
+              <span class="material-symbols-outlined vl-user-profile__footer-social-check" translate="no">verified</span>
+            </a>
+          }
+        </div>
+      </section>
     }
   </section>
 

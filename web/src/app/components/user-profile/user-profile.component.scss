@@ -71,12 +71,32 @@
     min-width: 0;
 
     h1 {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.48rem;
       margin: 0;
-      font-size: clamp(1.85rem, 3.8vw, 2.55rem);
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
       line-height: 1.08;
-      font-weight: 900;
+      font-weight: 700;
       color: #ffffff;
       letter-spacing: 0;
+    }
+  }
+
+  &__verified-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22rem;
+    color: rgb(0, 149, 246);
+    font-size: clamp(0.8rem, 1.1vw, 1rem);
+    font-weight: 400;
+    line-height: 1;
+    text-shadow: 0 0 18px rgba(0, 149, 246, 0.32);
+
+    .material-symbols-outlined {
+      font-size: clamp(1.15rem, 1.55vw, 1.45rem);
+      font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24;
     }
   }
 
@@ -777,6 +797,173 @@
     }
   }
 
+  &__photo-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 0.85rem;
+    margin: clamp(1rem, 2.4vw, 1.35rem) calc(clamp(1.5rem, 4vw, 3rem) * -1) calc(clamp(1.5rem, 4vw, 3rem) * -1);
+    padding: 0.95rem clamp(1rem, 2.4vw, 1.4rem) 1rem;
+    border-top: 1px solid rgba(148, 163, 184, 0.13);
+    background: rgba(5, 9, 23, 0.36);
+  }
+
+  &__photo-strip-header {
+    h2 {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0;
+      color: #ffffff;
+      font-size: clamp(0.9rem, 1.5vw, 1.05rem);
+      font-weight: 900;
+
+      > .material-symbols-outlined {
+        display: grid;
+        place-items: center;
+        width: 1.75rem;
+        height: 1.75rem;
+        border-radius: 8px;
+        background: rgba(88, 28, 135, 0.45);
+        color: #c084fc;
+        font-size: 1rem;
+      }
+
+      span:not(.material-symbols-outlined) {
+        color: #aeb7dc;
+      }
+    }
+  }
+
+  &__photo-preview-list {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 6.25rem));
+    gap: 0.65rem;
+  }
+
+  &__photo-preview {
+    position: relative;
+    min-width: 0;
+    aspect-ratio: 1;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: 1px solid rgba(98, 116, 161, 0.42);
+    border-radius: 12px;
+    background: #0f172a;
+    cursor: pointer;
+
+    &:focus-visible {
+      outline: 2px solid #c084fc;
+      outline-offset: 3px;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    > span {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      background: rgba(3, 6, 15, 0.62);
+      color: #ffffff;
+      font-size: clamp(1.3rem, 2.4vw, 1.9rem);
+      font-weight: 900;
+      backdrop-filter: blur(5px);
+    }
+  }
+
+  &__profile-photo-gallery {
+    display: contents;
+  }
+
+  &__footer-socials {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 1.4rem;
+    padding: 0.7rem 0.85rem;
+    border: 1px solid rgba(148, 163, 184, 0.13);
+    border-radius: 12px;
+    background: rgba(7, 12, 29, 0.78);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 42px rgba(0, 0, 0, 0.22);
+
+    > p {
+      margin: 0;
+      color: #c4c9e7;
+      font-size: 0.72rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+  }
+
+  &__footer-social-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+
+    a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.48rem;
+      min-height: 2.2rem;
+      padding: 0 1.1rem;
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-decoration: none;
+      transition: color 0.2s ease;
+
+      + a {
+        border-left: 1px solid rgba(148, 163, 184, 0.16);
+      }
+
+      &:first-child {
+        padding-left: 0;
+      }
+
+      &:hover {
+        color: #d8b4fe;
+      }
+    }
+  }
+
+  &__footer-social-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 1.8rem;
+    height: 1.8rem;
+    border-radius: 999px;
+    color: #ffffff;
+    font-size: 0.92rem;
+
+    &--instagram {
+      background: radial-gradient(circle at 30% 105%, #fdf497 0 14%, #fd5949 36%, #d6249f 62%, #285aeb 100%);
+    }
+
+    &--linkedin {
+      background: #0a66c2;
+    }
+
+    &--twitter {
+      background: #111827;
+    }
+
+    &--youtube {
+      background: #ff0033;
+    }
+  }
+
+  &__footer-social-check {
+    color: #14b8a6;
+    font-size: 0.82rem;
+    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 20;
+  }
+
   &__stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -984,17 +1171,22 @@
   }
 
   &__grid {
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 
   &__item img {
-    height: 170px;
+    aspect-ratio: 1;
+    height: auto;
   }
+}
+
+::ng-deep .vl-user-profile__profile-photo-gallery .vl-gallery {
+  margin-top: 0;
 }
 
 @media (max-width: 768px) {
   .vl-user-profile-container {
-    padding: 4.35rem 0.65rem 7.5rem;
+    padding: 4.35rem 0.65rem calc(4.8rem + env(safe-area-inset-bottom));
   }
 
   .vl-user-profile {
@@ -1024,7 +1216,8 @@
 
     &__identity {
       h1 {
-        font-size: 1.78rem;
+        font-size: 1rem;
+        font-weight: 500;
         line-height: 1.02;
       }
     }
@@ -1072,6 +1265,31 @@
       width: 100%;
       min-height: 42px;
       font-size: 0.82rem;
+    }
+
+    &__photo-strip {
+      margin-top: 1rem;
+      margin-right: -1rem;
+      margin-bottom: -1rem;
+      margin-left: -1rem;
+      padding: 0.78rem 0.86rem 0.86rem;
+    }
+
+    &__photo-preview-list {
+      display: flex;
+      gap: 0.55rem;
+      overflow-x: auto;
+      padding-bottom: 0.1rem;
+      scrollbar-width: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+
+    &__photo-preview {
+      flex: 0 0 4.9rem;
+      aspect-ratio: 1;
     }
 
     &__selfie-camera {
@@ -1222,6 +1440,7 @@
 @media (max-width: 440px) {
   .vl-user-profile-container {
     padding-inline: 0.55rem;
+    padding-bottom: calc(4.45rem + env(safe-area-inset-bottom));
   }
 
   .vl-user-profile {
@@ -1238,7 +1457,8 @@
 
     &__identity {
       h1 {
-        font-size: 1.45rem;
+        font-size: 1rem;
+        font-weight: 500;
       }
     }
 
@@ -1270,6 +1490,17 @@
 
     &__photo-verification-copy small {
       font-size: 0.72rem;
+    }
+
+    &__photo-strip {
+      margin-right: -0.86rem;
+      margin-bottom: -0.86rem;
+      margin-left: -0.86rem;
+      padding-inline: 0.78rem;
+    }
+
+    &__photo-preview {
+      flex-basis: 4.75rem;
     }
 
     &__stats {

@@ -31,6 +31,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   isOtpSent = signal(false);
   isOtpSending = signal(false);
+  otpError = signal('');
   userEmail = '';
   id = "tsparticles";
   private readonly particleIcons = [
@@ -169,6 +170,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
   sendOtp() {
     if (this.loginForm.valid) {
       this.userEmail = this.loginForm.value.email ?? '';
+      this.otpError.set('');
+      this.isOtpSent.set(true);
 
       this.isOtpSending.set(true);
 
@@ -176,10 +179,13 @@ export class LoginComponent implements OnInit, AfterViewInit {
         finalize(() => this.isOtpSending.set(false))
       ).subscribe({
         next: (res) => {
-          this.isOtpSent.set(true);
+          this.otpError.set('');
         },
         error: (err) => {
           console.error(err);
+          this.isOtpSent.set(false);
+          this.otpError.set('Could not send OTP. Check that your phone can reach the API server and try again.');
+          this.cdr.markForCheck();
         }
       })
 
@@ -190,6 +196,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
 
   handleBack() {
     this.isOtpSent.set(false);
+    this.otpError.set('');
     this.cdr.markForCheck();
   }
 }

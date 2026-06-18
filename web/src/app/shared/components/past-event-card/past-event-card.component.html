@@ -1,0 +1,60 @@
+<article class="past-event-card">
+  <img
+    class="past-event-card__image"
+    [src]="(config.image | imageUrl) || 'assets/images/default-cover.jpg'"
+    [alt]="config.title || 'Past event image'">
+
+  <div class="past-event-card__scrim"></div>
+
+  <div class="past-event-card__top">
+    <span class="past-event-card__status">
+      <i class="fa-solid fa-check"></i>
+      {{ statusLabel }}
+    </span>
+
+    <time class="past-event-card__date" [attr.datetime]="config.eventDate">
+      {{ config.eventDate ? (config.eventDate | date:'MMM d, y') : 'Date TBA' }}
+    </time>
+  </div>
+
+  <div class="past-event-card__content">
+    <h3>{{ config.title || 'Past Event' }}</h3>
+
+    <p class="past-event-card__meta">
+      <span>{{ locationLabel }}</span>
+      @if (config.hostName) {
+        <span class="past-event-card__dot">•</span>
+        <span>Hosted by {{ config.hostName }}</span>
+        @if (config.hostVerified) {
+          <i class="fa-solid fa-certificate past-event-card__verified" aria-label="Verified host"></i>
+        }
+      }
+    </p>
+
+    <div class="past-event-card__stats" aria-label="Past event summary">
+      <span>
+        <i class="fa-solid fa-users"></i>
+        {{ config.attendedCount || 0 }} attended
+      </span>
+      @if (hasReviews) {
+        <span>
+          <i class="fa-solid fa-star past-event-card__star"></i>
+          {{ (config.rating || 0) | number:'1.1-1' }}
+        </span>
+        <span>
+          <i class="fa-regular fa-comment-dots"></i>
+          {{ config.reviewCount }} reviews
+        </span>
+      }
+      <span>
+        <i class="fa-regular fa-image"></i>
+        {{ config.photoCount || 0 }} photos
+      </span>
+    </div>
+
+    <button class="past-event-card__cta" type="button" (click)="onViewMemories()">
+      <span>{{ ctaLabel }}</span>
+      <i class="fa-solid fa-arrow-right"></i>
+    </button>
+  </div>
+</article>

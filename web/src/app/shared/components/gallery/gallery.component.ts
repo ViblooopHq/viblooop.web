@@ -14,6 +14,9 @@ export interface GalleryImage {
 })
 export class GalleryComponent {
   @Input() images: GalleryImage[] = [];  // Images will come from events API
+  @Input() showHeader = true;
+  @Input() showGrid = true;
+  @Input() showArchiveAction = true;
 
   selectedImage: GalleryImage | null = null;
   currentIndex: number = -1;
@@ -30,6 +33,13 @@ export class GalleryComponent {
     this.selectedImage = img;
   }
 
+  openAtIndex(index: number) {
+    if (index < 0 || index >= this.images.length) return;
+
+    this.currentIndex = index;
+    this.selectedImage = this.images[index];
+  }
+
   closePreview() {
     this.selectedImage = null;
     this.currentIndex = -1;
@@ -42,7 +52,7 @@ export class GalleryComponent {
 
   // Navigate Left
   showPrevImage() {
-    if (this.isDesktop && this.currentIndex > 0) {
+    if (this.currentIndex > 0) {
       this.currentIndex--;
       this.selectedImage = this.images[this.currentIndex];
     }
@@ -50,7 +60,7 @@ export class GalleryComponent {
 
   // Navigate Right
   showNextImage() {
-    if (this.isDesktop && this.currentIndex < this.images.length - 1) {
+    if (this.currentIndex < this.images.length - 1) {
       this.currentIndex++;
       this.selectedImage = this.images[this.currentIndex];
     }

@@ -26,11 +26,18 @@ const UserSchema = new mongoose.Schema(
     password: { type: String },
     profileImage: { type: String },
     profileBanner: { type: String },
+    profilePhotos: [{ type: String }],
     bio: { type: String },
     location: { type: String },
     dob: { type: Date },
     pronoun: { type: String },
     gender: { type: String },
+    socialLinks: [
+      {
+        platform: { type: String, required: true },
+        url: { type: String, required: true },
+      }
+    ],
     averageRating: { type: Number, default: 0 },
     totalRatings: { type: Number, default: 0 },
     interests: [userInterestSchema],

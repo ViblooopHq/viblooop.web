@@ -42,6 +42,32 @@
           </button>
         }
       </section>
+
+      <div class="vl-edit-profile__field vl-edit-profile__profile-photos">
+        <span>Profile Photos</span>
+        <div class="vl-edit-profile__photo-uploader">
+          <label class="vl-edit-profile__photo-add" [class.vl-edit-profile__photo-add--disabled]="profilePhotos.length >= maxProfilePhotos || isProfilePhotosSaving">
+            <span class="material-symbols-outlined" translate="no">add_a_photo</span>
+            <strong>{{ isProfilePhotosSaving ? 'Saving...' : 'Add photos' }}</strong>
+            <small>{{ profilePhotos.length }}/{{ maxProfilePhotos }}</small>
+            <input
+              type="file"
+              accept="image/*,.heic,.heif"
+              multiple
+              [disabled]="profilePhotos.length >= maxProfilePhotos || isProfilePhotosSaving"
+              (change)="onProfilePhotosSelected($event)" />
+          </label>
+
+          @for (photo of profilePhotos; track photo.id) {
+            <figure class="vl-edit-profile__photo-thumb">
+              <img [src]="photo.url" alt="Profile photo" />
+              <button type="button" aria-label="Remove profile photo" [disabled]="isProfilePhotosSaving" (click)="removeProfilePhoto(photo)">
+                <span class="material-symbols-outlined" translate="no">close</span>
+              </button>
+            </figure>
+          }
+        </div>
+      </div>
     </section>
 
     <section class="vl-edit-profile__fields">
@@ -132,18 +158,36 @@
       <div class="vl-edit-profile__field">
         <span>Social Links</span>
         <div class="vl-edit-profile__socials">
-          <button type="button" aria-label="Instagram">
-            <i class="fa-brands fa-instagram"></i>
+          @for (platform of socialPlatforms; track platform.key) {
+            <button
+              type="button"
+              [attr.aria-label]="platform.label"
+              [class.vl-edit-profile__social-button--active]="selectedSocialPlatform === platform.key"
+              [class.vl-edit-profile__social-button--linked]="hasSocialLink(platform.key)"
+              (click)="selectSocialPlatform(platform)">
+              <i [class]="platform.icon"></i>
+            </button>
+          }
+        </div>
+
+        <div class="vl-edit-profile__social-editor">
+          <span class="vl-edit-profile__social-editor-icon">
+            <i [class]="selectedSocial.icon"></i>
+          </span>
+          <input
+            type="text"
+            [placeholder]="selectedSocial.placeholder"
+            [(ngModel)]="socialLinkDraft"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onSocialLinkDraftChanged($event)" />
+          <button type="button" class="vl-edit-profile__social-save" (click)="saveSocialLink()">
+            Save
           </button>
-          <button type="button" aria-label="Twitter">
-            <i class="fa-brands fa-twitter"></i>
-          </button>
-          <button type="button" aria-label="YouTube">
-            <i class="fa-brands fa-youtube"></i>
-          </button>
-          <button type="button" class="vl-edit-profile__social-add">
-            <span>+</span> Add
-          </button>
+          @if (hasSocialLink(selectedSocialPlatform)) {
+            <button type="button" class="vl-edit-profile__social-remove" aria-label="Remove social link" (click)="removeSocialLink()">
+              <span class="material-symbols-outlined" translate="no">close</span>
+            </button>
+          }
         </div>
       </div>
 

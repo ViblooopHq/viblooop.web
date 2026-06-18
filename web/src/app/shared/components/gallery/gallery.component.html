@@ -1,25 +1,30 @@
 <div class="vl-gallery">
-  <div class="vl-gallery__header">
-    <h3>Gallery</h3>
-  </div>
-
-  <div class="vl-gallery__grid">
-    @for(img of images; track img) {
-    <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
-      <img [src]="img.url" alt="gallery" (click)="onImageSelect(img)" />
-
-      <div class="vl-gallery__overlay">
-        <button (click)="toggleArchive(img)">
-          {{ img.archived ? 'Unarchive' : 'Archive' }}
-        </button>
-      </div>
+  @if(showHeader) {
+    <div class="vl-gallery__header">
+      <h3>Gallery</h3>
     </div>
-    }
-  </div>
+  }
+
+  @if(showGrid) {
+    <div class="vl-gallery__grid">
+      @for(img of images; track img) {
+      <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
+        <img [src]="img.url" alt="gallery" (click)="onImageSelect(img)" />
+
+        @if(showArchiveAction) {
+          <div class="vl-gallery__overlay">
+            <button (click)="toggleArchive(img)">
+              {{ img.archived ? 'Unarchive' : 'Archive' }}
+            </button>
+          </div>
+        }
+      </div>
+      }
+    </div>
+  }
 
   <!-- Modal Preview -->
-  <!-- Modal Preview (Desktop Only) -->
-@if(selectedImage && isDesktop) {
+@if(selectedImage) {
     <div class="vl-gallery__modal">
       <div class="vl-gallery__modal-content">
         <!-- Close Button -->

@@ -84,6 +84,11 @@
     }
   }
 
+  &__profile-photos {
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+
   &__verification {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;
@@ -821,6 +826,96 @@
     gap: 0.55rem;
   }
 
+  &__photo-uploader {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.45rem;
+  }
+
+  &__photo-add,
+  &__photo-thumb {
+    aspect-ratio: 1;
+    min-width: 0;
+    overflow: hidden;
+    border-radius: 10px;
+  }
+
+  &__photo-add {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: 0.22rem;
+    border: 1px dashed rgba(168, 85, 247, 0.62);
+    background: rgba(88, 28, 135, 0.18);
+    color: #d8b4fe;
+    text-align: center;
+    cursor: pointer;
+
+    input {
+      display: none;
+    }
+
+    .material-symbols-outlined {
+      font-size: 1.1rem;
+    }
+
+    strong {
+      color: #f8fafc;
+      font-size: 0.64rem;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    small {
+      color: #aeb7dc;
+      font-size: 0.58rem;
+      font-weight: 750;
+    }
+
+    &--disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+  }
+
+  &__photo-thumb {
+    position: relative;
+    margin: 0;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(8, 13, 28, 0.86);
+
+    img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    button {
+      position: absolute;
+      top: 0.35rem;
+      right: 0.35rem;
+      display: grid;
+      place-items: center;
+      width: 1.6rem;
+      height: 1.6rem;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(3, 6, 15, 0.78);
+      color: #ffffff;
+      cursor: pointer;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+      }
+
+      .material-symbols-outlined {
+        font-size: 1rem;
+      }
+    }
+  }
+
   &__chip,
   &__socials button {
     display: inline-flex;
@@ -1001,10 +1096,75 @@
       font-size: 1rem;
     }
 
-    .vl-edit-profile__social-add {
-      width: auto;
-      padding: 0 0.85rem;
-      color: #c084fc;
+    .vl-edit-profile__social-button--active {
+      border-color: rgba(192, 132, 252, 0.72);
+      background: rgba(88, 28, 135, 0.42);
+      color: #d8b4fe;
+    }
+
+    .vl-edit-profile__social-button--linked {
+      box-shadow: inset 0 -3px 0 rgba(34, 197, 94, 0.82);
+    }
+  }
+
+  &__social-editor {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.65rem;
+
+    input {
+      width: 100%;
+      min-height: 40px;
+      padding: 0 0.75rem;
+      border: 1px solid rgba(148, 163, 184, 0.16);
+      border-radius: 10px;
+      background: rgba(8, 13, 28, 0.88);
+      color: #f8fafc;
+      font-size: 0.8rem;
+      outline: none;
+
+      &:focus {
+        border-color: rgba(168, 85, 247, 0.58);
+        box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.12);
+      }
+    }
+  }
+
+  &__social-editor-icon,
+  &__social-remove,
+  &__social-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 10px;
+    background: rgba(20, 28, 48, 0.76);
+    color: #ffffff;
+  }
+
+  &__social-editor-icon {
+    width: 42px;
+  }
+
+  &__social-save {
+    padding: 0 0.85rem;
+    border-color: transparent;
+    background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+    font-size: 0.78rem;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  &__social-remove {
+    width: 40px;
+    color: #fecdd3;
+    cursor: pointer;
+
+    .material-symbols-outlined {
+      font-size: 1.1rem;
     }
   }
 
@@ -1257,6 +1417,10 @@
       grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
+    &__photo-uploader {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
     &__verification {
       grid-template-columns: auto minmax(0, 1fr);
     }
@@ -1349,6 +1513,10 @@
 
 @media (max-width: 430px) {
   .vl-edit-profile {
+    &__photo-uploader {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     &__gender-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }

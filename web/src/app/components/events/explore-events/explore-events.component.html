@@ -6,22 +6,60 @@
       [description]="'Find your vibe. Join the moment. Enjoy life.'">
     </vl-section-headers>
 
-    <div class="search-bar surface-container-lowest ghost-border">
-      <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
-      <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
-      <div class="location-pill ghost-border">
-        <i class="fa-solid fa-location-dot"></i>
-        <span>Near You</span>
+    <div class="explore-controls">
+      <div class="search-bar surface-container-lowest ghost-border">
+        <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
+        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
+        <div class="location-pill ghost-border">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>Near You</span>
+        </div>
       </div>
+
+      <section class="filter-tags-scroll" aria-label="Quick filters">
+        <div class="filter-tags">
+          <button *ngFor="let filter of filters; let i = index" class="filter-tag"
+            [class.active]="activeFilterId === filter.id" (click)="setActiveFilter(filter.id)">
+            {{filter.label}}
+          </button>
+        </div>
+      </section>
     </div>
   </header>
 
-  <!-- Filters/Pills -->
-  <section class="filter-tags-scroll">
-    <div class="filter-tags">
-      <button *ngFor="let filter of filters; let i = index" class="filter-tag"
-        [class.active]="activeFilterId === filter.id" (click)="setActiveFilter(filter.id)">
-        {{filter.label}}
+  <section class="featured-vibes-section mb-4 sm:mb-12">
+    <h2 class="section-title">
+      <i class="fa-solid fa-wave-square"></i>
+      <span>Explore by Vibe</span>
+    </h2>
+
+    <div class="featured-vibes-grid">
+      <button
+        class="featured-vibe-card"
+        type="button"
+        *ngFor="let vibe of featuredVibes"
+        [class.active]="isFeaturedVibeActive(vibe)"
+        [ngClass]="'featured-vibe-card--' + vibe.tone"
+        (click)="setFeaturedVibe(vibe)">
+        <img [src]="vibe.cover" [alt]="vibe.label" class="featured-vibe-card__image">
+        <span class="featured-vibe-card__shade"></span>
+
+        <span class="featured-vibe-card__icon">
+          <i [class]="vibe.icon"></i>
+        </span>
+
+        <span class="featured-vibe-card__content">
+          <strong>{{ vibe.label }}</strong>
+          <span>{{ vibe.description }}</span>
+          <small>
+            <i class="fa-solid fa-user-group"></i>
+            {{ getFeaturedVibeEventCount(vibe) }} {{ getFeaturedVibeEventCount(vibe) === 1 ? 'event' : 'events' }}
+          </small>
+        </span>
+
+        <span class="featured-vibe-card__arrow">
+          <i class="fa-solid fa-chevron-right"></i>
+        </span>
       </button>
     </div>
   </section>
@@ -47,7 +85,7 @@
   <!-- Trending Events -->
   <section class="trending-section mb-4 sm:mb-12">
     <div class="section-header">
-      <h2 class="section-title">Recomended</h2>
+      <h2 class="section-title">Upcoming Vibes</h2>
     </div>
     <div class="trending-scroll" [class.single-result]="trendingEvents.length === 1"
       [class.empty-result]="trendingEvents.length === 0">
@@ -72,6 +110,24 @@
         <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
       </div>
       <vl-empty-state *ngIf="justForYouEvents.length === 0" subject="events" context="near you"
+        contextPrefix="" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+    </div>
+  </section>
+
+  <section class="past-vibes-section">
+    <div class="section-header">
+      <h2 class="section-title">Past Vibes</h2>
+    </div>
+
+    <div class="past-vibes-grid" [class.empty-result]="pastEvents.length === 0">
+      <vl-past-event-card
+        *ngFor="let event of pastEvents"
+        [config]="getPastEventCardConfig(event)"
+        (viewMemories)="viewPastEvent(event)">
+      </vl-past-event-card>
+
+      <vl-empty-state *ngIf="pastEvents.length === 0" subject="past vibes" context="yet"
         contextPrefix="" (exploreAll)="resetFilters()">
       </vl-empty-state>
     </div>

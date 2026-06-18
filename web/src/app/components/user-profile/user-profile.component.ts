@@ -1,12 +1,18 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GalleryComponent } from '../../shared/components/gallery/gallery.component';
+import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { EventCardComponent } from '../../shared/components/event-card/event-card.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { SelfieVerificationComponent } from './selfie-verification/selfie-verification.component';
+
+type SocialLink = {
+  platform: string;
+  url: string;
+};
+
 @Component({
   selector: 'vl-user-profile',
   imports: [GalleryComponent, CommonModule, EventCardComponent, ReviewsComponent, SelfieVerificationComponent],
@@ -14,12 +20,14 @@ import { SelfieVerificationComponent } from './selfie-verification/selfie-verifi
   styleUrl: './user-profile.component.scss'
 })
 export class UserProfileComponent implements OnInit {
+  @ViewChild('profilePhotoViewer') profilePhotoViewer?: GalleryComponent;
+
   router = inject(RouteService);
   mainService = inject(SharedService);
   authSerivice = inject(AuthService);
   activeTab: string = 'Joined';
   userProfile: any;
-  tabs: string[] = ['Joined', 'Hosted', 'Photos'];
+  tabs: string[] = ['Joined', 'Hosted', 'Gallery'];
   isCurrentUser: boolean = false;
   userId: string = '';
   attendedEvents: any[] = [];
@@ -66,7 +74,9 @@ export class UserProfileComponent implements OnInit {
     return {
       ...profile,
       profileImage: this.mainService.getImageUrl(profile.profileImage || '') || this.defaultProfileImage,
-      profileBanner: this.mainService.getImageUrl(profile.profileBanner || '') || 'assets/images/default-cover.jpg'
+      profileBanner: this.mainService.getImageUrl(profile.profileBanner || '') || 'assets/images/default-cover.jpg',
+      profilePhotos: this.normalizeProfilePhotos(profile.profilePhotos),
+      socialLinks: this.normalizeSocialLinks(profile.socialLinks),
     };
   }
 
@@ -94,7 +104,7 @@ export class UserProfileComponent implements OnInit {
         return 'event_available';
       case 'Hosted':
         return 'edit_calendar';
-      case 'Photos':
+      case 'Gallery':
         return 'photo_library';
       default:
         return '';
@@ -158,8 +168,70 @@ export class UserProfileComponent implements OnInit {
     return this.showAllHostedEvents ? this.hostedEvents : this.hostedPreviewEvents;
   }
 
+  get profilePhotoUrls(): string[] {
+    return this.normalizeProfilePhotos(this.userProfile?.profilePhotos)
+      .map((url: string) => this.mainService.getImageUrl(url) || url);
+  }
+
+  get photoPreviewItems(): any[] {
+    return this.profilePhotoUrls.slice(0, 6).map((url, index) => ({
+      url,
+      index,
+      label: this.displayName,
+    }));
+  }
+
+  get profilePhotoGallery(): GalleryImage[] {
+    return this.profilePhotoUrls.map((url, index) => ({
+      url,
+      title: `${this.displayName} photo ${index + 1}`,
+    }));
+  }
+
+  get hiddenPhotoCount(): number {
+    return Math.max(this.profilePhotoUrls.length - this.photoPreviewItems.length, 0);
+  }
+
+  openProfilePhoto(index: number) {
+    this.profilePhotoViewer?.openAtIndex(index);
+  }
+
   get isVerified(): boolean {
     return Boolean(this.userProfile?.verified || this.userProfile?.isVerified || this.userProfile?.isPhoneVerified || this.userProfile?.isEmailVerified);
+  }
+
+  get visibleSocialLinks(): SocialLink[] {
+    return Array.isArray(this.userProfile?.socialLinks) ? this.userProfile.socialLinks : [];
+  }
+
+  getSocialIcon(platform: string): string {
+    switch ((platform || '').toLowerCase()) {
+      case 'instagram':
+        return 'fa-brands fa-instagram';
+      case 'twitter':
+        return 'fa-brands fa-twitter';
+      case 'youtube':
+        return 'fa-brands fa-youtube';
+      case 'linkedin':
+        return 'fa-brands fa-linkedin-in';
+      default:
+        return 'fa-solid fa-link';
+    }
+  }
+
+  getSocialLabel(platform: string): string {
+    switch ((platform || '').toLowerCase()) {
+      case 'instagram':
+        return 'Instagram';
+      case 'twitter':
+        return 'Twitter';
+      case 'youtube':
+        return 'YouTube';
+      case 'linkedin':
+        return 'LinkedIn';
+      default:
+        return 'Profile link';
+    }
   }
 
   getInterestLabel(interest: any): string {
@@ -184,6 +256,25 @@ export class UserProfileComponent implements OnInit {
 
   getInterestTone(index: number): string {
     return ['teal', 'green', 'blue', 'amber', 'purple'][index % 5];
+  }
+
+  normalizeSocialLinks(links: any[]): SocialLink[] {
+    if (!Array.isArray(links)) return [];
+
+    return links
+      .map((link: any) => ({
+        platform: String(link?.platform || '').trim().toLowerCase(),
+        url: String(link?.url || '').trim(),
+      }))
+      .filter((link: SocialLink) => link.platform && /^https?:\/\/\S+\.\S+$/i.test(link.url));
+  }
+
+  normalizeProfilePhotos(photos: any[]): string[] {
+    if (!Array.isArray(photos)) return [];
+
+    return photos
+      .map((photo: any) => String(photo || '').trim())
+      .filter(Boolean);
   }
 
   showAllJoined() {

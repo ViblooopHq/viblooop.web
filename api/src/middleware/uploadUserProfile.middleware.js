@@ -11,7 +11,7 @@ if (!fs.existsSync(userProfilePath)) {
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    if (["profileImage", "profileBanner", "selfieImage"].includes(file.fieldname)) {
+    if (["profileImage", "profileBanner", "selfieImage", "profilePhotos"].includes(file.fieldname)) {
       cb(null, userProfilePath);
     } else {
       cb(new Error("Invalid field name"), null);
@@ -47,4 +47,5 @@ export const uploadProfileImages = multer({
   { name: "profileImage", maxCount: 1 },
   { name: "profileBanner", maxCount: 1 },
   { name: "selfieImage", maxCount: 1 },
+  { name: "profilePhotos", maxCount: 12 },
 ]);

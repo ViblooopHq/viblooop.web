@@ -4,11 +4,12 @@
 :host {
   display: block;
   position: relative;
-  min-height: 100vh;
+  min-height: 100dvh;
   background-color: #05050f;
   /* Deep dark space background */
   color: #ffffff;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 #tsparticles {
@@ -38,6 +39,8 @@
   position: relative;
   z-index: 1;
   width: 100%;
+  min-height: 100dvh;
+  overflow-y: auto;
 }
 
 .login-layout-container {
@@ -314,6 +317,14 @@
         opacity: 0.9;
       }
     }
+  }
+
+  .form-error {
+    margin: -0.35rem 0 0;
+    color: #fca5a5;
+    font-size: 0.78rem;
+    line-height: 1.35;
+    text-align: center;
   }
 
   .caption-text {

@@ -1,12 +1,15 @@
+const apiHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+const apiServerUrl = `http://${apiHost || 'localhost'}:8000`;
+
 export const Environment = {
   production: true,
   version: require('../package.json').version,
 
   // API URLs
-  serverUrl: 'http://localhost:8000',
-  apiBaseUrl: 'http://localhost:8000/api',
-  authBaseUrl: 'http://localhost:8000/auth',
-  imageBaseUrl: 'http://localhost:8000/',
+  serverUrl: apiServerUrl,
+  apiBaseUrl: `${apiServerUrl}/api`,
+  authBaseUrl: `${apiServerUrl}/auth`,
+  imageBaseUrl: `${apiServerUrl}/`,
 
   // Google Maps
   googleMapKey: 'AIzaSyBQKpsYqQb8hYmUsotg-7IDHcEW-hau_xg',

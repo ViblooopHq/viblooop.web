@@ -39,10 +39,31 @@ const morganMiddleware = morgan(
   { stream }
 );
 
+const configuredFrontendOrigins = (process.env.FRONTEND_URL || "http://localhost:4200")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const localDevOriginPattern = /^https?:\/\/(localhost|127\.0\.0\.1|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3})(:\d+)?$/;
+
+const corsOrigin = (origin, callback) => {
+  if (!origin || configuredFrontendOrigins.includes(origin)) {
+    callback(null, true);
+    return;
+  }
+
+  if (process.env.NODE_ENV !== 'production' && localDevOriginPattern.test(origin)) {
+    callback(null, true);
+    return;
+  }
+
+  callback(new Error(`Origin ${origin} is not allowed by CORS`));
+};
+
 // Middlewares
 app.use(morganMiddleware);
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:4200",
+  origin: corsOrigin,
   credentials: true
 }));
 app.use(helmet());

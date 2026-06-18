@@ -7,6 +7,27 @@ import { UserService } from '../../../shared/services/user/user.service';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 import { SelfieVerificationComponent } from '../selfie-verification/selfie-verification.component';
 
+type SocialPlatform = {
+  key: string;
+  label: string;
+  icon: string;
+  placeholder: string;
+  baseUrl: string;
+  usernamePattern: RegExp;
+};
+
+type SocialLink = {
+  platform: string;
+  url: string;
+};
+
+type ProfilePhotoItem = {
+  id: string;
+  url: string;
+  path?: string;
+  file?: File;
+};
+
 @Component({
   selector: 'vl-edit-profile',
   templateUrl: './edit-profile2.component.html',
@@ -24,13 +45,25 @@ export class EditProfile2Component implements OnInit {
   defaultProfile = 'assets/images/default-profile.png';
   profilePreview: string | ArrayBuffer | null = null;
   profilePhotoFile: File | null = null;
+  profilePhotos: ProfilePhotoItem[] = [];
   isSelfieVerificationOpen = false;
   isVerified = false;
   isSaving = false;
+  isProfilePhotosSaving = false;
   saveError = '';
   showLogoutDialog = false;
   showDeleteDialog = false;
+  selectedSocialPlatform = 'instagram';
+  socialLinkDraft = '';
+  socialLinks: SocialLink[] = [];
   readonly maxInterests = 8;
+  readonly maxProfilePhotos = 12;
+  readonly socialPlatforms: SocialPlatform[] = [
+    { key: 'instagram', label: 'Instagram', icon: 'fa-brands fa-instagram', placeholder: '@username or profile link', baseUrl: 'https://instagram.com/', usernamePattern: /^[a-zA-Z0-9._]{1,30}$/ },
+    { key: 'twitter', label: 'Twitter', icon: 'fa-brands fa-twitter', placeholder: '@username or profile link', baseUrl: 'https://x.com/', usernamePattern: /^[a-zA-Z0-9_]{1,15}$/ },
+    { key: 'linkedin', label: 'LinkedIn', icon: 'fa-brands fa-linkedin-in', placeholder: 'username or profile link', baseUrl: 'https://linkedin.com/in/', usernamePattern: /^[a-zA-Z0-9-]{3,100}$/ },
+    { key: 'youtube', label: 'YouTube', icon: 'fa-brands fa-youtube', placeholder: '@channel or channel link', baseUrl: 'https://youtube.com/', usernamePattern: /^@?[a-zA-Z0-9._-]{2,100}$/ },
+  ];
   readonly genderOptions = [
     { value: 'Woman', label: 'Woman', icon: 'fa-solid fa-venus' },
     { value: 'Man', label: 'Man', icon: 'fa-solid fa-mars' },
@@ -67,11 +100,19 @@ export class EditProfile2Component implements OnInit {
     return Boolean(this.profileForm?.dirty && !this.isSaving);
   }
 
+  get selectedSocial(): SocialPlatform {
+    return this.socialPlatforms.find((platform) => platform.key === this.selectedSocialPlatform) || this.socialPlatforms[0];
+  }
+
   saveProfile(): void {
     this.profileForm.markAllAsTouched();
     this.saveError = '';
 
     if (!this.canSaveProfile || this.profileForm.invalid) {
+      return;
+    }
+
+    if (!this.commitSocialLinkDraft(false)) {
       return;
     }
 
@@ -177,6 +218,57 @@ export class EditProfile2Component implements OnInit {
     reader.readAsDataURL(finalFile);
   }
 
+  async onProfilePhotosSelected(event: Event): Promise<void> {
+    const input = event.target as HTMLInputElement;
+    const files = Array.from(input.files || []);
+    input.value = '';
+    if (!files.length || this.isProfilePhotosSaving) return;
+
+    this.saveError = '';
+    const remainingSlots = this.maxProfilePhotos - this.profilePhotos.length;
+    if (remainingSlots <= 0) {
+      this.saveError = `You can upload up to ${this.maxProfilePhotos} profile photos.`;
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('existingProfilePhotos', JSON.stringify(this.getExistingProfilePhotoPaths()));
+    let uploadedFileCount = 0;
+
+    for (const file of files.slice(0, remainingSlots)) {
+      try {
+        formData.append('profilePhotos', await this.sharedService.convertHeicToJpg(file));
+        uploadedFileCount++;
+      } catch {
+        this.saveError = 'Unable to convert one of the HEIC photos. Please try another image.';
+      }
+    }
+
+    if (files.length > remainingSlots) {
+      this.saveError = `Only ${remainingSlots} more photo${remainingSlots === 1 ? '' : 's'} can be added.`;
+    }
+
+    if (!uploadedFileCount) return;
+
+    this.syncProfilePhotos(formData);
+  }
+
+  removeProfilePhoto(photo: ProfilePhotoItem): void {
+    if (this.isProfilePhotosSaving) return;
+
+    if (!photo.path) {
+      this.profilePhotos = this.profilePhotos.filter((item) => item.id !== photo.id);
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('existingProfilePhotos', JSON.stringify(
+      this.getExistingProfilePhotoPaths().filter((path) => path !== photo.path)
+    ));
+
+    this.syncProfilePhotos(formData);
+  }
+
   closeSelfieVerification(): void {
     this.isSelfieVerificationOpen = false;
   }
@@ -219,6 +311,36 @@ export class EditProfile2Component implements OnInit {
     genderControl?.markAsDirty();
   }
 
+  selectSocialPlatform(platform: SocialPlatform): void {
+    this.selectedSocialPlatform = platform.key;
+    this.socialLinkDraft = this.getSocialLink(platform.key)?.url || '';
+    this.saveError = '';
+  }
+
+  saveSocialLink(): void {
+    this.commitSocialLinkDraft(true);
+  }
+
+  removeSocialLink(): void {
+    this.socialLinks = this.socialLinks.filter((link) => link.platform !== this.selectedSocialPlatform);
+    this.socialLinkDraft = '';
+    this.profileForm.markAsDirty();
+    this.saveError = '';
+  }
+
+  hasSocialLink(platformKey: string): boolean {
+    return Boolean(this.getSocialLink(platformKey));
+  }
+
+  getSocialLink(platformKey: string): SocialLink | undefined {
+    return this.socialLinks.find((link) => link.platform === platformKey);
+  }
+
+  onSocialLinkDraftChanged(value: string): void {
+    this.socialLinkDraft = value;
+    this.profileForm.markAsDirty();
+  }
+
   openDatePicker(input: HTMLInputElement): void {
     input.focus();
 
@@ -252,6 +374,9 @@ export class EditProfile2Component implements OnInit {
         this.selectedInterestLabels = Array.isArray(data.interests)
           ? data.interests.map((interest: any) => typeof interest === 'string' ? interest : interest?.label).filter(Boolean)
           : [];
+        this.socialLinks = this.normalizeSocialLinks(data.socialLinks);
+        this.selectSocialPlatform(this.selectedSocial);
+        this.profilePhotos = this.normalizeProfilePhotos(data.profilePhotos);
         this.applySelectedInterests();
 
         this.profilePreview = this.sharedService.getImageUrl(data.profileImage) || this.defaultProfile;
@@ -296,12 +421,64 @@ export class EditProfile2Component implements OnInit {
     formData.append('gender', formValue.gender || '');
     formData.append('location', formValue.location || '');
     formData.append('interests', JSON.stringify(this.buildInterestsPayload()));
+    formData.append('socialLinks', JSON.stringify(this.normalizeSocialLinks(this.socialLinks)));
+    formData.append('existingProfilePhotos', JSON.stringify(
+      this.profilePhotos
+        .filter((photo) => photo.path)
+        .map((photo) => photo.path)
+    ));
 
     if (this.profilePhotoFile) {
       formData.append('profileImage', this.profilePhotoFile);
     }
 
+    this.profilePhotos
+      .filter((photo) => photo.file)
+      .forEach((photo) => formData.append('profilePhotos', photo.file as File));
+
     return formData;
+  }
+
+  private refreshProfilePhotos(): void {
+    const userId = this.authService.userDetails$.value?.id || this.authService.userDetails?.id || '';
+
+    this.userService.getUserProfile(userId).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200) return;
+        this.profilePhotos = this.normalizeProfilePhotos(res.data?.profilePhotos);
+      },
+      error: (err) => {
+        this.saveError = err?.error?.message || err?.message || 'Unable to refresh profile photos.';
+      }
+    });
+  }
+
+  private syncProfilePhotos(formData: FormData): void {
+    this.isProfilePhotosSaving = true;
+    this.saveError = '';
+
+    this.userService.updateUserProfile(formData).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          this.saveError = res?.message || 'Unable to update profile photos.';
+          return;
+        }
+
+        this.refreshProfilePhotos();
+      },
+      error: (err) => {
+        this.saveError = err?.error?.message || err?.message || 'Unable to update profile photos.';
+      },
+      complete: () => {
+        this.isProfilePhotosSaving = false;
+      }
+    });
+  }
+
+  private getExistingProfilePhotoPaths(): string[] {
+    return this.profilePhotos
+      .filter((photo) => photo.path)
+      .map((photo) => photo.path as string);
   }
 
   private applySelectedInterests(): void {
@@ -368,6 +545,91 @@ export class EditProfile2Component implements OnInit {
 
   private normalizeInterestLabel(label: string): string {
     return (label || '').toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '');
+  }
+
+  private commitSocialLinkDraft(markDirty: boolean): boolean {
+    this.saveError = '';
+    const existingLink = this.getSocialLink(this.selectedSocialPlatform);
+    const hasDraft = Boolean((this.socialLinkDraft || '').trim());
+
+    if (!hasDraft) {
+      if (existingLink) {
+        this.socialLinks = this.socialLinks.filter((link) => link.platform !== this.selectedSocialPlatform);
+        if (markDirty) this.profileForm.markAsDirty();
+      }
+      return true;
+    }
+
+    const normalizedUrl = this.normalizeSocialUrl(this.socialLinkDraft, this.selectedSocialPlatform);
+    if (!normalizedUrl) {
+      this.saveError = `Enter a valid ${this.selectedSocial.label} link.`;
+      return false;
+    }
+
+    if (existingLink) {
+      existingLink.url = normalizedUrl;
+    } else {
+      this.socialLinks = [
+        ...this.socialLinks,
+        { platform: this.selectedSocialPlatform, url: normalizedUrl }
+      ];
+    }
+
+    this.socialLinkDraft = normalizedUrl;
+    if (markDirty) this.profileForm.markAsDirty();
+    return true;
+  }
+
+  private normalizeSocialUrl(value: string, platformKey = this.selectedSocialPlatform): string {
+    const rawValue = (value || '').trim();
+    if (!rawValue) return '';
+
+    if (/^https?:\/\//i.test(rawValue)) {
+      return /^https?:\/\/\S+\.\S+$/i.test(rawValue) ? rawValue : '';
+    }
+
+    if (rawValue.includes('.') && rawValue.includes('/')) {
+      const url = `https://${rawValue.replace(/^\/+/, '')}`;
+      return /^https?:\/\/\S+\.\S+$/i.test(url) ? url : '';
+    }
+
+    const platform = this.socialPlatforms.find((item) => item.key === platformKey) || this.selectedSocial;
+    const username = rawValue.replace(/^@/, '').replace(/^\/+|\/+$/g, '');
+    const normalizedUsername = platform.key === 'youtube' && rawValue.trim().startsWith('@') ? `@${username}` : username;
+
+    if (!platform.usernamePattern.test(normalizedUsername)) return '';
+
+    return `${platform.baseUrl}${normalizedUsername}`;
+  }
+
+  private normalizeSocialLinks(links: any[]): SocialLink[] {
+    if (!Array.isArray(links)) return [];
+
+    const allowedPlatforms = new Set(this.socialPlatforms.map((platform) => platform.key));
+
+    return links
+      .map((link: any) => ({
+        platform: String(link?.platform || '').trim().toLowerCase(),
+        url: this.normalizeSocialUrl(String(link?.url || ''), String(link?.platform || '').trim().toLowerCase()),
+      }))
+      .filter((link: SocialLink) => allowedPlatforms.has(link.platform) && Boolean(link.url));
+  }
+
+  private normalizeProfilePhotos(photos: any[]): ProfilePhotoItem[] {
+    if (!Array.isArray(photos)) return [];
+
+    return photos
+      .map((photo: any, index: number) => {
+        const path = String(photo || '').trim();
+        if (!path) return null;
+
+        return {
+          id: `existing-${index}-${path}`,
+          path,
+          url: this.sharedService.getImageUrl(path) || path,
+        };
+      })
+      .filter(Boolean) as ProfilePhotoItem[];
   }
 
   private toDateInputValue(value: string | Date | null | undefined): string {

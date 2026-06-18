@@ -78,6 +78,10 @@
           <button type="submit" class="btn btn-primary btn-block">
             {{isOtpSending() ? "Sending OTP..." : "Send OTP"}}
           </button>
+
+          @if (otpError()) {
+          <p class="form-error">{{ otpError() }}</p>
+          }
         </form>
 
         <p class="caption-text">
