@@ -110,6 +110,14 @@ export class EventsService {
     return this.httpService.http.post(`${this.baseUrl}/createEvent`, eventData);
   }
 
+  updateEvent(eventData: any): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/updateEvent`, eventData);
+  }
+
+  removeEventGalleryImage(eventId: string, imagePath: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath });
+  }
+
   getInfoByPostalCode(postalCode: string): Observable<any> {
     const body: any = {
       postalCode: postalCode

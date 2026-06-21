@@ -169,6 +169,7 @@
 }
 
 .login-card {
+  position: relative;
   background: rgba(20, 20, 30, 0.5);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -177,6 +178,37 @@
   padding: 2.5rem 2rem;
   width: 100%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+
+  .login-back-btn {
+    position: absolute;
+    top: 1.1rem;
+    left: 1.1rem;
+    width: 2.35rem;
+    height: 2.35rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: #eef2ff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+
+    &:hover {
+      background: rgba(177, 84, 240, 0.18);
+      border-color: rgba(177, 84, 240, 0.38);
+      transform: translateX(-1px);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
+
+    .material-symbols-outlined {
+      font-size: 1.15rem;
+    }
+  }
 
   .login-brand {
     display: flex;

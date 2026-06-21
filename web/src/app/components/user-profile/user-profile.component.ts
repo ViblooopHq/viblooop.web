@@ -7,6 +7,9 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 import { EventCardComponent } from '../../shared/components/event-card/event-card.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { SelfieVerificationComponent } from './selfie-verification/selfie-verification.component';
+import { ActivatedRoute } from '@angular/router';
+import { filter, take } from 'rxjs/operators';
+import { BrowserService } from '../../shared/services/browser/browser.service';
 
 type SocialLink = {
   platform: string;
@@ -23,8 +26,10 @@ export class UserProfileComponent implements OnInit {
   @ViewChild('profilePhotoViewer') profilePhotoViewer?: GalleryComponent;
 
   router = inject(RouteService);
+  route = inject(ActivatedRoute);
   mainService = inject(SharedService);
   authSerivice = inject(AuthService);
+  platform = inject(BrowserService);
   activeTab: string = 'Joined';
   userProfile: any;
   tabs: string[] = ['Joined', 'Hosted', 'Gallery'];
@@ -43,10 +48,28 @@ export class UserProfileComponent implements OnInit {
   userGallery: any[] = [];
 
   ngOnInit(): void {
-    const state = history.state || null;
-    this.userId = state?.userId || this.authSerivice.userDetails.id;
-    this.isCurrentUser = this.userId === this.authSerivice.userDetails.id;
-    this.loadProfile();
+    const state = this.platform.isBrowserPlatform() ? history.state : null;
+    const routeUserId = state?.userId || this.route.snapshot.queryParamMap.get('userId') || '';
+
+    if (routeUserId) {
+      this.initProfile(routeUserId);
+      this.authSerivice.isAuthInitialized$
+        .pipe(filter(Boolean), take(1))
+        .subscribe(() => this.updateCurrentUserState());
+      return;
+    }
+
+    this.authSerivice.isAuthInitialized$
+      .pipe(filter(Boolean), take(1))
+      .subscribe(() => {
+        const currentUserId = this.authSerivice.userDetails?.id;
+        if (!currentUserId) {
+          this.router.navigateByUrl('/login');
+          return;
+        }
+
+        this.initProfile(currentUserId);
+      });
   }
 
   setActiveTab(tab: string) {
@@ -54,6 +77,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   loadProfile() {
+    if (!this.userId) return;
+
     this.mainService.viewProfile(this.userId).subscribe((response: any) => {
       if (response?.profile?.success && response.profile.statusCode === 200) {
         this.userProfile = this.normalizeProfile(response.profile.data);
@@ -78,6 +103,17 @@ export class UserProfileComponent implements OnInit {
       profilePhotos: this.normalizeProfilePhotos(profile.profilePhotos),
       socialLinks: this.normalizeSocialLinks(profile.socialLinks),
     };
+  }
+
+  private initProfile(userId: string) {
+    this.userId = userId;
+    this.updateCurrentUserState();
+    this.loadProfile();
+  }
+
+  private updateCurrentUserState() {
+    const currentUserId = this.authSerivice.userDetails?.id;
+    this.isCurrentUser = !!currentUserId && this.userId === currentUserId;
   }
 
   useDefaultProfileImage(event: Event) {

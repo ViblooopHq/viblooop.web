@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of } from 'rxjs';
 import { UserService } from '../user/user.service';
-import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +8,6 @@ import { AuthService } from '../auth/auth.service';
 export class CompleteProfileService {
   completion: number;
   userService = inject(UserService);
-  authService = inject(AuthService);
   private _showPopup$ = new BehaviorSubject<boolean>(false);
   showPopup$ = this._showPopup$.asObservable();
   timerId: any;
@@ -34,10 +32,7 @@ export class CompleteProfileService {
 
   checkProfileAndShowPopup(): Observable<boolean> {
     this.clearTimer();
-    const userDetail = this.authService.userDetails$.value;
-    const userId = userDetail ? userDetail.id : '';
-  
-    return this.userService.getUserProfile(userId).pipe(
+    return this.userService.getMyProfile().pipe(
       map((response) => {
         if (response?.success && response.statusCode === 200) {
           const userProfile = response.data;

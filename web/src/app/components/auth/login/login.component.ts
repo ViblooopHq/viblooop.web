@@ -167,6 +167,15 @@ export class LoginComponent implements OnInit, AfterViewInit {
     window.location.href = "http://localhost:8000/auth/google";
   }
 
+  goBack() {
+    if (isPlatformBrowser(this.platformId) && window.history.length > 1) {
+      window.history.back();
+      return;
+    }
+
+    this.router.navigateByUrl('/');
+  }
+
   sendOtp() {
     if (this.loginForm.valid) {
       this.userEmail = this.loginForm.value.email ?? '';

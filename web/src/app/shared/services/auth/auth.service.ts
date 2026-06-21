@@ -67,6 +67,10 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/getUserProfile`, { userId: userId });
   }
 
+  getMyProfile() {
+    return this.http.post(`${this.baseUrl}/getMyProfile`, {});
+  }
+
   toggleSavedEvent(eventId: string) {
     return this.http.post(`${this.baseUrl}/toggleWishlistEvent`, { eventId });
   }

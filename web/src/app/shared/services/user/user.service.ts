@@ -17,6 +17,10 @@ export class UserService {
     return this.httpService.http.post(this.baseUrl + `/getUserProfile`, body);
   }
 
+  getMyProfile(): Observable<any> {
+    return this.httpService.http.post(this.baseUrl + `/getMyProfile`, {});
+  }
+
   updateUserProfile(data: any) {
     return this.httpService.http.post(this.baseUrl + `/updateProfile`, data);
   }

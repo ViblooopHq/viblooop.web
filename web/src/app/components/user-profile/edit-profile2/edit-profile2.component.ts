@@ -353,9 +353,7 @@ export class EditProfile2Component implements OnInit {
   }
 
   private loadProfileData(): void {
-    const userId = this.authService.userDetails$.value?.id || this.authService.userDetails?.id || '';
-
-    this.userService.getUserProfile(userId).subscribe({
+    this.userService.getMyProfile().subscribe({
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) return;
 
@@ -440,9 +438,7 @@ export class EditProfile2Component implements OnInit {
   }
 
   private refreshProfilePhotos(): void {
-    const userId = this.authService.userDetails$.value?.id || this.authService.userDetails?.id || '';
-
-    this.userService.getUserProfile(userId).subscribe({
+    this.userService.getMyProfile().subscribe({
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) return;
         this.profilePhotos = this.normalizeProfilePhotos(res.data?.profilePhotos);

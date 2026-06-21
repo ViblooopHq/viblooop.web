@@ -28,7 +28,7 @@ export const routes: Routes = [
   //   component: UserProfileComponent,
 
   // },
-  { path: 'profile', loadComponent: () => import('./components/user-profile/user-profile.component').then(c => c.UserProfileComponent), canActivate: [authGuard] },
+  { path: 'profile', loadComponent: () => import('./components/user-profile/user-profile.component').then(c => c.UserProfileComponent) },
   {
     path: 'profile/edit',
     redirectTo: 'profile/edit2',

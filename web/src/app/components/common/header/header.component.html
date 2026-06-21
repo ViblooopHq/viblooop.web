@@ -129,7 +129,7 @@
     <button
       class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-primary to-primary-dim text-on-primary font-semibold hover:brightness-110 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-primary/30"
       (click)="redirectToLogin()">
-      <span class="material-symbols-outlined" translate="no">person</span>
+      <span class="material-symbols-outlined" translate="no">login</span>
       <span>Sign In</span>
     </button>
     }
@@ -165,12 +165,6 @@
       </button>
     </div>
 
-    } @else {
-    <button
-      class="flex items-center justify-center w-9 h-9 rounded-full bg-primary/20 text-primary transition-all active:scale-95"
-      (click)="redirectToLogin()">
-      <span class="material-symbols-outlined" translate="no">login</span>
-    </button>
     }
   </div>
 </header>
@@ -222,7 +216,7 @@
   <nav
     class="fixed bottom-0 left-0 w-full z-50 bg-white/5 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 shadow-[0_-10px_25px_rgba(108,59,255,0.05)] rounded-t-[32px] flex justify-around items-center px-4 pb-8 pt-4">
 
-    @for (item of mobileMenu; track $index) {
+    @for (item of getMobileMenu(); track $index) {
     <a [routerLink]="item.path"
       (click)="handleMobileNavClick(item)"
       routerLinkActive="text-[#6C3BFF] bg-[#6C3BFF]/10 rounded-2xl px-4 py-1.5 active:scale-90"

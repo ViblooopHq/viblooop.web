@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'vl-empty-state',
@@ -10,6 +11,8 @@ import { RouterLink } from '@angular/router';
   styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {
+  private authService = inject(AuthService);
+
   @Input() subject = 'events';
   @Input() context = 'near you';
   @Input() contextPrefix = 'for';
@@ -39,5 +42,9 @@ export class EmptyStateComponent {
     const subject = this.normalizedSubject;
     if (subject.toLowerCase() === 'events') return 'Event';
     return subject.charAt(0).toUpperCase() + subject.slice(1);
+  }
+
+  get createLink(): string {
+    return this.authService.isLoggedIn() ? this.createRoute : '/login';
   }
 }

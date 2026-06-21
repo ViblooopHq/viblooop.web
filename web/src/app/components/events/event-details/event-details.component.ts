@@ -15,20 +15,23 @@ import { SocketService } from '../../../shared/services/socket/socket.service';
 import { HttpService } from '../../../shared/services/http/http.service';
 import { ChatComponent } from '../../chat/chat.component';
 import { ImageUrlPipe } from '../../../shared/pipes/image-url.pipe';
+import { GalleryComponent, GalleryImage } from '../../../shared/components/gallery/gallery.component';
 
 export interface AttendeesProfile {
   profileImage: string;
   userId: string;
   userName: string;
 }
+
 @Component({
   selector: 'vl-event-details',
-  imports: [DatePipe, ReactiveFormsModule, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe],
+  imports: [DatePipe, ReactiveFormsModule, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent],
   templateUrl: './event-details.component.html',
   styleUrl: './event-details.component.scss'
 })
 export class EventDetailsComponent implements OnInit {
   @ViewChild('photoUploadInput') photoUpload!: ElementRef<HTMLInputElement>;
+  @ViewChild('eventGalleryPreview') eventGalleryPreview?: GalleryComponent;
   @ViewChild(GoogleMap) map!: GoogleMap;
 
   eventDetails: any = [];
@@ -60,6 +63,8 @@ export class EventDetailsComponent implements OnInit {
 
   isOpen = false;
   isFullAddressVisible: boolean = false;
+  eventGalleryImages: GalleryImage[] = [];
+  deletingGalleryImagePath = '';
   uploadedPhotos: File[] = [];
   previewPhotos: string[] = [];
   averageRating: number = 0;
@@ -152,9 +157,13 @@ export class EventDetailsComponent implements OnInit {
           this.attendees = Array.isArray(this.eventDetails.attendees) ? this.eventDetails.attendees : [];
           this.eventId = this.eventDetails._id;
           this.eventDetails.image = this._shared.getImageUrl(this.eventDetails.image);
-          this.eventDetails.gallery = Array.isArray(this.eventDetails.gallery)
-            ? this.eventDetails.gallery.map((image: string) => this._shared.getImageUrl(image))
+          this.eventGalleryImages = Array.isArray(this.eventDetails.gallery)
+            ? this.eventDetails.gallery.map((image: string) => ({
+              path: image,
+              url: this._shared.getImageUrl(image),
+            }))
             : [];
+          this.eventDetails.gallery = this.eventGalleryImages.map((image) => image.url);
           
           // Safely set average rating
           const rawRating = this.eventDetails?.createdBy?.averageRating;
@@ -284,7 +293,7 @@ export class EventDetailsComponent implements OnInit {
 
   getUserProfile() {
     if (!this.authService.userDetails || !this.authService.userDetails.id) return
-    this.authService.getUserProfile(this.authService.userDetails.id).subscribe((res: any) => {
+    this.authService.getMyProfile().subscribe((res: any) => {
       console.log(res)
 
       if (!res?.success || res.statusCode !== 200) {
@@ -377,7 +386,7 @@ export class EventDetailsComponent implements OnInit {
     const hostId = this.eventDetails?.createdBy?._id;
     if (!hostId) return;
 
-    this.routeService.navigateByState('/profile', { userId: hostId });
+    this.routeService.navigateByUrl(`/profile?userId=${encodeURIComponent(hostId)}`);
   }
 
   closeModal() {
@@ -385,6 +394,8 @@ export class EventDetailsComponent implements OnInit {
   }
 
   async onPhotoUpload(event: any): Promise<void> {
+    if (!this.isEventCreator()) return;
+
     const files: File[] = Array.from(event.target.files);
     this.uploadedPhotos = [];
     this.previewPhotos = [];
@@ -400,18 +411,30 @@ export class EventDetailsComponent implements OnInit {
       reader.readAsDataURL(finalFile);
     }
     const formData = new FormData();
+    formData.append('eventId', this.eventId);
     this.uploadedPhotos.forEach(file => {
       formData.append('gallery', file);
     });
 
-    this.eventsService.createEvent(formData).subscribe({
-      next: res => {
-        if (res?.success && res.statusCode === 201) {
-
+    this.eventsService.updateEvent(formData).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200) {
+          console.warn('Unexpected response format or status code:', res);
+          return;
         }
+
+        const gallery = Array.isArray(res.data?.event?.gallery) ? res.data.event.gallery : [];
+        this.eventGalleryImages = gallery.map((image: string) => ({
+          path: image,
+          url: this._shared.getImageUrl(image),
+        }));
+        this.eventDetails.gallery = this.eventGalleryImages.map((image) => image.url);
+        this.uploadedPhotos = [];
+        this.previewPhotos = [];
+        if (event.target) event.target.value = '';
       },
       error: (err: any) => {
-        console.error('Error:', err);
+        console.error('Error uploading gallery photos:', err);
       }
     });
 
@@ -419,7 +442,42 @@ export class EventDetailsComponent implements OnInit {
   }
 
   triggerPhotoUpload() {
+    if (!this.isEventCreator()) return;
+
     this.photoUpload.nativeElement.click();
+  }
+
+  openGalleryPreview(index: number) {
+    this.eventGalleryPreview?.openAtIndex(index);
+  }
+
+  canDownloadGalleryImage() {
+    return this.isUserAttendee();
+  }
+
+  removeGalleryImage(imagePath: string) {
+    if (!this.isEventCreator() || !this.eventId || !imagePath || this.deletingGalleryImagePath) return;
+
+    this.deletingGalleryImagePath = imagePath;
+    this.eventsService.removeEventGalleryImage(this.eventId, imagePath).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200) {
+          console.warn('Unexpected response format or status code:', res);
+          return;
+        }
+
+        this.eventGalleryImages = this.eventGalleryImages.filter((image) => image.path !== imagePath);
+        this.eventDetails.gallery = this.eventGalleryImages.map((image) => image.url);
+        this.eventGalleryPreview?.closePreview();
+      },
+      error: (err: any) => {
+        console.error('Error removing gallery image:', err);
+        this.deletingGalleryImagePath = '';
+      },
+      complete: () => {
+        this.deletingGalleryImagePath = '';
+      }
+    });
   }
 
   toggleChat() {

@@ -53,6 +53,12 @@ export class HeaderComponent implements OnInit {
     { path: '/profile', label: 'Profile', icon: 'person' }
   ];
 
+  guestMobileMenu = [
+    { path: '/', label: 'Home', icon: 'home' },
+    { path: '/explore', label: 'Explore', icon: 'explore' },
+    { path: '/login', label: 'Sign In', icon: 'login' }
+  ];
+
   desktopMenu = [
     {
       title: 'Home',
@@ -109,6 +115,10 @@ export class HeaderComponent implements OnInit {
     return rla.isActive ? "'FILL' 1" : "'FILL' 0"
   }
 
+  getMobileMenu(): NavItem[] {
+    return this.userDetails ? this.mobileMenu : this.guestMobileMenu;
+  }
+
   handleMobileNavClick(item: NavItem) {
     if (item.path === '/chats') {
       this.sharedService.requestChatConversations();
@@ -158,10 +168,20 @@ export class HeaderComponent implements OnInit {
   }
 
   navigateToCreate() {
+    if (!this.userDetails) {
+      this.redirectToLogin();
+      return;
+    }
+
     this.router.navigateByUrl('/create-event');
   }
 
   openCreateDrawer() {
+    if (!this.userDetails) {
+      this.redirectToLogin();
+      return;
+    }
+
     this.router.navigateToDrawer('create-event', '/create-event');
   }
 

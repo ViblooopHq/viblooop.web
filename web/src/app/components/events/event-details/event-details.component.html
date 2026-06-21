@@ -5,9 +5,8 @@
         <img [src]="eventDetails?.image || ''" class="hero-img" alt="{{ eventDetails?.title || 'Event' }}">
         <div class="hero-gradient"></div>
 
-        <button type="button" class="hero-back" (click)="goBack()">
+        <button type="button" class="hero-back" aria-label="Go back" (click)="goBack()">
           <i class="fa-solid fa-arrow-left"></i>
-          <span>Back</span>
         </button>
 
         <div class="hero-bottom">
@@ -178,20 +177,38 @@
         </div>
       </section>
 
-      @if (eventDetails?.gallery?.length > 0) {
+      @if (eventGalleryImages.length > 0) {
         <section class="ed-section">
           <h3 class="ed-section-title">Event Gallery</h3>
           <div class="gallery-scroll">
-            @for (eImage of eventDetails?.gallery; track $index) {
-              <img [src]="eImage" alt="Gallery">
+            @for (galleryImage of eventGalleryImages; track galleryImage.path) {
+              <button type="button" class="gallery-item" (click)="openGalleryPreview($index)">
+                <img [src]="galleryImage.url" alt="Gallery">
+              </button>
             }
           </div>
-          <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)" hidden />
-          <button class="btn-upload" (click)="triggerPhotoUpload()">
-            <i class="fa-solid fa-camera"></i> Upload Photos
-          </button>
+          @if (isEventCreator()) {
+            <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)" hidden />
+            <button class="btn-upload" (click)="triggerPhotoUpload()">
+              <i class="fa-solid fa-camera"></i> Upload Photos
+            </button>
+          }
         </section>
       }
+
+      <vl-gallery
+        #eventGalleryPreview
+        class="event-gallery-preview"
+        [images]="eventGalleryImages"
+        [showHeader]="false"
+        [showGrid]="false"
+        [showArchiveAction]="false"
+        [showActions]="true"
+        [canDownload]="canDownloadGalleryImage()"
+        [canDelete]="isEventCreator()"
+        [deletingImagePath]="deletingGalleryImagePath"
+        (deleteImage)="removeGalleryImage($event.path || '')">
+      </vl-gallery>
 
       <section class="ed-section map-panel map-panel--mobile">
         <div class="map-card">
