@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BrowserService } from '../browser/browser.service';
+import { AppDrawerService } from '../drawer/app-drawer.service';
+import { CompleteProfileService } from '../popup/complete-profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,6 +11,8 @@ export class RouteService {
   route: ActivatedRoute = inject(ActivatedRoute)
   router: Router = inject(Router)
   browserService = inject(BrowserService);
+  private readonly appDrawerService = inject(AppDrawerService);
+  private readonly completeProfileService = inject(CompleteProfileService);
 
   constructor() { }
 
@@ -37,11 +41,38 @@ export class RouteService {
       return;
     }
 
+    if (drawerPath === 'create-event') {
+      this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
+        if (!isComplete) return;
+
+        if (queryParams?.['mode'] === 'edit' && queryParams?.['eventId']) {
+          this.appDrawerService.openEditEvent(queryParams['eventId']);
+        } else {
+          this.appDrawerService.openCreateEvent();
+        }
+      });
+      return;
+    }
+
     this.router.navigate([{ outlets: { drawer: [drawerPath] } }], { queryParams });
   }
 
   closeDrawer() {
-    this.router.navigate([{ outlets: { drawer: null } }]);
+    if (this.appDrawerService.hasOpenDrawer) {
+      this.appDrawerService.close();
+      return;
+    }
+
+    this.router.navigate([{ outlets: { drawer: null } }], { replaceUrl: true });
+  }
+
+  closeDrawerOrNavigate(fallbackPath: string) {
+    if (this.appDrawerService.hasOpenDrawer || this.router.url.includes('(drawer:')) {
+      this.closeDrawer();
+      return;
+    }
+
+    this.navigateByUrl(fallbackPath);
   }
 
   navigateBack() {

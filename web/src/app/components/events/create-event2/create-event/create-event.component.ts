@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, Inject, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, Inject, Input, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -44,6 +44,8 @@ import {
   styleUrls: ['./create-event.component.scss']
 })
 export class CreateEventComponent implements OnInit {
+  @Input() drawerMode: 'create' | 'edit' | null = null;
+  @Input() drawerEventId: string | null = null;
 
   // ── Stepper ──────────────────────────────────────────
   readonly totalSteps = CREATE_EVENT_STEPS;
@@ -557,14 +559,18 @@ export class CreateEventComponent implements OnInit {
 
   // ── Lifecycle ─────────────────────────────────────────
   ngOnInit(): void {
-    this.activatedRoute.queryParamMap.subscribe(params => {
-      this.isEditMode = params.get('mode') === 'edit';
-      this.editEventId = this.isEditMode ? params.get('eventId') : null;
+    if (this.drawerMode) {
+      this.applyDrawerMode();
+    } else {
+      this.activatedRoute.queryParamMap.subscribe(params => {
+        this.isEditMode = params.get('mode') === 'edit';
+        this.editEventId = this.isEditMode ? params.get('eventId') : null;
 
-      if (this.isEditMode && this.editEventId) {
-        this.loadEventForEdit(this.editEventId);
-      }
-    });
+        if (this.isEditMode && this.editEventId) {
+          this.loadEventForEdit(this.editEventId);
+        }
+      });
+    }
 
     this.eventService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
@@ -574,6 +580,15 @@ export class CreateEventComponent implements OnInit {
     });
     this.updateMinTime();
     this.updateDateValidatorsForCreationKind();
+  }
+
+  private applyDrawerMode(): void {
+    this.isEditMode = this.drawerMode === 'edit';
+    this.editEventId = this.isEditMode ? this.drawerEventId : null;
+
+    if (this.isEditMode && this.editEventId) {
+      this.loadEventForEdit(this.editEventId);
+    }
   }
 
   private loadEventForEdit(eventId: string): void {
@@ -1012,7 +1027,7 @@ export class CreateEventComponent implements OnInit {
         if (this.isEditMode && res?.success && res.statusCode === 200 && eventId) {
           this.isSubmittingEvent = false;
           this.eventForm.markAsPristine();
-          this.router.navigate('/events', eventId);
+          this.router.closeDrawerOrNavigate(`/events/${eventId}`);
           return;
         }
 

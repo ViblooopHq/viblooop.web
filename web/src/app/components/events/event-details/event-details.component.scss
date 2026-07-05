@@ -293,6 +293,52 @@ $section-gap: 1.5rem;
 
       i { font-size: 1rem; }
     }
+
+    .btn-view-requests {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      min-height: 3rem;
+      border: 0;
+      border-radius: 10px;
+      background: rgba(88, 28, 135, 0.72);
+      color: #ffffff;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 700;
+      line-height: 1;
+      padding: 0 1.1rem;
+      white-space: nowrap;
+      transition: background 0.15s ease, transform 0.15s ease;
+
+      &:hover {
+        background: rgba(107, 33, 168, 0.82);
+        transform: translateY(-1px);
+      }
+
+      &:active {
+        transform: scale(0.98);
+      }
+
+      i {
+        color: #f2eaff;
+        font-size: 1.1rem;
+      }
+
+      &__count {
+        display: grid;
+        min-width: 1.5rem;
+        height: 1.5rem;
+        place-items: center;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.92);
+        color: #581c87;
+        font-size: 0.76rem;
+        font-weight: 800;
+        padding: 0 0.38rem;
+      }
+    }
   }
 
   // ── Content Section Container ──
@@ -1342,6 +1388,29 @@ $section-gap: 1.5rem;
         font-size: 0.95rem;
       }
     }
+
+    .btn-view-requests {
+      min-height: 3.6rem;
+      border-radius: 10px;
+      gap: 0.75rem;
+      padding: 0 1.15rem;
+      background: rgba(88, 28, 135, 0.72);
+      color: #ffffff;
+      font-size: 0.98rem;
+      box-shadow: none;
+
+      i {
+        color: #f2eaff;
+        font-size: 1.18rem;
+      }
+
+      &__count {
+        min-width: 1.65rem;
+        height: 1.65rem;
+        color: #581c87;
+        font-size: 0.78rem;
+      }
+    }
   }
 
   .ed-section {
@@ -2020,9 +2089,18 @@ $section-gap: 1.5rem;
   .vl-ed {
     &__hero {
       .hero-action-row {
-        align-items: flex-start;
-        flex-direction: column;
-        gap: 1rem;
+        align-items: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+      }
+
+      .hero-attendance {
+        min-width: 0;
+      }
+
+      .btn-view-requests {
+        margin-left: auto;
       }
     }
 

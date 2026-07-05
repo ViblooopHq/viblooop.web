@@ -83,10 +83,12 @@
                   <i class="fa-solid fa-chevron-right"></i>
                 </button>
               } @else {
-                <button class="btn-join-hero" routerLink="/notifications">
-                  <i class="fa-solid fa-bell"></i>
+                <button class="btn-view-requests" routerLink="/notifications">
+                  <i class="fa-solid fa-user-group"></i>
                   View Requests
-                  <i class="fa-solid fa-chevron-right"></i>
+                  @if (pendingJoinRequestCount > 0) {
+                    <span class="btn-view-requests__count">{{ pendingJoinRequestCount }}</span>
+                  }
                 </button>
               }
             }

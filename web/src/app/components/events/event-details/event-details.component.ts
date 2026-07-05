@@ -450,6 +450,20 @@ export class EventDetailsComponent implements OnInit {
     return `${total} ${total === 1 ? 'person' : 'people'} ${status}`;
   }
 
+  get pendingJoinRequestCount(): number {
+    const notifications = this.socketService.notifications$.value;
+    if (!Array.isArray(notifications) || !this.eventId) return 0;
+
+    return notifications.filter((notification: any) => {
+      const notificationEventId = notification?.eventId?._id || notification?.eventId;
+      const status = String(notification?.status || 'pending').toLowerCase();
+
+      return notification?.type === 'JOIN_REQUEST'
+        && notificationEventId === this.eventId
+        && status === 'pending';
+    }).length;
+  }
+
   get isEscapeEvent(): boolean {
     const category = this.eventDetails?.category;
     const hasEndDate = Boolean(this.eventDetails?.endDate);

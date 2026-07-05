@@ -79,13 +79,6 @@ export const routes: Routes = [
     component: CreateEventComponent,
   },
   {
-    path: 'create-event',
-    outlet: 'drawer',
-    canActivate: [authGuard, profileScoreGuard],
-    canDeactivate: [unsavedChangeGuard],
-    component: CreateEventComponent,
-  },
-  {
     path: 'edit-profile',
     outlet: 'drawer',
     canActivate: [authGuard],

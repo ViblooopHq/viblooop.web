@@ -21,10 +21,12 @@ import { CompleteProfileService } from './shared/services/popup/complete-profile
 import { CompleteProfileComponent } from './shared/components/pop-ups/complete-profile/complete-profile.component';
 
 import { ScrollToTopComponent } from './components/common/scroll-to-top/scroll-to-top.component';
+import { AppDrawerService } from './shared/services/drawer/app-drawer.service';
+import { CreateEventComponent } from './components/events/create-event2/create-event/create-event.component';
 
 @Component({
   selector: 'vl-app-root',
-  imports: [RouterOutlet, MatSlideToggleModule, HeaderComponent, FooterComponent, GlobalLoaderComponent, CompleteProfileComponent, CommonModule, ScrollToTopComponent],
+  imports: [RouterOutlet, MatSlideToggleModule, HeaderComponent, FooterComponent, GlobalLoaderComponent, CompleteProfileComponent, CommonModule, ScrollToTopComponent, CreateEventComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -39,6 +41,7 @@ export class AppComponent implements OnInit {
   authService = inject(AuthService);
   socketService = inject(SocketService);
   completeProfileService = inject(CompleteProfileService);
+  appDrawerService = inject(AppDrawerService);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {

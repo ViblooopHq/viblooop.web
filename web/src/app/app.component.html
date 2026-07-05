@@ -8,6 +8,16 @@
 
 <router-outlet name="drawer" />
 
+@if ((appDrawerService.drawer$ | async); as activeDrawer) {
+  @switch (activeDrawer.type) {
+    @case ('create-event') {
+      <vl-create-event
+        [drawerMode]="activeDrawer.mode"
+        [drawerEventId]="activeDrawer.eventId ?? null" />
+    }
+  }
+}
+
 <vl-global-loader />
 
 @if ((completeProfileService.showPopup$ | async)) {
