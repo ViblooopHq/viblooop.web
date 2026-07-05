@@ -1,0 +1,160 @@
+<div class="review-grid" [class.review-grid--single]="!shouldShowReviewForm() || isEditingReview">
+  @if (shouldShowReviewForm()) {
+    <section class="ed-section review-card review-card--compose" id="add-comment">
+      <div class="review-card__header">
+        <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <div>
+          <h3>{{ reviewFormTitle }} <span aria-hidden="true">✨</span></h3>
+          <p>{{ isEditingReview ? 'Update your rating and comment for this vibe.' : 'Share your vibe! Attendees can rate and review after the event.' }}</p>
+        </div>
+      </div>
+
+      <form class="review-form" [formGroup]="reviewForm" (ngSubmit)="addReviewComment()">
+        <div class="review-rating-panel">
+          <div class="stars-row">
+            @for (star of stars; track $index) {
+              @let starValue = $index + 1;
+              <input type="radio" [id]="'rating-' + starValue" formControlName="rating" [value]="starValue" hidden />
+              <label [for]="'rating-' + starValue"
+                (mouseenter)="hoverRating = starValue"
+                (mouseleave)="hoverRating = 0"
+                [class.is-active]="hoverRating >= starValue || selectedRating >= starValue">
+                <i [class]="(hoverRating >= starValue || selectedRating >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+              </label>
+            }
+          </div>
+          <div class="tap-to-rate">
+            <span></span>
+            Tap to rate
+            <span></span>
+          </div>
+        </div>
+
+        <div class="review-text-panel">
+          <div class="review-textarea-wrap">
+            <textarea formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
+            <span class="review-char-count">{{ reviewCommentLength }}/250</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting">
+          @if (isSubmitting) { <i class="fa-solid fa-spinner fa-spin"></i> }
+          @else { <i class="fa-regular fa-paper-plane"></i> }
+          {{ reviewSubmitLabel }}
+        </button>
+
+        @if (isEditingReview) {
+          <button type="button" class="btn-cancel-review" (click)="cancelReviewEdit()" [disabled]="isSubmitting">
+            Cancel Edit
+          </button>
+        }
+
+        <p class="review-privacy">
+          <i class="fa-solid fa-lock"></i>
+          Your review is public and will help others.
+        </p>
+      </form>
+    </section>
+  }
+
+  @if (!isEditingReview) {
+  <section class="ed-section reviews-panel" id="reviews-comments">
+    <div class="reviews-panel__header">
+      <div class="reviews-panel__title">
+        <span class="review-card__icon"><i class="fa-regular fa-comment"></i></span>
+        <div>
+          <h3>Reviews &amp; Comments</h3>
+          <p>See what other attendees thought about this event.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-panel__stats">
+      <div class="review-stat">
+        <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star"></i></span>
+        <span class="review-stat__copy">
+          <strong>{{ displayAverageRating | number:'1.1-1' }}</strong>
+          <small>Average rating</small>
+        </span>
+      </div>
+      <div class="review-stat">
+        <span class="review-stat__icon"><i class="fa-regular fa-comment-dots"></i></span>
+        <span class="review-stat__copy">
+          <strong>{{ reviewCount }}</strong>
+          <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
+        </span>
+      </div>
+    </div>
+
+    @if (reviewCount === 0) {
+      <div class="empty-comments">
+        <div class="empty-icon"><i class="fa-regular fa-comments"></i></div>
+        <p class="empty-title">No reviews yet</p>
+        <p class="empty-subtitle">Be the first to review this vibe</p>
+      </div>
+    } @else {
+      <div class="comment-list">
+      @for (review of visibleReviews; track $index) {
+        <div class="comment-item" [class.comment-item--has-actions]="isOwnReview(review)">
+          <img class="comment-avatar"
+               [src]="review.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+               (error)="$any($event.target).src = 'assets/images/default-profile.png'">
+
+          <div class="comment-body">
+            <div class="comment-header">
+              <div class="comment-author">
+                <span class="username">{{ review.raterUserId?.username || 'Guest' }}</span>
+                <i class="fa-solid fa-circle-check reviewer-check"></i>
+                <span class="attended-badge">
+                  <i class="fa-solid fa-certificate"></i>
+                  Attended
+                </span>
+              </div>
+              <span class="timestamp">
+                <i class="fa-regular fa-clock"></i>
+                {{ getTimeAgo(review.updatedAt || review.createdAt) }}
+              </span>
+            </div>
+            <div class="comment-stars">
+              @for (i of [1, 2, 3, 4, 5]; track $index) {
+                <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+              }
+            </div>
+            <p class="comment-text">{{ review.comment }}</p>
+          </div>
+
+          @if (isOwnReview(review)) {
+            <div class="comment-actions">
+              <button type="button" class="comment-more" aria-label="More options" (click)="toggleReviewMenu(review)">
+                <i class="fa-solid fa-ellipsis"></i>
+              </button>
+
+              @if (isReviewMenuOpen(review)) {
+                <div class="comment-menu">
+                  <button type="button" (click)="editReview(review)">
+                    <i class="fa-regular fa-pen-to-square"></i>
+                    Edit Review
+                  </button>
+                  <button type="button" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId === review._id">
+                    @if (deletingReviewId === review._id) { <i class="fa-solid fa-spinner fa-spin"></i> }
+                    @else { <i class="fa-regular fa-trash-can"></i> }
+                    Delete Review
+                  </button>
+                </div>
+              }
+            </div>
+          }
+        </div>
+      }
+      </div>
+
+      @if (shouldShowReviewToggle) {
+        <button type="button" class="btn-view-comments" (click)="toggleReviews()">
+          {{ showAllReviews ? 'Show fewer comments' : 'View all comments' }}
+          <i [class]="showAllReviews ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+        </button>
+      }
+    }
+  </section>
+  }
+</div>

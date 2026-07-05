@@ -1,4 +1,4 @@
-<vl-form-drawer ariaLabel="Create event">
+<vl-form-drawer [ariaLabel]="isEditMode ? 'Edit event' : 'Create event'">
 <!-- Top App Bar -->
 <header class="create-header">
   <div class="header-inner">
@@ -7,7 +7,7 @@
     </button>
     <div class="header-copy">
       <h1 class="header-title">{{ createHeaderTitle }}</h1>
-      <p>Let's set up your amazing event</p>
+      <p>{{ createHeaderSubtitle }}</p>
     </div>
     <span class="step-label">{{ currentStep + 1 }} / {{ totalSteps.length }}</span>
   </div>
@@ -124,7 +124,7 @@
         <div class="date-time-row">
           <div class="date-field">
             <mat-form-field appearance="outline" class="material-input-custom">
-              <input matInput [matDatepicker]="picker" formControlName="eventDate" [min]="minDate"
+              <input matInput [matDatepicker]="picker" formControlName="eventDate" [min]="datePickerMinDate"
                 [placeholder]="isEscapeCreation ? 'From' : 'Select Date'" readonly (click)="picker.open()">
               <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
@@ -182,41 +182,53 @@
           </span>
         </div>
 
-        <div class="location-modern">
-          <div class="location-search-wrap">
-            <span class="material-symbols-outlined field-icon">search</span>
-            <input #locationSearch class="field-input field-input--icon" type="text" formControlName="street" placeholder="Search place or venue" />
-          </div>
+        <div class="location-address-card">
+          <label class="location-line">
+            <span class="material-symbols-outlined location-line__icon">home</span>
+            <span class="location-line__copy">
+              <span class="location-line__label">Address Line <strong>*</strong></span>
+              <span class="location-line__hint">House / Flat No., Building, Street</span>
+            </span>
+            <input class="location-input" type="text" formControlName="street" placeholder="e.g. Flat A302, Brigade Residency, 12th Main Road">
+          </label>
 
-          <div class="selected-location-panel">
-            <div class="selected-location-row">
-              <div class="selected-location-icon">
-                <span class="material-symbols-outlined">location_on</span>
+          <label class="location-line">
+            <span class="material-symbols-outlined location-line__icon">home</span>
+            <span class="location-line__copy">
+              <span class="location-line__label">Area / Locality <strong>*</strong></span>
+              <span class="location-line__hint">Your area, sector, or locality</span>
+            </span>
+            <input class="location-input" type="text" formControlName="area" placeholder="e.g. Koramangala 5th Block">
+          </label>
+
+          <div class="location-stack-field location-stack-field--with-chevron" (click)="$event.stopPropagation()">
+            <span class="location-stack-field__label">City <strong>*</strong></span>
+            <button
+              type="button"
+              class="location-input location-city-trigger"
+              [class.location-city-trigger--open]="isCityDropdownOpen"
+              (click)="toggleCityDropdown($event)">
+              <span>{{ selectedCity }}</span>
+            </button>
+            <span class="material-symbols-outlined location-stack-field__chevron"
+              [class.location-stack-field__chevron--open]="isCityDropdownOpen">keyboard_arrow_down</span>
+
+            @if (isCityDropdownOpen) {
+              <div class="location-city-menu">
+                @for (city of cityOptions; track city) {
+                  <button
+                    type="button"
+                    class="location-city-option"
+                    [class.location-city-option--selected]="selectedCity === city"
+                    (click)="selectCity(city)">
+                    <span class="material-symbols-outlined location-city-option__check">
+                      {{ selectedCity === city ? 'check' : '' }}
+                    </span>
+                    <span>{{ city }}</span>
+                  </button>
+                }
               </div>
-
-              <div class="selected-location-fields">
-                <span class="location-title-preview">{{ addressGroup.get('street')?.value || 'Sky Lounge, Koramangala' }}</span>
-                <div class="location-meta-grid">
-                  <input class="location-meta-input" type="text" formControlName="city" placeholder="Bangalore" />
-                  <input class="location-meta-input" type="text" formControlName="state" placeholder="Karnataka" />
-                  <input class="location-meta-input location-meta-input--pin" type="text" formControlName="pinCode" placeholder="PIN" />
-                </div>
-              </div>
-
-              <button type="button" class="location-clear-btn" aria-label="Clear location" (click)="clearLocation()">
-                <span class="material-symbols-outlined">close</span>
-              </button>
-            </div>
-
-            <div class="location-map-preview">
-              <div class="map-road map-road--one"></div>
-              <div class="map-road map-road--two"></div>
-              <div class="map-road map-road--three"></div>
-              <div class="map-pin">
-                <span class="material-symbols-outlined">location_on</span>
-              </div>
-              <button type="button" class="map-edit-btn" (click)="locationSearch.focus()">Edit location</button>
-            </div>
+            }
           </div>
         </div>
       </div>
@@ -638,7 +650,7 @@
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
       <button type="button" class="btn-next btn-next--step3" (click)="nextStep()">
-        Review & Launch <span class="material-symbols-outlined">rocket_launch</span>
+        {{ isEditMode ? 'Review Changes' : 'Review & Launch' }} <span class="material-symbols-outlined">rocket_launch</span>
       </button>
     </div>
   </main>
@@ -653,7 +665,7 @@
       <button type="button" class="back-nav-btn" (click)="prevStep()">
         <span class="material-symbols-outlined">arrow_back</span>
       </button>
-      <h2 class="review-page-title">Review Your Event</h2>
+      <h2 class="review-page-title">{{ isEditMode ? 'Review Changes' : 'Review Your Event' }}</h2>
       <div style="width: 40px"></div> <!-- Spacer -->
     </header>
 
@@ -717,7 +729,7 @@
               <span class="material-symbols-outlined">location_on</span>
             </div>
             <div class="info-content">
-              <p class="info-main">{{ addressGroup.get('street')?.value || 'Venue Name' }}, {{ addressGroup.get('city')?.value || 'City' }}</p>
+              <p class="info-main">{{ addressGroup.get('street')?.value || 'Address Line' }}, {{ addressGroup.get('city')?.value || 'City' }}</p>
               <p class="info-sub">Exact location shared after you join</p>
             </div>
           </div>
@@ -740,8 +752,8 @@
             <span class="material-symbols-outlined">rocket_launch</span>
           </div>
           <div class="status-text-wrap">
-            <p class="status-title">Your vibe is ready to go live!</p>
-            <p class="status-desc">Final check complete. Ready to publish.</p>
+            <p class="status-title">{{ isEditMode ? 'Your changes are ready!' : 'Your vibe is ready to go live!' }}</p>
+            <p class="status-desc">{{ isEditMode ? 'Final check complete. Ready to save.' : 'Final check complete. Ready to publish.' }}</p>
           </div>
         </div>
       </div>
@@ -834,9 +846,9 @@
         @if (eventForm.get('safetyAgreement')?.invalid) {
           <span class="material-symbols-outlined">lock</span>
         } @else {
-          <span class="material-symbols-outlined">rocket_launch</span>
+            <span class="material-symbols-outlined">{{ isEditMode ? 'save' : 'rocket_launch' }}</span>
         }
-        <span>Launch Event</span>
+        <span>{{ isEditMode ? 'Save Changes' : 'Launch Event' }}</span>
       </button>
     </div>
 

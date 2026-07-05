@@ -36,6 +36,7 @@ export class NotificationComponent {
   httpService = inject(HttpService)
   platform = inject(BrowserService)
   private router = inject(Router)
+  private readonly pendingSeenNotificationIds = new Set<string>();
 
   // Track state of actions for each notification
   actionStates: { [key: string]: 'pending' | 'processing' | 'accepted' | 'rejected' } = {};
@@ -59,6 +60,7 @@ export class NotificationComponent {
 
   computeNotification(notifications: any[]) {
     this.notifications = notifications || [];
+    this.markSeenNotificationsWithoutAction();
   }
 
   closePanel() {
@@ -89,6 +91,28 @@ export class NotificationComponent {
   markAsRead(notificationId: string) {
     if (!notificationId) return;
     this.socketService.markNotificationAsRead(notificationId);
+  }
+
+  private markSeenNotificationsWithoutAction(): void {
+    const notificationIds = this.notifications
+      .filter((notification) => !notification?.read && !this.notificationRequiresAction(notification))
+      .map((notification) => this.getNotificationId(notification))
+      .filter((notificationId) => notificationId && !this.pendingSeenNotificationIds.has(notificationId));
+
+    if (!notificationIds.length) return;
+
+    notificationIds.forEach((notificationId) => this.pendingSeenNotificationIds.add(notificationId));
+    this.notifications = this.notifications.map((notification) =>
+      notificationIds.includes(this.getNotificationId(notification))
+        ? { ...notification, read: true }
+        : notification
+    );
+    this.socketService.markNotificationsAsRead(notificationIds);
+  }
+
+  private notificationRequiresAction(notification: any): boolean {
+    return notification?.type === NotificationType.JOIN_REQUEST
+      && this.notificationState(notification) === 'pending';
   }
 
   calculateTimeAgo(date: string): string {
@@ -292,6 +316,10 @@ export class NotificationComponent {
 
   getNotificationSenderId(notification: any): string {
     return notification?.senderId?._id || notification?.sender?._id || notification?.senderId || '';
+  }
+
+  private getNotificationId(notification: any): string {
+    return notification?._id || notification?.id || '';
   }
 
 }

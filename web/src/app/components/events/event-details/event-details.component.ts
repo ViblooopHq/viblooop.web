@@ -4,7 +4,6 @@ import { EventsService } from '../../../shared/services/events/events.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProfileComponent } from '../../user/profile/profile.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { RouteService } from '../../../shared/services/route/route.service';
@@ -16,6 +15,7 @@ import { HttpService } from '../../../shared/services/http/http.service';
 import { ChatComponent } from '../../chat/chat.component';
 import { ImageUrlPipe } from '../../../shared/pipes/image-url.pipe';
 import { GalleryComponent, GalleryImage } from '../../../shared/components/gallery/gallery.component';
+import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 
 export interface AttendeesProfile {
   profileImage: string;
@@ -25,7 +25,7 @@ export interface AttendeesProfile {
 
 @Component({
   selector: 'vl-event-details',
-  imports: [DatePipe, ReactiveFormsModule, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent],
+  imports: [DatePipe, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent, EventCommentsComponent],
   templateUrl: './event-details.component.html',
   styleUrl: './event-details.component.scss'
 })
@@ -49,16 +49,10 @@ export class EventDetailsComponent implements OnInit {
 
   joinRequestStatus = signal('Request Join')
 
-  ratingStar = 1
-  hoverRating = 0;
   attendees: string[] = []
   attendessProfiles: AttendeesProfile[] = []
   eventId = ''
-  eventReviews: any = []
-  isSubmitting = false;
-  stars = [1, 2, 3, 4, 5];
   userProfile: any = []
-  reviewForm: FormGroup;
   profileData: any = {}
 
   isOpen = false;
@@ -68,7 +62,8 @@ export class EventDetailsComponent implements OnInit {
   uploadedPhotos: File[] = [];
   previewPhotos: string[] = [];
   averageRating: number = 0;
-  showAllReviews = false;
+  isEventMenuOpen = false;
+  private readonly openCapacityLimit = 999999;
 
   position: google.maps.LatLngLiteral = {
     lat: 0,
@@ -80,13 +75,6 @@ export class EventDetailsComponent implements OnInit {
     zoom: 16
   };
 
-  constructor(private fb: FormBuilder) {
-    this.reviewForm = this.fb.group({
-      rating: [null, Validators.required],
-      comment: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(250)]],
-    });
-  }
-
   ngOnInit() {
     this.route.params.subscribe(params => {
       const eventId = params['eventId'];
@@ -97,48 +85,6 @@ export class EventDetailsComponent implements OnInit {
 
   getCommentStatus() {
     return this.isUserAttendee() ? 'Be the first to comment' : 'Please join the event to comment'
-  }
-
-  get reviewList(): any[] {
-    return Array.isArray(this.eventReviews) ? this.eventReviews : [];
-  }
-
-  get visibleReviews(): any[] {
-    return this.showAllReviews ? this.reviewList : this.reviewList.slice(0, 3);
-  }
-
-  get reviewCount(): number {
-    return this.reviewList.length;
-  }
-
-  get eventAverageRating(): number {
-    const eventRating = Number(this.eventDetails?.averageRating);
-    if (Number.isFinite(eventRating) && eventRating > 0) return eventRating;
-
-    const ratings = this.reviewList
-      .map((review: any) => Number(review?.score))
-      .filter((score: number) => Number.isFinite(score));
-
-    if (!ratings.length) return 0;
-
-    const total = ratings.reduce((sum: number, score: number) => sum + score, 0);
-    return total / ratings.length;
-  }
-
-  get reviewCommentLength(): number {
-    return String(this.reviewForm.get('comment')?.value || '').length;
-  }
-
-  get shouldShowReviewToggle(): boolean {
-    return this.reviewCount > 3;
-  }
-
-  toggleReviews() {
-    this.showAllReviews = !this.showAllReviews;
-  }
-
-  setRatingCount(rating: number) {
-    this.ratingStar = rating
   }
 
   showFullAddress() {
@@ -177,7 +123,6 @@ export class EventDetailsComponent implements OnInit {
           }
 
           this.getUserProfile();
-          this.getEventRewiews();
           this.getAttendeesDetails();
           this.fetchJoinStatus();
         }
@@ -260,10 +205,6 @@ export class EventDetailsComponent implements OnInit {
     })
   }
 
-  getTimeAgo(date: string) {
-    return this._shared.calculateTimeAgo(date)
-  }
-
   isUserAttendee() {
     let isAllowed = this.authService.isLoggedIn() && (this.attendees.includes(this.authService.userDetails.id) || this.authService.userDetails.id === (this.eventDetails.createdBy && this.eventDetails.createdBy._id))
     return isAllowed;
@@ -279,8 +220,13 @@ export class EventDetailsComponent implements OnInit {
 
   getRemainingSpots(): number {
     if (!this.eventDetails || !this.eventDetails.attendeeLimit) return 0;
+    if (this.isCapacityUnlimited(this.eventDetails.attendeeLimit)) return 0;
     const remaining = this.eventDetails.attendeeLimit - (this.attendees.length + 1); // +1 includes the creator
     return Math.max(0, remaining);
+  }
+
+  get remainingSpotsLabel(): string {
+    return this.isCapacityUnlimited(this.eventDetails?.attendeeLimit) ? 'No limit' : `${this.getRemainingSpots()} left`;
   }
 
   getTotalAttendeesCount(): number {
@@ -320,44 +266,6 @@ export class EventDetailsComponent implements OnInit {
     })
   }
 
-  getEventRewiews() {
-    this.eventsService.getEventReviews(this.eventId).subscribe((reviews: any) => {
-      this.eventReviews = reviews.data
-    })
-  }
-
-  addReviewComment() {
-    if (this.reviewForm.invalid) return;
-
-    this.isSubmitting = true;
-    let review: any = {}
-    review.eventId = this.eventId
-    review.raterUserId = this.authService.userDetails.id
-    review.score = this.reviewForm.value.rating
-    review.comment = this.reviewForm.value.comment;
-
-    this.eventsService.addReview(review).subscribe(
-      (res: any) => {
-        this.isSubmitting = false;
-
-        if (!res?.success || res.statusCode !== 200) {
-          console.warn('Unexpected response format or status code:', res);
-          return;
-        }
-
-        this.reviewForm.reset();
-        this.reviewForm.markAsPristine();
-        this.reviewForm.markAsUntouched()
-
-        this.getEventRewiews();
-      },
-      (error: any) => {
-        this.isSubmitting = false;
-        console.error('Error adding review:', error);
-      }
-    )
-  }
-
   viewProfile(userId: string) {
     this._shared.viewProfile(userId).subscribe((res: any) => {
       if (!res?.success || res.statusCode !== 200) {
@@ -369,13 +277,6 @@ export class EventDetailsComponent implements OnInit {
       this.profileData.attendedEvents = res.attendedEvents;
       this.isOpen = true;
     })
-  }
-
-  scrollTo(section: string) {
-    const element = document.getElementById(section);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 
   openModal() {
@@ -391,6 +292,27 @@ export class EventDetailsComponent implements OnInit {
 
   closeModal() {
     this.isOpen = false;
+  }
+
+  toggleEventMenu() {
+    if (!this.isEventCreator()) return;
+    this.isEventMenuOpen = !this.isEventMenuOpen;
+  }
+
+  closeEventMenu() {
+    this.isEventMenuOpen = false;
+  }
+
+  openEditEvent() {
+    if (!this.isEventCreator()) return;
+
+    this.isEventMenuOpen = false;
+    const editQueryParams = { mode: 'edit', eventId: this.eventId };
+    this.routeService.navigateToDrawer(
+      'create-event',
+      `/create-event?mode=edit&eventId=${encodeURIComponent(this.eventId)}`,
+      editQueryParams
+    );
   }
 
   async onPhotoUpload(event: any): Promise<void> {
@@ -614,6 +536,10 @@ export class EventDetailsComponent implements OnInit {
 
   get shouldShowHostRating(): boolean {
     return !this.isNewHost && this.hostRating > 3;
+  }
+
+  private isCapacityUnlimited(limit: unknown): boolean {
+    return Number(limit) >= this.openCapacityLimit;
   }
 
   private formatTripDate(value: string | Date | null | undefined): string {

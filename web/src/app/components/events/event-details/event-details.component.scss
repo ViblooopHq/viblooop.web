@@ -171,6 +171,63 @@ $section-gap: 1.5rem;
       justify-content: space-between;
     }
 
+    .hero-owner-menu {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      z-index: 4;
+    }
+
+    .hero-menu-trigger {
+      display: grid;
+      width: 2.7rem;
+      height: 2.7rem;
+      place-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      background: rgba(15, 18, 35, 0.6);
+      color: #f8f7ff;
+      cursor: pointer;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 0.75rem 1.7rem rgba(0, 0, 0, 0.24);
+    }
+
+    .hero-menu-popover {
+      position: absolute;
+      top: calc(100% + 0.45rem);
+      right: 0;
+      display: grid;
+      min-width: 9rem;
+      overflow: hidden;
+      border: 1px solid rgba(168, 85, 247, 0.28);
+      border-radius: 0.85rem;
+      background: rgba(17, 20, 37, 0.98);
+      box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, 0.38);
+
+      button {
+        display: flex;
+        align-items: center;
+        gap: 0.55rem;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        color: #f4f1ff;
+        cursor: pointer;
+        font-size: 0.86rem;
+        font-weight: 800;
+        padding: 0.78rem 0.95rem;
+        text-align: left;
+
+        &:hover {
+          background: rgba(168, 85, 247, 0.14);
+        }
+
+        i {
+          color: #c084fc;
+        }
+      }
+    }
+
     .avatar-stack {
       display: flex;
       align-items: center;
@@ -773,7 +830,7 @@ $section-gap: 1.5rem;
       border-radius: 1rem;
       background: #fff;
       color: $text-dark;
-      font-size: 0.78rem;
+      font-size: 0.88rem;
       line-height: 1.5;
       padding: 0.85rem 0.95rem 1.65rem;
       resize: vertical;
@@ -832,6 +889,22 @@ $section-gap: 1.5rem;
       opacity: 0.52;
       cursor: not-allowed;
       box-shadow: none;
+    }
+  }
+
+  .btn-cancel-review {
+    min-height: 2.55rem;
+    border: 1px solid rgba($purple-mid, 0.26);
+    border-radius: 0.65rem;
+    background: rgba($purple-mid, 0.06);
+    color: $purple-mid;
+    cursor: pointer;
+    font-size: 0.86rem;
+    font-weight: 850;
+
+    &:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
     }
   }
 
@@ -927,13 +1000,17 @@ $section-gap: 1.5rem;
 
   .comment-item {
     display: grid;
-    grid-template-columns: 3.25rem minmax(0, 1fr) 1.5rem;
+    grid-template-columns: 3.25rem minmax(0, 1fr);
     gap: 0.75rem;
     align-items: start;
     padding: 1rem;
     border: 1px solid #f0ecf5;
     border-radius: 0.9rem;
     background: rgba($purple-mid, 0.035);
+
+    &--has-actions {
+      grid-template-columns: 3.25rem minmax(0, 1fr) 1.5rem;
+    }
   }
 
   .comment-avatar {
@@ -999,7 +1076,7 @@ $section-gap: 1.5rem;
   .comment-text {
     margin: 0;
     color: $text-mid;
-    font-size: 0.85rem;
+    font-size: 0.94rem;
     line-height: 1.55;
   }
 
@@ -1019,6 +1096,52 @@ $section-gap: 1.5rem;
     background: transparent;
     color: $text-light;
     cursor: pointer;
+  }
+
+  .comment-actions {
+    position: relative;
+  }
+
+  .comment-menu {
+    position: absolute;
+    top: calc(100% + 0.35rem);
+    right: 0;
+    z-index: 4;
+    display: grid;
+    min-width: 10.5rem;
+    overflow: hidden;
+    border: 1px solid rgba($purple-mid, 0.18);
+    border-radius: 0.75rem;
+    background: #ffffff;
+    box-shadow: 0 1rem 2.2rem rgba(15, 23, 42, 0.18);
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: $text-mid;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 800;
+      padding: 0.72rem 0.85rem;
+      text-align: left;
+
+      &:hover {
+        background: rgba($purple-mid, 0.07);
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+
+    &__danger {
+      color: #ef4444 !important;
+    }
   }
 
   .btn-view-comments {
@@ -1726,6 +1849,26 @@ $section-gap: 1.5rem;
     color: #9ca3af;
   }
 
+  .btn-cancel-review {
+    border-color: rgba(168, 85, 247, 0.36);
+    background: rgba(30, 18, 54, 0.52);
+    color: #c4b5fd;
+  }
+
+  .comment-menu {
+    border-color: rgba(168, 85, 247, 0.28);
+    background: rgba(17, 20, 37, 0.98);
+    box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, 0.38);
+
+    button {
+      color: #d8d2e8;
+
+      &:hover {
+        background: rgba(168, 85, 247, 0.14);
+      }
+    }
+  }
+
   .btn-view-comments {
     border-color: rgba(168, 85, 247, 0.46);
     background: rgba(30, 18, 54, 0.6);
@@ -1945,8 +2088,12 @@ $section-gap: 1.5rem;
     }
 
     .comment-item {
-      grid-template-columns: 3rem minmax(0, 1fr) 1.5rem;
+      grid-template-columns: 3rem minmax(0, 1fr);
       gap: 0.75rem;
+
+      &--has-actions {
+        grid-template-columns: 3rem minmax(0, 1fr) 1.5rem;
+      }
     }
 
     .comment-avatar {

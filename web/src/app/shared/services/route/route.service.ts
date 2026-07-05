@@ -31,13 +31,13 @@ export class RouteService {
     }
   }
 
-  navigateToDrawer(drawerPath: string, mobileFallbackPath: string) {
+  navigateToDrawer(drawerPath: string, mobileFallbackPath: string, queryParams?: Record<string, string>) {
     if (!this.isDesktopDrawerAvailable()) {
       this.navigateByUrl(mobileFallbackPath);
       return;
     }
 
-    this.router.navigate([{ outlets: { drawer: [drawerPath] } }]);
+    this.router.navigate([{ outlets: { drawer: [drawerPath] } }], { queryParams });
   }
 
   closeDrawer() {

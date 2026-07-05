@@ -9,6 +9,27 @@
           <i class="fa-solid fa-arrow-left"></i>
         </button>
 
+        @if (isEventCreator()) {
+          <div class="hero-owner-menu">
+            <button type="button" class="hero-menu-trigger" aria-label="Event options" (click)="toggleEventMenu()">
+              <i class="fa-solid fa-ellipsis"></i>
+            </button>
+
+            @if (isEventMenuOpen) {
+              <div class="hero-menu-popover">
+                <button type="button" (click)="openEditEvent()">
+                  <i class="fa-regular fa-pen-to-square"></i>
+                  Edit
+                </button>
+                <button type="button" (click)="closeEventMenu()">
+                  <i class="fa-solid fa-xmark"></i>
+                  Cancel
+                </button>
+              </div>
+            }
+          </div>
+        }
+
         <div class="hero-bottom">
           <h1 class="hero-title">{{ eventDetails?.title }}</h1>
 
@@ -144,7 +165,7 @@
             </div>
             <div class="info-row">
               <i class="fa-solid fa-users"></i>
-              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ getRemainingSpots() }} left</span>
+              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel }}</span>
             </div>
           </div>
         </section>
@@ -259,140 +280,11 @@
         </section>
       }
 
-      <div class="review-grid" [class.review-grid--single]="!canLeaveReview()">
-        @if (canLeaveReview()) {
-          <section class="ed-section review-card review-card--compose" id="add-comment">
-            <div class="review-card__header">
-              <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
-              <div>
-                <h3>Leave a Review <span aria-hidden="true">✨</span></h3>
-                <p>Share your vibe! Attendees can rate and review after the event.</p>
-              </div>
-            </div>
-
-            <form class="review-form" [formGroup]="reviewForm" (ngSubmit)="addReviewComment()">
-              <div class="review-rating-panel">
-                <div class="stars-row">
-                  @for (star of stars; track $index) {
-                    @let starValue = $index + 1;
-                    <input type="radio" [id]="'rating-' + starValue" formControlName="rating" [value]="starValue" hidden />
-                    <label [for]="'rating-' + starValue"
-                      (mouseenter)="hoverRating = starValue"
-                      (mouseleave)="hoverRating = 0"
-                      [class.is-active]="hoverRating >= starValue || reviewForm.get('rating')?.value >= starValue">
-                      <i [class]="(hoverRating >= starValue || reviewForm.get('rating')?.value >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
-                    </label>
-                  }
-                </div>
-                <div class="tap-to-rate">
-                  <span></span>
-                  Tap to rate
-                  <span></span>
-                </div>
-              </div>
-
-              <div class="review-text-panel">
-                <div class="review-textarea-wrap">
-                  <textarea formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
-                  <span class="review-char-count">{{ reviewCommentLength }}/250</span>
-                </div>
-              </div>
-
-              <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting">
-                @if (isSubmitting) { <i class="fa-solid fa-spinner fa-spin"></i> }
-                @else { <i class="fa-regular fa-paper-plane"></i> }
-                {{ isSubmitting ? 'Posting...' : 'Post Review' }}
-              </button>
-
-              <p class="review-privacy">
-                <i class="fa-solid fa-lock"></i>
-                Your review is public and will help others.
-              </p>
-            </form>
-          </section>
-        }
-
-        <section class="ed-section reviews-panel">
-          <div class="reviews-panel__header">
-            <div class="reviews-panel__title">
-              <span class="review-card__icon"><i class="fa-regular fa-comment"></i></span>
-              <div>
-                <h3>Reviews &amp; Comments</h3>
-                <p>See what other attendees thought about this event.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="reviews-panel__stats">
-            <div class="review-stat">
-              <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star"></i></span>
-              <span class="review-stat__copy">
-                <strong>{{ eventAverageRating | number:'1.1-1' }}</strong>
-                <small>Average rating</small>
-              </span>
-            </div>
-            <div class="review-stat">
-              <span class="review-stat__icon"><i class="fa-regular fa-comment-dots"></i></span>
-              <span class="review-stat__copy">
-                <strong>{{ reviewCount }}</strong>
-                <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
-              </span>
-            </div>
-          </div>
-
-          @if (reviewCount === 0) {
-            <div class="empty-comments">
-              <div class="empty-icon"><i class="fa-regular fa-comments"></i></div>
-              <p class="empty-title">No reviews yet</p>
-              <p class="empty-subtitle">Be the first to review this vibe</p>
-            </div>
-          } @else {
-            <div class="comment-list">
-            @for (review of visibleReviews; track $index) {
-              <div class="comment-item">
-                <img class="comment-avatar"
-                     [src]="review.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                     (error)="$any($event.target).src = 'assets/images/default-profile.png'">
-
-                <div class="comment-body">
-                  <div class="comment-header">
-                    <div class="comment-author">
-                      <span class="username">{{ review.raterUserId?.username || 'Guest' }}</span>
-                      <i class="fa-solid fa-circle-check reviewer-check"></i>
-                      <span class="attended-badge">
-                        <i class="fa-solid fa-certificate"></i>
-                        Attended
-                      </span>
-                    </div>
-                    <span class="timestamp">
-                      <i class="fa-regular fa-clock"></i>
-                      {{ getTimeAgo(review.updatedAt || review.createdAt) }}
-                    </span>
-                  </div>
-                  <div class="comment-stars">
-                    @for (i of [1, 2, 3, 4, 5]; track $index) {
-                      <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
-                    }
-                  </div>
-                  <p class="comment-text">{{ review.comment }}</p>
-                </div>
-
-                <button type="button" class="comment-more" aria-label="More options">
-                  <i class="fa-solid fa-ellipsis"></i>
-                </button>
-              </div>
-            }
-            </div>
-
-            @if (shouldShowReviewToggle) {
-              <button type="button" class="btn-view-comments" (click)="toggleReviews()">
-                {{ showAllReviews ? 'Show fewer comments' : 'View all comments' }}
-                <i [class]="showAllReviews ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
-              </button>
-            }
-          }
-        </section>
-      </div>
+      <vl-event-comments
+        [eventId]="eventId"
+        [eventAverageRating]="eventDetails?.averageRating"
+        [canLeaveReview]="canLeaveReview()">
+      </vl-event-comments>
     </main>
 
     <aside class="vl-ed__sidebar">
@@ -466,7 +358,7 @@
           </div>
           <div class="info-row">
             <i class="fa-solid fa-users"></i>
-            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ getRemainingSpots() }} left</span>
+            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel }}</span>
           </div>
         </div>
       </section>

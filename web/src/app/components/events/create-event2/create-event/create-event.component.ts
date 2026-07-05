@@ -1,6 +1,7 @@
 import { Component, ElementRef, HostListener, Inject, NgZone, OnInit, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule, DatePipe, isPlatformBrowser } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { EventsService } from '../../../../shared/services/events/events.service';
 import { EventCategoryPresentationService } from '../../../../shared/services/events/event-category-presentation.service';
 import { RouteService } from '../../../../shared/services/route/route.service';
@@ -58,6 +59,7 @@ export class CreateEventComponent implements OnInit {
   galleryFiles: File[] = [];
   galleryPreviews: string[] = [];
   isImageLoading = false;
+  private existingCoverPreview: string | null = null;
 
   // ── Date helpers ─────────────────────────────────────
   today = new Date();
@@ -86,12 +88,16 @@ export class CreateEventComponent implements OnInit {
   // ── What to Expect options ────────────────────────────
   readonly availableExpectations = CREATE_EVENT_EXPECTATIONS;
   readonly hostNotesMaxLength = CREATE_EVENT_HOST_NOTES_MAX_LENGTH;
+  readonly cityOptions = ['Bangalore', 'Pune', 'Delhi', 'Patna'];
+  isCityDropdownOpen = false;
   isHostQuickAddExpanded = true;
   canScrollHostNotePillsLeft = false;
   canScrollHostNotePillsRight = false;
   isSubmittingEvent = false;
   isEventCreatedOverlayVisible = false;
   private createdEventId: string | null = null;
+  isEditMode = false;
+  private editEventId: string | null = null;
   private hostNotePillsElement: HTMLElement | null = null;
 
   getCategoryDisplayTitle(cat: any): string {
@@ -260,6 +266,11 @@ export class CreateEventComponent implements OnInit {
     this.scheduleHostNoteScrollStateUpdate();
   }
 
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.isCityDropdownOpen = false;
+  }
+
   updateHostNoteScrollState(): void {
     const pills = this.hostNotePillsElement;
 
@@ -371,12 +382,29 @@ export class CreateEventComponent implements OnInit {
     this.eventForm.patchValue({ eventTime: newTime });
   }
 
+  get selectedCity(): string {
+    return this.eventForm.get('address.city')?.value || 'Bangalore';
+  }
+
+  toggleCityDropdown(event: Event): void {
+    event.stopPropagation();
+    this.isCityDropdownOpen = !this.isCityDropdownOpen;
+  }
+
+  selectCity(city: string): void {
+    this.eventForm.get('address.city')?.setValue(city);
+    this.eventForm.get('address.city')?.markAsDirty();
+    this.eventForm.get('address.city')?.markAsTouched();
+    this.isCityDropdownOpen = false;
+  }
+
   constructor(
     private fb: FormBuilder,
     private eventService: EventsService,
     private categoryPresentation: EventCategoryPresentationService,
     private router: RouteService,
     private sharedService: SharedService,
+    private activatedRoute: ActivatedRoute,
     private ngZone: NgZone,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {
@@ -389,12 +417,9 @@ export class CreateEventComponent implements OnInit {
       eventTime:        ['', Validators.required],
       address: this.fb.group({
         street:  ['', Validators.required],
-        area:    [''],
+        area:    ['', Validators.required],
         landmark:[''],
-        city:    ['', Validators.required],
-        state:   ['', Validators.required],
-        pinCode: ['', [Validators.required, Validators.minLength(5)]],
-        country: ['India'],
+        city:    ['Bangalore', Validators.required],
       }),
       attendeeLimit:     [CREATE_EVENT_CAPACITY_CONFIG.defaultLimitedValue, [Validators.required, Validators.min(this.capacityMin), Validators.max(this.capacityMax)]],
       audiencePreference: ['open'],
@@ -448,7 +473,11 @@ export class CreateEventComponent implements OnInit {
   }
 
   get createHeaderTitle(): string {
-    return this.selectedCreationConfig.headerTitle;
+    return this.isEditMode ? 'Edit Event' : this.selectedCreationConfig.headerTitle;
+  }
+
+  get createHeaderSubtitle(): string {
+    return this.isEditMode ? 'Update the details for your vibe' : 'Let\'s set up your amazing event';
   }
 
   get titleFieldLabel(): string {
@@ -503,6 +532,10 @@ export class CreateEventComponent implements OnInit {
     return this.eventForm.get('eventDate')?.value || this.minDate;
   }
 
+  get datePickerMinDate(): Date | null {
+    return this.isEditMode ? null : this.minDate;
+  }
+
   get eventCreatedAnimationPath(): string {
     return this.selectedCreationConfig.animationPath;
   }
@@ -516,15 +549,21 @@ export class CreateEventComponent implements OnInit {
       street: '',
       area: '',
       landmark: '',
-      city: '',
-      state: '',
-      pinCode: '',
-      country: 'India'
+      city: 'Bangalore',
     });
   }
 
   // ── Lifecycle ─────────────────────────────────────────
   ngOnInit(): void {
+    this.activatedRoute.queryParamMap.subscribe(params => {
+      this.isEditMode = params.get('mode') === 'edit';
+      this.editEventId = this.isEditMode ? params.get('eventId') : null;
+
+      if (this.isEditMode && this.editEventId) {
+        this.loadEventForEdit(this.editEventId);
+      }
+    });
+
     this.eventService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
         this.categories = res.data.categories;
@@ -533,6 +572,142 @@ export class CreateEventComponent implements OnInit {
     });
     this.updateMinTime();
     this.updateDateValidatorsForCreationKind();
+  }
+
+  private loadEventForEdit(eventId: string): void {
+    this.eventService.getEventDetails(eventId).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200 || !res.data) {
+          console.warn('Unexpected response format or status code:', res);
+          return;
+        }
+
+        const event = res.data;
+        const attendeeLimit = Number(event.attendeeLimit || CREATE_EVENT_CAPACITY_CONFIG.defaultLimitedValue);
+        const isLimited = attendeeLimit < this.openCapacityLimit;
+        const audiencePreference = this.normalizeAudiencePreference(event.audiencePreference, event.attendeeMix);
+        const price = Number(event.price || 0);
+
+        this.currentStep = 1;
+        this.mainImageFile = null;
+        this.existingCoverPreview = event.image ? this.sharedService.getImageUrl(event.image) : null;
+        this.mainImagePreview = this.existingCoverPreview;
+        this.galleryFiles = [];
+        this.galleryPreviews = [];
+        this.mixType = audiencePreference;
+
+        this.eventForm.patchValue({
+          title: event.title || '',
+          description: event.description || '',
+          shortDescription: event.shortDescription || '',
+          eventDate: this.toDateControlValue(event.eventDate),
+          endDate: this.toDateControlValue(event.endDate || event.eventDate),
+          eventTime: this.toTimeControlValue(event.eventTime),
+          address: {
+            street: event.address?.street || '',
+            area: event.address?.area || '',
+            landmark: event.address?.landmark || '',
+            city: this.normalizeCity(event.address?.city),
+          },
+          attendeeLimit: isLimited ? attendeeLimit : this.openCapacityLimit,
+          audiencePreference,
+          attendeeMix: Number(event.attendeeMix ?? this.attendeeMixFromPreference(audiencePreference)),
+          hostOnlyChat: Boolean(event.hostOnlyChat),
+          safetyGuidelines: Boolean(event.safetyGuidelines),
+          safetyAgreement: true,
+          expectations: Array.isArray(event.expectations) ? event.expectations : [],
+          tags: event.tags || '',
+          category: this.getCategoryId(event.category),
+          cost: event.cost || (price > 0 ? 'Paid' : 'Free'),
+          price: price || '',
+        });
+
+        this.setCapacityType(isLimited);
+        if (isLimited) {
+          this.eventForm.patchValue({ attendeeLimit });
+        }
+        this.syncCustomTimePickerFromForm();
+        this.updateMinTime();
+        this.updateDateValidatorsForCreationKind();
+        this.eventForm.markAsPristine();
+        this.eventForm.markAsUntouched();
+        this.scrollPageToTop();
+      },
+      error: err => {
+        console.error('Error loading event for edit:', err);
+      }
+    });
+  }
+
+  private getCategoryId(category: any): string {
+    if (!category) return '';
+    if (typeof category === 'string') return category;
+    return category._id || category.id || '';
+  }
+
+  private normalizeCity(city: unknown): string {
+    const value = String(city || '').trim();
+    if (!value) return 'Bangalore';
+
+    const lowerValue = value.toLowerCase();
+    if (lowerValue === 'bengaluru' || lowerValue === 'bengaluru urban' || lowerValue === 'banglore') {
+      return 'Bangalore';
+    }
+
+    return this.cityOptions.includes(value) ? value : 'Bangalore';
+  }
+
+  private normalizeAudiencePreference(value: unknown, attendeeMix: unknown): 'open' | 'women' | 'men' {
+    const preference = String(value || '').toLowerCase();
+    if (preference === 'open' || preference === 'women' || preference === 'men') return preference;
+
+    const mix = Number(attendeeMix);
+    if (Number.isFinite(mix)) {
+      if (mix <= 20) return 'women';
+      if (mix >= 80) return 'men';
+    }
+
+    return 'open';
+  }
+
+  private attendeeMixFromPreference(preference: 'open' | 'women' | 'men'): number {
+    if (preference === 'women') return 10;
+    if (preference === 'men') return 90;
+    return 50;
+  }
+
+  private toDateControlValue(value: string | Date | null | undefined): Date | string {
+    if (!value) return '';
+
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? '' : date;
+  }
+
+  private toTimeControlValue(value: string | null | undefined): string {
+    const raw = String(value || '').trim();
+    const match = raw.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
+    if (!match) return '';
+
+    let hours = Number(match[1]);
+    const minutes = Number(match[2] || 0);
+    const modifier = match[3]?.toUpperCase();
+
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+  }
+
+  private syncCustomTimePickerFromForm(): void {
+    const value = this.eventForm.get('eventTime')?.value;
+    if (!value) return;
+
+    const [hourValue, minuteValue] = value.split(':');
+    let hour = Number(hourValue);
+    this.selectedPeriod = hour >= 12 ? 'PM' : 'AM';
+    hour = hour % 12 || 12;
+    this.selectedHour = String(hour).padStart(2, '0');
+    this.selectedMinute = minuteValue || '00';
   }
 
   // ── Stepper Navigation ────────────────────────────────
@@ -573,9 +748,8 @@ export class CreateEventComponent implements OnInit {
       !f.get('eventDate')?.value ||
       (this.isEscapeCreation ? !f.get('endDate')?.value : !f.get('eventTime')?.value) ||
       !addr.get('street')?.value ||
-      !addr.get('city')?.value ||
-      !addr.get('state')?.value ||
-      !addr.get('pinCode')?.value
+      !addr.get('area')?.value ||
+      !addr.get('city')?.value
     );
   }
 
@@ -602,7 +776,7 @@ export class CreateEventComponent implements OnInit {
           valid = false;
         }
       });
-      const addressControls = ['street', 'city', 'state', 'pinCode'];
+      const addressControls = ['street', 'area', 'city'];
       addressControls.forEach(ctrl => {
         if (this.addressGroup.get(ctrl)?.invalid) {
           this.addressGroup.get(ctrl)?.markAsTouched();
@@ -632,7 +806,7 @@ export class CreateEventComponent implements OnInit {
           alert('Trip end date cannot be before the start date.');
           return false;
         }
-      } else if (selectedDate && selectedTime) {
+      } else if (!this.isEditMode && selectedDate && selectedTime) {
         const now = new Date();
         const [hours, minutes] = selectedTime.split(':');
         const eventDateTime = new Date(selectedDate);
@@ -699,21 +873,6 @@ export class CreateEventComponent implements OnInit {
     return ((this.eventForm.get('expectations')?.value ?? []) as string[]).includes(tag);
   }
 
-  // ── Pin Code Auto-Fill ────────────────────────────────
-  onPinCodeBlur(): void {
-    const postalCode = this.addressGroup.get('pinCode')?.value;
-    if (postalCode && postalCode.length >= 5) {
-      this.eventService.getInfoByPostalCode(postalCode).subscribe((res: any) => {
-        if (!res?.data) return;
-        this.addressGroup.patchValue({
-          city:    res.data.city,
-          state:   res.data.state,
-          country: res.data.country
-        });
-      });
-    }
-  }
-
   // ── Image Handling ────────────────────────────────────
   async onMainImageChange(event: any): Promise<void> {
     const file: File = event.target.files[0];
@@ -735,6 +894,12 @@ export class CreateEventComponent implements OnInit {
   }
 
   removeMainImage(): void {
+    if (this.isEditMode && this.existingCoverPreview) {
+      this.mainImageFile = null;
+      this.mainImagePreview = this.existingCoverPreview;
+      return;
+    }
+
     this.mainImageFile = null;
     this.mainImagePreview = null;
   }
@@ -794,6 +959,11 @@ export class CreateEventComponent implements OnInit {
       return;
     }
 
+    if (this.isEditMode && !this.editEventId) {
+      console.error('Cannot update event without an event id.');
+      return;
+    }
+
     this.isSubmittingEvent = true;
 
     const formData = new FormData();
@@ -810,22 +980,40 @@ export class CreateEventComponent implements OnInit {
       }
     });
 
-    try {
-      const coverImage = await this.getCoverImageForPayload();
-      formData.append('image', coverImage);
-    } catch (err) {
-      this.isSubmittingEvent = false;
-      console.error('Error preparing cover image:', err);
-      return;
+    if (this.isEditMode && this.editEventId) {
+      formData.append('eventId', this.editEventId);
+      if (this.mainImageFile) {
+        formData.append('image', this.mainImageFile);
+      }
+    } else {
+      try {
+        const coverImage = await this.getCoverImageForPayload();
+        formData.append('image', coverImage);
+      } catch (err) {
+        this.isSubmittingEvent = false;
+        console.error('Error preparing cover image:', err);
+        return;
+      }
     }
 
     this.galleryFiles.forEach(f => formData.append('gallery', f));
 
-    this.eventService.createEvent(formData).subscribe({
+    const request$ = this.isEditMode
+      ? this.eventService.updateEvent(formData)
+      : this.eventService.createEvent(formData);
+
+    request$.subscribe({
       next: res => {
         const eventId = res?.data?.event?._id;
 
-        if (res?.success && res.statusCode === 201 && eventId) {
+        if (this.isEditMode && res?.success && res.statusCode === 200 && eventId) {
+          this.isSubmittingEvent = false;
+          this.eventForm.markAsPristine();
+          this.router.navigate('/events', eventId);
+          return;
+        }
+
+        if (!this.isEditMode && res?.success && res.statusCode === 201 && eventId) {
           this.createdEventId = eventId;
           this.isEventCreatedOverlayVisible = true;
           return;
@@ -835,7 +1023,7 @@ export class CreateEventComponent implements OnInit {
       },
       error: err => {
         this.isSubmittingEvent = false;
-        console.error('Error creating event:', err);
+        console.error(`Error ${this.isEditMode ? 'updating' : 'creating'} event:`, err);
       }
     });
   }

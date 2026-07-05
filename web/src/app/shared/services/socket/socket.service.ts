@@ -65,6 +65,11 @@ export class SocketService {
     this.socket.emit('mark_as_read', this.userService.userDetails.id, [notificationId]);
   }
 
+  markNotificationsAsRead(notificationIds: string[]) {
+    if (!notificationIds.length) return;
+    this.socket.emit('mark_as_read', this.userService.userDetails.id, notificationIds);
+  }
+
   registerUser(userId: string) {
     this.socket.emit('register', userId);
   }

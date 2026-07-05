@@ -55,6 +55,10 @@ export class EventsService {
     return this.httpService.http.post(`${this.baseUrl}/review/add`, review);
   }
 
+  deleteReview(reviewId: string) {
+    return this.httpService.http.post(`${this.baseUrl}/review/delete`, { reviewId });
+  }
+
   getAttendeeDetails(attendeeIds: string[]) {
     return this.httpService.http.post(`${this.baseUrl}/getAttendeeDetails`, { attendeeIds: attendeeIds })
   }
