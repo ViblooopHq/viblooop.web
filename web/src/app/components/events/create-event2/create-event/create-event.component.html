@@ -1,10 +1,19 @@
 <vl-form-drawer [ariaLabel]="isEditMode ? 'Edit event' : 'Create event'">
+@if (isEventCreatedOverlayVisible) {
+  <vl-event-created-overlay
+    [animationPath]="eventCreatedAnimationPath"
+    (done)="finishEventCreation()"
+    (viewEvent)="viewCreatedEvent()">
+  </vl-event-created-overlay>
+} @else {
 <!-- Top App Bar -->
 <header class="create-header">
   <div class="header-inner">
-    <button class="back-icon-btn" (click)="prevStep()">
-      <span class="material-symbols-outlined">arrow_back</span>
-    </button>
+    @if (currentStep > 0) {
+      <button class="back-icon-btn" (click)="prevStep()">
+        <span class="material-symbols-outlined">arrow_back</span>
+      </button>
+    }
     <div class="header-copy">
       <h1 class="header-title">{{ createHeaderTitle }}</h1>
       <p>{{ createHeaderSubtitle }}</p>
@@ -230,6 +239,11 @@
               </div>
             }
           </div>
+
+          <label class="location-stack-field">
+            <span class="location-stack-field__label">Pincode <em>(Optional)</em></span>
+            <input class="location-input" type="text" formControlName="pinCode" placeholder="e.g. 560095">
+          </label>
         </div>
       </div>
 
@@ -863,12 +877,5 @@
   }
 
 </form>
-
-@if (isEventCreatedOverlayVisible) {
-  <vl-event-created-overlay
-    [animationPath]="eventCreatedAnimationPath"
-    (done)="finishEventCreation()"
-    (viewEvent)="viewCreatedEvent()">
-  </vl-event-created-overlay>
 }
 </vl-form-drawer>

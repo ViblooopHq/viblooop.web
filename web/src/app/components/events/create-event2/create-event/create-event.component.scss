@@ -39,9 +39,9 @@
   gap: 16px;
 
   @media (min-width: 768px) {
-    max-width: 620px;
+    max-width: 760px;
     height: auto;
-    padding: 0 24px;
+    padding: 0 96px;
   }
 }
 
@@ -101,9 +101,9 @@
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
-    max-width: 620px;
+    max-width: 760px;
     margin: 22px auto 0;
-    padding: 0 24px;
+    padding: 0 96px;
 
     span {
       height: 7px;
@@ -155,8 +155,8 @@
   gap: 12px;
 
   @media (min-width: 768px) {
-    max-width: 520px;
-    padding: 92px 24px 60px;
+    max-width: 760px;
+    padding: 92px 96px 60px;
   }
 }
 
@@ -3243,7 +3243,6 @@ input:checked+.toggle-track::before {
 
 /* ── REVIEW STEP MODERN ── */
 .step-content--review {
-  max-width: 500px !important;
   margin: 0 auto;
 }
 

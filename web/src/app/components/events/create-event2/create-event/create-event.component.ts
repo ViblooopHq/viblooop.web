@@ -420,6 +420,7 @@ export class CreateEventComponent implements OnInit {
         area:    ['', Validators.required],
         landmark:[''],
         city:    ['Bangalore', Validators.required],
+        pinCode: [''],
       }),
       attendeeLimit:     [CREATE_EVENT_CAPACITY_CONFIG.defaultLimitedValue, [Validators.required, Validators.min(this.capacityMin), Validators.max(this.capacityMax)]],
       audiencePreference: ['open'],
@@ -550,6 +551,7 @@ export class CreateEventComponent implements OnInit {
       area: '',
       landmark: '',
       city: 'Bangalore',
+      pinCode: '',
     });
   }
 
@@ -608,6 +610,7 @@ export class CreateEventComponent implements OnInit {
             area: event.address?.area || '',
             landmark: event.address?.landmark || '',
             city: this.normalizeCity(event.address?.city),
+            pinCode: event.address?.pinCode || '',
           },
           attendeeLimit: isLimited ? attendeeLimit : this.openCapacityLimit,
           audiencePreference,
@@ -1015,7 +1018,9 @@ export class CreateEventComponent implements OnInit {
 
         if (!this.isEditMode && res?.success && res.statusCode === 201 && eventId) {
           this.createdEventId = eventId;
+          this.isSubmittingEvent = false;
           this.isEventCreatedOverlayVisible = true;
+          this.scrollPageToTop();
           return;
         }
 
