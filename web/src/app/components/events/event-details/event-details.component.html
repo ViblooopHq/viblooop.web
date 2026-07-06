@@ -10,24 +10,24 @@
         </button>
 
         @if (isEventCreator()) {
-          <div class="hero-owner-menu">
-            <button type="button" class="hero-menu-trigger" aria-label="Event options" (click)="toggleEventMenu()">
-              <i class="fa-solid fa-ellipsis"></i>
-            </button>
+        <div class="hero-owner-menu">
+          <button type="button" class="hero-menu-trigger" aria-label="Event options" (click)="toggleEventMenu()">
+            <i class="fa-solid fa-ellipsis"></i>
+          </button>
 
-            @if (isEventMenuOpen) {
-              <div class="hero-menu-popover">
-                <button type="button" (click)="openEditEvent()">
-                  <i class="fa-regular fa-pen-to-square"></i>
-                  Edit
-                </button>
-                <button type="button" (click)="closeEventMenu()">
-                  <i class="fa-solid fa-xmark"></i>
-                  Cancel
-                </button>
-              </div>
-            }
+          @if (isEventMenuOpen) {
+          <div class="hero-menu-popover">
+            <button type="button" (click)="openEditEvent()">
+              <i class="fa-regular fa-pen-to-square"></i>
+              Edit
+            </button>
+            <button type="button" (click)="closeEventMenu()">
+              <i class="fa-solid fa-xmark"></i>
+              Cancel
+            </button>
           </div>
+          }
+        </div>
         }
 
         <div class="hero-bottom">
@@ -45,26 +45,27 @@
           </div>
 
           @if (isEventEnded) {
-            <div class="hero-status-row">
-              <span class="event-status-pill event-status-pill--ended">
-                <i class="fa-solid fa-circle-check event-status-pill__icon"></i>
-                Event ended
-              </span>
-            </div>
+          <div class="hero-status-row">
+            <span class="event-status-pill event-status-pill--ended">
+              <i class="fa-solid fa-circle-check event-status-pill__icon"></i>
+              Event ended
+            </span>
+          </div>
           }
 
           <div class="hero-action-row">
             <div class="hero-attendance">
               <div class="avatar-stack">
-                <img [src]="eventDetails?.createdBy?.profileImage ? (eventDetails.createdBy.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                     (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-                     [matTooltip]="'Creator: ' + eventDetails?.createdBy?.username">
+                <img
+                  [src]="eventDetails?.createdBy?.profileImage ? (eventDetails.createdBy.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  [matTooltip]="'Creator: ' + eventDetails?.createdBy?.username">
                 @for (att of attendessProfiles | slice:0:5; track $index) {
-                  <img [src]="att.profileImage ? (att.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                       (error)="$any($event.target).src = 'assets/images/default-profile.png'">
+                <img [src]="att.profileImage ? (att.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'">
                 }
                 @if (getTotalAttendeesCount() > 6) {
-                  <span class="more-count">+{{ getTotalAttendeesCount() - 6 }}</span>
+                <span class="more-count">+{{ getTotalAttendeesCount() - 6 }}</span>
                 }
               </div>
               <span class="hero-attendance-label">
@@ -74,23 +75,22 @@
             </div>
 
             @if (!isEventEnded) {
-              @if (!isEventCreator()) {
-                <button class="btn-join-hero"
-                        (click)="requestJoinEvent()"
-                        [disabled]="joinRequestStatus() !== 'Request Join'">
-                  <i class="fa-solid fa-fire"></i>
-                  {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel : joinRequestStatus() }}
-                  <i class="fa-solid fa-chevron-right"></i>
-                </button>
-              } @else {
-                <button class="btn-view-requests" routerLink="/notifications">
-                  <i class="fa-solid fa-user-group"></i>
-                  View Requests
-                  @if (pendingJoinRequestCount > 0) {
-                    <span class="btn-view-requests__count">{{ pendingJoinRequestCount }}</span>
-                  }
-                </button>
+            @if (!isEventCreator()) {
+            <button class="btn-join-hero" (click)="requestJoinEvent()"
+              [disabled]="joinRequestStatus() !== 'Request Join'">
+              <i class="fa-solid fa-fire"></i>
+              {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel : joinRequestStatus() }}
+              <i class="fa-solid fa-chevron-right"></i>
+            </button>
+            } @else {
+            <button class="btn-view-requests" routerLink="/notifications">
+              <i class="fa-solid fa-user-group"></i>
+              View Requests
+              @if (pendingJoinRequestCount > 0) {
+              <span class="btn-view-requests__count">{{ pendingJoinRequestCount }}</span>
               }
+            </button>
+            }
             }
           </div>
         </div>
@@ -108,24 +108,22 @@
 
           <div class="host-summary">
             <img class="host-avatar"
-                 [src]="mobileCreator?.profileImage ? (mobileCreator.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                 (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-                 (click)="redirectToHostProfile()"
-                 [matTooltip]="'View Profile'"
-                 alt="Host">
+              [src]="mobileCreator?.profileImage ? (mobileCreator.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+              (error)="$any($event.target).src = 'assets/images/default-profile.png'" (click)="redirectToHostProfile()"
+              [matTooltip]="'View Profile'" alt="Host">
 
             <div class="host-summary__content">
               <div class="host-trust-row">
                 @if (isNewHost) {
-                  <span class="host-trust-pill host-trust-pill--new">
-                    <i class="fa-regular fa-star"></i>
-                    New Host
-                  </span>
+                <span class="host-trust-pill host-trust-pill--new">
+                  <i class="fa-regular fa-star"></i>
+                  New Host
+                </span>
                 } @else if (shouldShowHostRating) {
-                  <span class="host-trust-pill host-trust-pill--rating">
-                    <i class="fa-solid fa-star"></i>
-                    {{ hostRating | number:'1.1-1' }} rating
-                  </span>
+                <span class="host-trust-pill host-trust-pill--rating">
+                  <i class="fa-solid fa-star"></i>
+                  {{ hostRating | number:'1.1-1' }} rating
+                </span>
                 }
                 <span class="host-trust-pill host-trust-pill--verified">
                   <i class="fa-solid fa-shield-halved"></i>
@@ -152,10 +150,10 @@
               <span>{{ isEscapeEvent ? tripDateRangeLabel : (eventDetails?.eventDate | date:'EEEE, d MMMM y') }}</span>
             </div>
             @if (!isEscapeEvent) {
-              <div class="info-row">
-                <i class="fa-regular fa-clock"></i>
-                <span>{{ eventDetails?.eventTime }} onwards</span>
-              </div>
+            <div class="info-row">
+              <i class="fa-regular fa-clock"></i>
+              <span>{{ eventDetails?.eventTime }} onwards</span>
+            </div>
             }
             <div class="info-row">
               <i class="fa-solid fa-ticket"></i>
@@ -167,7 +165,8 @@
             </div>
             <div class="info-row">
               <i class="fa-solid fa-users"></i>
-              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel }}</span>
+              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel
+                }}</span>
             </div>
           </div>
         </section>
@@ -201,35 +200,28 @@
       </section>
 
       @if (eventGalleryImages.length > 0) {
-        <section class="ed-section">
-          <h3 class="ed-section-title">Event Gallery</h3>
-          <div class="gallery-scroll">
-            @for (galleryImage of eventGalleryImages; track galleryImage.path) {
-              <button type="button" class="gallery-item" (click)="openGalleryPreview($index)">
-                <img [src]="galleryImage.url" alt="Gallery">
-              </button>
-            }
-          </div>
-          @if (isEventCreator()) {
-            <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)" hidden />
-            <button class="btn-upload" (click)="triggerPhotoUpload()">
-              <i class="fa-solid fa-camera"></i> Upload Photos
-            </button>
+      <section class="ed-section">
+        <h3 class="ed-section-title">Event Gallery</h3>
+        <div class="gallery-scroll">
+          @for (galleryImage of eventGalleryImages; track galleryImage.path) {
+          <button type="button" class="gallery-item" (click)="openGalleryPreview($index)">
+            <img [src]="galleryImage.url" alt="Gallery">
+          </button>
           }
-        </section>
+        </div>
+        @if (isEventCreator()) {
+        <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)"
+          hidden />
+        <button class="btn-upload" (click)="triggerPhotoUpload()">
+          <i class="fa-solid fa-camera"></i> Upload Photos
+        </button>
+        }
+      </section>
       }
 
-      <vl-gallery
-        #eventGalleryPreview
-        class="event-gallery-preview"
-        [images]="eventGalleryImages"
-        [showHeader]="false"
-        [showGrid]="false"
-        [showArchiveAction]="false"
-        [showActions]="true"
-        [canDownload]="canDownloadGalleryImage()"
-        [canDelete]="isEventCreator()"
-        [deletingImagePath]="deletingGalleryImagePath"
+      <vl-gallery #eventGalleryPreview class="event-gallery-preview" [images]="eventGalleryImages" [showHeader]="false"
+        [showGrid]="false" [showArchiveAction]="false" [showActions]="true" [canDownload]="canDownloadGalleryImage()"
+        [canDelete]="isEventCreator()" [deletingImagePath]="deletingGalleryImagePath"
         (deleteImage)="removeGalleryImage($event.path || '')">
       </vl-gallery>
 
@@ -256,52 +248,50 @@
           </div>
 
           @if (isMapVisible) {
-            <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
-              (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
-              <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
-                <map-marker [position]="position" />
-              </google-map>
-            </div>
+          <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
+            (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
+            <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
+              <map-marker [position]="position" />
+            </google-map>
+          </div>
           }
         </div>
       </section>
 
       @if (isUserAttendee()) {
-        <section class="ed-section chat-card chat-card--mobile">
-          <button class="btn-chat" (click)="toggleChat()">
-            <i class="fa-regular fa-comments"></i>
-            <span class="chat-copy">
-              <span class="chat-title-row">
-                <strong>Event Chat</strong>
-                <small>{{ getTotalAttendeesCount() }}</small>
-              </span>
-              <span class="chat-subtitle">Keep in touch with attendees</span>
+      <section class="ed-section chat-card chat-card--mobile">
+        <button class="btn-chat" (click)="toggleChat()">
+          <i class="fa-regular fa-comments"></i>
+          <span class="chat-copy">
+            <span class="chat-title-row">
+              <strong>Event Chat</strong>
+              <small>{{ getTotalAttendeesCount() }}</small>
             </span>
-            <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
-          </button>
-        </section>
+            <span class="chat-subtitle">Keep in touch with attendees</span>
+          </span>
+          <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+        </button>
+      </section>
       }
 
-      <vl-event-comments
-        [eventId]="eventId"
-        [eventAverageRating]="eventDetails?.averageRating"
+      <vl-event-comments [eventId]="eventId" [eventAverageRating]="eventDetails?.averageRating"
         [canLeaveReview]="canLeaveReview()">
       </vl-event-comments>
 
       @if (relatedEvents && relatedEvents.length > 0) {
-        <section class="ed-section">
-          <h3 class="ed-section-title">
-            <i class="fa-solid fa-location-crosshairs"></i>
-            Related Nearby Events
-          </h3>
-          <div class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar">
-            @for (event of relatedEvents; track event._id) {
-              <div class="min-w-[280px] max-w-[300px] shrink-0 snap-start">
-                <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
-              </div>
-            }
+      <section class="ed-section">
+        <h3 class="ed-section-title">
+          <i class="fa-solid fa-location-crosshairs"></i>
+          Related Nearby Events
+        </h3>
+        <div class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar w-full">
+          @for (event of relatedEvents; track event._id) {
+          <div class="min-w-[280px] max-w-[300px] shrink-0 snap-start">
+            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
           </div>
-        </section>
+          }
+        </div>
+      </section>
       }
     </main>
 
@@ -317,24 +307,22 @@
 
         <div class="host-summary">
           <img class="host-avatar"
-               [src]="creator?.profileImage ? (creator?.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-               (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-               (click)="redirectToHostProfile()"
-               [matTooltip]="'View Profile'"
-               alt="Host">
+            [src]="creator?.profileImage ? (creator?.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+            (error)="$any($event.target).src = 'assets/images/default-profile.png'" (click)="redirectToHostProfile()"
+            [matTooltip]="'View Profile'" alt="Host">
 
           <div class="host-summary__content">
             <div class="host-trust-row">
               @if (isNewHost) {
-                <span class="host-trust-pill host-trust-pill--new">
-                  <i class="fa-regular fa-star"></i>
-                  New Host
-                </span>
+              <span class="host-trust-pill host-trust-pill--new">
+                <i class="fa-regular fa-star"></i>
+                New Host
+              </span>
               } @else if (shouldShowHostRating) {
-                <span class="host-trust-pill host-trust-pill--rating">
-                  <i class="fa-solid fa-star"></i>
-                  {{ hostRating | number:'1.1-1' }} rating
-                </span>
+              <span class="host-trust-pill host-trust-pill--rating">
+                <i class="fa-solid fa-star"></i>
+                {{ hostRating | number:'1.1-1' }} rating
+              </span>
               }
               <span class="host-trust-pill host-trust-pill--verified">
                 <i class="fa-solid fa-shield-halved"></i>
@@ -376,7 +364,8 @@
           </div>
           <div class="info-row">
             <i class="fa-solid fa-users"></i>
-            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel }}</span>
+            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel
+              }}</span>
           </div>
         </div>
       </section>
@@ -404,30 +393,30 @@
           </div>
 
           @if (isMapVisible) {
-            <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
-              (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
-              <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
-                <map-marker [position]="position" />
-              </google-map>
-            </div>
+          <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
+            (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
+            <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
+              <map-marker [position]="position" />
+            </google-map>
+          </div>
           }
         </div>
       </section>
 
       @if (isUserAttendee()) {
-        <section class="ed-section chat-card chat-card--desktop">
-          <button class="btn-chat" (click)="toggleChat()">
-            <i class="fa-regular fa-comments"></i>
-            <span class="chat-copy">
-              <span class="chat-title-row">
-                <strong>Event Chat</strong>
-                <small>{{ getTotalAttendeesCount() }}</small>
-              </span>
-              <span class="chat-subtitle">Keep in touch with attendees</span>
+      <section class="ed-section chat-card chat-card--desktop">
+        <button class="btn-chat" (click)="toggleChat()">
+          <i class="fa-regular fa-comments"></i>
+          <span class="chat-copy">
+            <span class="chat-title-row">
+              <strong>Event Chat</strong>
+              <small>{{ getTotalAttendeesCount() }}</small>
             </span>
-            <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
-          </button>
-        </section>
+            <span class="chat-subtitle">Keep in touch with attendees</span>
+          </span>
+          <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+        </button>
+      </section>
       }
     </aside>
   </div>
@@ -446,5 +435,5 @@
 }
 
 @if (isChatVisible) {
-  <vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
+<vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
 }

@@ -56,12 +56,10 @@ $section-gap: 1.5rem;
     .hero-gradient {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        to top,
-        rgba(0,0,0,0.85) 0%,
-        rgba(0,0,0,0.35) 45%,
-        transparent 100%
-      );
+      background: linear-gradient(to top,
+          rgba(0, 0, 0, 0.85) 0%,
+          rgba(0, 0, 0, 0.35) 45%,
+          transparent 100%);
     }
 
     .hero-bottom {
@@ -79,7 +77,7 @@ $section-gap: 1.5rem;
       color: #fff;
       line-height: 1.15;
       margin-bottom: 0.75rem;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .hero-meta {
@@ -93,18 +91,21 @@ $section-gap: 1.5rem;
         display: flex;
         align-items: center;
         gap: 0.35rem;
-        color: rgba(255,255,255,0.9);
+        color: rgba(255, 255, 255, 0.9);
         font-size: 0.8125rem;
         font-weight: 600;
 
-        i, .material-symbols-outlined { font-size: 0.9375rem; }
+        i,
+        .material-symbols-outlined {
+          font-size: 0.9375rem;
+        }
       }
 
       .meta-dot {
         width: 4px;
         height: 4px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.5);
+        background: rgba(255, 255, 255, 0.5);
       }
     }
 
@@ -162,7 +163,9 @@ $section-gap: 1.5rem;
       border-radius: 2rem;
       margin-bottom: 1rem;
 
-      i { font-size: 0.875rem; }
+      i {
+        font-size: 0.875rem;
+      }
     }
 
     .hero-action-row {
@@ -239,12 +242,15 @@ $section-gap: 1.5rem;
         border: 2px solid #000;
         margin-left: -0.5rem;
         object-fit: cover;
-        &:first-child { margin-left: 0; }
+
+        &:first-child {
+          margin-left: 0;
+        }
       }
 
       .more-count {
         margin-left: 0.5rem;
-        color: rgba(255,255,255,0.8);
+        color: rgba(255, 255, 255, 0.8);
         font-size: 0.8125rem;
         font-weight: 600;
       }
@@ -262,7 +268,7 @@ $section-gap: 1.5rem;
       align-items: center;
       gap: 0.45rem;
       min-width: 0;
-      color: rgba(255,255,255,0.9);
+      color: rgba(255, 255, 255, 0.9);
       font-size: 0.86rem;
       font-weight: 800;
       line-height: 1.3;
@@ -284,14 +290,27 @@ $section-gap: 1.5rem;
       font-size: 0.875rem;
       font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 6px 20px rgba(255,107,0,0.35);
+      box-shadow: 0 6px 20px rgba(255, 107, 0, 0.35);
       transition: transform 0.15s ease, box-shadow 0.15s ease;
 
-      &:hover { transform: scale(1.04); box-shadow: 0 8px 28px rgba(255,107,0,0.45); }
-      &:active { transform: scale(0.97); }
-      &:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+      &:hover {
+        transform: scale(1.04);
+        box-shadow: 0 8px 28px rgba(255, 107, 0, 0.45);
+      }
 
-      i { font-size: 1rem; }
+      &:active {
+        transform: scale(0.97);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      i {
+        font-size: 1rem;
+      }
     }
 
     .btn-view-requests {
@@ -349,8 +368,12 @@ $section-gap: 1.5rem;
   .ed-section {
     padding: 1.25rem 1.5rem;
     border-bottom: 1px solid #f0ecf5;
+    max-width: 860px;
+    overflow: hidden;
 
-    &:last-child { border-bottom: none; }
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   .ed-section-title {
@@ -374,7 +397,10 @@ $section-gap: 1.5rem;
       color: $text-dark;
       font-weight: 500;
 
-      .emoji { font-size: 1.25rem; flex-shrink: 0; }
+      .emoji {
+        font-size: 1.25rem;
+        flex-shrink: 0;
+      }
     }
   }
 
@@ -554,12 +580,14 @@ $section-gap: 1.5rem;
             font-size: 0.875rem;
             margin-right: 0.25rem;
           }
+
           .place-name {
             font-weight: 700;
             font-size: 0.8125rem;
             color: $text-dark;
             display: block;
           }
+
           .place-area {
             font-size: 0.6875rem;
             color: $text-light;
@@ -585,7 +613,9 @@ $section-gap: 1.5rem;
       cursor: pointer;
       transition: filter 0.2s;
 
-      &:hover { filter: brightness(1.1); }
+      &:hover {
+        filter: brightness(1.1);
+      }
     }
   }
 
@@ -598,7 +628,10 @@ $section-gap: 1.5rem;
       padding-bottom: 0.75rem;
       margin-bottom: 1rem;
 
-      &::-webkit-scrollbar { height: 0; display: none; }
+      &::-webkit-scrollbar {
+        height: 0;
+        display: none;
+      }
 
       img {
         width: 3.25rem;
@@ -634,7 +667,8 @@ $section-gap: 1.5rem;
         color: $text-mid;
         font-weight: 500;
 
-        i, .material-symbols-outlined {
+        i,
+        .material-symbols-outlined {
           font-size: 1rem;
           color: $text-light;
           width: 1.25rem;
@@ -666,7 +700,10 @@ $section-gap: 1.5rem;
     overflow-x: auto;
     padding-bottom: 0.5rem;
 
-    &::-webkit-scrollbar { height: 0; display: none; }
+    &::-webkit-scrollbar {
+      height: 0;
+      display: none;
+    }
   }
 
   .gallery-item {
@@ -709,7 +746,9 @@ $section-gap: 1.5rem;
     cursor: pointer;
     transition: background 0.2s;
 
-    &:hover { background: rgba($purple-mid, 0.05); }
+    &:hover {
+      background: rgba($purple-mid, 0.05);
+    }
   }
 
   // ── Chat Toggle ──
@@ -729,7 +768,9 @@ $section-gap: 1.5rem;
     cursor: pointer;
     transition: background 0.2s;
 
-    &:hover { background: color.adjust($purple-light, $lightness: -4%); }
+    &:hover {
+      background: color.adjust($purple-light, $lightness: -4%);
+    }
   }
 
   .chat-card--mobile {
@@ -1217,11 +1258,13 @@ $section-gap: 1.5rem;
       margin-bottom: 0.75rem;
       opacity: 0.4;
     }
+
     .empty-title {
       font-weight: 700;
       color: $text-dark;
       margin-bottom: 0.25rem;
     }
+
     .empty-subtitle {
       font-size: 0.8125rem;
     }
@@ -1342,6 +1385,7 @@ $section-gap: 1.5rem;
     }
 
     .avatar-stack {
+
       img,
       .more-count {
         width: 2.55rem;
@@ -1744,7 +1788,7 @@ $section-gap: 1.5rem;
       padding: 0.7rem;
       text-align: left;
 
-      > i:first-child {
+      >i:first-child {
         color: #a855f7;
         font-size: 2.45rem;
       }
@@ -1955,6 +1999,7 @@ $section-gap: 1.5rem;
 
 @media (min-width: 981px) {
   .vl-ed {
+
     .chat-card--mobile,
     .map-panel--mobile,
     .host-panel--mobile,
@@ -2127,7 +2172,7 @@ $section-gap: 1.5rem;
         min-height: 4.25rem;
         padding: 0.55rem;
 
-        > i:first-child {
+        >i:first-child {
           font-size: 2rem;
         }
 
