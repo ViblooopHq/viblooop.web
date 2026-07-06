@@ -23,6 +23,7 @@ import { CompleteProfileComponent } from './shared/components/pop-ups/complete-p
 import { ScrollToTopComponent } from './components/common/scroll-to-top/scroll-to-top.component';
 import { AppDrawerService } from './shared/services/drawer/app-drawer.service';
 import { CreateEventComponent } from './components/events/create-event2/create-event/create-event.component';
+import { MessageService } from './shared/services/message/message.service';
 
 @Component({
   selector: 'vl-app-root',
@@ -42,6 +43,7 @@ export class AppComponent implements OnInit {
   socketService = inject(SocketService);
   completeProfileService = inject(CompleteProfileService);
   appDrawerService = inject(AppDrawerService);
+  messageService = inject(MessageService);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {

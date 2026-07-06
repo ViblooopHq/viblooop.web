@@ -287,6 +287,22 @@
         [eventAverageRating]="eventDetails?.averageRating"
         [canLeaveReview]="canLeaveReview()">
       </vl-event-comments>
+
+      @if (relatedEvents && relatedEvents.length > 0) {
+        <section class="ed-section">
+          <h3 class="ed-section-title">
+            <i class="fa-solid fa-location-crosshairs"></i>
+            Related Nearby Events
+          </h3>
+          <div class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar">
+            @for (event of relatedEvents; track event._id) {
+              <div class="min-w-[280px] max-w-[300px] shrink-0 snap-start">
+                <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+              </div>
+            }
+          </div>
+        </section>
+      }
     </main>
 
     <aside class="vl-ed__sidebar">

@@ -16,6 +16,7 @@ import { ChatComponent } from '../../chat/chat.component';
 import { ImageUrlPipe } from '../../../shared/pipes/image-url.pipe';
 import { GalleryComponent, GalleryImage } from '../../../shared/components/gallery/gallery.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
+import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 
 export interface AttendeesProfile {
   profileImage: string;
@@ -25,7 +26,7 @@ export interface AttendeesProfile {
 
 @Component({
   selector: 'vl-event-details',
-  imports: [DatePipe, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent, EventCommentsComponent],
+  imports: [DatePipe, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent, EventCommentsComponent, EventCardComponent],
   templateUrl: './event-details.component.html',
   styleUrl: './event-details.component.scss'
 })
@@ -35,6 +36,7 @@ export class EventDetailsComponent implements OnInit {
   @ViewChild(GoogleMap) map!: GoogleMap;
 
   eventDetails: any = [];
+  relatedEvents: any[] = [];
   isMapVisible = false;
   isChatVisible = false;
 
@@ -115,16 +117,21 @@ export class EventDetailsComponent implements OnInit {
           const rawRating = this.eventDetails?.createdBy?.averageRating;
           this.averageRating = rawRating ? parseFloat(rawRating) : 0;
 
-          const address = this.eventDetails.address;
-          if (address) {
-            setTimeout(() => {
-              this.getLocationCoord([address.street, address.area, address.city].filter(Boolean).join(' '));
-            }, 0)
+          if (this.eventDetails.location && this.eventDetails.location.coordinates && this.eventDetails.location.coordinates.length === 2) {
+            this.position = { 
+              lat: this.eventDetails.location.coordinates[1], 
+              lng: this.eventDetails.location.coordinates[0] 
+            };
+            this.options = { ...this.options, center: this.position, zoom: 16 };
+            if (this.isUserAttendee()) {
+              this.isMapVisible = true;
+            }
           }
 
           this.getUserProfile();
           this.getAttendeesDetails();
           this.fetchJoinStatus();
+          this.fetchRelatedNearbyEvents();
         }
       })
   }
@@ -138,6 +145,10 @@ export class EventDetailsComponent implements OnInit {
           this.joinRequestStatus.set('Requested');
         } else if (res.data.status === 'accepted') {
           this.joinRequestStatus.set('Joined');
+          // Re-evaluate map visibility if they just got accepted
+          if (this.position.lat !== 0 && this.position.lng !== 0) {
+            this.isMapVisible = true;
+          }
         } else if (res.data.status === 'rejected') {
           this.joinRequestStatus.set('Request Join');
         }
@@ -145,28 +156,15 @@ export class EventDetailsComponent implements OnInit {
     });
   }
 
-  getLocationCoord(address: string) {
-    this.eventsService.getLocationCoord(address).subscribe((res: any) => {
-      if (!res?.success) {
-        console.warn('Unexpected response format or status code:', res);
-        return;
+  fetchRelatedNearbyEvents() {
+    this.eventsService.getRelatedNearbyEvents(this.eventId).subscribe((res: any) => {
+      if (res?.success && res.data) {
+        this.relatedEvents = res.data;
       }
-
-      this.position = { lat: res.data.latitude, lng: res.data.longitude };
-
-      // this.map.panTo(this.position);
-
-      this.options = {
-        ...this.options,
-        center: this.position,
-        zoom: 16
-      };
-
-      if (this.position.lat !== 0 && this.position.lng !== 0) {
-        this.isMapVisible = true;
-      }
-    })
+    });
   }
+
+  // Location coords now read directly from event.location.coordinates
 
   openInGoogleMaps() {
     if (!this.position?.lat || !this.position?.lng) {

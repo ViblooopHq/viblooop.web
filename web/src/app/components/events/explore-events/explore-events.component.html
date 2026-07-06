@@ -10,7 +10,11 @@
       <div class="search-bar surface-container-lowest ghost-border">
         <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
         <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
-        <div class="location-pill ghost-border">
+        <div class="location-pill ghost-border"
+             [class.active]="activeFilterId === 'nearby'"
+             (click)="setActiveFilter('nearby')"
+             role="button"
+             tabindex="0">
           <i class="fa-solid fa-location-dot"></i>
           <span>Near You</span>
         </div>

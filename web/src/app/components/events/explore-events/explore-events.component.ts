@@ -7,6 +7,7 @@ import { EventCardComponent } from '../../../shared/components/event-card/event-
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { MessageStore } from '../../../shared/store/message.store';
 export interface EventFilter {
   id: string;
   label: string;
@@ -38,6 +39,7 @@ export class ExploreEventsComponent implements OnInit {
   allEvents: any[] = [];
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
+  private messageStore = inject(MessageStore);
 
   featuredVibes: FeaturedVibe[] = [
     {
@@ -73,7 +75,8 @@ export class ExploreEventsComponent implements OnInit {
     { id: 'all', label: 'All', icon: 'celebration' },
     { id: 'tonight', label: 'Tonight', icon: 'sports_tennis' },
     { id: 'this_weekend', label: 'This weekend', icon: 'self_improvement' },
-    { id: 'free', label: 'Free', icon: 'flight_takeoff' }
+    { id: 'free', label: 'Free', icon: 'flight_takeoff' },
+    { id: 'nearby', label: 'Nearby', icon: 'location_on' }
   ];
 
   ngOnInit() {
@@ -96,7 +99,52 @@ export class ExploreEventsComponent implements OnInit {
 
   setActiveFilter(id: string) {
     this.activeFilterId = id;
-    this.applyFilters();
+    if (id === 'nearby') {
+      this.requestBrowserLocation();
+    } else {
+      this.applyFilters();
+    }
+  }
+
+  requestBrowserLocation() {
+    if (!navigator.geolocation) {
+      this.messageStore.addMessage('Geolocation is not supported by your browser.', 'error');
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        this.eventsService.getNearbyEvents(latitude, longitude, 50000).subscribe({
+          next: (res: any) => {
+            if (res?.success && res?.data) {
+              this.trendingEvents = res.data;
+              if (this.trendingEvents.length === 0) {
+                this.messageStore.addMessage('No nearby events found.', 'info');
+              }
+            } else {
+              this.messageStore.addMessage('Failed to load nearby events.', 'error');
+            }
+          },
+          error: () => {
+            this.messageStore.addMessage('Failed to load nearby events.', 'error');
+          }
+        });
+      },
+      (error) => {
+        let msg = 'Unable to determine current location.';
+        if (error.code === error.PERMISSION_DENIED) {
+          msg = 'Location permission denied. Please enable it to see nearby events.';
+        } else if (error.code === error.TIMEOUT) {
+          msg = 'Location request timed out.';
+        }
+        this.messageStore.addMessage(msg, 'error');
+        // Revert filter if failed
+        this.activeFilterId = 'all';
+        this.applyFilters();
+      },
+      { timeout: 10000 }
+    );
   }
 
   setActiveCategory(id: string) {
@@ -231,6 +279,12 @@ export class ExploreEventsComponent implements OnInit {
       filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesFeaturedVibe(event, activeVibe));
     } else if (this.activeCategoryId !== 'all') {
       filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesCategory(event, this.activeCategoryId));
+    }
+
+    if (this.activeFilterId === 'nearby') {
+      // Nearby already handled via API, do nothing to override it here if we want to keep API results.
+      // Actually we should just let trendingEvents remain as the API response if it's nearby.
+      return; 
     }
 
     filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesQuickFilter(event, this.activeFilterId));

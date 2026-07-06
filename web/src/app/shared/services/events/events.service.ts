@@ -136,4 +136,12 @@ export class EventsService {
     };
     return this.httpService.http.post(`${this.baseUrl}/getJoinStatus`, body);
   }
+
+  getNearbyEvents(lat: number, lng: number, radius: number = 50000): Observable<any> {
+    return this.httpService.http.get(`${this.baseUrl}/events/nearby?lat=${lat}&lng=${lng}&radius=${radius}`);
+  }
+
+  getRelatedNearbyEvents(eventId: string): Observable<any> {
+    return this.httpService.http.get(`${this.baseUrl}/events/getRelatedEvents?eventId=${eventId}`);
+  }
 }
