@@ -15,8 +15,8 @@
       </button>
     }
     <div class="header-copy">
-      <h1 class="header-title">{{ createHeaderTitle }}</h1>
-      <p>{{ createHeaderSubtitle }}</p>
+      <h1 class="header-title">{{ currentStepTitle }}</h1>
+      <p>{{ currentStepSubtitle }}</p>
     </div>
     <span class="step-label">{{ currentStep + 1 }} / {{ totalSteps.length }}</span>
   </div>
@@ -36,12 +36,6 @@
   <!-- ────────────────────────────────────────────────── -->
   @case (0) {
   <main class="step-content">
-    <div class="progress-block">
-      <h2 class="step-title">What are you planning?</h2>
-      <p class="step-subtitle">Pick a vibe that fits your plan</p>
-    </div>
-
-
     <!-- Category Grid -->
     <div class="vibe-grid">
       @for (cat of categories; track cat._id || cat.id) {
@@ -99,11 +93,6 @@
   <!-- ────────────────────────────────────────────────── -->
   @case (1) {
   <main class="step-content">
-    <header class="step-header">
-      <h2 class="step-title">Tell us more</h2>
-      <p class="step-desc">{{ stepTwoDescription }}</p>
-    </header>
-
     <div class="form-stack">
 
       <!-- Event Title -->
@@ -210,38 +199,8 @@
             <input class="location-input" type="text" formControlName="area" placeholder="e.g. Koramangala 5th Block">
           </label>
 
-          <div class="location-stack-field location-stack-field--with-chevron" (click)="$event.stopPropagation()">
-            <span class="location-stack-field__label">City <strong>*</strong></span>
-            <button
-              type="button"
-              class="location-input location-city-trigger"
-              [class.location-city-trigger--open]="isCityDropdownOpen"
-              (click)="toggleCityDropdown($event)">
-              <span>{{ selectedCity }}</span>
-            </button>
-            <span class="material-symbols-outlined location-stack-field__chevron"
-              [class.location-stack-field__chevron--open]="isCityDropdownOpen">keyboard_arrow_down</span>
-
-            @if (isCityDropdownOpen) {
-              <div class="location-city-menu">
-                @for (city of cityOptions; track city) {
-                  <button
-                    type="button"
-                    class="location-city-option"
-                    [class.location-city-option--selected]="selectedCity === city"
-                    (click)="selectCity(city)">
-                    <span class="material-symbols-outlined location-city-option__check">
-                      {{ selectedCity === city ? 'check' : '' }}
-                    </span>
-                    <span>{{ city }}</span>
-                  </button>
-                }
-              </div>
-            }
-          </div>
-
           <label class="location-stack-field">
-            <span class="location-stack-field__label">Pincode <em>(Optional)</em></span>
+            <span class="location-stack-field__label">Pincode <strong>*</strong></span>
             <input class="location-input" type="text" formControlName="pinCode" placeholder="e.g. 560095">
           </label>
         </div>
@@ -377,11 +336,6 @@
   <!-- ────────────────────────────────────────────────── -->
   @case (2) {
   <main class="step-content">
-    <header class="step-header">
-      <h2 class="step-title">Set the scene ✨</h2>
-      <p class="step-desc">{{ stepThreeDescription }}</p>
-    </header>
-
     <div class="form-stack">
 
       <!-- Cover Image Upload -->
@@ -398,9 +352,11 @@
 
         @if (mainImagePreview) {
           <img [src]="mainImagePreview" class="upload-preview" alt="Cover" />
-          <button type="button" class="remove-image-btn" (click)="removeMainImage(); $event.stopPropagation()">
+          @if (canRemoveMainImage) {
+          <button type="button" class="remove-image-btn" (click)="removeMainImage(mainImageInput); $event.stopPropagation()">
             <span class="material-symbols-outlined">close</span>
           </button>
+          }
         } @else {
           <div class="upload-placeholder-new">
             <!-- Photo Stack Left -->
@@ -660,9 +616,6 @@
 
     <!-- Navigation Footer -->
     <div class="step-footer-row">
-      <button type="button" class="btn-back-icon" (click)="prevStep()">
-        <span class="material-symbols-outlined">arrow_back</span>
-      </button>
       <button type="button" class="btn-next btn-next--step3" (click)="nextStep()">
         {{ isEditMode ? 'Review Changes' : 'Review & Launch' }} <span class="material-symbols-outlined">rocket_launch</span>
       </button>
@@ -675,14 +628,6 @@
   <!-- ────────────────────────────────────────────────── -->
   @case (3) {
   <main class="step-content step-content--review">
-    <header class="review-header-nav">
-      <button type="button" class="back-nav-btn" (click)="prevStep()">
-        <span class="material-symbols-outlined">arrow_back</span>
-      </button>
-      <h2 class="review-page-title">{{ isEditMode ? 'Review Changes' : 'Review Your Event' }}</h2>
-      <div style="width: 40px"></div> <!-- Spacer -->
-    </header>
-
     <!-- Event Preview Card -->
     <div class="review-card-modern">
       <!-- Cover Image with Badges -->
@@ -743,7 +688,13 @@
               <span class="material-symbols-outlined">location_on</span>
             </div>
             <div class="info-content">
-              <p class="info-main">{{ addressGroup.get('street')?.value || 'Address Line' }}, {{ addressGroup.get('city')?.value || 'City' }}</p>
+              <p class="info-main">
+                {{ addressGroup.get('street')?.value || 'Address Line' }},
+                {{ addressGroup.get('area')?.value || 'Area / Locality' }}
+                @if (addressGroup.get('pinCode')?.value) {
+                  - {{ addressGroup.get('pinCode')?.value }}
+                }
+              </p>
               <p class="info-sub">Exact location shared after you join</p>
             </div>
           </div>

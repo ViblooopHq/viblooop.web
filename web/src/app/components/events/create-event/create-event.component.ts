@@ -29,12 +29,11 @@ export class AddEventComponent implements OnInit, CanComponentDeactivate {
       eventTime: ['', Validators.required],
       address: this.fb.group({
         street: ['', Validators.required],
-        area: [''],
+        area: ['', Validators.required],
         landmark: [''],
-        city: ['', Validators.required],
-        state: ['', Validators.required],
+        state: [''],
         pinCode: ['', Validators.required],
-        country: ['', Validators.required],
+        country: [''],
       }),
       attendeeLimit: ['', Validators.required],
       tags: [''],
@@ -109,7 +108,6 @@ export class AddEventComponent implements OnInit, CanComponentDeactivate {
         const addressGroup = this.eventForm.get('address');
         if (addressGroup) {
           addressGroup.patchValue({
-            city: data.city,
             state: data.state,
             country: data.country
           });

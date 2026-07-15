@@ -40,7 +40,7 @@
             </span>
             <span class="meta-badge">
               <i class="fa-solid fa-location-dot"></i>
-              {{ eventDetails?.address?.city || 'TBA' }}
+              {{ locationLabel }}
             </span>
           </div>
 
@@ -54,7 +54,7 @@
           }
 
           <div class="hero-action-row">
-            <div class="hero-attendance">
+            <button type="button" class="hero-attendance" (click)="openAttendeesDrawer()">
               <div class="avatar-stack">
                 <img
                   [src]="eventDetails?.createdBy?.profileImage ? (eventDetails.createdBy.profileImage | imageUrl) : 'assets/images/default-profile.png'"
@@ -72,7 +72,7 @@
                 <i class="fa-solid fa-users"></i>
                 {{ attendanceSummaryLabel }}
               </span>
-            </div>
+            </button>
 
             @if (!isEventEnded) {
             @if (!isEventCreator()) {
@@ -83,7 +83,7 @@
               <i class="fa-solid fa-chevron-right"></i>
             </button>
             } @else {
-            <button class="btn-view-requests" routerLink="/notifications">
+            <button type="button" class="btn-view-requests" (click)="openRequestsDrawer()">
               <i class="fa-solid fa-user-group"></i>
               View Requests
               @if (pendingJoinRequestCount > 0) {
@@ -436,4 +436,93 @@
 
 @if (isChatVisible) {
 <vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
+}
+
+@if (activeEventDrawer) {
+<div class="event-detail-drawer-backdrop" (click)="closeEventDrawer()">
+  <aside class="event-detail-drawer" role="dialog" aria-modal="true" [attr.aria-label]="eventDrawerTitle"
+    (click)="$event.stopPropagation()">
+    <header class="event-detail-drawer__header">
+      <div>
+        <p class="event-detail-drawer__eyebrow">{{ eventDetails?.title || 'Event' }}</p>
+        <h2>{{ eventDrawerTitle }}</h2>
+        <p>{{ eventDrawerSubtitle }}</p>
+      </div>
+      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="closeEventDrawer()">
+        <span class="material-symbols-outlined" translate="no">close</span>
+      </button>
+    </header>
+
+    @if (activeEventDrawer === 'requests') {
+      @if (pendingJoinRequests.length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (request of pendingJoinRequests; track getNotificationId(request)) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity"
+                (click)="viewProfile(getNotificationSenderId(request))">
+                <img
+                  [src]="getNotificationSenderImage(request) ? (getNotificationSenderImage(request) | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ getNotificationSenderName(request) }}</strong>
+                  <small>Requested to join</small>
+                </span>
+              </button>
+
+              <div class="event-request-actions">
+                @if (notificationRequestState(request) === 'processing') {
+                  <span class="event-request-status">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    Wait
+                  </span>
+                } @else {
+                  <button type="button" class="event-request-action event-request-action--primary"
+                    (click)="acceptJoinRequest(request)">
+                    Confirm
+                  </button>
+                  <button type="button" class="event-request-action event-request-action--secondary"
+                    (click)="rejectJoinRequest(request)">
+                    Decline
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <i class="fa-regular fa-bell"></i>
+          <h3>No pending requests</h3>
+          <p>New join requests will show up here.</p>
+        </div>
+      }
+    } @else {
+      @if (eventDrawerAttendees.length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (attendee of eventDrawerAttendees; track attendee.role + attendee.userId) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity" (click)="viewProfile(attendee.userId)">
+                <img
+                  [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ attendee.userName }}</strong>
+                  <small>{{ attendee.role }}</small>
+                </span>
+              </button>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <i class="fa-regular fa-user"></i>
+          <h3>No attendees yet</h3>
+          <p>People who join this event will show up here.</p>
+        </div>
+      }
+    }
+  </aside>
+</div>
 }

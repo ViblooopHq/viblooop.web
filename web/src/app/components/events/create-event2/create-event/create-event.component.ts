@@ -90,8 +90,6 @@ export class CreateEventComponent implements OnInit {
   // ── What to Expect options ────────────────────────────
   readonly availableExpectations = CREATE_EVENT_EXPECTATIONS;
   readonly hostNotesMaxLength = CREATE_EVENT_HOST_NOTES_MAX_LENGTH;
-  readonly cityOptions = ['Bangalore', 'Pune', 'Delhi', 'Patna'];
-  isCityDropdownOpen = false;
   isHostQuickAddExpanded = true;
   canScrollHostNotePillsLeft = false;
   canScrollHostNotePillsRight = false;
@@ -268,11 +266,6 @@ export class CreateEventComponent implements OnInit {
     this.scheduleHostNoteScrollStateUpdate();
   }
 
-  @HostListener('document:click')
-  onDocumentClick(): void {
-    this.isCityDropdownOpen = false;
-  }
-
   updateHostNoteScrollState(): void {
     const pills = this.hostNotePillsElement;
 
@@ -384,22 +377,6 @@ export class CreateEventComponent implements OnInit {
     this.eventForm.patchValue({ eventTime: newTime });
   }
 
-  get selectedCity(): string {
-    return this.eventForm.get('address.city')?.value || 'Bangalore';
-  }
-
-  toggleCityDropdown(event: Event): void {
-    event.stopPropagation();
-    this.isCityDropdownOpen = !this.isCityDropdownOpen;
-  }
-
-  selectCity(city: string): void {
-    this.eventForm.get('address.city')?.setValue(city);
-    this.eventForm.get('address.city')?.markAsDirty();
-    this.eventForm.get('address.city')?.markAsTouched();
-    this.isCityDropdownOpen = false;
-  }
-
   constructor(
     private fb: FormBuilder,
     private eventService: EventsService,
@@ -421,8 +398,7 @@ export class CreateEventComponent implements OnInit {
         street:  ['', Validators.required],
         area:    ['', Validators.required],
         landmark:[''],
-        city:    ['Bangalore', Validators.required],
-        pinCode: [''],
+        pinCode: ['', Validators.required],
       }),
       attendeeLimit:     [CREATE_EVENT_CAPACITY_CONFIG.defaultLimitedValue, [Validators.required, Validators.min(this.capacityMin), Validators.max(this.capacityMax)]],
       audiencePreference: ['open'],
@@ -481,6 +457,36 @@ export class CreateEventComponent implements OnInit {
 
   get createHeaderSubtitle(): string {
     return this.isEditMode ? 'Update the details for your vibe' : 'Let\'s set up your amazing event';
+  }
+
+  get currentStepTitle(): string {
+    switch (this.currentStep) {
+      case 0:
+        return 'What are you planning?';
+      case 1:
+        return 'Tell us more';
+      case 2:
+        return 'Set the scene';
+      case 3:
+        return this.isEditMode ? 'Review Changes' : 'Review Your Event';
+      default:
+        return this.createHeaderTitle;
+    }
+  }
+
+  get currentStepSubtitle(): string {
+    switch (this.currentStep) {
+      case 0:
+        return 'Pick a vibe that fits your plan';
+      case 1:
+        return this.stepTwoDescription;
+      case 2:
+        return this.stepThreeDescription;
+      case 3:
+        return this.isEditMode ? 'Confirm your updates before saving.' : 'Final check before your vibe goes live.';
+      default:
+        return this.createHeaderSubtitle;
+    }
   }
 
   get titleFieldLabel(): string {
@@ -552,7 +558,6 @@ export class CreateEventComponent implements OnInit {
       street: '',
       area: '',
       landmark: '',
-      city: 'Bangalore',
       pinCode: '',
     });
   }
@@ -624,7 +629,6 @@ export class CreateEventComponent implements OnInit {
             street: event.address?.street || '',
             area: event.address?.area || '',
             landmark: event.address?.landmark || '',
-            city: this.normalizeCity(event.address?.city),
             pinCode: event.address?.pinCode || '',
           },
           attendeeLimit: isLimited ? attendeeLimit : this.openCapacityLimit,
@@ -661,18 +665,6 @@ export class CreateEventComponent implements OnInit {
     if (!category) return '';
     if (typeof category === 'string') return category;
     return category._id || category.id || '';
-  }
-
-  private normalizeCity(city: unknown): string {
-    const value = String(city || '').trim();
-    if (!value) return 'Bangalore';
-
-    const lowerValue = value.toLowerCase();
-    if (lowerValue === 'bengaluru' || lowerValue === 'bengaluru urban' || lowerValue === 'banglore') {
-      return 'Bangalore';
-    }
-
-    return this.cityOptions.includes(value) ? value : 'Bangalore';
   }
 
   private normalizeAudiencePreference(value: unknown, attendeeMix: unknown): 'open' | 'women' | 'men' {
@@ -735,7 +727,7 @@ export class CreateEventComponent implements OnInit {
         this.eventForm.markAllAsTouched();
         // Small delay to ensure styles apply before scrolling
         setTimeout(() => {
-          const firstInvalid = document.querySelector('.field-input.ng-invalid, .location-meta-input.ng-invalid');
+          const firstInvalid = document.querySelector('.field-input.ng-invalid, .location-input.ng-invalid, .location-meta-input.ng-invalid');
           if (firstInvalid) {
             firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
             (firstInvalid as HTMLElement).focus();
@@ -767,7 +759,7 @@ export class CreateEventComponent implements OnInit {
       (this.isEscapeCreation ? !f.get('endDate')?.value : !f.get('eventTime')?.value) ||
       !addr.get('street')?.value ||
       !addr.get('area')?.value ||
-      !addr.get('city')?.value
+      !addr.get('pinCode')?.value
     );
   }
 
@@ -794,7 +786,7 @@ export class CreateEventComponent implements OnInit {
           valid = false;
         }
       });
-      const addressControls = ['street', 'area', 'city'];
+      const addressControls = ['street', 'area', 'pinCode'];
       addressControls.forEach(ctrl => {
         if (this.addressGroup.get(ctrl)?.invalid) {
           this.addressGroup.get(ctrl)?.markAsTouched();
@@ -908,10 +900,19 @@ export class CreateEventComponent implements OnInit {
       console.error('Error processing image:', err);
     } finally {
       this.isImageLoading = false;
+      event.target.value = '';
     }
   }
 
-  removeMainImage(): void {
+  get canRemoveMainImage(): boolean {
+    return !this.isEditMode || !!this.mainImageFile;
+  }
+
+  removeMainImage(input?: HTMLInputElement): void {
+    if (input) {
+      input.value = '';
+    }
+
     if (this.isEditMode && this.existingCoverPreview) {
       this.mainImageFile = null;
       this.mainImagePreview = this.existingCoverPreview;
@@ -1052,13 +1053,13 @@ export class CreateEventComponent implements OnInit {
     if (!this.createdEventId) return;
 
     this.ngZone.run(() => {
-      this.router.navigate('/events', this.createdEventId);
+      this.router.closeDrawerAndNavigateByUrl(`/events/${this.createdEventId}`);
     });
   }
 
   finishEventCreation(): void {
     this.ngZone.run(() => {
-      this.router.navigateByUrl('/explore');
+      this.router.closeDrawerAndNavigateByUrl('/explore');
     });
   }
 

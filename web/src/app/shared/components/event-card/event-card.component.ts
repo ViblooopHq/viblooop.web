@@ -135,7 +135,8 @@ export class EventCardComponent {
   }
 
   get location(): string {
-    return this.config?.address?.city || this.config?.location || this.config?.city || 'Location';
+    const address = this.config?.address;
+    return address?.area || address?.pinCode || this.config?.location || this.config?.city || 'Location';
   }
 
   get hostName(): string {

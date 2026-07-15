@@ -33,7 +33,7 @@
     "@capacitor/angular": "^2.0.3",
     "@capacitor/core": "latest",
     "@capacitor/ios": "^7.4.2",
-    "@ngrx/signals": "^21.1.1",
+    "@ngrx/signals": "^20.1.0",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tailwindcss/forms": "^0.5.11",
     "@tailwindcss/postcss": "^4.1.18",

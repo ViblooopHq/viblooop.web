@@ -184,8 +184,10 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   getPastEventCardConfig(event: any): PastEventCardConfig {
+    const area = event?.address?.area || event?.area;
     const city = event?.address?.city || event?.city;
     const state = event?.address?.state || event?.state;
+    const pinCode = event?.address?.pinCode || event?.pinCode;
     const attendees = Array.isArray(event?.attendees) ? event.attendees.length : Number(event?.attendedCount || 0);
     const reviews = Array.isArray(event?.reviews)
       ? event.reviews.length
@@ -201,9 +203,9 @@ export class ExploreEventsComponent implements OnInit {
       title: event?.title,
       image: event?.image,
       eventDate: event?.eventDate,
-      city,
+      city: area || city,
       state,
-      location: event?.location || [city, state].filter(Boolean).join(', '),
+      location: event?.location || [area || city, pinCode || state].filter(Boolean).join(', '),
       hostName: event?.createdBy?.name || event?.createdBy?.username || event?.hostName,
       hostVerified: Boolean(event?.createdBy?.isVerified || event?.hostVerified),
       attendedCount: attendees,

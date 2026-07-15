@@ -55,7 +55,7 @@
   .vl-form-drawer__close {
     position: absolute;
     top: 1rem;
-    left: 0.9rem;
+    right: calc(min(100vw, 760px) + 1rem);
     z-index: 40;
     display: grid;
     place-items: center;
@@ -73,6 +73,12 @@
 
     .material-symbols-outlined {
       font-size: 1.35rem;
+    }
+  }
+
+  @media (max-width: 840px) {
+    .vl-form-drawer__close {
+      right: calc(100vw - 3.65rem);
     }
   }
 

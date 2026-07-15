@@ -1,5 +1,5 @@
 import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { CommonModule, DatePipe } from '@angular/common';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -26,7 +26,7 @@ export interface AttendeesProfile {
 
 @Component({
   selector: 'vl-event-details',
-  imports: [DatePipe, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, RouterLink, ChatComponent, ImageUrlPipe, GalleryComponent, EventCommentsComponent, EventCardComponent],
+  imports: [DatePipe, ProfileComponent, MatTooltip, CommonModule, GoogleMapsModule, GoogleMap, MapMarker, ChatComponent, ImageUrlPipe, GalleryComponent, EventCommentsComponent, EventCardComponent],
   templateUrl: './event-details.component.html',
   styleUrl: './event-details.component.scss'
 })
@@ -39,6 +39,7 @@ export class EventDetailsComponent implements OnInit {
   relatedEvents: any[] = [];
   isMapVisible = false;
   isChatVisible = false;
+  activeEventDrawer: 'requests' | 'attendees' | null = null;
 
   route: ActivatedRoute = inject(ActivatedRoute)
   eventsService = inject(EventsService)
@@ -65,6 +66,7 @@ export class EventDetailsComponent implements OnInit {
   previewPhotos: string[] = [];
   averageRating: number = 0;
   isEventMenuOpen = false;
+  requestActionStates: Record<string, 'pending' | 'processing' | 'accepted' | 'rejected'> = {};
   private readonly openCapacityLimit = 999999;
 
   position: google.maps.LatLngLiteral = {
@@ -264,6 +266,70 @@ export class EventDetailsComponent implements OnInit {
     })
   }
 
+  openRequestsDrawer() {
+    if (!this.isEventCreator()) return;
+    this.activeEventDrawer = 'requests';
+  }
+
+  openAttendeesDrawer() {
+    this.activeEventDrawer = 'attendees';
+  }
+
+  closeEventDrawer() {
+    this.activeEventDrawer = null;
+  }
+
+  acceptJoinRequest(notification: any) {
+    const notificationId = this.getNotificationId(notification);
+    if (!notificationId) return;
+
+    this.requestActionStates[notificationId] = 'processing';
+    this.httpService.post(Environment.apiBaseUrl + '/acceptJoinRequest', {
+      eventId: this.getNotificationEventId(notification),
+      userId: this.getNotificationSenderId(notification),
+    }).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200) {
+          this.requestActionStates[notificationId] = 'pending';
+          return;
+        }
+
+        this.requestActionStates[notificationId] = 'accepted';
+        if (this.eventId) {
+          this.getEventDetails(this.eventId);
+        }
+      },
+      error: (err) => {
+        this.requestActionStates[notificationId] = 'pending';
+        console.error('Accept join request failed:', err);
+      }
+    });
+  }
+
+  rejectJoinRequest(notification: any) {
+    const notificationId = this.getNotificationId(notification);
+    if (!notificationId) return;
+
+    this.requestActionStates[notificationId] = 'processing';
+    this.httpService.post(Environment.apiBaseUrl + '/rejectJoinEventRequest', {
+      eventId: this.getNotificationEventId(notification),
+      userId: this.getNotificationSenderId(notification),
+    }).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200) {
+          this.requestActionStates[notificationId] = 'pending';
+          return;
+        }
+
+        this.requestActionStates[notificationId] = 'rejected';
+      },
+      error: (err) => {
+        this.requestActionStates[notificationId] = 'pending';
+        console.error('Reject join request failed:', err);
+      }
+    });
+  }
+
   viewProfile(userId: string) {
     this._shared.viewProfile(userId).subscribe((res: any) => {
       if (!res?.success || res.statusCode !== 200) {
@@ -449,17 +515,86 @@ export class EventDetailsComponent implements OnInit {
   }
 
   get pendingJoinRequestCount(): number {
+    return this.pendingJoinRequests.length;
+  }
+
+  get pendingJoinRequests(): any[] {
     const notifications = this.socketService.notifications$.value;
-    if (!Array.isArray(notifications) || !this.eventId) return 0;
+    if (!Array.isArray(notifications) || !this.eventId) return [];
 
     return notifications.filter((notification: any) => {
-      const notificationEventId = notification?.eventId?._id || notification?.eventId;
-      const status = String(notification?.status || 'pending').toLowerCase();
-
+      const notificationEventId = this.getNotificationEventId(notification);
       return notification?.type === 'JOIN_REQUEST'
         && notificationEventId === this.eventId
-        && status === 'pending';
-    }).length;
+        && this.notificationRequestState(notification) === 'pending';
+    });
+  }
+
+  get eventDrawerTitle(): string {
+    return this.activeEventDrawer === 'requests' ? 'Pending Requests' : 'Attendees';
+  }
+
+  get eventDrawerSubtitle(): string {
+    if (this.activeEventDrawer === 'requests') {
+      return `${this.pendingJoinRequestCount} ${this.pendingJoinRequestCount === 1 ? 'request' : 'requests'} waiting for review`;
+    }
+
+    const total = this.eventDrawerAttendees.length;
+    return `${total} ${total === 1 ? 'person' : 'people'} ${this.isEventEnded ? 'attended' : 'going'}`;
+  }
+
+  get eventDrawerAttendees(): Array<{ userId: string; userName: string; profileImage: string; role: 'Host' | 'Attendee' }> {
+    const host = this.eventDetails?.createdBy;
+    const attendees = this.attendessProfiles.map((attendee) => ({
+      userId: attendee.userId,
+      userName: attendee.userName,
+      profileImage: attendee.profileImage,
+      role: 'Attendee' as const,
+    }));
+
+    if (!host?._id) return attendees;
+
+    return [
+      {
+        userId: host._id,
+        userName: host.username || 'Host',
+        profileImage: host.profileImage,
+        role: 'Host' as const,
+      },
+      ...attendees,
+    ];
+  }
+
+  getNotificationId(notification: any): string {
+    return notification?._id || notification?.id || '';
+  }
+
+  getNotificationEventId(notification: any): string {
+    return notification?.eventId?._id || notification?.eventId || '';
+  }
+
+  getNotificationSenderId(notification: any): string {
+    return notification?.senderId?._id || notification?.sender?._id || notification?.senderId || '';
+  }
+
+  getNotificationSenderName(notification: any): string {
+    return notification?.senderName || notification?.sender?.username || notification?.senderId?.username || 'Guest';
+  }
+
+  getNotificationSenderImage(notification: any): string {
+    return notification?.senderImage || notification?.sender?.profileImage || notification?.senderId?.profileImage || '';
+  }
+
+  notificationRequestState(notification: any): 'pending' | 'processing' | 'accepted' | 'rejected' {
+    const localState = this.requestActionStates[this.getNotificationId(notification)];
+    if (localState) return localState;
+
+    const status = String(notification?.status || 'pending').toLowerCase();
+    if (status === 'processing' || status === 'accepted' || status === 'rejected' || status === 'pending') {
+      return status;
+    }
+
+    return 'pending';
   }
 
   get isEscapeEvent(): boolean {
@@ -526,10 +661,10 @@ export class EventDetailsComponent implements OnInit {
 
   get locationLabel(): string {
     const area = this.eventDetails?.address?.area;
-    const city = this.eventDetails?.address?.city;
+    const pinCode = this.eventDetails?.address?.pinCode;
 
-    if (area && city && area !== city) return `${area}, ${city}`;
-    return area || city || 'Location TBA';
+    if (area && pinCode) return `${area}, ${pinCode}`;
+    return area || pinCode || 'Location TBA';
   }
 
   get hostEventCount(): number {
