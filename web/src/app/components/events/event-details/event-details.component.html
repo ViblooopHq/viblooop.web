@@ -77,7 +77,7 @@
             @if (!isEventEnded) {
             @if (!isEventCreator()) {
             <button class="btn-join-hero" (click)="requestJoinEvent()"
-              [disabled]="joinRequestStatus() !== 'Request Join'">
+              [disabled]="!canRequestJoin()">
               <i class="fa-solid fa-fire"></i>
               {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel : joinRequestStatus() }}
               <i class="fa-solid fa-chevron-right"></i>
@@ -233,21 +233,12 @@
               Location
             </h3>
             <p class="map-title">{{ locationLabel }}</p>
-            <p class="map-subtitle">Exact address shared after joining</p>
-
-            <div class="map-trust-row">
-              <span class="map-trust-pill">
-                <i class="fa-solid fa-shield-halved"></i>
-                Safe &amp; Verified
-              </span>
-              <span class="map-trust-pill">
-                <i class="fa-solid fa-users"></i>
-                Visible to accepted users
-              </span>
-            </div>
+            @if (showHostLocationVisibilityCopy) {
+            <p class="map-subtitle">{{ locationSubtitle }}</p>
+            }
           </div>
 
-          @if (isMapVisible) {
+          @if (isMapVisible()) {
           <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
             (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
             <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
@@ -269,7 +260,7 @@
             </span>
             <span class="chat-subtitle">Keep in touch with attendees</span>
           </span>
-          <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+          <span class="chat-action">{{ isChatOpen() ? 'Close Chat' : 'Open Chat' }}</span>
         </button>
       </section>
       }
@@ -378,21 +369,12 @@
               Location
             </h3>
             <p class="map-title">{{ locationLabel }}</p>
-            <p class="map-subtitle">Exact address shared after joining</p>
-
-            <div class="map-trust-row">
-              <span class="map-trust-pill">
-                <i class="fa-solid fa-shield-halved"></i>
-                Safe &amp; Verified
-              </span>
-              <span class="map-trust-pill">
-                <i class="fa-solid fa-users"></i>
-                Visible to accepted users
-              </span>
-            </div>
+            @if (showHostLocationVisibilityCopy) {
+            <p class="map-subtitle">{{ locationSubtitle }}</p>
+            }
           </div>
 
-          @if (isMapVisible) {
+          @if (isMapVisible()) {
           <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
             (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
             <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
@@ -414,7 +396,7 @@
             </span>
             <span class="chat-subtitle">Keep in touch with attendees</span>
           </span>
-          <span class="chat-action">{{ isChatVisible ? 'Close Chat' : 'Open Chat' }}</span>
+          <span class="chat-action">{{ isChatOpen() ? 'Close Chat' : 'Open Chat' }}</span>
         </button>
       </section>
       }
@@ -434,7 +416,7 @@
 </div>
 }
 
-@if (isChatVisible) {
+@if (isChatOpen()) {
 <vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
 }
 

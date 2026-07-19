@@ -30,7 +30,7 @@ export class MyEventsComponent {
       hoverColor: 'secondary'
     },
     {
-      title: 'House Party',
+      title: 'Social',
       icon: 'home',
       image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuB9ayK8vQp1MY1hqwHXU6nAM7Od3qyHCN5Ju2Bz7i8-mjsjzhGpFGjTeLa5rWwvt5GTXpKb9F_MC7nczqo6vvK43Y-22ntP1mRCnvGMAygvWNjNHk0-_VYlT2i45pnd1N5sX_zjo8aPU8jn36aVpW5qwcgHqFuuO_6xfVOxHUvD1TqAZhI43SzYXZAZw8zovn9HtDydDvWNl5G19cZR52QfamYPopqUuI7Sa_nqJg55QAmGyH9y7J8ctzOyij5-wIOKH2D4D83U8uuG',
       hoverColor: 'tertiary'

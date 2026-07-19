@@ -43,8 +43,8 @@ export class ExploreEventsComponent implements OnInit {
 
   featuredVibes: FeaturedVibe[] = [
     {
-      id: 'house-party',
-      label: 'House Party',
+      id: 'social',
+      label: 'Social',
       description: 'Host, chill & make memories',
       icon: 'fa-solid fa-house',
       cover: 'assets/vibe-previews/event_drinks_vibe_1778313033072.png',

@@ -11,7 +11,7 @@ export class EventsService {
   eventDetails: any = []
   selectedCategory: any = {};
   categoryList: string[] = [
-    'House Party',
+    'Social',
     'Travel Companion',
     'Sports Activities',
     'Local Events',

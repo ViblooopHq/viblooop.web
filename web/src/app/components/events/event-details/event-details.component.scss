@@ -1747,15 +1747,15 @@ $section-gap: 1.5rem;
 
   .features-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
-    overflow: hidden;
-    border: 1px solid rgba(148, 163, 184, 0.12);
-    border-radius: 14px;
-    background: rgba(9, 12, 26, 0.48);
-    padding: 0.9rem 1rem;
+    gap: 0.75rem 1.25rem;
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    padding: 0;
 
     .feature-item {
-      justify-content: center;
+      justify-content: flex-start;
       gap: 0.55rem;
       color: #f5f3ff;
       font-size: 0.82rem;
@@ -1979,34 +1979,6 @@ $section-gap: 1.5rem;
         font-size: 0.8rem;
         font-weight: 400;
         line-height: 1.35;
-      }
-
-      .map-trust-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.65rem;
-        margin-top: 1rem;
-      }
-
-      .map-trust-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.45rem;
-        color: #ded8ee;
-        font-size: 0.72rem;
-        font-weight: 400;
-        line-height: 1.2;
-
-        i {
-          display: grid;
-          place-items: center;
-          width: 1.65rem;
-          height: 1.65rem;
-          border-radius: 999px;
-          background: rgba(88, 28, 135, 0.42);
-          color: #a855f7;
-          font-size: 0.74rem;
-        }
       }
 
       .map-preview {

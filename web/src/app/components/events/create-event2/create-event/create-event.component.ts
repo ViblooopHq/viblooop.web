@@ -62,6 +62,7 @@ export class CreateEventComponent implements OnInit {
   galleryPreviews: string[] = [];
   isImageLoading = false;
   private existingCoverPreview: string | null = null;
+  private shouldReplaceCoverWithDefault = false;
 
   // ── Date helpers ─────────────────────────────────────
   today = new Date();
@@ -614,6 +615,7 @@ export class CreateEventComponent implements OnInit {
         this.mainImageFile = null;
         this.existingCoverPreview = event.image ? this.sharedService.getImageUrl(event.image) : null;
         this.mainImagePreview = this.existingCoverPreview;
+        this.shouldReplaceCoverWithDefault = false;
         this.galleryFiles = [];
         this.galleryPreviews = [];
         this.mixType = audiencePreference;
@@ -893,9 +895,11 @@ export class CreateEventComponent implements OnInit {
       const finalFile = await this.sharedService.convertHeicToJpg(file);
 
       this.mainImageFile = finalFile;
+      this.shouldReplaceCoverWithDefault = false;
       const reader = new FileReader();
       reader.onload = () => (this.mainImagePreview = reader.result);
       reader.readAsDataURL(finalFile);
+      this.eventForm.markAsDirty();
     } catch (err) {
       console.error('Error processing image:', err);
     } finally {
@@ -905,7 +909,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   get canRemoveMainImage(): boolean {
-    return !this.isEditMode || !!this.mainImageFile;
+    return !!this.mainImagePreview;
   }
 
   removeMainImage(input?: HTMLInputElement): void {
@@ -913,14 +917,10 @@ export class CreateEventComponent implements OnInit {
       input.value = '';
     }
 
-    if (this.isEditMode && this.existingCoverPreview) {
-      this.mainImageFile = null;
-      this.mainImagePreview = this.existingCoverPreview;
-      return;
-    }
-
     this.mainImageFile = null;
     this.mainImagePreview = null;
+    this.shouldReplaceCoverWithDefault = this.isEditMode;
+    this.eventForm.markAsDirty();
   }
 
   async onGalleryChange(event: any): Promise<void> {
@@ -1003,6 +1003,15 @@ export class CreateEventComponent implements OnInit {
       formData.append('eventId', this.editEventId);
       if (this.mainImageFile) {
         formData.append('image', this.mainImageFile);
+      } else if (this.shouldReplaceCoverWithDefault) {
+        try {
+          const coverImage = await this.getCoverImageForPayload();
+          formData.append('image', coverImage);
+        } catch (err) {
+          this.isSubmittingEvent = false;
+          console.error('Error preparing cover image:', err);
+          return;
+        }
       }
     } else {
       try {

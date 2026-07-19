@@ -1,4 +1,4 @@
-import { Component, ElementRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, ElementRef, computed, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { CommonModule, DatePipe } from '@angular/common';
@@ -17,6 +17,8 @@ import { ImageUrlPipe } from '../../../shared/pipes/image-url.pipe';
 import { GalleryComponent, GalleryImage } from '../../../shared/components/gallery/gallery.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
+import { EventJoinStatusStore } from '../../../shared/services/events/event-join-status.store';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface AttendeesProfile {
   profileImage: string;
@@ -37,8 +39,7 @@ export class EventDetailsComponent implements OnInit {
 
   eventDetails: any = [];
   relatedEvents: any[] = [];
-  isMapVisible = false;
-  isChatVisible = false;
+  isChatOpen = signal(false);
   activeEventDrawer: 'requests' | 'attendees' | null = null;
 
   route: ActivatedRoute = inject(ActivatedRoute)
@@ -49,8 +50,23 @@ export class EventDetailsComponent implements OnInit {
   platform = inject(BrowserService)
   socketService = inject(SocketService)
   httpService = inject(HttpService)
+  eventJoinStatusStore = inject(EventJoinStatusStore)
+  private readonly destroyRef = inject(DestroyRef);
 
-  joinRequestStatus = signal('Request Join')
+  currentEventId = signal('');
+  eventAccessVersion = signal(0);
+  joinRequestStatus = computed(() => this.eventJoinStatusStore.labelFor(this.currentEventId()));
+  canRequestJoin = computed(() => this.eventJoinStatusStore.canRequestJoin(this.currentEventId()));
+  canAccessPrivateEventData = computed(() => {
+    this.eventAccessVersion();
+
+    const eventId = this.currentEventId();
+    const joinStatus = this.eventJoinStatusStore.statusFor(eventId);
+
+    return this.isCurrentUserEventMember() || joinStatus === 'accepted';
+  });
+  isMapVisible = computed(() => this.canAccessPrivateEventData() && this.hasEventCoordinates());
+  isChatVisible = computed(() => this.canAccessPrivateEventData());
 
   attendees: string[] = []
   attendessProfiles: AttendeesProfile[] = []
@@ -68,6 +84,7 @@ export class EventDetailsComponent implements OnInit {
   isEventMenuOpen = false;
   requestActionStates: Record<string, 'pending' | 'processing' | 'accepted' | 'rejected'> = {};
   private readonly openCapacityLimit = 999999;
+  private fetchedJoinStatusKey = '';
 
   position: google.maps.LatLngLiteral = {
     lat: 0,
@@ -84,6 +101,13 @@ export class EventDetailsComponent implements OnInit {
       const eventId = params['eventId'];
       this.getEventDetails(eventId);
     })
+
+    this.authService.userDetails$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.refreshEventAccessState();
+        this.syncJoinStatusForCurrentUser();
+      });
   }
 
 
@@ -106,6 +130,7 @@ export class EventDetailsComponent implements OnInit {
         if (this.eventDetails) {
           this.attendees = Array.isArray(this.eventDetails.attendees) ? this.eventDetails.attendees : [];
           this.eventId = this.eventDetails._id;
+          this.currentEventId.set(this.eventId);
           this.eventDetails.image = this._shared.getImageUrl(this.eventDetails.image);
           this.eventGalleryImages = Array.isArray(this.eventDetails.gallery)
             ? this.eventDetails.gallery.map((image: string) => ({
@@ -119,41 +144,35 @@ export class EventDetailsComponent implements OnInit {
           const rawRating = this.eventDetails?.createdBy?.averageRating;
           this.averageRating = rawRating ? parseFloat(rawRating) : 0;
 
-          if (this.eventDetails.location && this.eventDetails.location.coordinates && this.eventDetails.location.coordinates.length === 2) {
+          const eventLocation = this.getEventLocation();
+          if (eventLocation?.coordinates?.length === 2) {
             this.position = { 
-              lat: this.eventDetails.location.coordinates[1], 
-              lng: this.eventDetails.location.coordinates[0] 
+              lat: eventLocation.coordinates[1], 
+              lng: eventLocation.coordinates[0] 
             };
             this.options = { ...this.options, center: this.position, zoom: 16 };
-            if (this.isUserAttendee()) {
-              this.isMapVisible = true;
-            }
           }
+          this.refreshEventAccessState();
 
           this.getUserProfile();
           this.getAttendeesDetails();
-          this.fetchJoinStatus();
+          this.syncJoinStatusForCurrentUser();
           this.fetchRelatedNearbyEvents();
         }
       })
   }
 
-  fetchJoinStatus() {
-    if (!this.authService.isLoggedIn()) return;
-    const userId = this.authService.userDetails.id;
+  syncJoinStatusForCurrentUser() {
+    const userId = this.authService.userDetails?.id;
+    if (!this.eventId || !userId) return;
+
+    const fetchKey = `${this.eventId}:${userId}`;
+    if (this.fetchedJoinStatusKey === fetchKey) return;
+
+    this.fetchedJoinStatusKey = fetchKey;
     this.eventsService.getJoinStatus(this.eventId, userId).subscribe((res: any) => {
-      if (res?.success && res.data.status) {
-        if (res.data.status === 'pending') {
-          this.joinRequestStatus.set('Requested');
-        } else if (res.data.status === 'accepted') {
-          this.joinRequestStatus.set('Joined');
-          // Re-evaluate map visibility if they just got accepted
-          if (this.position.lat !== 0 && this.position.lng !== 0) {
-            this.isMapVisible = true;
-          }
-        } else if (res.data.status === 'rejected') {
-          this.joinRequestStatus.set('Request Join');
-        }
+      if (res?.success) {
+        this.eventJoinStatusStore.setApiStatus(this.eventId, res.data?.status);
       }
     });
   }
@@ -201,13 +220,39 @@ export class EventDetailsComponent implements OnInit {
         console.warn('Unexpected response format or status code:', res);
         return;
       }
-      this.joinRequestStatus.set('Requested');
+      this.eventJoinStatusStore.setStatus(this.eventId, 'pending');
     })
   }
 
   isUserAttendee() {
-    let isAllowed = this.authService.isLoggedIn() && (this.attendees.includes(this.authService.userDetails.id) || this.authService.userDetails.id === (this.eventDetails.createdBy && this.eventDetails.createdBy._id))
-    return isAllowed;
+    return this.canAccessPrivateEventData();
+  }
+
+  private isCurrentUserEventMember(): boolean {
+    const userId = this.authService.userDetails?.id;
+    if (!this.authService.isLoggedIn() || !userId) return false;
+
+    return this.attendees.includes(userId) || userId === this.eventDetails?.createdBy?._id;
+  }
+
+  private hasEventCoordinates(): boolean {
+    const coordinates = this.getEventLocation()?.coordinates;
+    return Array.isArray(coordinates)
+      && coordinates.length === 2
+      && Number.isFinite(Number(coordinates[0]))
+      && Number.isFinite(Number(coordinates[1]));
+  }
+
+  private getEventLocation(): any {
+    return this.eventDetails?.address?.location || this.eventDetails?.location;
+  }
+
+  private refreshEventAccessState(): void {
+    this.eventAccessVersion.update((version) => version + 1);
+
+    if (!this.canAccessPrivateEventData()) {
+      this.isChatOpen.set(false);
+    }
   }
 
   isEventCreator() {
@@ -467,7 +512,9 @@ export class EventDetailsComponent implements OnInit {
   }
 
   toggleChat() {
-    this.isChatVisible = !this.isChatVisible;
+    if (!this.isChatVisible()) return;
+
+    this.isChatOpen.update((isOpen) => !isOpen);
   }
 
   goBack() {
@@ -660,11 +707,34 @@ export class EventDetailsComponent implements OnInit {
   }
 
   get locationLabel(): string {
-    const area = this.eventDetails?.address?.area;
-    const pinCode = this.eventDetails?.address?.pinCode;
+    const address = this.eventDetails?.address;
+    const fullAddress = String(address?.fullAddress || '').trim();
+    const partialAddress = String(address?.partialAddress || '').trim();
 
-    if (area && pinCode) return `${area}, ${pinCode}`;
-    return area || pinCode || 'Location TBA';
+    if (fullAddress) return fullAddress;
+    if (partialAddress) return partialAddress;
+
+    const fallbackParts = [
+      address?.area,
+      address?.city,
+      address?.state,
+      address?.pinCode,
+      address?.country
+    ].filter(Boolean);
+
+    return fallbackParts.length ? fallbackParts.join(', ') : 'Location TBA';
+  }
+
+  get locationSubtitle(): string {
+    if (!this.showHostLocationVisibilityCopy) return '';
+
+    return this.eventDetails?.address?.fullAddress
+      ? 'Full address visible to you and attendees'
+      : 'Exact address shared after joining';
+  }
+
+  get showHostLocationVisibilityCopy(): boolean {
+    return this.isEventCreator();
   }
 
   get hostEventCount(): number {

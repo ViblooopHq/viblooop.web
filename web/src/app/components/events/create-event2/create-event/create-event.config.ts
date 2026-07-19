@@ -223,7 +223,7 @@ Day 2: Main activities and return journey 🌄`,
 export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
   {
     matches: ['party', 'house party'],
-    title: 'Events',
+    title: 'Social',
     description: 'Parties, meetups, rooftop & more',
     materialIcon: 'celebration',
     accent: 'purple',
