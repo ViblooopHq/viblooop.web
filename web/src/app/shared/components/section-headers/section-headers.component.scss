@@ -1,10 +1,3 @@
-// --- Theme Variables ---
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$surface: #070d1f; // The dark background color behind the component
-$on-surface: #dfe4fe;
-$on-surface-variant: #a5aac2;
-
 .vl-section-header {
     display: flex;
     flex-direction: column;
@@ -38,12 +31,12 @@ $on-surface-variant: #a5aac2;
         border: 1px solid transparent; // Reserve space for the border
         background:
             // 1. Solid surface color inside the pill
-            linear-gradient($surface, $surface) padding-box,
+            linear-gradient(var(--bg-surface), var(--bg-surface)) padding-box,
             // 2. Gradient color for the border
-            linear-gradient(to right, $primary, $secondary) border-box;
+            linear-gradient(to right, var(--primary), var(--secondary)) border-box;
 
         // Optional: Add a very subtle glow around the pill
-        box-shadow: 0 0 20px rgba($primary, 0.15);
+        box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
     }
 
     // Pre-Title Text
@@ -55,7 +48,7 @@ $on-surface-variant: #a5aac2;
         font-family: 'Inter', sans-serif;
 
         // Make the text itself a gradient too
-        background-image: linear-gradient(to right, $primary, $secondary);
+        background-image: linear-gradient(to right, var(--primary), var(--secondary));
         -webkit-background-clip: text;
         background-clip: text;
         color: transparent;
@@ -79,7 +72,7 @@ $on-surface-variant: #a5aac2;
 
     // Description Paragraph
     &__description {
-        color: $on-surface-variant;
+        color: var(--on-surface-variant);
         max-width: 36rem; // Limits line length for readability
         font-size: 1.125rem; // text-lg
         line-height: 1.625;

@@ -37,7 +37,7 @@
   background:
     linear-gradient(180deg, rgba(5, 8, 18, 0.16) 0%, rgba(5, 8, 18, 0.62) 48%, rgba(5, 8, 18, 0.92) 100%),
     radial-gradient(circle at 0% 0%, rgba(16, 185, 129, 0.2), transparent 32%),
-    radial-gradient(circle at 95% 90%, rgba(168, 85, 247, 0.22), transparent 40%);
+    radial-gradient(circle at 95% 90%, rgba(var(--color-brand-accent-rgb), 0.22), transparent 40%);
 }
 
 .past-event-card__top,
@@ -164,7 +164,7 @@
   width: fit-content;
   margin-top: auto;
   border: 0;
-  color: #d56cff;
+  color: var(--color-brand-accent);
   background: transparent;
   font: inherit;
   font-size: 0.76rem;
@@ -173,7 +173,7 @@
   transition: color 0.2s ease, transform 0.2s ease;
 
   &:hover {
-    color: #f0abfc;
+    color: var(--color-brand-tint);
     transform: translateX(2px);
   }
 

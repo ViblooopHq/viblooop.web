@@ -1,21 +1,13 @@
 @use "../../../../styles/abstracts/mixins" as *;
 
-// --- Theme Variables ---
-$surface: #070d1f;
-$on-surface: #dfe4fe;
-$on-surface-variant: #b0b5d1;
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$outline-variant: rgba(255, 255, 255, 0.1);
-
 .vl-footer {
   position: relative;
   padding: 6rem 1.5rem 3rem;
-  background: rgba($surface, 0.4);
+  background: rgba(var(--bg-surface-rgb), 0.4);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid $outline-variant;
-  color: $on-surface;
+  border-top: 1px solid rgba(var(--on-surface-rgb), 0.1);
+  color: var(--on-surface);
   overflow: hidden;
 
   // Background glow
@@ -27,7 +19,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     transform: translateX(-50%);
     width: 40rem;
     height: 20rem;
-    background: radial-gradient(circle, rgba($primary, 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.05) 0%, transparent 70%);
     filter: blur(60px);
     z-index: 0;
     pointer-events: none;
@@ -66,7 +58,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: $primary;
+    color: var(--primary);
   }
 
   &__logo-svg {
@@ -78,7 +70,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     font-size: 1.75rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    background: linear-gradient(to right, $primary, $secondary);
+    background: linear-gradient(to right, var(--primary), var(--secondary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -87,7 +79,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
   &__tagline {
     font-size: 1rem;
     line-height: 1.6;
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     max-width: 20rem;
   }
 
@@ -104,9 +96,9 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: $on-surface;
+    background: rgba(var(--on-surface-rgb), 0.05);
+    border: 1px solid rgba(var(--on-surface-rgb), 0.1);
+    color: var(--on-surface);
     transition: all 0.3s ease;
     text-decoration: none;
 
@@ -115,11 +107,11 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     }
 
     &:hover {
-      background: rgba($primary, 0.15);
-      border-color: $primary;
-      color: $primary;
+      background: rgba(var(--primary-rgb), 0.15);
+      border-color: var(--primary);
+      color: var(--primary);
       transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba($primary, 0.2);
+      box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
     }
   }
 
@@ -127,7 +119,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: $on-surface;
+    color: var(--on-surface);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -142,18 +134,18 @@ $outline-variant: rgba(255, 255, 255, 0.1);
 
   &__link {
     font-size: 0.95rem;
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     text-decoration: none;
     transition: color 0.2s ease;
 
     &:hover {
-      color: $primary;
+      color: var(--primary);
     }
   }
 
   &__bottom {
     padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid rgba(var(--on-surface-rgb), 0.05);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -170,7 +162,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
   }
 
   &__copyright-icon {
@@ -179,7 +171,7 @@ $outline-variant: rgba(255, 255, 255, 0.1);
 
   &__meta {
     font-size: 0.875rem;
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     opacity: 0.8;
   }
 }

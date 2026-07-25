@@ -42,6 +42,10 @@
 :root {
   /* Design System Variables (Light Theme defaults) */
   --primary: #8a2be2;
+  --primary-rgb: 138, 43, 226;
+  --secondary-rgb: 0, 123, 255;
+  --bg-surface-rgb: 255, 255, 255;
+  --on-surface-rgb: 17, 24, 39;
   /* darker shade for light theme contrast */
   --primary-fixed: #8a2be2;
   --primary-dim: #9b72ff;
@@ -130,11 +134,41 @@
 
   --bg-tag-color: rgba(124, 58, 237, 0.1);
   --tag-text-color: #7C3AED;
+
+  /* Consolidated brand palette */
+  --color-brand-primary: #7d52ff;
+  --color-brand-primary-rgb: 125, 82, 255;
+  --color-brand-accent: #a855f7;
+  --color-brand-accent-rgb: 168, 85, 247;
+  --color-brand-tint: #cbbeff;
+  --color-brand-tint-rgb: 203, 190, 255;
+  --color-brand-tint-soft: #f4efff;
+  --shadow-brand-glow: 0 0 18px rgba(125, 82, 255, 0.3);
+
+  /* Radius scale (target — existing components still use ad hoc px values) */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-pill: 999px;
+
+  /* Spacing scale (target — existing components still use ad hoc px values) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
 }
 
 [data-theme='dark'] {
   /* Design System Variables (Deep Dark Canvas) */
   --primary: #bd9dff;
+  --primary-rgb: 189, 157, 255;
+  --secondary-rgb: 52, 181, 250;
+  --bg-surface-rgb: 7, 13, 31;
+  --on-surface-rgb: 223, 228, 254;
   --primary-fixed: #bd9dff;
   --primary-dim: #966bff;
   --secondary: #34b5fa;

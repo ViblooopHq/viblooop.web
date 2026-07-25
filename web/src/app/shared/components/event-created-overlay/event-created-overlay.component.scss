@@ -7,7 +7,7 @@
   padding: 24px;
   min-height: 100dvh;
   background:
-    radial-gradient(circle at 50% 24%, rgba(124, 58, 237, 0.14), transparent 18rem),
+    radial-gradient(circle at 50% 24%, rgba(var(--color-brand-primary-rgb), 0.14), transparent 18rem),
     rgba(8, 6, 14, .9);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -63,15 +63,15 @@
 }
 
 .event-created-overlay__button--secondary {
-  color: #cbbeff;
+  color: var(--color-brand-tint);
   background: rgba(255, 255, 255, .06);
   border: 1px solid rgba(255, 255, 255, .1);
 }
 
 .event-created-overlay__button--primary {
   color: #fff;
-  background: #6c3bff;
-  box-shadow: 0 12px 28px rgba(108, 59, 255, .34);
+  background: var(--color-brand-primary);
+  box-shadow: 0 12px 28px rgba(var(--color-brand-primary-rgb), .34);
 }
 
 @keyframes event-created-overlay-in {

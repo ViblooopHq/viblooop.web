@@ -191,7 +191,7 @@
       display: inline-flex;
       overflow: hidden;
       padding: 0;
-      border: 1px solid rgba(168, 85, 247, 0.75);
+      border: 1px solid rgba(var(--color-brand-accent-rgb), 0.75);
       border-radius: 0.75rem;
       background: rgba(17, 17, 27, 0.94);
       box-shadow: 0 22px 65px rgba(0, 0, 0, 0.42);
@@ -224,7 +224,7 @@
       }
 
       i {
-        color: #a855f7;
+        color: var(--color-brand-accent);
         font-size: 1.35rem;
       }
 
