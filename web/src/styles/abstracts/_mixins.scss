@@ -102,6 +102,11 @@
   }
 }
 
+// Brand primary→accent CTA gradient, reused across event-creation cards/buttons/progress indicators
+@mixin brand-cta-gradient($direction: 135deg) {
+  background: linear-gradient($direction, var(--color-brand-primary), var(--color-brand-accent));
+}
+
 // for dynamically generating pre-fixes like --moz-property, --webkit-property
 @mixin prefix($property, $value, $prefixes) {
   @each $prefix in $prefixes {
