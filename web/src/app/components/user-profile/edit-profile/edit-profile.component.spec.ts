@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditProfile2Component } from './edit-profile2.component';
+import { EditProfile2Component } from './edit-profile.component';
 
 describe('EditProfile2Component', () => {
   let component: EditProfile2Component;

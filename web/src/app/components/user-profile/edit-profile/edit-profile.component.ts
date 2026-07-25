@@ -30,8 +30,8 @@ type ProfilePhotoItem = {
 
 @Component({
   selector: 'vl-edit-profile',
-  templateUrl: './edit-profile2.component.html',
-  styleUrls: ['./edit-profile2.component.scss'],
+  templateUrl: './edit-profile.component.html',
+  styleUrls: ['./edit-profile.component.scss'],
   imports: [ReactiveFormsModule, FormsModule, SelfieVerificationComponent, FormDrawerComponent]
 })
 export class EditProfile2Component implements OnInit {

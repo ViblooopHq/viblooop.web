@@ -22,7 +22,7 @@ import { CompleteProfileComponent } from './shared/components/pop-ups/complete-p
 
 import { ScrollToTopComponent } from './components/common/scroll-to-top/scroll-to-top.component';
 import { AppDrawerService } from './shared/services/drawer/app-drawer.service';
-import { CreateEventComponent } from './components/events/create-event2/create-event/create-event.component';
+import { CreateEventComponent } from './components/events/create-event/create-event.component';
 import { MessageService } from './shared/services/message/message.service';
 
 @Component({

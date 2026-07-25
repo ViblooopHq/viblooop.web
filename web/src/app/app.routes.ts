@@ -10,8 +10,8 @@ import { ProfileSetupComponent } from './components/user-profile/profile-setup/p
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { profileScoreGuard } from './guards/profile-score/profile-score.guard';
 import { unsavedChangeGuard } from './guards/unsave-changes/unsave-change.guard';
-import { CreateEventComponent } from './components/events/create-event2/create-event/create-event.component';
-import { EditProfile2Component } from './components/user-profile/edit-profile2/edit-profile2.component';
+import { CreateEventComponent } from './components/events/create-event/create-event.component';
+import { EditProfile2Component } from './components/user-profile/edit-profile/edit-profile.component';
 import { ExploreEventsComponent } from './components/events/explore-events/explore-events.component';
 export const routes: Routes = [
   {
