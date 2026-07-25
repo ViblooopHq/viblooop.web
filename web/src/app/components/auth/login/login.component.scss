@@ -1,5 +1,4 @@
 @use "../../../../styles/index" as *;
-@use "../auth-common" as auth;
 
 :host {
   display: block;
@@ -95,13 +94,13 @@
     }
 
     .text-accent-vibe {
-      background: linear-gradient(90deg, #b154f0, #e08cf8);
+      background: linear-gradient(90deg, var(--color-brand-accent), var(--color-brand-tint));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
     .text-accent-moment {
-      background: linear-gradient(90deg, #7048e8, #9b72f0);
+      background: var(--gradient-brand-cta);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -134,7 +133,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #b154f0;
+        color: var(--color-brand-accent);
         font-size: 1.1rem;
       }
 
@@ -196,8 +195,8 @@
     transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 
     &:hover {
-      background: rgba(177, 84, 240, 0.18);
-      border-color: rgba(177, 84, 240, 0.38);
+      background: rgba(var(--color-brand-accent-rgb), 0.18);
+      border-color: rgba(var(--color-brand-accent-rgb), 0.38);
       transform: translateX(-1px);
     }
 
@@ -325,7 +324,7 @@
 
         &:focus {
           outline: none;
-          border-color: #b154f0;
+          border-color: var(--color-brand-accent);
         }
 
         &::placeholder {
@@ -335,7 +334,7 @@
     }
 
     .btn-primary {
-      background: linear-gradient(90deg, #7048e8, #b154f0);
+      background: var(--gradient-brand-cta);
       color: #fff;
       border: none;
       padding: 1rem;
@@ -395,12 +394,12 @@
     white-space: nowrap;
 
     .footer-link {
-      color: #b154f0;
+      color: var(--color-brand-accent);
       text-decoration: none;
       transition: color 0.3s;
 
       &:hover {
-        color: #d08cf8;
+        color: var(--color-brand-tint);
         text-decoration: underline;
       }
     }
