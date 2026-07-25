@@ -1,10 +1,5 @@
 // --- Theme Variables ---
-$surface: #070d1f;
-$primary: #bd9dff;
 $primary-dim: #8a4cfc;
-$secondary: #34b5fa;
-$on-surface: #dfe4fe;
-$on-surface-variant: #a5aac2;
 
 .vl-cta {
   position: relative;
@@ -25,7 +20,7 @@ $on-surface-variant: #a5aac2;
   &__tagline {
     font-size: 1.125rem;
     font-weight: 400;
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     margin: 0 0 2.5rem;
     font-family: 'Inter', sans-serif;
   }
@@ -62,18 +57,18 @@ $on-surface-variant: #a5aac2;
     &--primary {
       font-weight: 800;
       color: #fff;
-      background: linear-gradient(to right, $primary-dim, $primary);
-      box-shadow: 0 0 30px rgba($primary, 0.3);
+      background: linear-gradient(to right, $primary-dim, var(--primary));
+      box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
 
       &:hover {
         transform: scale(1.03);
-        box-shadow: 0 0 40px rgba($primary, 0.5);
+        box-shadow: 0 0 40px rgba(var(--primary-rgb), 0.5);
       }
     }
 
     &--glass {
       font-weight: 600;
-      color: $on-surface;
+      color: var(--on-surface);
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(12px);
@@ -97,7 +92,7 @@ $on-surface-variant: #a5aac2;
       height: 20rem;
       top: -5rem;
       left: -5rem;
-      background: rgba($primary, 0.08);
+      background: rgba(var(--primary-rgb), 0.08);
       filter: blur(80px);
     }
 
@@ -106,7 +101,7 @@ $on-surface-variant: #a5aac2;
       height: 16rem;
       bottom: -4rem;
       right: -4rem;
-      background: rgba($secondary, 0.06);
+      background: rgba(var(--secondary-rgb), 0.06);
       filter: blur(80px);
     }
   }

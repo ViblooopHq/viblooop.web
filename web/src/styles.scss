@@ -46,6 +46,10 @@
   --secondary-rgb: 0, 123, 255;
   --bg-surface-rgb: 255, 255, 255;
   --on-surface-rgb: 17, 24, 39;
+  --on-surface-variant-rgb: 55, 65, 81;
+  --tertiary-rgb: 233, 30, 99;
+  --bg-surface-container-rgb: 249, 250, 251;
+  --bg-surface-container-highest-rgb: 229, 231, 235;
   /* darker shade for light theme contrast */
   --primary-fixed: #8a2be2;
   --primary-dim: #9b72ff;
@@ -170,6 +174,10 @@
   --secondary-rgb: 52, 181, 250;
   --bg-surface-rgb: 7, 13, 31;
   --on-surface-rgb: 223, 228, 254;
+  --on-surface-variant-rgb: 176, 181, 209;
+  --tertiary-rgb: 255, 134, 195;
+  --bg-surface-container-rgb: 12, 19, 38;
+  --bg-surface-container-highest-rgb: 28, 37, 62;
   --primary-fixed: #bd9dff;
   --primary-dim: #966bff;
   --secondary: #34b5fa;

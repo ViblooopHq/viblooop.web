@@ -15,7 +15,7 @@
     height: 2.4rem;
     border-radius: 12px;
     background: rgba(124, 58, 237, 0.2);
-    color: #a855f7;
+    color: var(--color-brand-accent);
     font-size: 1.35rem;
   }
 }
@@ -53,7 +53,7 @@
 .avatar {
   width: 44px;
   height: 44px;
-  border: 2px solid rgba(168, 85, 247, 0.45);
+  border: 2px solid rgba(var(--color-brand-accent-rgb), 0.45);
   border-radius: 999px;
   object-fit: cover;
   background: #111827;
@@ -108,7 +108,7 @@
   text-align: center;
 
   .material-symbols-outlined {
-    color: #a855f7;
+    color: var(--color-brand-accent);
     font-size: 2rem;
   }
 

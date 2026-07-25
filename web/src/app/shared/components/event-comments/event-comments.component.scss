@@ -24,7 +24,7 @@ $text-light: #8888A0;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: 18px;
   background:
-    radial-gradient(circle at 18% 8%, rgba(139, 92, 246, 0.08), transparent 18rem),
+    radial-gradient(circle at 18% 8%, rgba(var(--color-brand-accent-rgb), 0.08), transparent 18rem),
     rgba(13, 15, 31, 0.82);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
@@ -53,7 +53,7 @@ $text-light: #8888A0;
   width: 3rem;
   height: 3rem;
   place-items: center;
-  border: 1px solid rgba(168, 85, 247, 0.42);
+  border: 1px solid rgba(var(--color-brand-accent-rgb), 0.42);
   border-radius: 0.8rem;
   background: rgba(76, 29, 149, 0.26);
   color: #c084fc;
@@ -198,7 +198,7 @@ $text-light: #8888A0;
 
 .btn-cancel-review {
   min-height: 2.55rem;
-  border: 1px solid rgba(168, 85, 247, 0.36);
+  border: 1px solid rgba(var(--color-brand-accent-rgb), 0.36);
   border-radius: 0.65rem;
   background: rgba(30, 18, 54, 0.52);
   color: #c4b5fd;
@@ -418,7 +418,7 @@ $text-light: #8888A0;
   display: grid;
   min-width: 10.5rem;
   overflow: hidden;
-  border: 1px solid rgba(168, 85, 247, 0.28);
+  border: 1px solid rgba(var(--color-brand-accent-rgb), 0.28);
   border-radius: 0.75rem;
   background: rgba(17, 20, 37, 0.98);
   box-shadow: 0 1rem 2.2rem rgba(0, 0, 0, 0.38);
@@ -438,7 +438,7 @@ $text-light: #8888A0;
     text-align: left;
 
     &:hover {
-      background: rgba(168, 85, 247, 0.14);
+      background: rgba(var(--color-brand-accent-rgb), 0.14);
     }
 
     &:disabled {
@@ -459,7 +459,7 @@ $text-light: #8888A0;
   gap: 0.6rem;
   min-height: 2.7rem;
   margin: 1rem auto 0;
-  border: 1px solid rgba(168, 85, 247, 0.46);
+  border: 1px solid rgba(var(--color-brand-accent-rgb), 0.46);
   border-radius: 0.65rem;
   background: rgba(30, 18, 54, 0.6);
   color: #c4b5fd;

@@ -1,9 +1,5 @@
 // --- Theme Variables ---
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
 $primary-container: #b28cff;
-$on-surface: #dfe4fe;
 
 // --- Discovery Section ---
 .vl-discovery {
@@ -23,9 +19,9 @@ $on-surface: #dfe4fe;
     &__pill {
         padding: 0.25rem 1rem; // py-1 px-4
         border-radius: 9999px;
-        border: 1px solid rgba($primary, 0.2);
-        background-color: rgba($primary, 0.05);
-        color: $primary;
+        border: 1px solid rgba(var(--primary-rgb), 0.2);
+        background-color: rgba(var(--primary-rgb), 0.05);
+        color: var(--primary);
         font-size: 0.625rem; // text-[10px]
         font-weight: 900; // font-black
         text-transform: uppercase;
@@ -37,7 +33,7 @@ $on-surface: #dfe4fe;
     &__heading {
         font-size: 1.875rem; // text-3xl
         font-weight: 700; // font-bold
-        color: $on-surface;
+        color: var(--on-surface);
         letter-spacing: -0.025em; // tracking-tight
         margin: 0;
         font-family: 'Inter', sans-serif;
@@ -136,15 +132,15 @@ $on-surface: #dfe4fe;
 
     // --- Dynamic Hover Color Modifiers ---
     &--hover-primary:hover .vl-category-card__icon-wrapper {
-        background-color: rgba($primary, 0.8);
+        background-color: rgba(var(--primary-rgb), 0.8);
     }
 
     &--hover-secondary:hover .vl-category-card__icon-wrapper {
-        background-color: rgba($secondary, 0.8);
+        background-color: rgba(var(--secondary-rgb), 0.8);
     }
 
     &--hover-tertiary:hover .vl-category-card__icon-wrapper {
-        background-color: rgba($tertiary, 0.8);
+        background-color: rgba(var(--tertiary-rgb), 0.8);
     }
 
     &--hover-primary-container:hover .vl-category-card__icon-wrapper {

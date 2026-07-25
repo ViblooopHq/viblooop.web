@@ -1,10 +1,10 @@
 # DESIGN_SYSTEM.md
 
-Design tokens extracted from the **create-event flow** — designated the reference/source-of-truth per instructions. Two implementations exist in the tree; this document treats the **active one, `create-event2`** (the 4-step creation wizard), as the target system, and calls out where the legacy `create-event` flow and the rest of the app deviate from it. This is documentation only — **no site-wide styling changes have been applied.**
+Design tokens extracted from the **create-event flow** — designated the reference/source-of-truth per instructions. Two implementations exist in the tree; this document treats the **active one, `create-event`** (the 4-step creation wizard), as the target system, and calls out where the legacy `create-event` flow and the rest of the app deviate from it. This is documentation only — **no site-wide styling changes have been applied.**
 
 ## Source Files
 
-- **Active reference**: `web/src/app/components/events/create-event2/create-event/create-event.component.scss` (~4,000 lines, hand-rolled SCSS, hardcoded values, no CSS custom properties)
+- **Active reference**: `web/src/app/components/events/create-event/create-event/create-event.component.scss` (~4,000 lines, hand-rolled SCSS, hardcoded values, no CSS custom properties)
 - **Legacy (superseded, token-based)**: `web/src/app/components/events/create-event/create-event.component.scss` — Tailwind utilities + CSS variables from `web/src/styles/themes/_light-theme.scss` / `_dark-theme.scss`
 
 ## Color
@@ -88,10 +88,10 @@ Legacy `create-event` has one button style: Tailwind `bg-blue-600 hover:bg-blue-
 
 ## Gap List — Where the Rest of the App Deviates
 
-- **Two full design systems coexist**: legacy `create-event` (blue brand, CSS-variable tokens, Tailwind utilities) vs. active `create-event2` (purple brand, hardcoded hex, hand-rolled SCSS). They are not visually or structurally reconciled.
-- **`rounded-*` Tailwind classes appear 69× across 14 other files** in the app (header, profile, event-card, stepper, etc.) — meaning most of the app still runs on the Tailwind/utility approach that `create-event2` abandoned. Any radius consolidation should either bring `create-event2` back toward Tailwind classes, or formalize its px scale into SCSS variables/Tailwind theme tokens that the rest of the app also adopts — not leave two systems in parallel.
-- **`shadow-*`/`box-shadow` appears 229× across 48 files repo-wide** — `create-event2` alone contributes 53 of those, each unique. There is no shared elevation scale anywhere in the codebase, not just in this flow.
-- **Brand color ambiguity**: which is the "real" brand color — the legacy blue (`#2563eb`) or the active purple (`#7d52ff`/`#6c3bff`)? Given `create-event2` is the live flow and the purple palette also appears in `event-details`, `event-card`, `notification`, `event-created-overlay`, `gallery`, `explore-events`, `user-profile`, `edit-profile2`, `selfie-verification`, `reviews`, and `login`, purple looks like the intended direction — the blue tokens in `_light-theme.scss`/`_dark-theme.scss` read as stale.
+- **Two full design systems coexist**: legacy `create-event` (blue brand, CSS-variable tokens, Tailwind utilities) vs. active `create-event` (purple brand, hardcoded hex, hand-rolled SCSS). They are not visually or structurally reconciled.
+- **`rounded-*` Tailwind classes appear 69× across 14 other files** in the app (header, profile, event-card, stepper, etc.) — meaning most of the app still runs on the Tailwind/utility approach that `create-event` abandoned. Any radius consolidation should either bring `create-event` back toward Tailwind classes, or formalize its px scale into SCSS variables/Tailwind theme tokens that the rest of the app also adopts — not leave two systems in parallel.
+- **`shadow-*`/`box-shadow` appears 229× across 48 files repo-wide** — `create-event` alone contributes 53 of those, each unique. There is no shared elevation scale anywhere in the codebase, not just in this flow.
+- **Brand color ambiguity**: which is the "real" brand color — the legacy blue (`#2563eb`) or the active purple (`#7d52ff`/`#6c3bff`)? Given `create-event` is the live flow and the purple palette also appears in `event-details`, `event-card`, `notification`, `event-created-overlay`, `gallery`, `explore-events`, `user-profile`, `edit-profile2`, `selfie-verification`, `reviews`, and `login`, purple looks like the intended direction — the blue tokens in `_light-theme.scss`/`_dark-theme.scss` read as stale.
 
 ## Recommended Next Step (not executed here)
 

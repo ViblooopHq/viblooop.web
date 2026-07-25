@@ -1,22 +1,13 @@
 @use "../../../../styles/index" as *;
 
-// Base Tokens from Design System
-$surface: #070d1f;
-$surface-container-lowest: rgba(12, 19, 38, 0.4);
-$surface-container-low: #0c1326;
-$surface-container-highest: #1c253e;
-$primary: #bd9dff;
-$primary-dim: #8b5cf6;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface: #dfe4fe;
+// Local aliases onto the shared theme tokens (styles.scss)
 $outline-variant: rgba(255, 255, 255, 0.15);
 
 :host {
   display: block;
   min-height: 100vh;
   overflow-x: hidden;
-  background: $surface;
+  background: var(--bg-surface);
 }
 
 // Mixins
@@ -41,7 +32,7 @@ $outline-variant: rgba(255, 255, 255, 0.15);
 
 .explore-container {
   min-height: 100vh;
-  color: $on-surface;
+  color: var(--on-surface);
   position: relative;
   padding-top: 8rem;
 
@@ -52,7 +43,7 @@ $outline-variant: rgba(255, 255, 255, 0.15);
     right: -10%;
     width: 60vw;
     height: 60vw;
-    background: radial-gradient(circle, rgba($primary, 0.15) 0%, rgba($surface, 0) 70%);
+    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--bg-surface-rgb), 0) 70%);
     z-index: 0;
     pointer-events: none;
   }
@@ -78,7 +69,7 @@ header {
 
 .subtitle {
   font-size: 1.125rem;
-  color: rgba($on-surface, 0.7);
+  color: rgba(var(--on-surface-rgb), 0.7);
   margin-top: 0.5rem;
 }
 
@@ -119,7 +110,7 @@ header {
 }
 
 .text-on-surface {
-  color: $on-surface;
+  color: var(--on-surface);
 }
 
 // Header & Search
@@ -144,7 +135,7 @@ header {
     min-width: 0;
     border-radius: 9999px;
     padding: 0.5rem 1rem;
-    background: $surface-container-lowest;
+    background: rgba(var(--bg-surface-container-rgb), 0.4);
 
     .search-icon {
       font-size: 1.25rem;
@@ -156,13 +147,13 @@ header {
       flex: 1;
       background: transparent;
       border: none;
-      color: $on-surface;
+      color: var(--on-surface);
       font-family: inherit;
       font-size: 1rem;
       outline: none;
 
       &::placeholder {
-        color: rgba($on-surface, 0.4);
+        color: rgba(var(--on-surface-rgb), 0.4);
       }
     }
 
@@ -179,7 +170,7 @@ header {
       transition: background 0.3s ease;
 
       i {
-        color: $secondary;
+        color: var(--secondary);
       }
 
       &:hover {
@@ -206,8 +197,8 @@ header {
       white-space: nowrap;
       padding: 0.625rem 1.25rem;
       border-radius: 9999px;
-      background: $surface-container-highest;
-      color: $on-surface;
+      background: var(--bg-surface-container-highest);
+      color: var(--on-surface);
       border: none;
       font-family: inherit;
       font-size: 0.875rem;
@@ -293,20 +284,20 @@ header {
           display: flex;
           justify-content: center;
           align-items: center;
-          background-color: $surface-container-highest;
-          border: 2px solid $surface;
+          background-color: var(--bg-surface-container-highest);
+          border: 2px solid var(--bg-surface);
           z-index: 2;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 
           i {
             font-size: 0.875rem;
-            color: $on-surface;
+            color: var(--on-surface);
           }
         }
       }
 
       .category-name {
-        color: rgba($on-surface, 0.9);
+        color: rgba(var(--on-surface-rgb), 0.9);
         text-align: center;
         margin-top: 0.25rem;
         font-weight: 600;
@@ -316,7 +307,7 @@ header {
 
       &:hover .image-wrapper .category-image {
         transform: scale(1.05);
-        border-color: rgba($primary, 0.4);
+        border-color: rgba(var(--primary-rgb), 0.4);
       }
 
       &.active {
@@ -328,7 +319,7 @@ header {
 
         .icon-badge {
           background: rgba(192, 132, 252, 0.62);
-          border-color: $surface;
+          border-color: var(--bg-surface);
 
           i {
             color: #ffffff;
@@ -357,7 +348,7 @@ header {
       line-height: 1.15;
 
       i {
-        color: #a855f7;
+        color: var(--color-brand-accent);
         font-size: 1.1rem;
       }
     }
@@ -382,7 +373,7 @@ header {
     border: 1px solid rgba(112, 125, 185, 0.42);
     border-radius: 1.2rem;
     color: #ffffff;
-    background: rgba(7, 13, 31, 0.86);
+    background: rgba(var(--bg-surface-rgb), 0.86);
     padding: 0.75rem;
     text-align: left;
     font: inherit;
@@ -422,7 +413,7 @@ header {
   .featured-vibe-card__shade {
     background:
       linear-gradient(90deg, rgba(8, 12, 28, 0.96) 0%, rgba(8, 12, 28, 0.82) 42%, rgba(8, 12, 28, 0.42) 100%),
-      radial-gradient(circle at 0% 50%, rgba(139, 92, 246, 0.24), transparent 58%);
+      radial-gradient(circle at 0% 50%, rgba(var(--color-brand-accent-rgb), 0.24), transparent 58%);
   }
 
   .featured-vibe-card__icon,
@@ -442,7 +433,7 @@ header {
     background: linear-gradient(135deg, #fb4d73, #b91c6a);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.22),
-      0 14px 30px rgba(139, 92, 246, 0.2);
+      0 14px 30px rgba(var(--color-brand-accent-rgb), 0.2);
 
     i {
       font-size: 1.2rem;
@@ -471,7 +462,7 @@ header {
     }
 
     > span {
-      color: rgba($on-surface, 0.78);
+      color: rgba(var(--on-surface-rgb), 0.78);
       font-size: 0.66rem;
       font-weight: 600;
       line-height: 1.35;
@@ -482,7 +473,7 @@ header {
       align-items: center;
       gap: 0.45rem;
       margin-top: 0.25rem;
-      color: rgba($on-surface, 0.78);
+      color: rgba(var(--on-surface-rgb), 0.78);
       font-size: 0.58rem;
       font-weight: 800;
 
@@ -617,7 +608,7 @@ header {
         position: absolute;
         inset: 0;
         border-radius: 16px;
-        background: radial-gradient(circle at top left, rgba($primary, 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle at top left, rgba(var(--primary-rgb), 0.15) 0%, transparent 70%);
         z-index: -1;
       }
 
@@ -627,8 +618,8 @@ header {
         align-items: center;
 
         .live-badge {
-          background: rgba($tertiary, 0.2);
-          color: $tertiary;
+          background: rgba(var(--tertiary-rgb), 0.2);
+          color: var(--tertiary);
           padding: 4px 8px;
           border-radius: 4px;
           font-size: 0.75rem;
@@ -659,14 +650,14 @@ header {
         .event-time,
         .event-location {
           margin: 0;
-          color: rgba($on-surface, 0.8);
+          color: rgba(var(--on-surface-rgb), 0.8);
           display: flex;
           align-items: center;
           gap: 6px;
           margin-bottom: 4px;
 
           i {
-            color: $primary;
+            color: var(--primary);
           }
         }
       }
@@ -729,7 +720,7 @@ header {
   height: 64px;
   border-radius: 50%;
   border: none;
-  background: linear-gradient(135deg, $primary, $primary-dim);
+  background: linear-gradient(135deg, var(--primary), var(--color-brand-accent));
   color: #fff;
   font-size: 1.5rem;
   display: flex;
@@ -737,12 +728,12 @@ header {
   align-items: center;
   cursor: pointer;
   z-index: 50;
-  box-shadow: 0 8px 32px rgba($primary, 0.4);
+  box-shadow: 0 8px 32px rgba(var(--primary-rgb), 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 40px rgba($primary, 0.6);
+    box-shadow: 0 12px 40px rgba(var(--primary-rgb), 0.6);
   }
 
   &:active {

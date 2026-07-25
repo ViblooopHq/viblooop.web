@@ -1,0 +1,33 @@
+{
+  "customSyntax": "postcss-scss",
+  "rules": {
+    "declaration-property-value-disallowed-list": [
+      {
+        "/.*/": [
+          "/#7d52ff/i",
+          "/#6c3bff/i",
+          "/#7c3cff/i",
+          "/#a855f7/i",
+          "/#8b5cf6/i",
+          "/#cbbeff/i",
+          "/#f4efff/i",
+          "/125,\\s*82,\\s*255/",
+          "/168,\\s*85,\\s*247/",
+          "/139,\\s*92,\\s*246/",
+          "/203,\\s*190,\\s*255/"
+        ]
+      },
+      {
+        "message": "Hardcoded brand-purple hex/rgb detected — use var(--color-brand-primary), var(--color-brand-accent), var(--color-brand-tint), var(--color-brand-tint-soft) (or their -rgb variants) instead. See styles.scss."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": ["src/styles.scss"],
+      "rules": {
+        "declaration-property-value-disallowed-list": null
+      }
+    }
+  ]
+}

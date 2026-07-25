@@ -1,9 +1,4 @@
 // --- Theme Variables (Mapped from your configuration) ---
-$surface-container-highest: #1c253e;
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface: #dfe4fe;
 $outline-variant: #41475b;
 
 // --- Categories Section Styles ---
@@ -83,8 +78,8 @@ $outline-variant: #41475b;
     inset: 0;
     // Matches the tailwind bg-gradient-to-t
     background: linear-gradient(to top,
-        $surface-container-highest 0%,
-        rgba($surface-container-highest, 0) 60%);
+        var(--bg-surface-container-highest) 0%,
+        rgba(var(--bg-surface-container-highest-rgb), 0) 60%);
   }
 
   &__content {
@@ -106,7 +101,7 @@ $outline-variant: #41475b;
   &__icon {
     font-size: 1.5rem; // text-2xl
     margin-bottom: 0.5rem; // mb-2
-    color: $primary; // Default color
+    color: var(--primary); // Default color
 
     // Larger icon for the featured card
     .vl-categories__card--featured & {
@@ -116,11 +111,11 @@ $outline-variant: #41475b;
 
     // Auto-cycle colors based on the card's position in the grid
     .vl-categories__card:nth-child(4n + 2) & {
-      color: $secondary;
+      color: var(--secondary);
     }
 
     .vl-categories__card:nth-child(4n + 3) & {
-      color: $tertiary;
+      color: var(--tertiary);
     }
   }
 
