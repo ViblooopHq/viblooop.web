@@ -1,0 +1,156 @@
+@use "../../../../../../styles/index" as *;
+
+.time-field {
+  position: relative;
+  cursor: pointer;
+}
+
+/* ── Material Customization ── */
+::ng-deep {
+  .material-input-custom {
+    width: 100%;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: rgba(31, 35, 49, 0.76) !important;
+      border: 1px solid rgba(148, 163, 184, 0.16) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 0 14px !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03) !important;
+    }
+
+    .mat-mdc-form-field-flex {
+      height: 56px !important;
+      align-items: center !important;
+
+      @media (max-width: 480px) {
+        height: 32px !important;
+      }
+    }
+
+    .mdc-notched-outline {
+      border: 0 !important;
+
+      &__leading,
+      &__notch,
+      &__trailing {
+        border: 0 !important;
+        border-color: transparent !important;
+      }
+    }
+
+    .mat-mdc-input-element {
+      color: white !important;
+      font-size: var(--font-size-sm) !important;
+      font-weight: 400 !important;
+      caret-color: var(--color-brand-primary) !important;
+      color-scheme: dark;
+      accent-color: var(--color-brand-primary);
+      cursor: pointer;
+
+      @media (max-width: 480px) {
+        font-size: var(--font-size-xs) !important;
+      }
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+
+    .time-icon {
+      color: var(--color-brand-primary) !important;
+      font-size: var(--font-size-xl);
+      margin-left: 8px;
+
+      @media (max-width: 480px) {
+        transform: scale(0.8);
+      }
+    }
+  }
+}
+
+/* ── Custom Time Picker Overlay ── */
+.custom-time-picker {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background-color: var(--surface-dark-2);
+  border: 1px solid rgba(var(--color-brand-primary-rgb), 0.3);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+  display: flex;
+  height: 156px;
+  width: 168px;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: auto !important;
+
+  @media (max-width: 480px) {
+    width: 150px;
+    height: 132px;
+  }
+}
+
+.picker-col {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.picker-col-period {
+  flex: 0.86;
+}
+
+.picker-item {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 6px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 32px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+  }
+
+  &.active {
+    background: var(--color-brand-primary);
+    color: white;
+    font-weight: 800;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 30px;
+    padding: 0 4px;
+    font-size: var(--font-size-xs);
+    line-height: 30px;
+  }
+}
+
+.picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: transparent;
+  border: 0;
+  cursor: default;
+}

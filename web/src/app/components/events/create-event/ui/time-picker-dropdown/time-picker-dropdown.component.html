@@ -1,0 +1,37 @@
+<div class="time-field">
+  <mat-form-field appearance="outline" class="material-input-custom">
+    <input
+      #triggerInput
+      matInput
+      type="text"
+      [value]="formattedDisplayTime()"
+      [placeholder]="placeholder()"
+      readonly
+      aria-haspopup="listbox"
+      [attr.aria-expanded]="isOpen()"
+      (click)="toggle()"
+      (keydown)="onTriggerKeydown($event)" />
+    <span matSuffix class="material-symbols-outlined time-icon" aria-hidden="true">schedule</span>
+  </mat-form-field>
+
+  @if (isOpen()) {
+    <div class="custom-time-picker" role="listbox" aria-label="Select time" (keydown)="onPickerKeydown($event)">
+      <div class="picker-col">
+        @for (h of hours; track h) {
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedHour() === h" [class.active]="selectedHour() === h" (click)="selectHour(h)">{{ h }}</button>
+        }
+      </div>
+      <div class="picker-col">
+        @for (m of minutes; track m) {
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedMinute() === m" [class.active]="selectedMinute() === m" (click)="selectMinute(m)">{{ m }}</button>
+        }
+      </div>
+      <div class="picker-col picker-col-period">
+        @for (p of periods; track p) {
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedPeriod() === p" [class.active]="selectedPeriod() === p" (click)="selectPeriod(p)">{{ p }}</button>
+        }
+      </div>
+    </div>
+    <div class="picker-backdrop" (click)="close()"></div>
+  }
+</div>

@@ -14,17 +14,17 @@ No formal interface exists. Fields observed in use across `components/events/eve
 - `tags` — array, drawn from `EventsService.eventTags` (client-side fixed list)
 - `attendeeLimit`
 - `attendees[]` / `participants[]` — both names seen; not reconciled
-- `attendeeMix`, `audiencePreference` — gender/audience targeting fields used in `create-event2`
+- `attendeeMix`, `audiencePreference` — gender/audience targeting fields used in `create-event`
 - `createdBy { username | userName | name }` — inconsistent field naming across usages
 - `coverImage`, gallery images (see `removeEventGalleryImage` in `events.service.ts`)
 
 ### Category
 No dedicated entity/model — represented two ways:
 - A client-side fixed list, `EventsService.categoryList` (`Social`, `Travel Companion`, `Sports Activities`, `Local Events`, `Shopping Buddies`), fetched from `GET {apiBaseUrl}/categories` at runtime via `EventsService.getEventCategories()`
-- A UI-only richer shape, `CategoryDisplayConfig` (`components/events/create-event2/create-event/create-event.config.ts`): `matches: string[]`, `title`, `description`, `materialIcon`, `accent: 'purple'|'green'|'blue'|'orange'|'pink'`, `kind?`, `soon?` — this is presentation config for the creation wizard, not a persisted entity.
+- A UI-only richer shape, `CategoryDisplayConfig` (`components/events/create-event/create-event/create-event.config.ts`): `matches: string[]`, `title`, `description`, `materialIcon`, `accent: 'purple'|'green'|'blue'|'orange'|'pink'`, `kind?`, `soon?` — this is presentation config for the creation wizard, not a persisted entity.
 
 ### User
-No formal interface. Fields observed across `shared/services/user/user.service.ts`, `shared/services/auth/auth.service.ts`, `components/user-profile/edit-profile2/`:
+No formal interface. Fields observed across `shared/services/user/user.service.ts`, `shared/services/auth/auth.service.ts`, `components/user-profile/edit-profile/`:
 - `id`, `username` / `userName` (inconsistent)
 - `profileImage`, `profilePhotos[]` (up to 12), `bio`, `dob`, `gender`, `location`
 - `interests[]` (from `GET {apiBaseUrl}/getAllInterests`), `socialLinks[]`
@@ -48,7 +48,7 @@ The only other explicit interface in the codebase is `AttendeesProfile` (`compon
 
 ## Feature List (as implemented)
 
-- **Event creation** — two parallel implementations exist: `components/events/create-event/` (legacy, single-page Tailwind form) and `components/events/create-event2/create-event/` (active, 4-step wizard: category → details → media/pricing → review). Both call `EventsService.createEvent()` → `POST {apiBaseUrl}/createEvent`. Update goes through `EventsService.updateEvent()` → `POST {apiBaseUrl}/updateEvent`.
+- **Event creation** — two parallel implementations exist: `components/events/create-event/` (legacy, single-page Tailwind form) and `components/events/create-event/create-event/` (active, 4-step wizard: category → details → media/pricing → review). Both call `EventsService.createEvent()` → `POST {apiBaseUrl}/createEvent`. Update goes through `EventsService.updateEvent()` → `POST {apiBaseUrl}/updateEvent`.
 - **Browsing/discovery** — `components/events/explore-events/` (with `explore-by-vibe`, `just-for-you`, `trending-nearby` sub-features), backed by `EventsService.getAllEvents()`, `getEventsByCategory()`, `getNearbyEvents()`, `getRelatedNearbyEvents()`.
 - **Joining a event** — `event-details.component.ts` calls `POST {apiBaseUrl}/requestJoinEvent` directly via the raw `HttpService` (not through `EventsService`, unlike every other event API call — an inconsistency worth normalizing later). Join status is tracked client-side via `EventJoinStatusStore` (`shared/services/events/event-join-status.store.ts`) and fetched via `EventsService.getJoinStatus()`.
 - **Join-request accept/reject** — event creator accepts/rejects from the notification panel or event-details page: `POST {apiBaseUrl}/acceptJoinRequest`, `POST {apiBaseUrl}/rejectJoinEventRequest`, both called inline from `event-details.component.ts`.
@@ -61,9 +61,9 @@ The only other explicit interface in the codebase is `AttendeesProfile` (`compon
 ## Known Edge Cases / Gaps (factual, code-observed)
 
 - **No TODO/FIXME comments exist anywhere in `web/src`** (re-confirmed by grep) — gaps below were found by reading behavior, not by comment markers.
-- **Delete account is unimplemented**: `edit-profile2.component.ts` → `confirmDeleteAccount()` closes the confirmation dialog and shows `alert('Delete account is not connected yet.')` — no API call is made. There is no delete-account endpoint anywhere in `UserService` or `AuthService`.
-- **Duplicate event-creation flows**: `create-event/` (legacy) and `create-event2/create-event/` (active 4-step wizard) both exist in the tree; routing determines which is live — verify in `app.routes.ts` before editing either.
-- **Duplicate profile-edit flow**: `edit-profile2/` exists alongside an implied original edit-profile component.
+- **Delete account is unimplemented**: `edit-profile.component.ts` → `confirmDeleteAccount()` closes the confirmation dialog and shows `alert('Delete account is not connected yet.')` — no API call is made. There is no delete-account endpoint anywhere in `UserService` or `AuthService`.
+- **Duplicate event-creation flows**: `create-event/` (legacy) and `create-event/create-event/` (active 4-step wizard) both exist in the tree; routing determines which is live — verify in `app.routes.ts` before editing either.
+- **Duplicate profile-edit flow**: `edit-profile/` exists alongside an implied original edit-profile component.
 - **Inconsistent join-request API placement**: `requestJoinEvent`, `acceptJoinRequest`, and `rejectJoinEventRequest` are called directly via the raw `HttpService` from within `event-details.component.ts`, while every other event API call goes through `EventsService`. A future refactor should probably move these into `EventsService` for consistency.
 - **Duplicated profile-fetch methods**: `getMyProfile()` and `getUserProfile()` exist in both `AuthService` and `UserService` with the same signatures — unclear which is canonical.
 - **Two mapping libraries** present as dependencies (`mapbox-gl` and `@angular/google-maps`) — only one is likely used in the actual location-picker/map rendering; worth confirming before adding new map-related code.

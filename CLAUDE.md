@@ -29,7 +29,7 @@ Run from `web/` (there is nothing to run at the repo root):
 | `components/events/` | Event browsing, details, and creation — includes both `create-event/` (legacy) and `create-event2/` (active wizard, see below) |
 | `components/home/` | Landing/home page |
 | `components/user/` | Read-only user views (e.g. `profile/`) |
-| `components/user-profile/` | Editable profile pages — includes `edit-profile2/` (active) |
+| `components/user-profile/` | Editable profile pages — includes `edit-profile/` (active) |
 | `directives/` | `blur-up`, `outside-click` |
 | `guards/` | Route guards: `auth`, `profile-score`, `unsave-changes` |
 | `interceptor/` | Functional HTTP interceptors: `auth`, `apiCaching`, `loader`, `ssrApi` |
@@ -70,7 +70,7 @@ Both features share **one Socket.IO connection** owned by `shared/services/socke
 - **Don't** hardcode new hex colors into component SCSS. The active `create-event2` flow already drifted into ~4 near-identical purples and no shared elevation/radius scale — see `DESIGN_SYSTEM.md` (Phase 5) once written. Prefer the existing CSS-variable theme tokens (`styles/themes/`) where practical.
 - **Don't** casually edit `components/events/create-event2/create-event/create-event.component.scss` — it's ~4000 lines of hand-rolled, mostly non-tokenized styling; small changes are easy to make inconsistent with the rest of the file.
 - **Don't** touch `interceptor/auth/` or `shared/services/auth/` without asking first — the refresh-token queueing logic is easy to break in ways that only surface under concurrent-request race conditions.
-- **Do** check whether you're editing the live component before changing it: `create-event2/` (not `create-event/`) is the active event-creation flow; `edit-profile2/` is the active profile-edit flow. The non-"2" originals appear to be superseded but are still present in the tree.
+- **Do** check whether you're editing the live component before changing it: `create-event2/` (not `create-event/`) is the active event-creation flow; `edit-profile/` is the active profile-edit flow. The non-"2" originals appear to be superseded but are still present in the tree.
 - **Do** grep for actual field usage before trusting a type — most entities are `any` (see Coding Conventions above and `SPEC.md`).
 
 ## Guidance for Future Sessions

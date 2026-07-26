@@ -1,0 +1,86 @@
+@use "../../create-event-shared" as *;
+
+/*
+  NOTE: `.vibe-card` base rules are duplicated (in reduced form) here for the
+  inline "Custom" placeholder tile — see the matching note in
+  ui/vibe-category-card/vibe-category-card.component.scss for why this can't
+  be a single shared selector under Angular's view encapsulation.
+*/
+
+/* ── VIBE GRID ── */
+.vibe-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 2px;
+
+  @media (min-width: 768px) {
+    gap: 12px;
+  }
+}
+
+.vibe-card {
+  background: linear-gradient(180deg, rgba(28, 26, 41, .98), rgba(20, 18, 31, .98));
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--radius-md);
+  min-height: 176px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--color-brand-tint);
+  padding: 18px 12px;
+  text-align: center;
+
+  &--custom {
+    border: 1px dashed rgba(var(--color-brand-primary-rgb), .9);
+    background: rgba(var(--color-brand-primary-rgb), .05);
+
+    &:hover {
+      border-color: var(--color-brand-soft);
+      background: rgba(var(--color-brand-primary-rgb), .1);
+    }
+  }
+
+  @media (min-width: 768px) {
+    min-height: 198px;
+  }
+}
+
+.vibe-custom-mark {
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle, rgba(var(--color-brand-primary-rgb), .22), rgba(var(--color-brand-primary-rgb), .04) 68%);
+
+  .material-symbols-outlined {
+    font-size: var(--font-size-4xl);
+    color: var(--color-brand-soft);
+  }
+}
+
+.vibe-label {
+  font-weight: 700;
+  font-size: var(--font-size-sm);
+  line-height: 18px;
+  color: var(--color-brand-tint);
+  margin-top: 0;
+  text-align: center;
+}
+
+.vibe-tags {
+  max-width: 128px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted-strong);
+  text-align: center;
+  line-height: 15px;
+
+  @media (min-width: 768px) {
+    max-width: 154px;
+  }
+}

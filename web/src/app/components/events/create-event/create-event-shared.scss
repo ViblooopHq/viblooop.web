@@ -1,0 +1,269 @@
+/*
+  Shared low-level building blocks (form-card shell, field inputs, step footer
+  buttons) reused across several create-event step/ui components. Angular's
+  emulated view encapsulation scopes each component's own stylesheet to that
+  component's own template, so these common rules are authored once here and
+  `@use`d (not imported globally) by every component whose template renders
+  one of these classes.
+*/
+
+.sr-only {
+  display: none;
+}
+
+/* ── STEP CONTENT SHELL (shared by all four wizard steps) ── */
+.step-content {
+  max-width: 448px;
+  margin: 0 auto;
+  padding: 86px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  @media (min-width: 768px) {
+    max-width: 760px;
+    padding: 22px 96px 60px;
+  }
+}
+
+/* ── FORM CARDS ── */
+.form-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.form-card {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(13, 17, 34, 0.94), rgba(9, 12, 26, 0.96));
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035), 0 12px 34px rgba(0, 0, 0, .18);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 2px;
+
+  .header-icon {
+    display: grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: var(--radius-pill);
+    background:
+      radial-gradient(circle at 35% 20%, rgba(var(--color-brand-accent-rgb), 0.38), transparent 60%),
+      rgba(88, 28, 135, 0.38);
+    color: var(--color-brand-accent);
+    font-size: var(--font-size-2xl);
+    font-variation-settings: 'FILL' 0, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+  }
+
+  .header-label {
+    display: block;
+    font-size: var(--font-size-sm);
+    font-weight: 900;
+    color: var(--color-brand-tint-soft);
+    line-height: 1.25;
+  }
+
+  small {
+    display: block;
+    margin-top: 2px;
+    color: var(--text-subtle);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    line-height: 1.3;
+  }
+}
+
+/* ── FIELD LABELS ── */
+.field-label,
+.field-label-white {
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  color: var(--color-brand-tint);
+  display: block;
+}
+
+/* ── INPUTS ── */
+.input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.char-count {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: var(--font-size-xs);
+  color: var(--text-muted-strong);
+  pointer-events: none;
+}
+
+.field-input {
+  width: 100%;
+  min-height: 56px;
+  background: rgba(31, 35, 49, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: var(--radius-md);
+  padding: 0 48px 0 18px;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  color: var(--color-brand-tint);
+  outline: none;
+  box-sizing: border-box;
+  transition: all .2s;
+
+  &::placeholder {
+    color: var(--text-muted-strong);
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: rgba(var(--color-brand-accent-rgb), 0.68);
+    background: rgba(35, 31, 48, 0.92);
+    box-shadow: 0 0 0 3px rgba(var(--color-brand-primary-rgb), 0.12);
+  }
+
+  &--icon {
+    padding-left: 52px;
+    padding-right: 18px;
+  }
+
+  &--center {
+    text-align: center;
+  }
+}
+
+input,
+textarea,
+select {
+  font-weight: 400;
+}
+
+input::placeholder,
+textarea::placeholder {
+  font-weight: 400;
+}
+
+.date-time-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  width: 100%;
+
+  >div {
+    min-width: 0;
+    /* Prevents the time input from overflowing its grid cell */
+  }
+}
+
+/* ── STEP FOOTER / NEXT BUTTON ── */
+.step-footer {
+  margin: 2px 0 0;
+  padding: 0;
+}
+
+.btn-next {
+  width: 100%;
+  min-height: 60px;
+  background: linear-gradient(135deg, var(--color-brand-accent), #6d28d9);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 0 18px;
+  font-size: var(--font-size-md);
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all .3s;
+  box-shadow: 0 16px 38px rgba(109, 40, 217, 0.34);
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    background: linear-gradient(135deg, #b264ff, #7c3aed);
+    box-shadow: 0 20px 42px rgba(109, 40, 217, 0.42);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(.98);
+  }
+
+  &:disabled {
+    opacity: .4;
+    background: var(--surface-dark-3);
+    color: var(--text-mid);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .material-symbols-outlined {
+    font-size: var(--font-size-2xl);
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px;
+    font-size: var(--font-size-sm);
+    border-radius: var(--radius-lg);
+    font-weight: 500;
+  }
+}
+
+.step-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding-bottom: 0;
+}
+
+.btn-back-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(43, 40, 52, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  color: var(--color-brand-tint);
+  border-radius: var(--radius-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all .2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background: var(--surface-dark-3);
+    color: white;
+  }
+
+  .material-symbols-outlined {
+    font-size: var(--font-size-xl);
+  }
+}
+
+.btn-next--step3 {
+  flex: 1;
+  border-radius: var(--radius-md);
+  padding: 8px;
+  font-size: var(--font-size-md);
+  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-primary));
+}
