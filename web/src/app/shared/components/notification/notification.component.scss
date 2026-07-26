@@ -19,7 +19,7 @@
   background:
     radial-gradient(circle at 12% 14%, rgba(142, 87, 255, 0.16), transparent 30rem),
     radial-gradient(circle at 88% 84%, rgba(255, 73, 170, 0.1), transparent 26rem),
-    #050711;
+    var(--surface-dark-4);
   color: var(--notification-text);
 }
 
@@ -93,7 +93,7 @@
 }
 
 .notification-list::-webkit-scrollbar-thumb {
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: rgba(var(--color-brand-primary-rgb), 0.35);
 }
 
@@ -136,7 +136,7 @@
   align-items: center;
   justify-content: center;
   align-self: start;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
 
   .material-symbols-outlined {
     font-size: 1.6rem;
@@ -149,7 +149,7 @@
   height: 3.5rem;
   align-self: start;
   border: 0;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   background: rgba(var(--color-brand-primary-rgb), 0.18);
   box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.26);
   cursor: pointer;
@@ -183,7 +183,7 @@
   align-items: center;
   justify-content: center;
   border: 2px solid #14182c;
-  border-radius: 50%;
+  border-radius: var(--radius-full);
   box-shadow: 0 0.55rem 1rem rgba(0, 0, 0, 0.32);
 
   .material-symbols-outlined {
@@ -218,7 +218,7 @@
 
 .tone-system {
   background: rgba(96, 120, 255, 0.16);
-  color: #8aa7ff;
+  color: var(--secondary-dim);
 }
 
 .notification-content {
@@ -282,7 +282,7 @@
 .notification-inline-status {
   display: inline-flex;
   align-items: center;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   font-size: 0.68rem;
   font-weight: 500;
   line-height: 1;
@@ -345,7 +345,7 @@
 .notification-action-primary {
   border: 1px solid transparent;
   background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-accent));
-  color: #ffffff;
+  color: var(--on-primary);
   box-shadow: 0 0.85rem 1.5rem rgba(var(--color-brand-primary-rgb), 0.24);
 
   &:hover {
@@ -413,7 +413,7 @@
   .material-symbols-outlined {
     width: 4rem;
     height: 4rem;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: rgba(var(--color-brand-primary-rgb), 0.16);
     color: var(--color-brand-tint);
     font-size: 2rem;

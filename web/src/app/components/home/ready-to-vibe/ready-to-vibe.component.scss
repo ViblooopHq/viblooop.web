@@ -22,7 +22,7 @@ $primary-dim: #8a4cfc;
     font-weight: 400;
     color: var(--on-surface-variant);
     margin: 0 0 2.5rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   &__actions {
@@ -42,12 +42,12 @@ $primary-dim: #8a4cfc;
     justify-content: center;
     padding: 0.85rem 2rem;
     font-size: 0.9rem;
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     border: none;
     cursor: pointer;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
     transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 
     &:active {
@@ -56,8 +56,8 @@ $primary-dim: #8a4cfc;
 
     &--primary {
       font-weight: 800;
-      color: #fff;
-      background: linear-gradient(to right, $primary-dim, var(--primary));
+      color: var(--on-primary);
+      background: linear-gradient(to right, var(--color-brand-soft), var(--primary));
       box-shadow: 0 0 30px rgba(var(--primary-rgb), 0.3);
 
       &:hover {
@@ -83,7 +83,7 @@ $primary-dim: #8a4cfc;
   // Ambient glow blobs
   &__glow {
     position: absolute;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     z-index: 0;
     pointer-events: none;
 

@@ -15,7 +15,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
+            border-radius: var(--radius-xl);
             padding: 2.5rem 2rem;
             width: 100%;
             max-width: 420px;
@@ -31,8 +31,8 @@
             .icon-btn {
                 background: rgba(255, 255, 255, 0.05);
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #fff;
-                border-radius: 50%;
+                color: var(--text-white);
+                border-radius: var(--radius-full);
                 cursor: pointer;
                 width: 36px;
                 height: 36px;
@@ -116,9 +116,9 @@
                 width: 3.5rem;
                 height: 3.5rem;
                 background-color: rgba(0, 0, 0, 0.3);
-                color: #fff;
+                color: var(--text-white);
                 border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
+                border-radius: var(--radius-md);
                 font-size: 1.5rem;
                 text-align: center;
                 padding: 0;
@@ -164,9 +164,9 @@
                     width: 100%;
                     background: rgba(0, 0, 0, 0.3);
                     border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 12px;
+                    border-radius: var(--radius-md);
                     padding: 0.9rem 1rem 0.9rem 3rem;
-                    color: #fff;
+                    color: var(--text-white);
                     font-size: 0.95rem;
                     transition: border-color 0.3s;
 
@@ -185,7 +185,7 @@
             gap: 0.5rem;
             width: 100%;
             padding: 0.9rem;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
@@ -200,7 +200,7 @@
 
         .btn-primary {
             background: var(--gradient-brand-cta);
-            color: #fff;
+            color: var(--text-white);
 
             &:hover:not(:disabled) {
                 opacity: 0.9;
@@ -210,7 +210,7 @@
         .btn-outlined {
             background: transparent;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            color: var(--text-white);
 
             &:hover:not(:disabled) {
                 background: rgba(255, 255, 255, 0.05);
@@ -232,7 +232,7 @@
         .secure-info-box {
             background-color: rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             padding: 1rem;
             display: flex;
             align-items: center;
@@ -284,7 +284,7 @@
         &.verification-screen {
             .login-card {
                 max-width: 100%;
-                border-radius: 18px;
+                border-radius: var(--radius-lg);
                 padding: 1.25rem;
             }
 
@@ -354,7 +354,7 @@
     height: 16px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-top: 2px solid #fff;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     animation: spin 1s linear infinite;
 }
 

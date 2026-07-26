@@ -5,7 +5,7 @@
   padding: 16px 24px;
   background-color: var(--events-list-header-bg);
   box-shadow: var(--card-shadow);
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   width: 100%;
 
   @include flex($align: center, $justify: space-between);

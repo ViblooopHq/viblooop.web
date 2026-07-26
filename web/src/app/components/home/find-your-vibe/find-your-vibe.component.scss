@@ -122,9 +122,9 @@ $outline-variant: #41475b;
   &__title {
     font-size: 1.25rem; // text-xl
     font-weight: 700; // font-bold
-    color: #ffffff;
+    color: var(--text-white);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 
     // Distinct typography for the featured card
     .vl-categories__card--featured & {
@@ -140,6 +140,6 @@ $outline-variant: #41475b;
     text-align: center;
     padding: 4rem;
     color: $outline-variant;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 }

@@ -2,9 +2,9 @@
 
 .vl-info-card {
   background: var(--bg-card);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   padding: 2rem;
-  color: #fff;
+  color: var(--text-white);
   text-align: center;
   transition: 0.3s ease;
   cursor: pointer;
@@ -21,7 +21,7 @@
     margin-bottom: 16px;
 
     i {
-      font-size: 32px;
+      font-size: var(--font-size-3xl);
     }
   }
 

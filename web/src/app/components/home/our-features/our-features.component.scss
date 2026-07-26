@@ -39,7 +39,7 @@
         text-transform: uppercase;
         letter-spacing: 0.4em; // tracking-[0.4em]
         font-size: 0.875rem; // text-sm
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     &__title {
@@ -48,9 +48,9 @@
         font-style: italic;
         letter-spacing: -0.05em; // tracking-tighter
         line-height: 1; // leading-none
-        color: #ffffff;
+        color: var(--text-white);
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
 
         @media (min-width: 768px) {
             font-size: 4.5rem; // md:text-7xl
@@ -63,7 +63,7 @@
         line-height: 1.625; // leading-relaxed
         font-weight: 300; // font-light
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     &__list {
@@ -80,8 +80,8 @@
         align-items: center;
         gap: 1rem; // gap-4
         font-size: 1.125rem; // text-lg
-        color: #ffffff;
-        font-family: 'Inter', sans-serif;
+        color: var(--text-white);
+        font-family: var(--font-ui);
     }
 
     &__list-icon {
@@ -117,7 +117,7 @@
     &__glow {
         position: absolute;
         z-index: -1;
-        border-radius: 50%;
+        border-radius: var(--radius-full);
     }
 
     // --- Theme Specific Modifiers ---

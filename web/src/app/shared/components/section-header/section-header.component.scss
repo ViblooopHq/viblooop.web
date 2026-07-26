@@ -7,12 +7,12 @@
   @include flex($direction: column, $gap: 0.25rem, $align: center, $justify: center);
 
   &__title {
-    font-size: 44px;
+    font-size: var(--font-size-4xl);
     font-weight: 900;
   }
 
   &__description {
-    font-size: 20px;
+    font-size: var(--font-size-xl);
     width: 70%;
   }
 
@@ -20,11 +20,11 @@
     padding: 2rem 1rem;
 
     &__title {
-      font-size: 36px;
+      font-size: var(--font-size-4xl);
     }
 
     &__description {
-      font-size: 16px;
+      font-size: var(--font-size-md);
       width: 100%;
     }
   }

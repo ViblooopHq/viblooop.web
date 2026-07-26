@@ -63,9 +63,9 @@
     height: 2.65rem;
     margin: 0;
     border: 1px solid rgba(148, 163, 184, 0.16);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(15, 23, 42, 0.82);
-    color: #dbe4ff;
+    color: var(--color-brand-tint);
     cursor: pointer;
     box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
     backdrop-filter: blur(14px);
@@ -87,7 +87,7 @@
     width: 3.8rem;
     height: 0.28rem;
     margin: 0.85rem auto 0;
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(196, 201, 231, 0.34);
   }
 }

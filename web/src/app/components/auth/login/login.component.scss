@@ -4,9 +4,9 @@
   display: block;
   position: relative;
   min-height: 100dvh;
-  background-color: #05050f;
+  background-color: var(--surface-dark-4);
   /* Deep dark space background */
-  color: #ffffff;
+  color: var(--text-white);
   overflow-x: hidden;
   overflow-y: auto;
 }
@@ -128,7 +128,7 @@
       .feature-icon {
         width: 40px;
         height: 40px;
-        border-radius: 50%;
+        border-radius: var(--radius-full);
         background: rgba(255, 255, 255, 0.05);
         display: flex;
         align-items: center;
@@ -173,7 +173,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
+  border-radius: var(--radius-xl);
   padding: 2.5rem 2rem;
   width: 100%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
@@ -188,9 +188,9 @@
     align-items: center;
     justify-content: center;
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 999px;
+    border-radius: var(--radius-pill);
     background: rgba(255, 255, 255, 0.06);
-    color: #eef2ff;
+    color: var(--color-brand-tint-soft);
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
 
@@ -223,7 +223,7 @@
     }
 
     .logo-text {
-      color: #eef2ff;
+      color: var(--color-brand-tint-soft);
       font-size: 2rem;
       font-weight: 800;
       letter-spacing: 0.01em;
@@ -254,11 +254,11 @@
     justify-content: center;
     gap: 0.75rem;
     width: 100%;
-    background: #fff;
+    background: var(--bg-surface);
     color: #333;
     border: none;
     padding: 0.8rem;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -266,11 +266,11 @@
     margin-bottom: 1.5rem;
 
     &:hover {
-      background: #f0f0f0;
+      background: var(--bg-surface-container);
     }
 
     .google-icon-wrapper {
-      color: #ea4335;
+      color: var(--color-google);
       font-size: 1.45rem;
       display: flex;
       align-items: center;
@@ -316,9 +316,9 @@
         width: 100%;
         background: rgba(0, 0, 0, 0.3);
         border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 12px;
+        border-radius: var(--radius-md);
         padding: 0.9rem 1rem 0.9rem 3rem;
-        color: #fff;
+        color: var(--text-white);
         font-size: 0.95rem;
         transition: border-color 0.3s;
 
@@ -335,10 +335,10 @@
 
     .btn-primary {
       background: var(--gradient-brand-cta);
-      color: #fff;
+      color: var(--text-white);
       border: none;
       padding: 1rem;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
@@ -352,7 +352,7 @@
 
   .form-error {
     margin: -0.35rem 0 0;
-    color: #fca5a5;
+    color: var(--color-error-border);
     font-size: 0.78rem;
     line-height: 1.35;
     text-align: center;

@@ -30,7 +30,7 @@
   --font-inter: "Inter", "sans-serif";
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 .cdk-overlay-container,
 .cdk-global-overlay-wrapper,
@@ -150,14 +150,17 @@
   --shadow-brand-glow: 0 0 18px rgba(125, 82, 255, 0.3);
   --gradient-brand-cta: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-accent));
 
-  /* Radius scale (target — existing components still use ad hoc px values) */
+  /* Radius scale */
+  --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
   --radius-pill: 999px;
+  --radius-full: 50%;
 
-  /* Spacing scale (target — existing components still use ad hoc px values) */
+  /* Spacing scale */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -165,6 +168,64 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+
+  /* Font family tokens */
+  --font-heading: "Poppins", sans-serif;
+  --font-ui: "Inter", sans-serif;
+
+  /* Font size scale (CSS custom properties — usable in any component without @use) */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 2rem;
+  --font-size-4xl: 2.5rem;
+
+  /* Dark canvas surfaces (used in create-event, user-profile, chat — light theme shows as light equivalents) */
+  --surface-dark-1: #f3f4f6;
+  --surface-dark-2: #e5e7eb;
+  --surface-dark-3: #d1d5db;
+  --surface-dark-4: #f9fafb;
+
+  /* Status / semantic colors */
+  --color-success: #22c55e;
+  --color-success-dim: #4ade80;
+  --color-success-soft: #86efac;
+  --color-success-tint: #66f09a;
+  --color-warning: #f59e0b;
+  --color-warning-dim: #fbbf24;
+  --color-error-soft: #fee2e2;
+  --color-error-border: #fca5a5;
+  --color-info: #4cc9f0;
+  --color-pink: #f472b6;
+  --color-star: #f59e0b;
+
+  /* Brand purple scale */
+  --color-brand-deep: #4b23b7;
+  --color-brand-soft: #9b5cff;
+  --color-brand-light: #a970ff;
+
+  /* Text semantic scale */
+  --text-dark: #1a1a2e;
+  --text-mid: #4a4a68;
+  --text-muted-strong: #8888a0;
+  --text-subtle: #aeb3cf;
+
+  /* Social brand colors (constants, not themeable) */
+  --color-linkedin: #0a66c2;
+  --color-youtube: #ff0033;
+  --color-google: #ea4335;
+
+  /* Extended shadow tokens */
+  --shadow-btn: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  --shadow-profile-card: 0 28px 80px rgba(0, 0, 0, 0.38);
+  --shadow-profile-avatar: 0 0 0 8px rgba(124, 58, 237, 0.08), 0 18px 48px rgba(0, 0, 0, 0.45);
+  --shadow-brand-primary: 0 12px 28px rgba(91, 33, 255, 0.38);
+  --shadow-chat-bubble: 0 0.5rem 1.2rem rgba(106, 57, 255, 0.36);
+  --shadow-modal: 0 30px 90px rgba(0, 0, 0, 0.55);
+  --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 64px rgba(0, 0, 0, 0.28);
 }
 
 [data-theme='dark'] {
@@ -251,6 +312,33 @@
 
   --bg-tag-color: rgba(255, 255, 255, 0.1);
   --tag-text-color: #ffffff;
+
+  /* Dark canvas surfaces (deep dark theme values) */
+  --surface-dark-1: #14121c;
+  --surface-dark-2: #1c1a25;
+  --surface-dark-3: #2b2834;
+  --surface-dark-4: #0f0d17;
+
+  /* Status colors — adjusted for dark backgrounds */
+  --color-success: #4ade80;
+  --color-success-soft: #86efac;
+  --color-success-tint: #66f09a;
+
+  /* Text semantic scale */
+  --text-dark: #dfe4fe;
+  --text-mid: #b0b5d1;
+  --text-muted-strong: #8888a0;
+  --text-subtle: #aeb3cf;
+
+  /* Font family tokens (same across themes) */
+  --font-heading: "Poppins", sans-serif;
+  --font-ui: "Inter", sans-serif;
+
+  /* Shadow tokens — slightly stronger in dark mode */
+  --shadow-profile-card: 0 28px 80px rgba(0, 0, 0, 0.6);
+  --shadow-profile-avatar: 0 0 0 8px rgba(189, 157, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.65);
+  --shadow-modal: 0 30px 90px rgba(0, 0, 0, 0.75);
+  --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 64px rgba(0, 0, 0, 0.45);
 }
 
 * {
@@ -265,10 +353,10 @@
 body {
   color: var(--text-heading);
   line-height: 1.6;
-  font-size: 1rem;
+  font-size: var(--font-size-md);
   background-color: var(--bg-color);
   transition: 0.3s cubic-bezier(.02, .34, .95, .8);
-  font-family: Inter, sans-serif;
+  font-family: var(--font-ui);
 }
 
 .vl-section-top-padding {
@@ -285,7 +373,7 @@ body {
   .tag {
     padding: 8px 20px;
     background: var(--tags-bg);
-    border-radius: 32px;
+    border-radius: var(--radius-2xl);
     cursor: context-menu;
   }
 }
@@ -301,7 +389,7 @@ body {
   border-radius: 0.5rem;
   cursor: pointer;
   outline: transparent;
-  box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
+  box-shadow: var(--shadow-btn);
 
   transition: 0.2s ease;
 
@@ -418,9 +506,9 @@ select,
 textarea,
 input {
   width: 100%;
-  border-color: rgb(226, 232, 240);
+  border-color: var(--border-default);
   padding: 12px 16px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   outline: transparent;
   border-width: 2px;
   border-style: solid;

@@ -13,7 +13,7 @@
     place-items: center;
     width: 2.4rem;
     height: 2.4rem;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     background: rgba(124, 58, 237, 0.2);
     color: var(--color-brand-accent);
     font-size: 1.35rem;
@@ -22,7 +22,7 @@
 
 .reviews-title {
   margin: 0;
-  color: #ffffff;
+  color: var(--text-white);
   font-size: 1.25rem;
   font-weight: 900;
 }
@@ -35,13 +35,13 @@
 .review-card,
 .reviews-empty {
   border: 1px solid rgba(148, 163, 184, 0.12);
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
   background: rgba(15, 23, 42, 0.58);
 }
 
 .review-card {
   padding: 0.9rem;
-  color: #e5e7eb;
+  color: var(--bg-surface-container-highest);
 }
 
 .review-header {
@@ -54,9 +54,9 @@
   width: 44px;
   height: 44px;
   border: 2px solid rgba(var(--color-brand-accent-rgb), 0.45);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   object-fit: cover;
-  background: #111827;
+  background: var(--on-background);
 }
 
 .review-meta {
@@ -64,7 +64,7 @@
 }
 
 .name {
-  color: #ffffff;
+  color: var(--text-white);
   font-size: 0.98rem;
   font-weight: 800;
 }
@@ -81,7 +81,7 @@
   align-items: center;
   gap: 0.2rem;
   margin-top: 0.65rem;
-  color: #f59e0b;
+  color: var(--color-warning);
   font-size: 0.9rem;
 }
 

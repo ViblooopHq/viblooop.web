@@ -21,7 +21,7 @@
 
   &__item {
     position: relative;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 
     img {
@@ -30,7 +30,7 @@
       object-fit: cover;
       cursor: pointer;
       transition: transform 0.3s ease;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
 
       &:hover {
         transform: scale(1.05);
@@ -53,12 +53,12 @@
 
     button {
       background: rgba(0, 0, 0, 0.6);
-      color: #fff;
+      color: var(--text-white);
       border: none;
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-xs);
       cursor: pointer;
-      font-size: 12px;
+      font-size: var(--font-size-xs);
       transition: background 0.2s ease;
 
       &:hover {
@@ -70,7 +70,7 @@
   /* ------------------------
      Modal Preview
   ------------------------- */
- 
+
 .vl-gallery__modal {
     position: fixed;
     inset: 0;
@@ -80,7 +80,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  
+
     &-content {
       position: relative;
       max-width: 90%;
@@ -88,24 +88,24 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-  
+
       img {
         width: auto;
         height: auto;
         max-width: 800px;
         max-height: 500px;
         object-fit: contain;
-        border-radius: 12px;
+        border-radius: var(--radius-md);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
       }
-  
+
       p {
         margin-top: 10px;
         color: #f5f5f5;
-        font-size: 14px;
+        font-size: var(--font-size-sm);
       }
     }
-  
+
     /* Close button */
     .close {
       position: absolute;
@@ -117,7 +117,7 @@
       background: rgba(255, 255, 255, 0.14);
       backdrop-filter: blur(16px) saturate(150%);
       box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      border-radius: 50%;
+      border-radius: var(--radius-full);
       width: 2.4rem;
       height: 2.4rem;
       display: flex;
@@ -128,7 +128,7 @@
         background: rgba(255, 255, 255, 0.22);
       }
     }
-  
+
     /* Carousel arrows */
     .vl-gallery__nav {
       position: absolute;
@@ -140,23 +140,23 @@
       background: rgba(255, 255, 255, 0.14);
       backdrop-filter: blur(16px) saturate(150%);
       box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      border-radius: 50%;
+      border-radius: var(--radius-full);
       width: 2.75rem;
       height: 2.75rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-  
+
       &:hover {
         background: rgba(255, 255, 255, 0.22);
         transform: translateY(-50%) scale(1.04);
       }
-  
+
       &--left {
         left: -4rem;
       }
-  
+
       &--right {
         right: -4rem;
       }
@@ -172,9 +172,9 @@
       align-items: center;
       justify-content: center;
       border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       background: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
+      color: var(--text-white);
       cursor: pointer;
       backdrop-filter: blur(16px) saturate(150%);
       box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
@@ -229,14 +229,14 @@
       }
 
       &--danger {
-        color: #ff4545;
+        color: var(--error);
 
         &:hover {
           background: rgba(220, 38, 38, 0.12);
         }
 
         i {
-          color: #ff4545;
+          color: var(--error);
         }
       }
     }
@@ -252,7 +252,7 @@
       border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 1.25rem;
       background: rgba(17, 17, 27, 0.96);
-      color: #ffffff;
+      color: var(--text-white);
       text-align: center;
       box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
       backdrop-filter: blur(18px);
@@ -277,9 +277,9 @@
       height: 3.35rem;
       align-items: center;
       justify-content: center;
-      border-radius: 999px;
+      border-radius: var(--radius-pill);
       background: rgba(220, 38, 38, 0.18);
-      color: #ff4545;
+      color: var(--error);
       font-size: 1.25rem;
     }
 
@@ -294,7 +294,7 @@
       min-height: 3.1rem;
       border: 0;
       border-radius: 0.75rem;
-      color: #ffffff;
+      color: var(--text-white);
       cursor: pointer;
       font-weight: 900;
       transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
@@ -310,10 +310,10 @@
     }
 
     .vl-gallery__delete-confirm-delete {
-      background: #dc2626;
+      background: var(--error);
 
       &:hover {
-        background: #b91c1c;
+        background: var(--error);
         transform: translateY(-1px);
       }
 
@@ -324,7 +324,7 @@
       }
     }
   }
-  
+
 }
 
 @media (max-width: 767px) {

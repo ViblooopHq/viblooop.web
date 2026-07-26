@@ -50,8 +50,8 @@
     font-style: italic;
     letter-spacing: -0.04em;
     opacity: 0.15;
-    font-family: 'Inter', sans-serif;
-    color: #ffffff;
+    font-family: var(--font-ui);
+    color: var(--text-white);
   }
 
   &__icon-wrapper {
@@ -73,7 +73,7 @@
     font-weight: 700;
     margin-bottom: 0.75rem;
     color: var(--on-surface);
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   &__card-desc {
@@ -81,7 +81,7 @@
     line-height: 1.625;
     margin: 0;
     font-size: 0.95rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   // --- Card Color Modifiers ---

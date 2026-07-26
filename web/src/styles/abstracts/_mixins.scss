@@ -2,7 +2,7 @@
 @use "sass:map";
 
 
-@mixin button($bgColor: #fff, $color: #4c4c4c, $radius: 12px, ) {
+@mixin button($bgColor: var(--btn-bg), $color: var(--on-surface), $radius: var(--radius-md)) {
   border: none;
   border-radius: $radius;
   outline: transparent;
