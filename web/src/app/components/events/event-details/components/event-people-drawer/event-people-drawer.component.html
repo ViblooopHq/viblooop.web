@@ -1,0 +1,88 @@
+@if (mode()) {
+<div class="event-detail-drawer-backdrop" (click)="close.emit()">
+  <aside class="event-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="event-people-drawer-heading"
+    cdkTrapFocus cdkTrapFocusAutoCapture (click)="$event.stopPropagation()" (keydown.escape)="close.emit()">
+    <header class="event-detail-drawer__header">
+      <div>
+        <p class="event-detail-drawer__eyebrow">{{ eventTitle() }}</p>
+        <h2 id="event-people-drawer-heading">{{ title() }}</h2>
+        <p>{{ subtitle() }}</p>
+      </div>
+      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="close.emit()">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
+      </button>
+    </header>
+
+    @if (mode() === 'requests') {
+      @if (pendingRequests().length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (request of pendingRequests(); track request.id) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity"
+                (click)="viewPerson.emit(request.senderId)">
+                <img
+                  [src]="request.senderImage ? (request.senderImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ request.senderName }}</strong>
+                  <small>Requested to join</small>
+                </span>
+              </button>
+
+              <div class="event-request-actions">
+                @if (request.state === 'processing') {
+                  <span class="event-request-status">
+                    <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+                    Wait
+                  </span>
+                } @else {
+                  <button type="button" class="event-request-action event-request-action--primary"
+                    (click)="accept.emit(request)">
+                    Confirm
+                  </button>
+                  <button type="button" class="event-request-action event-request-action--secondary"
+                    (click)="reject.emit(request)">
+                    Decline
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <i class="fa-regular fa-bell" aria-hidden="true"></i>
+          <h3>No pending requests</h3>
+          <p>New join requests will show up here.</p>
+        </div>
+      }
+    } @else {
+      @if (attendees().length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (attendee of attendees(); track attendee.role + attendee.userId) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity" (click)="viewPerson.emit(attendee.userId)">
+                <img
+                  [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ attendee.userName }}</strong>
+                  <small>{{ attendee.role }}</small>
+                </span>
+              </button>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <i class="fa-regular fa-user" aria-hidden="true"></i>
+          <h3>No attendees yet</h3>
+          <p>People who join this event will show up here.</p>
+        </div>
+      }
+    }
+  </aside>
+</div>
+}

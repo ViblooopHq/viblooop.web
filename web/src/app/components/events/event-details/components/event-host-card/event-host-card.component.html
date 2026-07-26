@@ -1,0 +1,46 @@
+<section class="ed-section host-panel" aria-labelledby="host-card-heading">
+  <button class="host-heading-row host-profile-link" type="button" (click)="viewProfile.emit()"
+    [attr.aria-label]="'View profile of host ' + (host()?.username || 'Host')">
+    <h2 id="host-card-heading" class="host-heading">
+      Hosted by <strong>{{ host()?.username || 'Host' }}</strong>
+    </h2>
+    <i class="fa-solid fa-circle-check verified-check" aria-hidden="true"></i>
+  </button>
+
+  <div class="host-summary">
+    <img class="host-avatar" alt="{{ host()?.username || 'Host' }}'s profile photo"
+      [src]="host()?.profileImage ? (host()!.profileImage! | imageUrl) : 'assets/images/default-profile.png'"
+      (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+      (click)="viewProfile.emit()"
+      [matTooltip]="'View Profile'">
+
+    <div class="host-summary__content">
+      <div class="host-trust-row">
+        @if (isNewHost()) {
+        <span class="host-trust-pill host-trust-pill--new">
+          <i class="fa-regular fa-star" aria-hidden="true"></i>
+          New Host
+        </span>
+        } @else if (shouldShowRating()) {
+        <span class="host-trust-pill host-trust-pill--rating">
+          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          {{ hostRating() | number:'1.1-1' }} rating
+        </span>
+        }
+        <span class="host-trust-pill host-trust-pill--verified">
+          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          Verified Host
+        </span>
+      </div>
+
+      <div class="host-proof-list">
+        <div class="host-proof-item">
+          <span class="host-proof-icon">
+            <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+          </span>
+          <span>Hosted {{ hostEventCount() }} {{ hostEventCount() === 1 ? 'event' : 'events' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

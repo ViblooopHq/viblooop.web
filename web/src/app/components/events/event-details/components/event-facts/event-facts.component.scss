@@ -1,0 +1,43 @@
+@use "../../_tokens" as *;
+
+.event-facts {
+  @include ed-panel;
+  padding: 1.2rem 1.45rem;
+
+  .info-rows {
+    display: grid;
+    gap: 0.72rem;
+  }
+
+  .info-row {
+    display: grid;
+    grid-template-columns: 1.35rem minmax(0, 1fr);
+    align-items: center;
+    column-gap: 0.65rem;
+    color: #d9d3e8;
+    font-size: 0.92rem;
+    line-height: 1.35;
+
+    i {
+      display: inline-grid;
+      width: 1.35rem;
+      place-items: center;
+      color: var(--color-brand-accent);
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    span {
+      min-width: 0;
+    }
+
+    strong {
+      color: var(--text-white);
+    }
+
+    .dot {
+      color: #7f7798;
+      margin: 0 0.25rem;
+    }
+  }
+}

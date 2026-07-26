@@ -1,0 +1,17 @@
+@use "../../_tokens" as *;
+
+.ed-section {
+  @include ed-panel;
+}
+
+.ed-section-title {
+  @include ed-section-title;
+}
+
+.hide-scrollbar {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, OnChanges, SimpleChanges, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { EventsService } from '../../services/events/events.service';
@@ -9,27 +9,28 @@ import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 @Component({
   selector: 'vl-event-comments',
   imports: [CommonModule, ReactiveFormsModule, ImageUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-comments.component.html',
   styleUrl: './event-comments.component.scss'
 })
-export class EventCommentsComponent implements OnChanges {
-  @Input() eventId = '';
-  @Input() eventAverageRating = 0;
-  @Input() canLeaveReview = false;
+export class EventCommentsComponent {
+  eventId = input('');
+  eventAverageRating = input(0);
+  canLeaveReview = input(false);
 
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
   private readonly eventsService = inject(EventsService);
   private readonly sharedService = inject(SharedService);
 
-  eventReviews: any[] = [];
-  isSubmitting = false;
-  reviewsLoaded = false;
-  showAllReviews = false;
-  editingReview: any = null;
-  openReviewMenuId = '';
-  deletingReviewId = '';
-  hoverRating = 0;
+  eventReviews = signal<any[]>([]);
+  isSubmitting = signal(false);
+  reviewsLoaded = signal(false);
+  showAllReviews = signal(false);
+  editingReview = signal<any>(null);
+  openReviewMenuId = signal('');
+  deletingReviewId = signal('');
+  hoverRating = signal(0);
   readonly stars = [1, 2, 3, 4, 5];
 
   reviewForm = this.fb.group({
@@ -37,19 +38,20 @@ export class EventCommentsComponent implements OnChanges {
     comment: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(250)]],
   });
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['eventId'] && this.eventId) {
-      this.cancelReviewEdit();
-      this.getEventReviews();
-    }
-  }
+  private readonly syncReviewsOnEventChange = effect(() => {
+    const eventId = this.eventId();
+    if (!eventId) return;
+
+    this.cancelReviewEdit();
+    this.getEventReviews();
+  });
 
   get reviewList(): any[] {
-    return Array.isArray(this.eventReviews) ? this.eventReviews : [];
+    return Array.isArray(this.eventReviews()) ? this.eventReviews() : [];
   }
 
   get visibleReviews(): any[] {
-    return this.showAllReviews ? this.reviewList : this.reviewList.slice(0, 3);
+    return this.showAllReviews() ? this.reviewList : this.reviewList.slice(0, 3);
   }
 
   get reviewCount(): number {
@@ -62,7 +64,7 @@ export class EventCommentsComponent implements OnChanges {
       .filter((score: number) => Number.isFinite(score));
 
     if (!ratings.length) {
-      const eventRating = Number(this.eventAverageRating);
+      const eventRating = Number(this.eventAverageRating());
       return Number.isFinite(eventRating) && eventRating > 0 ? eventRating : 0;
     }
 
@@ -90,7 +92,7 @@ export class EventCommentsComponent implements OnChanges {
   }
 
   get isEditingReview(): boolean {
-    return Boolean(this.editingReview);
+    return Boolean(this.editingReview());
   }
 
   get reviewFormTitle(): string {
@@ -98,41 +100,43 @@ export class EventCommentsComponent implements OnChanges {
   }
 
   get reviewSubmitLabel(): string {
-    if (this.isSubmitting) return this.isEditingReview ? 'Updating...' : 'Posting...';
+    if (this.isSubmitting()) return this.isEditingReview ? 'Updating...' : 'Posting...';
     return this.isEditingReview ? 'Update Review' : 'Post Review';
   }
 
   shouldShowReviewForm(): boolean {
-    return this.canLeaveReview && this.reviewsLoaded && (!this.currentUserReview || this.isEditingReview);
+    return this.canLeaveReview() && this.reviewsLoaded() && (!this.currentUserReview || this.isEditingReview);
   }
 
   toggleReviews(): void {
-    this.showAllReviews = !this.showAllReviews;
+    this.showAllReviews.update((value) => !value);
   }
 
   getEventReviews(): void {
-    if (!this.eventId) return;
+    const eventId = this.eventId();
+    if (!eventId) return;
 
-    this.reviewsLoaded = false;
-    this.eventsService.getEventReviews(this.eventId).subscribe({
+    this.reviewsLoaded.set(false);
+    this.eventsService.getEventReviews(eventId).subscribe({
       next: (reviews: any) => {
-        this.eventReviews = Array.isArray(reviews?.data) ? reviews.data : [];
-        this.reviewsLoaded = true;
+        this.eventReviews.set(Array.isArray(reviews?.data) ? reviews.data : []);
+        this.reviewsLoaded.set(true);
       },
       error: (error: any) => {
         console.error('Error fetching reviews:', error);
-        this.eventReviews = [];
-        this.reviewsLoaded = true;
+        this.eventReviews.set([]);
+        this.reviewsLoaded.set(true);
       }
     });
   }
 
   addReviewComment(): void {
-    if (this.reviewForm.invalid || !this.eventId || !this.authService.userDetails?.id) return;
+    const eventId = this.eventId();
+    if (this.reviewForm.invalid || !eventId || !this.authService.userDetails?.id) return;
 
-    this.isSubmitting = true;
+    this.isSubmitting.set(true);
     const review = {
-      eventId: this.eventId,
+      eventId,
       raterUserId: this.authService.userDetails.id,
       score: this.reviewForm.value.rating,
       comment: this.reviewForm.value.comment,
@@ -140,7 +144,7 @@ export class EventCommentsComponent implements OnChanges {
 
     this.eventsService.addReview(review).subscribe({
       next: (res: any) => {
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
 
         if (!res?.success || res.statusCode !== 200) {
           console.warn('Unexpected response format or status code:', res);
@@ -148,16 +152,16 @@ export class EventCommentsComponent implements OnChanges {
         }
 
         this.resetReviewForm();
-        this.editingReview = null;
-        this.openReviewMenuId = '';
-        this.eventReviews = [
+        this.editingReview.set(null);
+        this.openReviewMenuId.set('');
+        this.eventReviews.set([
           res.data,
           ...this.reviewList.filter((item: any) => this.getReviewUserId(item) !== this.authService.userDetails.id)
-        ];
+        ]);
         this.getEventReviews();
       },
       error: (error: any) => {
-        this.isSubmitting = false;
+        this.isSubmitting.set(false);
         console.error('Error adding review:', error);
       }
     });
@@ -166,8 +170,8 @@ export class EventCommentsComponent implements OnChanges {
   editReview(review: any): void {
     if (!this.isOwnReview(review)) return;
 
-    this.editingReview = review;
-    this.openReviewMenuId = '';
+    this.editingReview.set(review);
+    this.openReviewMenuId.set('');
     this.reviewForm.patchValue({
       rating: review?.score || null,
       comment: review?.comment || '',
@@ -178,16 +182,16 @@ export class EventCommentsComponent implements OnChanges {
   }
 
   cancelReviewEdit(): void {
-    this.editingReview = null;
-    this.openReviewMenuId = '';
+    this.editingReview.set(null);
+    this.openReviewMenuId.set('');
     this.resetReviewForm();
   }
 
   deleteReview(review: any): void {
-    if (!this.isOwnReview(review) || !review?._id || this.deletingReviewId) return;
+    if (!this.isOwnReview(review) || !review?._id || this.deletingReviewId()) return;
 
-    this.deletingReviewId = review._id;
-    this.openReviewMenuId = '';
+    this.deletingReviewId.set(review._id);
+    this.openReviewMenuId.set('');
     this.eventsService.deleteReview(review._id).subscribe({
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) {
@@ -195,10 +199,10 @@ export class EventCommentsComponent implements OnChanges {
           return;
         }
 
-        if (this.editingReview?._id === review._id) {
+        if (this.editingReview()?._id === review._id) {
           this.cancelReviewEdit();
         }
-        this.eventReviews = this.reviewList.filter((item: any) => item?._id !== review._id);
+        this.eventReviews.set(this.reviewList.filter((item: any) => item?._id !== review._id));
         setTimeout(() => this.scrollTo('reviews-comments'), 80);
         this.getEventReviews();
       },
@@ -206,7 +210,7 @@ export class EventCommentsComponent implements OnChanges {
         console.error('Error deleting review:', error);
       },
       complete: () => {
-        this.deletingReviewId = '';
+        this.deletingReviewId.set('');
       }
     });
   }
@@ -215,11 +219,11 @@ export class EventCommentsComponent implements OnChanges {
     if (!this.isOwnReview(review)) return;
 
     const reviewId = review?._id || '';
-    this.openReviewMenuId = this.openReviewMenuId === reviewId ? '' : reviewId;
+    this.openReviewMenuId.set(this.openReviewMenuId() === reviewId ? '' : reviewId);
   }
 
   isReviewMenuOpen(review: any): boolean {
-    return Boolean(review?._id) && this.openReviewMenuId === review._id;
+    return Boolean(review?._id) && this.openReviewMenuId() === review._id;
   }
 
   isOwnReview(review: any): boolean {

@@ -144,4 +144,16 @@ export class EventsService {
   getRelatedNearbyEvents(eventId: string): Observable<any> {
     return this.httpService.http.get(`${this.baseUrl}/events/getRelatedEvents?eventId=${eventId}`);
   }
+
+  requestJoinEvent(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/requestJoinEvent`, { eventId, userId });
+  }
+
+  acceptJoinRequest(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/acceptJoinRequest`, { eventId, userId });
+  }
+
+  rejectJoinEventRequest(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/rejectJoinEventRequest`, { eventId, userId });
+  }
 }

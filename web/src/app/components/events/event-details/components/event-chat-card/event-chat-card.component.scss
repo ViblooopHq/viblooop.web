@@ -1,0 +1,118 @@
+@use "../../_tokens" as *;
+
+.chat-card {
+  padding: 0.95rem;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 6% 0%, rgba(var(--color-brand-accent-rgb), 0.1), transparent 14rem),
+    rgba(8, 11, 24, 0.86);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+  .btn-chat {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.85rem;
+    width: 100%;
+    min-height: 4.8rem;
+    border: 0;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: #f8f7ff;
+    cursor: pointer;
+    padding: 0.7rem;
+    text-align: left;
+
+    > i:first-child {
+      color: var(--color-brand-accent);
+      font-size: 2.45rem;
+    }
+
+    .chat-copy {
+      display: grid;
+      gap: 0.35rem;
+      min-width: 0;
+    }
+
+    .chat-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      min-width: 0;
+    }
+
+    strong {
+      color: #f8f7ff;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    small {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2rem;
+      min-height: 1.5rem;
+      padding: 0 0.45rem;
+      border-radius: var(--radius-pill);
+      background: rgba(88, 28, 135, 0.42);
+      color: var(--text-white);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .chat-subtitle {
+      color: #b9b0cc;
+      font-size: 0.88rem;
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    .chat-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 3rem;
+      padding: 0 1.1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(88, 28, 135, 0.72);
+      color: var(--text-white);
+      font-size: 0.9rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .chat-card {
+    padding: 0.85rem;
+
+    .btn-chat {
+      gap: 0.7rem;
+      min-height: 4.25rem;
+      padding: 0.55rem;
+
+      > i:first-child {
+        font-size: 2rem;
+      }
+
+      strong {
+        font-size: 0.94rem;
+      }
+
+      .chat-subtitle {
+        font-size: 0.78rem;
+      }
+
+      .chat-action {
+        min-height: 2.55rem;
+        padding: 0 0.8rem;
+        font-size: 0.8rem;
+      }
+    }
+  }
+}

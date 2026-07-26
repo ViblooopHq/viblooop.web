@@ -1,19 +1,17 @@
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  effect,
   ElementRef,
-  EventEmitter,
   inject,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
+  input,
+  output,
+  signal,
   ViewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { SocketService } from '../../shared/services/socket/socket.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 
@@ -28,83 +26,82 @@ export interface ChatMessage {
 }
 
 @Component({
-  standalone: true,
   selector: 'vl-chat',
   imports: [FormsModule, DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent implements OnInit, OnDestroy, OnChanges {
-  @Input() eventId: string = '';
-  @Input() isEmbedded: boolean = false;
-  @Input() chatTitle: string = 'Event Chat';
-  @Input() chatSubtitle: string = '';
-  @Input() showBackButton: boolean = false;
+export class ChatComponent {
+  eventId = input('');
+  isEmbedded = input(false);
+  chatTitle = input('Event Chat');
+  chatSubtitle = input('');
+  showBackButton = input(false);
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
-  @Output() closeChat: EventEmitter<void> = new EventEmitter<void>();
-  @Output() backToInbox: EventEmitter<void> = new EventEmitter<void>();
+  closeChat = output<void>();
+  backToInbox = output<void>();
 
-  newMessage: string = '';
-  messages: ChatMessage[] = [];
-  currentUserId: string = '';
+  newMessage = signal('');
+  messages = signal<ChatMessage[]>([]);
+  currentUserId = '';
 
   private socketService = inject(SocketService);
   private authService = inject(AuthService);
-  private subs: Subscription[] = [];
+  private destroyRef = inject(DestroyRef);
 
-  ngOnInit(): void {
+  constructor() {
     this.currentUserId = this.authService.userDetails?.id || '';
 
-    // Subscribe to chat history (sent once on join)
-    this.subs.push(
-      this.socketService.chatHistory$.subscribe((history) => {
-        if (history.eventId !== this.eventId) return;
+    const historySub = this.socketService.chatHistory$.subscribe((history) => {
+      if (history.eventId !== this.eventId()) return;
 
-        this.messages = history.messages;
+      this.messages.set(history.messages);
+      this.scrollToBottom();
+    });
+
+    const messageSub = this.socketService.chatMessage$.subscribe((msg) => {
+      if (msg && msg.eventId === this.eventId()) {
+        this.messages.update((messages) => [...messages, msg]);
         this.scrollToBottom();
-      })
-    );
-
-    // Subscribe to new incoming messages
-    this.subs.push(
-      this.socketService.chatMessage$.subscribe((msg) => {
-        if (msg && msg.eventId === this.eventId) {
-          this.messages.push(msg);
-          this.scrollToBottom();
-        }
-      })
-    );
-
-    // Join the initial chat room
-    if (this.eventId) {
-      this.socketService.activeEventId = this.eventId;
-      this.socketService.joinChatRoom(this.eventId);
-    }
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const eventIdChange = changes['eventId'];
-    if (eventIdChange && !eventIdChange.firstChange) {
-      const currId = eventIdChange.currentValue;
-
-      // Clear messages list immediately for UX
-      this.messages = [];
-      
-      if (currId) {
-        // We don't "leave" the old room anymore because we want 
-        // to keep receiving global message pings for unread badges.
-        // We just join the new one to trigger a history load.
-        this.socketService.activeEventId = currId;
-        this.socketService.joinChatRoom(currId);
-        this.socketService.markChatAsRead(currId);
       }
-    }
+    });
+
+    this.destroyRef.onDestroy(() => {
+      this.socketService.activeEventId = null;
+      historySub.unsubscribe();
+      messageSub.unsubscribe();
+    });
+
+    let previousEventId: string | null = null;
+    effect(() => {
+      const currentEventId = this.eventId();
+      if (!currentEventId) return;
+
+      const isRoomSwitch = previousEventId !== null && previousEventId !== currentEventId;
+      previousEventId = currentEventId;
+
+      if (isRoomSwitch) {
+        // Clear messages list immediately for UX
+        this.messages.set([]);
+      }
+
+      // We don't "leave" the old room anymore because we want
+      // to keep receiving global message pings for unread badges.
+      // We just join the new one to trigger a history load.
+      this.socketService.activeEventId = currentEventId;
+      this.socketService.joinChatRoom(currentEventId);
+
+      if (isRoomSwitch) {
+        this.socketService.markChatAsRead(currentEventId);
+      }
+    });
   }
 
   sendMessage(): void {
-    if (!this.newMessage.trim()) return;
-    this.socketService.sendChatMessage(this.eventId, this.newMessage);
-    this.newMessage = '';
+    if (!this.newMessage().trim()) return;
+    this.socketService.sendChatMessage(this.eventId(), this.newMessage());
+    this.newMessage.set('');
   }
 
   isOwnMessage(msg: ChatMessage): boolean {
@@ -118,7 +115,7 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
   shouldShowSenderName(index: number, msg: ChatMessage): boolean {
     if (this.isOwnMessage(msg)) return false;
 
-    const previousMessage = this.messages[index - 1];
+    const previousMessage = this.messages()[index - 1];
     return !previousMessage || previousMessage.senderId !== msg.senderId;
   }
 
@@ -129,11 +126,5 @@ export class ChatComponent implements OnInit, OnDestroy, OnChanges {
         el.scrollTop = el.scrollHeight;
       }
     }, 50);
-  }
-
-  ngOnDestroy(): void {
-    // We stay in the rooms globally for the inbox functionality.
-    this.socketService.activeEventId = null;
-    this.subs.forEach((s) => s.unsubscribe());
   }
 }

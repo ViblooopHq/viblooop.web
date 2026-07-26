@@ -1,510 +1,160 @@
 <div class="vl-ed">
   <div class="vl-ed__layout">
     <main class="vl-ed__main">
-      <section class="vl-ed__hero">
-        <img [src]="eventDetails?.image || ''" class="hero-img" alt="{{ eventDetails?.title || 'Event' }}">
-        <div class="hero-gradient"></div>
-
-        <button type="button" class="hero-back" aria-label="Go back" (click)="goBack()">
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-
-        @if (isEventCreator()) {
-        <div class="hero-owner-menu">
-          <button type="button" class="hero-menu-trigger" aria-label="Event options" (click)="toggleEventMenu()">
-            <i class="fa-solid fa-ellipsis"></i>
-          </button>
-
-          @if (isEventMenuOpen) {
-          <div class="hero-menu-popover">
-            <button type="button" (click)="openEditEvent()">
-              <i class="fa-regular fa-pen-to-square"></i>
-              Edit
-            </button>
-            <button type="button" (click)="closeEventMenu()">
-              <i class="fa-solid fa-xmark"></i>
-              Cancel
-            </button>
-          </div>
-          }
-        </div>
-        }
-
-        <div class="hero-bottom">
-          <h1 class="hero-title">{{ eventDetails?.title }}</h1>
-
-          <div class="hero-meta">
-            <span class="meta-badge">
-              <i [class]="isEscapeEvent ? 'fa-regular fa-calendar' : 'fa-regular fa-clock'"></i>
-              {{ isEventEnded ? (eventDetails?.eventDate | date:'EEEE, d MMMM y') : getTimeLeftString() }}
-            </span>
-            <span class="meta-badge">
-              <i class="fa-solid fa-location-dot"></i>
-              {{ locationLabel }}
-            </span>
-          </div>
-
-          @if (isEventEnded) {
-          <div class="hero-status-row">
-            <span class="event-status-pill event-status-pill--ended">
-              <i class="fa-solid fa-circle-check event-status-pill__icon"></i>
-              Event ended
-            </span>
-          </div>
-          }
-
-          <div class="hero-action-row">
-            <button type="button" class="hero-attendance" (click)="openAttendeesDrawer()">
-              <div class="avatar-stack">
-                <img
-                  [src]="eventDetails?.createdBy?.profileImage ? (eventDetails.createdBy.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-                  [matTooltip]="'Creator: ' + eventDetails?.createdBy?.username">
-                @for (att of attendessProfiles | slice:0:5; track $index) {
-                <img [src]="att.profileImage ? (att.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                  (error)="$any($event.target).src = 'assets/images/default-profile.png'">
-                }
-                @if (getTotalAttendeesCount() > 6) {
-                <span class="more-count">+{{ getTotalAttendeesCount() - 6 }}</span>
-                }
-              </div>
-              <span class="hero-attendance-label">
-                <i class="fa-solid fa-users"></i>
-                {{ attendanceSummaryLabel }}
-              </span>
-            </button>
-
-            @if (!isEventEnded) {
-            @if (!isEventCreator()) {
-            <button class="btn-join-hero" (click)="requestJoinEvent()"
-              [disabled]="!canRequestJoin()">
-              <i class="fa-solid fa-fire"></i>
-              {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel : joinRequestStatus() }}
-              <i class="fa-solid fa-chevron-right"></i>
-            </button>
-            } @else {
-            <button type="button" class="btn-view-requests" (click)="openRequestsDrawer()">
-              <i class="fa-solid fa-user-group"></i>
-              View Requests
-              @if (pendingJoinRequestCount > 0) {
-              <span class="btn-view-requests__count">{{ pendingJoinRequestCount }}</span>
-              }
-            </button>
-            }
-            }
-          </div>
-        </div>
-      </section>
+      <vl-event-hero
+        [event]="eventDetails()"
+        [isEventCreator]="isEventCreator()"
+        [isEventMenuOpen]="isEventMenuOpen()"
+        [isEscapeEvent]="isEscapeEvent()"
+        [isEventEnded]="isEventEnded()"
+        [eventDate]="eventDetails()?.eventDate"
+        [timeLeftLabel]="timeLeftLabel()"
+        [locationLabel]="locationLabel()"
+        [attendeePreviewProfiles]="attendeePreviewProfiles()"
+        [totalAttendeesCount]="totalAttendeesCount()"
+        [attendanceSummaryLabel]="attendanceSummaryLabel()"
+        [joinRequestStatus]="joinRequestStatus()"
+        [canRequestJoin]="canRequestJoin()"
+        [eventPriceLabel]="eventPriceLabel()"
+        [pendingJoinRequestCount]="pendingJoinRequestCount()"
+        (goBack)="goBack()"
+        (toggleMenu)="toggleEventMenu()"
+        (editEvent)="openEditEvent()"
+        (closeMenu)="closeEventMenu()"
+        (requestJoin)="requestJoinEvent()"
+        (openAttendees)="openAttendeesDrawer()"
+        (openRequests)="openRequestsDrawer()" />
 
       <div class="mobile-event-overview">
-        <section class="ed-section host-panel host-panel--mobile">
-          @let mobileCreator = eventDetails?.createdBy;
-          <button class="host-heading-row host-profile-link" type="button" (click)="redirectToHostProfile()">
-            <h3 class="host-heading">
-              Hosted by <strong>{{ mobileCreator?.username || 'Host' }}</strong>
-            </h3>
-            <i class="fa-solid fa-circle-check verified-check"></i>
-          </button>
+        <vl-event-host-card class="host-panel--mobile"
+          [host]="eventDetails()?.createdBy"
+          [hostEventCount]="hostEventCount()"
+          [isNewHost]="isNewHost()"
+          [shouldShowRating]="shouldShowHostRating()"
+          [hostRating]="hostRating()"
+          (viewProfile)="redirectToHostProfile()" />
 
-          <div class="host-summary">
-            <img class="host-avatar"
-              [src]="mobileCreator?.profileImage ? (mobileCreator.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-              (error)="$any($event.target).src = 'assets/images/default-profile.png'" (click)="redirectToHostProfile()"
-              [matTooltip]="'View Profile'" alt="Host">
-
-            <div class="host-summary__content">
-              <div class="host-trust-row">
-                @if (isNewHost) {
-                <span class="host-trust-pill host-trust-pill--new">
-                  <i class="fa-regular fa-star"></i>
-                  New Host
-                </span>
-                } @else if (shouldShowHostRating) {
-                <span class="host-trust-pill host-trust-pill--rating">
-                  <i class="fa-solid fa-star"></i>
-                  {{ hostRating | number:'1.1-1' }} rating
-                </span>
-                }
-                <span class="host-trust-pill host-trust-pill--verified">
-                  <i class="fa-solid fa-shield-halved"></i>
-                  Verified Host
-                </span>
-              </div>
-
-              <div class="host-proof-list">
-                <div class="host-proof-item">
-                  <span class="host-proof-icon">
-                    <i class="fa-regular fa-calendar-days"></i>
-                  </span>
-                  <span>Hosted {{ hostEventCount }} {{ hostEventCount === 1 ? 'event' : 'events' }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="ed-section event-facts event-facts--mobile">
-          <div class="info-rows">
-            <div class="info-row">
-              <i class="fa-regular fa-calendar"></i>
-              <span>{{ isEscapeEvent ? tripDateRangeLabel : (eventDetails?.eventDate | date:'EEEE, d MMMM y') }}</span>
-            </div>
-            @if (!isEscapeEvent) {
-            <div class="info-row">
-              <i class="fa-regular fa-clock"></i>
-              <span>{{ eventDetails?.eventTime }} onwards</span>
-            </div>
-            }
-            <div class="info-row">
-              <i class="fa-solid fa-ticket"></i>
-              <span><strong>{{ eventPriceLabel }}</strong> per person</span>
-            </div>
-            <div class="info-row">
-              <i [class]="audiencePreferenceIcon"></i>
-              <span>{{ audiencePreferenceLabel }}</span>
-            </div>
-            <div class="info-row">
-              <i class="fa-solid fa-users"></i>
-              <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel
-                }}</span>
-            </div>
-          </div>
-        </section>
+        <vl-event-facts class="event-facts--mobile"
+          [isEscapeEvent]="isEscapeEvent()"
+          [tripDateRangeLabel]="tripDateRangeLabel()"
+          [eventDate]="eventDetails()?.eventDate"
+          [eventTime]="eventDetails()?.eventTime"
+          [eventPriceLabel]="eventPriceLabel()"
+          [audiencePreferenceIcon]="audiencePreferenceIcon()"
+          [audiencePreferenceLabel]="audiencePreferenceLabel()"
+          [totalAttendeesCount]="totalAttendeesCount()"
+          [remainingSpotsLabel]="remainingSpotsLabel()" />
       </div>
 
-      <section class="ed-section about-description">
-        <h3 class="ed-section-title">
-          <i class="fa-solid fa-wand-magic-sparkles"></i>
-          About this Vibe
-        </h3>
-        <p>{{ eventDetails?.description }}</p>
+      <vl-event-about
+        [description]="eventDetails()?.description ?? ''"
+        [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
+        [attendeeLimit]="eventDetails()?.attendeeLimit" />
 
-        <div class="features-grid">
-          <div class="feature-item">
-            <span class="emoji">🎵</span>
-            <span>Live {{ eventDetails?.category?.title || 'Event' }} music</span>
-          </div>
-          <div class="feature-item">
-            <span class="emoji">🍸</span>
-            <span>Drinks &amp; cocktails available</span>
-          </div>
-          <div class="feature-item">
-            <span class="emoji">🎉</span>
-            <span>Gorgeous rooftop views</span>
-          </div>
-          <div class="feature-item">
-            <span class="emoji">🧑‍🤝‍🧑</span>
-            <span>Meet <strong>{{ eventDetails?.attendeeLimit || '20' }}</strong> new people</span>
-          </div>
-        </div>
-      </section>
-
-      @if (eventGalleryImages.length > 0) {
-      <section class="ed-section">
-        <h3 class="ed-section-title">Event Gallery</h3>
-        <div class="gallery-scroll">
-          @for (galleryImage of eventGalleryImages; track galleryImage.path) {
-          <button type="button" class="gallery-item" (click)="openGalleryPreview($index)">
-            <img [src]="galleryImage.url" alt="Gallery">
-          </button>
-          }
-        </div>
-        @if (isEventCreator()) {
-        <input #photoUploadInput type="file" accept="image/*,.heic,.heif" multiple (change)="onPhotoUpload($event)"
-          hidden />
-        <button class="btn-upload" (click)="triggerPhotoUpload()">
-          <i class="fa-solid fa-camera"></i> Upload Photos
-        </button>
-        }
-      </section>
+      @defer (on viewport) {
+        <vl-event-gallery-section
+          [images]="eventGalleryImages()"
+          [isEventCreator]="isEventCreator()"
+          [canDownload]="canDownloadGalleryImage()"
+          [deletingImagePath]="deletingGalleryImagePath()"
+          (uploadPhotos)="onUploadPhotos($event)"
+          (deleteImage)="onDeleteGalleryImage($event)" />
+      } @placeholder {
+        <div class="ed-section-placeholder" aria-hidden="true"></div>
+      } @loading (minimum 100ms) {
+        <div class="ed-section-placeholder" aria-hidden="true"></div>
       }
 
-      <vl-gallery #eventGalleryPreview class="event-gallery-preview" [images]="eventGalleryImages" [showHeader]="false"
-        [showGrid]="false" [showArchiveAction]="false" [showActions]="true" [canDownload]="canDownloadGalleryImage()"
-        [canDelete]="isEventCreator()" [deletingImagePath]="deletingGalleryImagePath"
-        (deleteImage)="removeGalleryImage($event.path || '')">
-      </vl-gallery>
-
-      <section class="ed-section map-panel map-panel--mobile">
-        <div class="map-card">
-          <div class="map-copy">
-            <h3 class="ed-section-title">
-              <i class="fa-solid fa-location-dot"></i>
-              Location
-            </h3>
-            <p class="map-title">{{ locationLabel }}</p>
-            @if (showHostLocationVisibilityCopy) {
-            <p class="map-subtitle">{{ locationSubtitle }}</p>
-            }
-          </div>
-
-          @if (isMapVisible()) {
-          <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
-            (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
-            <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
-              <map-marker [position]="position" />
-            </google-map>
-          </div>
-          }
-        </div>
-      </section>
+      <vl-event-map-panel class="map-panel--mobile"
+        [locationLabel]="locationLabel()"
+        [locationSubtitle]="locationSubtitle()"
+        [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [isMapVisible]="isMapVisible()"
+        [mapOptions]="mapOptions()"
+        [mapPosition]="mapPosition()"
+        (openInMaps)="openInGoogleMaps()" />
 
       @if (isUserAttendee()) {
-      <section class="ed-section chat-card chat-card--mobile">
-        <button class="btn-chat" (click)="toggleChat()">
-          <i class="fa-regular fa-comments"></i>
-          <span class="chat-copy">
-            <span class="chat-title-row">
-              <strong>Event Chat</strong>
-              <small>{{ getTotalAttendeesCount() }}</small>
-            </span>
-            <span class="chat-subtitle">Keep in touch with attendees</span>
-          </span>
-          <span class="chat-action">{{ isChatOpen() ? 'Close Chat' : 'Open Chat' }}</span>
-        </button>
-      </section>
+        <vl-event-chat-card class="chat-card--mobile"
+          [totalAttendeesCount]="totalAttendeesCount()"
+          [isChatOpen]="isChatOpen()"
+          (toggleChat)="toggleChat()" />
       }
 
-      <vl-event-comments [eventId]="eventId" [eventAverageRating]="eventDetails?.averageRating"
-        [canLeaveReview]="canLeaveReview()">
-      </vl-event-comments>
-
-      @if (relatedEvents && relatedEvents.length > 0) {
-      <section class="ed-section">
-        <h3 class="ed-section-title">
-          <i class="fa-solid fa-location-crosshairs"></i>
-          Related Nearby Events
-        </h3>
-        <div class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar w-full">
-          @for (event of relatedEvents; track event._id) {
-          <div class="min-w-[280px] max-w-[300px] shrink-0 snap-start">
-            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
-          </div>
-          }
-        </div>
-      </section>
+      @defer (on viewport) {
+        <vl-event-comments
+          [eventId]="eventId()"
+          [eventAverageRating]="eventDetails()?.averageRating ?? 0"
+          [canLeaveReview]="canLeaveReview()" />
+      } @placeholder {
+        <div class="ed-section-placeholder" aria-hidden="true"></div>
+      } @loading (minimum 100ms) {
+        <div class="ed-section-placeholder" aria-hidden="true"></div>
       }
+
+      <!-- @defer (on viewport) {
+        <vl-event-related [events]="relatedEvents()" />
+      } @placeholder {
+        <div class="ed-section-placeholder" aria-hidden="true"></div>
+      } -->
     </main>
 
     <aside class="vl-ed__sidebar">
-      <section class="ed-section host-panel host-panel--desktop">
-        @let creator = eventDetails?.createdBy;
-        <button class="host-heading-row host-profile-link" type="button" (click)="redirectToHostProfile()">
-          <h3 class="host-heading">
-            Hosted by <strong>{{ creator?.username || 'Host' }}</strong>
-          </h3>
-          <i class="fa-solid fa-circle-check verified-check"></i>
-        </button>
+      <vl-event-host-card class="host-panel--desktop"
+        [host]="eventDetails()?.createdBy"
+        [hostEventCount]="hostEventCount()"
+        [isNewHost]="isNewHost()"
+        [shouldShowRating]="shouldShowHostRating()"
+        [hostRating]="hostRating()"
+        (viewProfile)="redirectToHostProfile()" />
 
-        <div class="host-summary">
-          <img class="host-avatar"
-            [src]="creator?.profileImage ? (creator?.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-            (error)="$any($event.target).src = 'assets/images/default-profile.png'" (click)="redirectToHostProfile()"
-            [matTooltip]="'View Profile'" alt="Host">
+      <vl-event-facts class="event-facts--desktop"
+        [isEscapeEvent]="isEscapeEvent()"
+        [tripDateRangeLabel]="tripDateRangeLabel()"
+        [eventDate]="eventDetails()?.eventDate"
+        [eventTime]="eventDetails()?.eventTime"
+        [eventPriceLabel]="eventPriceLabel()"
+        [audiencePreferenceIcon]="audiencePreferenceIcon()"
+        [audiencePreferenceLabel]="audiencePreferenceLabel()"
+        [totalAttendeesCount]="totalAttendeesCount()"
+        [remainingSpotsLabel]="remainingSpotsLabel()" />
 
-          <div class="host-summary__content">
-            <div class="host-trust-row">
-              @if (isNewHost) {
-              <span class="host-trust-pill host-trust-pill--new">
-                <i class="fa-regular fa-star"></i>
-                New Host
-              </span>
-              } @else if (shouldShowHostRating) {
-              <span class="host-trust-pill host-trust-pill--rating">
-                <i class="fa-solid fa-star"></i>
-                {{ hostRating | number:'1.1-1' }} rating
-              </span>
-              }
-              <span class="host-trust-pill host-trust-pill--verified">
-                <i class="fa-solid fa-shield-halved"></i>
-                Verified Host
-              </span>
-            </div>
-
-            <div class="host-proof-list">
-              <div class="host-proof-item">
-                <span class="host-proof-icon">
-                  <i class="fa-regular fa-calendar-days"></i>
-                </span>
-                <span>Hosted {{ hostEventCount }} {{ hostEventCount === 1 ? 'event' : 'events' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="ed-section event-facts event-facts--desktop">
-        <div class="info-rows">
-          <div class="info-row">
-            <i class="fa-regular fa-calendar"></i>
-            <span>{{ isEscapeEvent ? tripDateRangeLabel : (eventDetails?.eventDate | date:'EEEE, d MMMM y') }}</span>
-          </div>
-          @if (!isEscapeEvent) {
-          <div class="info-row">
-            <i class="fa-regular fa-clock"></i>
-            <span>{{ eventDetails?.eventTime }} onwards</span>
-          </div>
-          }
-          <div class="info-row">
-            <i class="fa-solid fa-ticket"></i>
-            <span><strong>{{ eventPriceLabel }}</strong> per person</span>
-          </div>
-          <div class="info-row">
-            <i [class]="audiencePreferenceIcon"></i>
-            <span>{{ audiencePreferenceLabel }}</span>
-          </div>
-          <div class="info-row">
-            <i class="fa-solid fa-users"></i>
-            <span>{{ getTotalAttendeesCount() }} spots booked <span class="dot">•</span> {{ remainingSpotsLabel
-              }}</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="ed-section map-panel map-panel--desktop">
-        <div class="map-card">
-          <div class="map-copy">
-            <h3 class="ed-section-title">
-              <i class="fa-solid fa-location-dot"></i>
-              Location
-            </h3>
-            <p class="map-title">{{ locationLabel }}</p>
-            @if (showHostLocationVisibilityCopy) {
-            <p class="map-subtitle">{{ locationSubtitle }}</p>
-            }
-          </div>
-
-          @if (isMapVisible()) {
-          <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
-            (keydown.enter)="openInGoogleMaps()" (keydown.space)="$event.preventDefault(); openInGoogleMaps()">
-            <google-map [options]="options" [height]="'160px'" [width]="'100%'" (mapClick)="openInGoogleMaps()">
-              <map-marker [position]="position" />
-            </google-map>
-          </div>
-          }
-        </div>
-      </section>
+      <vl-event-map-panel class="map-panel--desktop"
+        [locationLabel]="locationLabel()"
+        [locationSubtitle]="locationSubtitle()"
+        [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [isMapVisible]="isMapVisible()"
+        [mapOptions]="mapOptions()"
+        [mapPosition]="mapPosition()"
+        (openInMaps)="openInGoogleMaps()" />
 
       @if (isUserAttendee()) {
-      <section class="ed-section chat-card chat-card--desktop">
-        <button class="btn-chat" (click)="toggleChat()">
-          <i class="fa-regular fa-comments"></i>
-          <span class="chat-copy">
-            <span class="chat-title-row">
-              <strong>Event Chat</strong>
-              <small>{{ getTotalAttendeesCount() }}</small>
-            </span>
-            <span class="chat-subtitle">Keep in touch with attendees</span>
-          </span>
-          <span class="chat-action">{{ isChatOpen() ? 'Close Chat' : 'Open Chat' }}</span>
-        </button>
-      </section>
+        <vl-event-chat-card class="chat-card--desktop"
+          [totalAttendeesCount]="totalAttendeesCount()"
+          [isChatOpen]="isChatOpen()"
+          (toggleChat)="toggleChat()" />
       }
     </aside>
   </div>
 </div>
 
-@if (isOpen) {
-<div class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
-  <div class="bg-white rounded-2xl shadow-xl w-[95%] h-[95%] p-6 relative overflow-y-auto">
-    <button (click)="closeModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
-      <i class="fa-solid fa-xmark text-xl"></i>
-    </button>
-    <h2 class="text-xl font-semibold mb-4">User Profile</h2>
-    <vl-profile [userId]="eventDetails?.createdBy && eventDetails.createdBy._id"></vl-profile>
-  </div>
-</div>
-}
+<vl-event-profile-modal
+  [isOpen]="profileModal().open"
+  [userId]="profileModal().userId"
+  (close)="closeProfileModal()" />
 
 @if (isChatOpen()) {
-<vl-chat [eventId]="eventId" (closeChat)="toggleChat()"></vl-chat>
+  <vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>
 }
 
-@if (activeEventDrawer) {
-<div class="event-detail-drawer-backdrop" (click)="closeEventDrawer()">
-  <aside class="event-detail-drawer" role="dialog" aria-modal="true" [attr.aria-label]="eventDrawerTitle"
-    (click)="$event.stopPropagation()">
-    <header class="event-detail-drawer__header">
-      <div>
-        <p class="event-detail-drawer__eyebrow">{{ eventDetails?.title || 'Event' }}</p>
-        <h2>{{ eventDrawerTitle }}</h2>
-        <p>{{ eventDrawerSubtitle }}</p>
-      </div>
-      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="closeEventDrawer()">
-        <span class="material-symbols-outlined" translate="no">close</span>
-      </button>
-    </header>
-
-    @if (activeEventDrawer === 'requests') {
-      @if (pendingJoinRequests.length > 0) {
-        <div class="event-detail-drawer__list">
-          @for (request of pendingJoinRequests; track getNotificationId(request)) {
-            <article class="event-detail-person-card">
-              <button type="button" class="event-detail-person-card__identity"
-                (click)="viewProfile(getNotificationSenderId(request))">
-                <img
-                  [src]="getNotificationSenderImage(request) ? (getNotificationSenderImage(request) | imageUrl) : 'assets/images/default-profile.png'"
-                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-                  alt="">
-                <span>
-                  <strong>{{ getNotificationSenderName(request) }}</strong>
-                  <small>Requested to join</small>
-                </span>
-              </button>
-
-              <div class="event-request-actions">
-                @if (notificationRequestState(request) === 'processing') {
-                  <span class="event-request-status">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i>
-                    Wait
-                  </span>
-                } @else {
-                  <button type="button" class="event-request-action event-request-action--primary"
-                    (click)="acceptJoinRequest(request)">
-                    Confirm
-                  </button>
-                  <button type="button" class="event-request-action event-request-action--secondary"
-                    (click)="rejectJoinRequest(request)">
-                    Decline
-                  </button>
-                }
-              </div>
-            </article>
-          }
-        </div>
-      } @else {
-        <div class="event-detail-drawer__empty">
-          <i class="fa-regular fa-bell"></i>
-          <h3>No pending requests</h3>
-          <p>New join requests will show up here.</p>
-        </div>
-      }
-    } @else {
-      @if (eventDrawerAttendees.length > 0) {
-        <div class="event-detail-drawer__list">
-          @for (attendee of eventDrawerAttendees; track attendee.role + attendee.userId) {
-            <article class="event-detail-person-card">
-              <button type="button" class="event-detail-person-card__identity" (click)="viewProfile(attendee.userId)">
-                <img
-                  [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-                  alt="">
-                <span>
-                  <strong>{{ attendee.userName }}</strong>
-                  <small>{{ attendee.role }}</small>
-                </span>
-              </button>
-            </article>
-          }
-        </div>
-      } @else {
-        <div class="event-detail-drawer__empty">
-          <i class="fa-regular fa-user"></i>
-          <h3>No attendees yet</h3>
-          <p>People who join this event will show up here.</p>
-        </div>
-      }
-    }
-  </aside>
-</div>
-}
+<vl-event-people-drawer
+  [mode]="activeDrawer()"
+  [eventTitle]="eventDetails()?.title ?? 'Event'"
+  [title]="eventDrawerTitle()"
+  [subtitle]="eventDrawerSubtitle()"
+  [pendingRequests]="pendingJoinRequestsView()"
+  [attendees]="eventDrawerAttendees()"
+  (close)="closeEventDrawer()"
+  (accept)="acceptJoinRequest($event)"
+  (reject)="rejectJoinRequest($event)"
+  (viewPerson)="openPersonProfile($event)" />

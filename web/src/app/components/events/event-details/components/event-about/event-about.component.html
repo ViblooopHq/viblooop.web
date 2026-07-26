@@ -1,0 +1,26 @@
+<section class="ed-section about-description">
+  <h2 class="ed-section-title">
+    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
+    About this Vibe
+  </h2>
+  <p>{{ description() }}</p>
+
+  <div class="features-grid">
+    <div class="feature-item">
+      <span class="emoji" aria-hidden="true">🎵</span>
+      <span>Live {{ categoryTitle() }} music</span>
+    </div>
+    <div class="feature-item">
+      <span class="emoji" aria-hidden="true">🍸</span>
+      <span>Drinks &amp; cocktails available</span>
+    </div>
+    <div class="feature-item">
+      <span class="emoji" aria-hidden="true">🎉</span>
+      <span>Gorgeous rooftop views</span>
+    </div>
+    <div class="feature-item">
+      <span class="emoji" aria-hidden="true">🧑‍🤝‍🧑</span>
+      <span>Meet <strong>{{ attendeeLimit() || '20' }}</strong> new people</span>
+    </div>
+  </div>
+</section>

@@ -2,9 +2,9 @@
   @if (shouldShowReviewForm()) {
     <section class="ed-section review-card review-card--compose" id="add-comment">
       <div class="review-card__header">
-        <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+        <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span>
         <div>
-          <h3>{{ reviewFormTitle }} <span aria-hidden="true">✨</span></h3>
+          <h2>{{ reviewFormTitle }} <span aria-hidden="true">✨</span></h2>
           <p>{{ isEditingReview ? 'Update your rating and comment for this vibe.' : 'Share your vibe! Attendees can rate and review after the event.' }}</p>
         </div>
       </div>
@@ -16,10 +16,11 @@
               @let starValue = $index + 1;
               <input type="radio" [id]="'rating-' + starValue" formControlName="rating" [value]="starValue" hidden />
               <label [for]="'rating-' + starValue"
-                (mouseenter)="hoverRating = starValue"
-                (mouseleave)="hoverRating = 0"
-                [class.is-active]="hoverRating >= starValue || selectedRating >= starValue">
-                <i [class]="(hoverRating >= starValue || selectedRating >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                (mouseenter)="hoverRating.set(starValue)"
+                (mouseleave)="hoverRating.set(0)"
+                [class.is-active]="hoverRating() >= starValue || selectedRating >= starValue">
+                <i [class]="(hoverRating() >= starValue || selectedRating >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'" aria-hidden="true"></i>
+                <span class="sr-only">{{ starValue }} star{{ starValue === 1 ? '' : 's' }}</span>
               </label>
             }
           </div>
@@ -32,25 +33,26 @@
 
         <div class="review-text-panel">
           <div class="review-textarea-wrap">
-            <textarea formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
+            <label for="review-comment" class="sr-only">Your review comment</label>
+            <textarea id="review-comment" formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
             <span class="review-char-count">{{ reviewCommentLength }}/250</span>
           </div>
         </div>
 
-        <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting">
-          @if (isSubmitting) { <i class="fa-solid fa-spinner fa-spin"></i> }
-          @else { <i class="fa-regular fa-paper-plane"></i> }
+        <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting()">
+          @if (isSubmitting()) { <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> }
+          @else { <i class="fa-regular fa-paper-plane" aria-hidden="true"></i> }
           {{ reviewSubmitLabel }}
         </button>
 
         @if (isEditingReview) {
-          <button type="button" class="btn-cancel-review" (click)="cancelReviewEdit()" [disabled]="isSubmitting">
+          <button type="button" class="btn-cancel-review" (click)="cancelReviewEdit()" [disabled]="isSubmitting()">
             Cancel Edit
           </button>
         }
 
         <p class="review-privacy">
-          <i class="fa-solid fa-lock"></i>
+          <i class="fa-solid fa-lock" aria-hidden="true"></i>
           Your review is public and will help others.
         </p>
       </form>
@@ -61,9 +63,9 @@
   <section class="ed-section reviews-panel" id="reviews-comments">
     <div class="reviews-panel__header">
       <div class="reviews-panel__title">
-        <span class="review-card__icon"><i class="fa-regular fa-comment"></i></span>
+        <span class="review-card__icon"><i class="fa-regular fa-comment" aria-hidden="true"></i></span>
         <div>
-          <h3>Reviews &amp; Comments</h3>
+          <h2>Reviews &amp; Comments</h2>
           <p>See what other attendees thought about this event.</p>
         </div>
       </div>
@@ -71,14 +73,14 @@
 
     <div class="reviews-panel__stats">
       <div class="review-stat">
-        <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star"></i></span>
+        <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
         <span class="review-stat__copy">
           <strong>{{ displayAverageRating | number:'1.1-1' }}</strong>
           <small>Average rating</small>
         </span>
       </div>
       <div class="review-stat">
-        <span class="review-stat__icon"><i class="fa-regular fa-comment-dots"></i></span>
+        <span class="review-stat__icon"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i></span>
         <span class="review-stat__copy">
           <strong>{{ reviewCount }}</strong>
           <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
@@ -88,7 +90,7 @@
 
     @if (reviewCount === 0) {
       <div class="empty-comments">
-        <div class="empty-icon"><i class="fa-regular fa-comments"></i></div>
+        <div class="empty-icon"><i class="fa-regular fa-comments" aria-hidden="true"></i></div>
         <p class="empty-title">No reviews yet</p>
         <p class="empty-subtitle">Be the first to review this vibe</p>
       </div>
@@ -97,6 +99,7 @@
       @for (review of visibleReviews; track $index) {
         <div class="comment-item" [class.comment-item--has-actions]="isOwnReview(review)">
           <img class="comment-avatar"
+               alt="{{ review.raterUserId?.username || 'Guest' }}'s profile photo"
                [src]="review.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
                (error)="$any($event.target).src = 'assets/images/default-profile.png'">
 
@@ -104,20 +107,20 @@
             <div class="comment-header">
               <div class="comment-author">
                 <span class="username">{{ review.raterUserId?.username || 'Guest' }}</span>
-                <i class="fa-solid fa-circle-check reviewer-check"></i>
+                <i class="fa-solid fa-circle-check reviewer-check" aria-hidden="true"></i>
                 <span class="attended-badge">
-                  <i class="fa-solid fa-certificate"></i>
+                  <i class="fa-solid fa-certificate" aria-hidden="true"></i>
                   Attended
                 </span>
               </div>
               <span class="timestamp">
-                <i class="fa-regular fa-clock"></i>
+                <i class="fa-regular fa-clock" aria-hidden="true"></i>
                 {{ getTimeAgo(review.updatedAt || review.createdAt) }}
               </span>
             </div>
-            <div class="comment-stars">
+            <div class="comment-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
               @for (i of [1, 2, 3, 4, 5]; track $index) {
-                <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'"></i>
+                <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'" aria-hidden="true"></i>
               }
             </div>
             <p class="comment-text">{{ review.comment }}</p>
@@ -125,19 +128,19 @@
 
           @if (isOwnReview(review)) {
             <div class="comment-actions">
-              <button type="button" class="comment-more" aria-label="More options" (click)="toggleReviewMenu(review)">
-                <i class="fa-solid fa-ellipsis"></i>
+              <button type="button" class="comment-more" aria-haspopup="menu" [attr.aria-expanded]="isReviewMenuOpen(review)" aria-label="More options" (click)="toggleReviewMenu(review)">
+                <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
               </button>
 
               @if (isReviewMenuOpen(review)) {
-                <div class="comment-menu">
-                  <button type="button" (click)="editReview(review)">
-                    <i class="fa-regular fa-pen-to-square"></i>
+                <div class="comment-menu" role="menu">
+                  <button type="button" role="menuitem" (click)="editReview(review)">
+                    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
                     Edit Review
                   </button>
-                  <button type="button" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId === review._id">
-                    @if (deletingReviewId === review._id) { <i class="fa-solid fa-spinner fa-spin"></i> }
-                    @else { <i class="fa-regular fa-trash-can"></i> }
+                  <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
+                    @if (deletingReviewId() === review._id) { <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> }
+                    @else { <i class="fa-regular fa-trash-can" aria-hidden="true"></i> }
                     Delete Review
                   </button>
                 </div>
@@ -149,9 +152,9 @@
       </div>
 
       @if (shouldShowReviewToggle) {
-        <button type="button" class="btn-view-comments" (click)="toggleReviews()">
-          {{ showAllReviews ? 'Show fewer comments' : 'View all comments' }}
-          <i [class]="showAllReviews ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'"></i>
+        <button type="button" class="btn-view-comments" [attr.aria-expanded]="showAllReviews()" (click)="toggleReviews()">
+          {{ showAllReviews() ? 'Show fewer comments' : 'View all comments' }}
+          <i [class]="showAllReviews() ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" aria-hidden="true"></i>
         </button>
       }
     }
