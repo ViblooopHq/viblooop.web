@@ -34,7 +34,7 @@ type ProfilePhotoItem = {
   styleUrls: ['./edit-profile.component.scss'],
   imports: [ReactiveFormsModule, FormsModule, SelfieVerificationComponent, FormDrawerComponent]
 })
-export class EditProfile2Component implements OnInit {
+export class EditProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private sharedService = inject(SharedService);

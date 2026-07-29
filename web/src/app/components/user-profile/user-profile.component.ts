@@ -1,24 +1,31 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
-import { EventCardComponent } from '../../shared/components/event-card/event-card.component';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { SelfieVerificationComponent } from './selfie-verification/selfie-verification.component';
 import { ActivatedRoute } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
 import { BrowserService } from '../../shared/services/browser/browser.service';
-
-type SocialLink = {
-  platform: string;
-  url: string;
-};
+import { ProfileHeroComponent } from './components/profile-hero/profile-hero.component';
+import { ProfileVerificationBannerComponent } from './components/profile-verification-banner/profile-verification-banner.component';
+import { ProfileStatsComponent } from './components/profile-stats/profile-stats.component';
+import { ProfileContentPanelComponent } from './components/profile-content-panel/profile-content-panel.component';
+import { ProfileSocialLinksComponent, SocialLink } from './components/profile-social-links/profile-social-links.component';
 
 @Component({
   selector: 'vl-user-profile',
-  imports: [GalleryComponent, CommonModule, EventCardComponent, ReviewsComponent, SelfieVerificationComponent],
+  imports: [
+    GalleryComponent,
+    ReviewsComponent,
+    SelfieVerificationComponent,
+    ProfileHeroComponent,
+    ProfileVerificationBannerComponent,
+    ProfileStatsComponent,
+    ProfileContentPanelComponent,
+    ProfileSocialLinksComponent,
+  ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
 })
@@ -134,19 +141,6 @@ export class UserProfileComponent implements OnInit {
     this.totalRatings = Number(data?.totalRatings ?? this.userProfile?.totalRatings ?? 0);
   }
 
-  getTabIcon(tab: string): string {
-    switch (tab) {
-      case 'Joined':
-        return 'event_available';
-      case 'Hosted':
-        return 'edit_calendar';
-      case 'Gallery':
-        return 'photo_library';
-      default:
-        return '';
-    }
-  }
-
   buildGallery(response: any): any[] {
     if (!response?.success || response.statusCode !== 200 || !Array.isArray(response.data)) {
       return [];
@@ -240,60 +234,6 @@ export class UserProfileComponent implements OnInit {
     return Array.isArray(this.userProfile?.socialLinks) ? this.userProfile.socialLinks : [];
   }
 
-  getSocialIcon(platform: string): string {
-    switch ((platform || '').toLowerCase()) {
-      case 'instagram':
-        return 'fa-brands fa-instagram';
-      case 'twitter':
-        return 'fa-brands fa-twitter';
-      case 'youtube':
-        return 'fa-brands fa-youtube';
-      case 'linkedin':
-        return 'fa-brands fa-linkedin-in';
-      default:
-        return 'fa-solid fa-link';
-    }
-  }
-
-  getSocialLabel(platform: string): string {
-    switch ((platform || '').toLowerCase()) {
-      case 'instagram':
-        return 'Instagram';
-      case 'twitter':
-        return 'Twitter';
-      case 'youtube':
-        return 'YouTube';
-      case 'linkedin':
-        return 'LinkedIn';
-      default:
-        return 'Profile link';
-    }
-  }
-
-  getInterestLabel(interest: any): string {
-    return typeof interest === 'string' ? interest : interest?.label || '';
-  }
-
-  getInterestIconClass(interest: any): string {
-    if (interest?.icon) return interest.icon;
-
-    const value = this.getInterestLabel(interest).toLowerCase();
-
-    if (value.includes('travel') || value.includes('trip')) return 'fa-solid fa-route';
-    if (value.includes('drive')) return 'fa-solid fa-car-side';
-    if (value.includes('food') || value.includes('dining')) return 'fa-solid fa-utensils';
-    if (value.includes('coffee') || value.includes('cafe') || value.includes('chai')) return 'fa-solid fa-mug-hot';
-    if (value.includes('music')) return 'fa-solid fa-music';
-    if (value.includes('photo')) return 'fa-solid fa-camera';
-    if (value.includes('movie')) return 'fa-solid fa-film';
-
-    return 'fa-solid fa-star';
-  }
-
-  getInterestTone(index: number): string {
-    return ['teal', 'green', 'blue', 'amber', 'purple'][index % 5];
-  }
-
   normalizeSocialLinks(links: any[]): SocialLink[] {
     if (!Array.isArray(links)) return [];
 
@@ -322,7 +262,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   editProfile() {
-    this.router.navigateToDrawer('edit-profile', '/profile/edit2');
+    this.router.navigateToDrawer('edit-profile', '/profile/edit');
   }
 
   verifyGovernmentID() {

@@ -1,0 +1,72 @@
+<section class="vl-user-profile__panel">
+  <div class="vl-user-profile__tabs" role="tablist">
+    @for(tab of tabs(); track tab) {
+      <button type="button" role="tab" [class.active]="activeTab() === tab" (click)="tabChange.emit(tab)">
+        <span class="material-symbols-outlined" translate="no">{{ getTabIcon(tab) }}</span>
+        {{ tab }}
+      </button>
+    }
+  </div>
+
+  <div class="vl-user-profile__tab-content">
+    @switch (activeTab()) {
+      @case ('Joined') {
+        @if (visibleJoinedEvents().length > 0) {
+          <div class="vl-user-profile__event-list">
+            @for (event of visibleJoinedEvents(); track event?._id || $index) {
+              <vl-event-card [config]="event" presentation="profile" profileStatus="attended"></vl-event-card>
+            }
+          </div>
+          @if (totalJoinedCount() > visibleJoinedEvents().length) {
+            <button class="vl-user-profile__view-all" type="button" (click)="showMoreJoined.emit()">
+              Show more
+              <span class="material-symbols-outlined" translate="no">chevron_right</span>
+            </button>
+          }
+        } @else {
+          <div class="vl-user-profile__empty">
+            <span class="material-symbols-outlined" translate="no">event_busy</span>
+            <p>No joined events to display yet.</p>
+          </div>
+        }
+      }
+      @case ('Hosted') {
+        @if (visibleHostedEvents().length > 0) {
+          <div class="vl-user-profile__event-list">
+            @for (event of visibleHostedEvents(); track event?._id || $index) {
+              <vl-event-card [config]="event" presentation="profile" profileStatus="hosted"></vl-event-card>
+            }
+          </div>
+          @if (totalHostedCount() > visibleHostedEvents().length) {
+            <button class="vl-user-profile__view-all" type="button" (click)="showMoreHosted.emit()">
+              Show more
+              <span class="material-symbols-outlined" translate="no">chevron_right</span>
+            </button>
+          }
+        } @else {
+          <div class="vl-user-profile__empty">
+            <span class="material-symbols-outlined" translate="no">event_busy</span>
+            <p>No hosted events to display yet.</p>
+          </div>
+        }
+      }
+      @case ('Gallery') {
+        @if (userGallery().length > 0) {
+          <vl-gallery [images]="userGallery()"></vl-gallery>
+        } @else {
+          <div class="vl-user-profile__empty">
+            <span class="material-symbols-outlined" translate="no">photo_library</span>
+            <p>No event gallery to display yet.</p>
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <div class="vl-user-profile__interests">
+    <h2>Interests</h2>
+    <div class="vl-user-profile__interest-list">
+      <vl-interest-pill-list [interests]="visibleInterests()" [extraCount]="hiddenInterestCount()"></vl-interest-pill-list>
+    </div>
+  </div>
+</section>

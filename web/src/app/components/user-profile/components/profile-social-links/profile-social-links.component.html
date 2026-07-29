@@ -1,0 +1,18 @@
+<section class="vl-user-profile__footer-socials" aria-label="Social links">
+  <p>Find me on</p>
+  <div class="vl-user-profile__footer-social-list">
+    @for (link of links(); track link.platform) {
+      <a
+        [href]="link.url"
+        target="_blank"
+        rel="noopener noreferrer"
+        [attr.aria-label]="getSocialLabel(link.platform)">
+        <span class="vl-user-profile__footer-social-icon" [class]="'vl-user-profile__footer-social-icon vl-user-profile__footer-social-icon--' + link.platform">
+          <i [class]="getSocialIcon(link.platform)" aria-hidden="true"></i>
+        </span>
+        <span>{{ getSocialLabel(link.platform) }}</span>
+        <span class="material-symbols-outlined vl-user-profile__footer-social-check" translate="no">verified</span>
+      </a>
+    }
+  </div>
+</section>

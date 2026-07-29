@@ -1,0 +1,10 @@
+@for (interest of interests(); track interest; let i = $index) {
+  <span class="vl-pill" [class]="'vl-pill vl-pill--' + getInterestTone(i)">
+    <i [class]="getInterestIconClass(interest)" aria-hidden="true"></i>
+    {{ getInterestLabel(interest) }}
+  </span>
+}
+
+@if (extraCount() > 0) {
+  <span class="vl-pill vl-pill--muted">+{{ extraCount() }} more</span>
+}

@@ -36,7 +36,7 @@ export class HeaderComponent implements OnInit {
 
   // Computed: hide FAB when user is in create-event flow
   isCreateRoute = () => this.angularRouter.url.includes('/create-event');
-  isEditProfileRoute = () => this.angularRouter.url.includes('/profile/edit2');
+  isEditProfileRoute = () => this.angularRouter.url.includes('/profile/edit');
   shouldShowNotification = () => !!this.userDetails;
 
   // Native Signal consumption for perfect change detection

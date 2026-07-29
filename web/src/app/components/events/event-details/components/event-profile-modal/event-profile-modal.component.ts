@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { A11yModule } from '@angular/cdk/a11y';
-import { ProfileComponent } from '../../../../user/profile/profile.component';
+import { ProfileComponent } from '../../../../user-profile/profile/profile.component';
 
 @Component({
   selector: 'vl-event-profile-modal',

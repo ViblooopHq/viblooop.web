@@ -1,0 +1,23 @@
+<section
+  class="vl-user-profile__photo-verification"
+  [class.vl-user-profile__photo-verification--verified]="isVerified()"
+  aria-label="Photo verification">
+  <span class="vl-user-profile__photo-verification-icon">
+    <span class="material-symbols-outlined" translate="no">{{ isVerified() ? 'verified' : 'person_check' }}</span>
+  </span>
+
+  <span class="vl-user-profile__photo-verification-copy">
+    <span class="vl-user-profile__photo-verification-heading">
+      <strong>Photo Verification</strong>
+      <span>{{ isVerified() ? 'Verified' : 'Pending' }}</span>
+    </span>
+    <small>{{ isVerified() ? 'Your profile has the verified badge' : 'Verify your selfie to get the verified badge' }}</small>
+  </span>
+
+  @if (!isVerified()) {
+    <button class="vl-user-profile__photo-verification-action" type="button" (click)="verify.emit()">
+      Verify Selfie
+      <span class="material-symbols-outlined" translate="no">chevron_right</span>
+    </button>
+  }
+</section>

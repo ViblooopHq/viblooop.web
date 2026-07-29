@@ -5,14 +5,15 @@ import { EventDetailsComponent } from './components/events/event-details/event-d
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { authGuard } from './guards/auth/auth.guard';
-import { MyEventsComponent } from './components/user/my-events/my-events.component';
+import { MyEventsComponent } from './components/events/my-events/my-events.component';
 import { ProfileSetupComponent } from './components/user-profile/profile-setup/profile-setup.component';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { profileScoreGuard } from './guards/profile-score/profile-score.guard';
 import { unsavedChangeGuard } from './guards/unsave-changes/unsave-change.guard';
 import { CreateEventComponent } from './components/events/create-event/create-event.component';
-import { EditProfile2Component } from './components/user-profile/edit-profile/edit-profile.component';
+import { EditProfileComponent } from './components/user-profile/edit-profile/edit-profile.component';
 import { ExploreEventsComponent } from './components/events/explore-events/explore-events.component';
+
 export const routes: Routes = [
   {
     path: '',
@@ -22,23 +23,11 @@ export const routes: Routes = [
     path: 'events/:eventId',
     component: EventDetailsComponent,
   },
-  // {
-  //   path: 'profile',
-  //   canActivate: [authGuard, profileScoreGuard],
-  //   component: UserProfileComponent,
-
-  // },
   { path: 'profile', loadComponent: () => import('./components/user-profile/user-profile.component').then(c => c.UserProfileComponent) },
   {
     path: 'profile/edit',
-    redirectTo: 'profile/edit2',
-    pathMatch: 'full',
-  },
-  {
-    path: 'profile/edit2',
     canDeactivate: [unsavedChangeGuard],
-    component: EditProfile2Component,
-
+    component: EditProfileComponent,
   },
   {
     path: 'profile/update',
@@ -62,7 +51,7 @@ export const routes: Routes = [
   {
     path: 'my-wishlist',
     canActivate: [authGuard],
-    loadComponent: () => import('./components/user/wishlist/wishlist.component').then(c => c.WishlistComponent)
+    loadComponent: () => import('./components/user-profile/wishlist/wishlist.component').then(c => c.WishlistComponent)
   },
   {
     path: 'eventCategories/:categoryId',
@@ -83,7 +72,7 @@ export const routes: Routes = [
     outlet: 'drawer',
     canActivate: [authGuard],
     canDeactivate: [unsavedChangeGuard],
-    component: EditProfile2Component,
+    component: EditProfileComponent,
   },
   {
     path: 'login',
