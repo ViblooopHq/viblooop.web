@@ -1,7 +1,7 @@
 <div class="vl-gallery">
   @if(showHeader()) {
     <div class="vl-gallery__header">
-      <h3>Gallery</h3>
+      <h3 class="vl-title-md">Gallery</h3>
     </div>
   }
 
@@ -44,7 +44,7 @@
         <!-- Image -->
         <img [src]="image.url" [alt]="image.title || 'Gallery photo preview'" />
         @if (image.title) {
-          <p>{{ image.title }}</p>
+          <p class="vl-body-sm">{{ image.title }}</p>
         }
 
         @if (shouldShowActions) {
@@ -83,8 +83,8 @@
           <div class="vl-gallery__delete-confirm-icon">
             <i class="fa-solid fa-trash" aria-hidden="true"></i>
           </div>
-          <h3>Delete this photo?</h3>
-          <p>This photo will be permanently deleted and cannot be recovered.</p>
+          <h3 class="vl-title-md">Delete this photo?</h3>
+          <p class="vl-body">This photo will be permanently deleted and cannot be recovered.</p>
           <div class="vl-gallery__delete-confirm-actions">
             <button type="button" class="vl-gallery__delete-confirm-cancel" (click)="closeDeleteConfirm()">Cancel</button>
             <button type="button"

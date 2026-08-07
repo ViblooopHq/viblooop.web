@@ -23,7 +23,8 @@
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        padding: 0.35rem 1rem;
+        min-height: 2.75rem;
+        padding: 0.45rem 1.2rem;
         margin-bottom: 1.25rem;
         border-radius: var(--radius-pill); // Perfect pill shape
 
@@ -36,12 +37,12 @@
             linear-gradient(to right, var(--primary), var(--secondary)) border-box;
 
         // Optional: Add a very subtle glow around the pill
-        box-shadow: 0 0 20px rgba(var(--primary-rgb), 0.15);
+        box-shadow: 0 0 20px color-mix(in srgb, var(--color-action-primary) 15%, transparent);
     }
 
     // Pre-Title Text
     &__label-text {
-        font-size: 0.75rem;
+        font-size: 0.82rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.15em;
@@ -60,7 +61,7 @@
         font-weight: 900; // font-black
         letter-spacing: -0.04em;
         margin-bottom: 1.25rem;
-        color: var(--text-white);
+        color: var(--color-text-primary);
         font-family: var(--font-ui);
         line-height: 1.2;
         font-style: italic;
@@ -78,5 +79,16 @@
         line-height: 1.625;
         margin: 0;
         font-family: var(--font-ui);
+    }
+
+    @media (min-width: 768px) {
+        &__label {
+            min-height: 2.5rem;
+            padding: 0.35rem 1rem;
+        }
+
+        &__label-text {
+            font-size: 0.75rem;
+        }
     }
 }

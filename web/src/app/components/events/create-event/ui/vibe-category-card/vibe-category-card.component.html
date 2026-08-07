@@ -1,9 +1,12 @@
 <button type="button" class="vibe-card"
   [ngClass]="'vibe-card--' + accent()"
   [class.vibe-card--monochrome]="isSoon()"
+  [class.vibe-card--disabled]="isSoon()"
   [class.vibe-card--selected]="selected()"
   [attr.aria-pressed]="selected()"
-  (click)="select.emit()">
+  [attr.aria-label]="isSoon() ? title() + ' is coming soon' : title()"
+  [disabled]="isSoon()"
+  (click)="selectCategory()">
 
   @if (selected()) {
     <div class="vibe-check"><span class="material-symbols-outlined" aria-hidden="true">check</span></div>

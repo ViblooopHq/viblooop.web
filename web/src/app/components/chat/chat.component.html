@@ -11,9 +11,9 @@
     </div>
 
     <div class="chat-heading">
-      <h1>{{ chatTitle() }}</h1>
+      <h1 class="vl-title-md">{{ chatTitle() }}</h1>
       @if (chatSubtitle()) {
-        <p>{{ chatSubtitle() }}</p>
+        <p class="vl-body-sm">{{ chatSubtitle() }}</p>
       }
     </div>
 
@@ -34,8 +34,8 @@
     @if (messages().length === 0) {
       <div class="chat-empty">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">forum</span>
-        <h2>No messages yet</h2>
-        <p>Start the conversation with this group.</p>
+        <h2 class="vl-title-md">No messages yet</h2>
+        <p class="vl-body-sm">Start the conversation with this group.</p>
       </div>
     } @else {
       <div class="timeline-chip">Today</div>

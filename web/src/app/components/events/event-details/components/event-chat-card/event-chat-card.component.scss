@@ -2,12 +2,12 @@
 
 .chat-card {
   padding: 0.95rem;
-  border: 1px solid rgba(148, 163, 184, 0.15);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-lg);
   background:
-    radial-gradient(circle at 6% 0%, rgba(var(--color-brand-accent-rgb), 0.1), transparent 14rem),
-    rgba(8, 11, 24, 0.86);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    radial-gradient(circle at 6% 0%, color-mix(in srgb, var(--color-action-primary) 10%, transparent), transparent 14rem),
+    var(--color-surface-glass-strong);
+  box-shadow: var(--shadow-panel);
 
   .btn-chat {
     display: grid;
@@ -15,18 +15,14 @@
     justify-content: space-between;
     align-items: center;
     gap: 0.85rem;
-    width: 100%;
     min-height: 4.8rem;
-    border: 0;
-    border-radius: var(--radius-md);
     background: transparent;
-    color: #f8f7ff;
-    cursor: pointer;
+    color: var(--color-text-primary);
     padding: 0.7rem;
     text-align: left;
 
     > i:first-child {
-      color: var(--color-brand-accent);
+      color: var(--color-action-primary);
       font-size: 2.45rem;
     }
 
@@ -44,7 +40,7 @@
     }
 
     strong {
-      color: #f8f7ff;
+      color: var(--color-text-primary);
       font-size: 1rem;
       font-weight: 700;
       line-height: 1;
@@ -58,14 +54,14 @@
       min-height: 1.5rem;
       padding: 0 0.45rem;
       border-radius: var(--radius-pill);
-      background: rgba(88, 28, 135, 0.42);
-      color: var(--text-white);
+      background: color-mix(in srgb, var(--color-action-primary) 42%, transparent);
+      color: var(--on-primary);
       font-size: 0.78rem;
       font-weight: 700;
     }
 
     .chat-subtitle {
-      color: #b9b0cc;
+      color: var(--color-text-secondary);
       font-size: 0.88rem;
       font-weight: 400;
       line-height: 1.25;
@@ -78,8 +74,8 @@
       min-height: 3rem;
       padding: 0 1.1rem;
       border-radius: var(--radius-sm);
-      background: rgba(88, 28, 135, 0.72);
-      color: var(--text-white);
+      background: var(--color-action-primary);
+      color: var(--on-primary);
       font-size: 0.9rem;
       font-weight: 700;
       white-space: nowrap;

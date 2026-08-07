@@ -51,6 +51,7 @@
         [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
         [attendeeLimit]="eventDetails()?.attendeeLimit" />
 
+      @if (eventGalleryImages().length > 0) {
       @defer (on viewport) {
         <vl-event-gallery-section
           [images]="eventGalleryImages()"
@@ -63,6 +64,7 @@
         <div class="ed-section-placeholder" aria-hidden="true"></div>
       } @loading (minimum 100ms) {
         <div class="ed-section-placeholder" aria-hidden="true"></div>
+      }
       }
 
       <vl-event-map-panel class="map-panel--mobile"

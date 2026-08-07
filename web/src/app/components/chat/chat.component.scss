@@ -1,3 +1,5 @@
+@use "../../../styles/components/primitives" as primitives;
+
 :host {
   display: contents;
 }
@@ -12,13 +14,13 @@
   height: min(34rem, calc(100dvh - 2rem));
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(166, 135, 255, 0.18);
+  border: 1px solid var(--color-border-ghost);
   border-radius: 1.4rem;
   background:
-    radial-gradient(circle at 50% 20%, rgba(135, 82, 255, 0.16), transparent 20rem),
-    var(--surface-dark-4);
+    radial-gradient(circle at 50% 20%, color-mix(in srgb, var(--color-action-primary) 16%, transparent), transparent 20rem),
+    var(--color-surface-canvas);
   color: var(--color-brand-tint-soft);
-  box-shadow: 0 1.6rem 4rem rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-overlay);
   font-family: var(--font-ui);
 
   &.embedded {
@@ -42,8 +44,8 @@
   gap: 1rem;
   min-height: 6.85rem;
   padding: 1.45rem 1.9rem;
-  border-bottom: 1px solid rgba(166, 135, 255, 0.12);
-  background: rgba(8, 10, 24, 0.58);
+  border-bottom: 1px solid var(--color-border-ghost);
+  background: var(--color-surface-glass);
 }
 
 .chat-back {
@@ -59,7 +61,7 @@
   border-radius: var(--radius-full);
   background: linear-gradient(145deg, var(--color-brand-soft), var(--color-brand-deep));
   color: var(--text-white);
-  box-shadow: 0 0.8rem 1.75rem rgba(104, 60, 255, 0.34);
+  box-shadow: var(--shadow-brand-glow);
 
   .material-symbols-outlined {
     font-size: 1.75rem;
@@ -70,22 +72,14 @@
   min-width: 0;
 
   h1 {
-    margin: 0;
     overflow: hidden;
-    color: var(--text-white);
-    font-size: clamp(1.05rem, 2.2vw, 1.55rem);
-    font-weight: 800;
-    line-height: 1.15;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   p {
-    margin: 0.45rem 0 0;
+    margin-top: 0.45rem;
     overflow: hidden;
-    color: var(--text-subtle);
-    font-size: 0.92rem;
-    font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
@@ -99,21 +93,23 @@
 
 .icon-btn,
 .chat-back {
+  @include primitives.button-base;
+
   align-items: center;
   justify-content: center;
   width: 3.25rem;
   height: 3.25rem;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  min-height: 0;
+  border: 1px solid var(--color-border-ghost);
   border-radius: 1rem;
   color: var(--color-brand-tint);
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0.035);
-  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  background: var(--color-surface-glass);
+  padding: 0;
 
   &:hover {
     color: var(--text-white);
-    border-color: rgba(177, 143, 255, 0.3);
-    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--color-border-strong);
+    background: var(--color-surface-glass-strong);
     transform: translateY(-0.05rem);
   }
 }
@@ -138,20 +134,20 @@
 
   &::-webkit-scrollbar-thumb {
     border-radius: var(--radius-pill);
-    background: rgba(171, 143, 255, 0.24);
+    background: color-mix(in srgb, var(--color-action-primary) 24%, transparent);
   }
 }
 
 .timeline-chip {
   align-self: center;
   padding: 0.6rem 1.15rem;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--color-surface-glass);
   color: var(--text-subtle);
   font-size: 0.84rem;
   font-weight: 800;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  box-shadow: var(--shadow-panel);
 }
 
 .system-note {
@@ -186,11 +182,11 @@
   &::after {
     height: 1px;
     content: '';
-    background: linear-gradient(90deg, transparent, rgba(160, 91, 255, 0.48));
+    background: linear-gradient(90deg, transparent, var(--color-action-primary));
   }
 
   &::after {
-    background: linear-gradient(90deg, rgba(160, 91, 255, 0.48), transparent);
+    background: linear-gradient(90deg, var(--color-action-primary), transparent);
   }
 }
 
@@ -209,15 +205,11 @@
 
   h2 {
     margin: 1rem 0 0.4rem;
-    font-size: 1.14rem;
   }
 
   p {
     max-width: 18rem;
     margin: 0;
-    color: var(--text-subtle);
-    font-size: 0.92rem;
-    line-height: 1.45;
   }
 }
 
@@ -240,18 +232,18 @@
 
     .text {
       padding: 0.9rem 1.05rem;
-      border: 1px solid rgba(180, 124, 255, 0.25);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 25%, transparent);
       border-radius: 1rem 1rem 0.25rem 1rem;
-      background: linear-gradient(135deg, rgba(154, 92, 255, 0.28), rgba(255, 102, 184, 0.16));
+      background: color-mix(in srgb, var(--color-action-primary) 28%, var(--color-surface-raised));
     }
   }
 
   &:not(.own) {
     .text {
       padding: 0.82rem 1rem;
-      border: 1px solid rgba(134, 111, 255, 0.22);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 22%, transparent);
       border-radius: 1rem 1rem 1rem 0.25rem;
-      background: rgba(34, 31, 69, 0.82);
+      background: var(--color-surface-glass-strong);
     }
   }
 }
@@ -263,7 +255,7 @@
   width: 3.4rem;
   height: 3.4rem;
   border-radius: var(--radius-full);
-  background: linear-gradient(145deg, rgba(147, 95, 255, 0.46), rgba(64, 39, 126, 0.72));
+  background: color-mix(in srgb, var(--color-action-primary) 46%, var(--color-surface-raised));
   color: var(--color-brand-tint);
   font-size: 1.12rem;
   font-weight: 800;
@@ -285,7 +277,7 @@
 
 .text {
   margin: 0;
-  color: var(--text-white);
+  color: var(--color-text-primary);
   font-size: clamp(0.9rem, 1.35vw, 1.04rem);
   line-height: 1.55;
   overflow-wrap: anywhere;
@@ -304,24 +296,22 @@
   grid-template-columns: minmax(0, 1fr) 4.35rem;
   gap: 1rem;
   padding: 0.85rem clamp(1.35rem, 4vw, 2.9rem) 1rem;
-  background: linear-gradient(180deg, rgba(7, 9, 21, 0), rgba(7, 9, 21, 0.92) 22%);
+  background: linear-gradient(180deg, transparent, var(--color-surface-canvas) 22%);
 
   input {
+    @include primitives.field-base;
+
     min-width: 0;
     height: 4.35rem;
     padding: 0 1.55rem;
-    border: 1px solid rgba(255, 255, 255, 0.11);
     border-radius: var(--radius-pill);
-    outline: none;
-    color: var(--text-white);
-    background: rgba(255, 255, 255, 0.045);
+    background: var(--color-surface-glass);
     font-size: 0.96rem;
-    transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 
     &:focus {
-      border-color: rgba(157, 99, 255, 0.62);
-      background: rgba(255, 255, 255, 0.065);
-      box-shadow: 0 0 0 0.2rem rgba(157, 99, 255, 0.1);
+      border-color: var(--color-action-primary);
+      background: var(--color-surface-glass-strong);
+      box-shadow: var(--focus-ring);
     }
 
     &::placeholder {
@@ -330,18 +320,16 @@
   }
 
   button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    @include primitives.button-base;
+
     width: 4.35rem;
     height: 4.35rem;
-    border: 0;
+    min-height: 0;
     border-radius: var(--radius-full);
-    color: var(--text-white);
-    cursor: pointer;
-    background: linear-gradient(145deg, #a55eff, #7338ff);
-    box-shadow: 0 0.8rem 1.8rem rgba(116, 56, 255, 0.34);
-    transition: opacity 0.2s ease, transform 0.2s ease, filter 0.2s ease;
+    color: var(--on-primary);
+    background: var(--gradient-brand-cta);
+    box-shadow: var(--shadow-brand-primary);
+    padding: 0;
 
     .material-symbols-outlined {
       font-size: 1.75rem;
@@ -466,9 +454,9 @@
 
     .text {
       padding: 0.65rem 0.8rem;
-      border: 1px solid rgba(134, 111, 255, 0.22);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 22%, transparent);
       border-radius: 0.9rem 0.9rem 0.9rem 0.25rem;
-      background: rgba(34, 31, 69, 0.82);
+      background: var(--color-surface-glass-strong);
     }
   }
 
@@ -484,9 +472,9 @@
 
     .text {
       padding: 0.7rem 0.9rem;
-      border: 1px solid rgba(180, 124, 255, 0.25);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 25%, transparent);
       border-radius: 0.9rem 0.9rem 0.25rem 0.9rem;
-      background: linear-gradient(135deg, rgba(154, 92, 255, 0.28), rgba(255, 102, 184, 0.16));
+      background: color-mix(in srgb, var(--color-action-primary) 28%, var(--color-surface-raised));
     }
   }
 

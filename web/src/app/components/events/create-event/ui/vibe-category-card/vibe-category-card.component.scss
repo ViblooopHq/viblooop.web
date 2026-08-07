@@ -1,4 +1,10 @@
 @use "../../../../../../styles/index" as *;
+@use "../../create-event-shared" as *;
+
+:host {
+  display: block;
+  min-width: 0;
+}
 
 /*
   NOTE: `.vibe-card` base rules are intentionally duplicated (in reduced form) in
@@ -10,38 +16,38 @@
 */
 
 .vibe-card {
-  background: linear-gradient(180deg, rgba(28, 26, 41, .98), rgba(20, 18, 31, .98));
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: var(--radius-md);
+  @include selectable-card-base;
+
+  background: linear-gradient(180deg, var(--color-surface-glass-strong), var(--color-surface-canvas));
   min-height: 176px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   gap: 4px;
-  cursor: pointer;
   transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
-  color: var(--color-brand-tint);
+  color: var(--color-text-primary);
   padding: 0 10px 12px;
   position: relative;
   overflow: hidden;
   text-align: center;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+  box-shadow: var(--shadow-panel);
+  width: 100%;
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(.98);
   }
 
-  &:hover {
-    border-color: rgba(136, 95, 255, .55);
-    background: linear-gradient(180deg, rgba(34, 31, 50, .98), rgba(23, 20, 35, .98));
-    box-shadow: 0 12px 32px rgba(0, 0, 0, .22);
+  &:hover:not(:disabled) {
+    border-color: color-mix(in srgb, var(--color-action-primary) 55%, transparent);
+    background: var(--color-surface-raised);
+    box-shadow: var(--shadow-floating);
   }
 
   &--selected {
     border-color: var(--color-brand-primary);
-    background: linear-gradient(180deg, rgba(36, 29, 69, .98), rgba(24, 20, 45, .98));
-    box-shadow: 0 0 0 1px rgba(var(--color-brand-primary-rgb), .45), 0 14px 34px rgba(var(--color-brand-primary-rgb), .22);
+    background: color-mix(in srgb, var(--color-action-primary) 18%, var(--color-surface-raised));
+    box-shadow: var(--shadow-brand-primary);
   }
 
   &--monochrome {
@@ -51,13 +57,12 @@
 
     .vibe-img-wrap::after {
       background:
-        linear-gradient(180deg, rgba(6, 5, 12, .12) 20%, rgba(6, 5, 12, .38) 100%),
-        linear-gradient(0deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .02));
+        linear-gradient(180deg, color-mix(in srgb, var(--color-surface-canvas) 8%, transparent) 20%, color-mix(in srgb, var(--color-surface-canvas) 42%, transparent) 100%);
     }
 
     .vibe-badge,
     .vibe-soon {
-      background: linear-gradient(135deg, #2a2a32, #f4f4f5);
+      background: linear-gradient(135deg, var(--color-surface-raised), var(--color-text-primary));
       color: var(--on-background);
     }
 
@@ -65,6 +70,21 @@
       .material-symbols-outlined {
         color: var(--on-background);
       }
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    border-color: var(--color-border-ghost);
+    background: var(--color-surface-section);
+    box-shadow: var(--shadow-panel);
+
+    .vibe-label {
+      color: var(--color-text-secondary);
+    }
+
+    .vibe-tags {
+      color: var(--color-text-muted);
     }
   }
 }
@@ -82,11 +102,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .28);
+  box-shadow: var(--shadow-floating);
 
   .material-symbols-outlined {
     font-size: var(--font-size-sm);
-    color: white;
+    color: var(--color-text-on-primary);
   }
 }
 
@@ -106,8 +126,7 @@
     inset: 0;
     border-radius: var(--radius-md) var(--radius-md) 0 0;
     background:
-      linear-gradient(180deg, rgba(6, 5, 12, .02) 20%, rgba(6, 5, 12, .26) 100%),
-      linear-gradient(0deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .04));
+      linear-gradient(180deg, color-mix(in srgb, var(--color-surface-canvas) 4%, transparent) 20%, color-mix(in srgb, var(--color-surface-canvas) 18%, transparent) 100%);
     pointer-events: none;
   }
 }
@@ -124,7 +143,7 @@
   width: 100%;
   height: 100%;
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-  background: linear-gradient(135deg, #2d1b69 0%, #4c2a8a 100%);
+  background: linear-gradient(135deg, var(--color-action-primary), var(--color-surface-raised));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,7 +151,7 @@
 
 .vibe-img-icon {
   font-size: var(--font-size-4xl);
-  color: rgba(var(--color-brand-tint-rgb), .6);
+  color: color-mix(in srgb, var(--color-brand-tint) 60%, transparent);
 }
 
 /* Icon badge overlapping image bottom */
@@ -149,28 +168,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid #171421;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .32);
+  border: 3px solid var(--color-surface-canvas);
+  box-shadow: var(--shadow-floating);
 
   .material-symbols-outlined {
     font-size: var(--font-size-lg);
-    color: white;
+    color: var(--color-text-on-primary);
   }
 
   &--green {
-    background: linear-gradient(135deg, #1ea66a, #52d68f);
+    background: linear-gradient(135deg, var(--color-success), var(--color-success-soft));
   }
 
   &--blue {
-    background: linear-gradient(135deg, #2387f4, #65b7ff);
+    background: linear-gradient(135deg, var(--color-info), var(--color-accent));
   }
 
   &--orange {
-    background: linear-gradient(135deg, #d86d16, #ffa43a);
+    background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dim));
   }
 
   &--pink {
-    background: linear-gradient(135deg, #e1367f, #ff6da9);
+    background: linear-gradient(135deg, var(--color-danger), var(--tertiary));
   }
 }
 
@@ -182,19 +201,19 @@
   min-width: 40px;
   padding: 4px 7px;
   border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, #ff7a1a, #ffad32);
-  color: var(--text-white);
+  background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dim));
+  color: var(--color-text-on-primary);
   font-size: var(--font-size-xs);
   font-weight: 800;
   line-height: 1;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, .26);
+  box-shadow: var(--shadow-floating);
 }
 
 .vibe-label {
   font-weight: 700;
   font-size: var(--font-size-sm);
   line-height: 18px;
-  color: var(--color-brand-tint);
+  color: var(--color-text-primary);
   margin-top: 0;
   text-align: center;
 }
@@ -202,7 +221,7 @@
 .vibe-tags {
   max-width: 128px;
   font-size: var(--font-size-xs);
-  color: var(--text-muted-strong);
+  color: var(--color-text-muted);
   text-align: center;
   line-height: 15px;
   display: -webkit-box;

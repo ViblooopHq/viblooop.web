@@ -7,12 +7,12 @@
   min-height: 330px;
   padding: clamp(1.5rem, 4vw, 3rem);
   overflow: hidden;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-2xl);
   background:
-    linear-gradient(90deg, rgba(5, 9, 23, 0.98), rgba(5, 9, 23, 0.82), rgba(5, 9, 23, 0.98)),
+    linear-gradient(90deg, var(--color-overlay-scrim), var(--color-overlay-soft), var(--color-overlay-scrim)),
     var(--profile-banner) center/cover;
-  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.38);
+  box-shadow: var(--shadow-profile-card);
 }
 
 .vl-user-profile__avatar-wrap {
@@ -28,7 +28,7 @@
   object-fit: cover;
   border: 3px solid var(--color-brand-primary);
   border-radius: var(--radius-pill);
-  box-shadow: 0 0 0 8px rgba(124, 58, 237, 0.08), 0 18px 48px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--shadow-profile-avatar);
   background: var(--on-background);
 }
 
@@ -40,12 +40,6 @@
   place-items: center;
   width: 3.6rem;
   height: 3.6rem;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-primary));
-  color: var(--text-white);
-  box-shadow: 0 12px 28px rgba(91, 33, 255, 0.38);
-  cursor: pointer;
 
   .material-symbols-outlined {
     font-size: 1.5rem;
@@ -55,17 +49,16 @@
 .vl-user-profile__identity {
   min-width: 0;
 
+  .vl-title-lg {
+    color: var(--on-primary);
+  }
+
   h1 {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.48rem;
     margin: 0;
-    font-size: clamp(1.55rem, 3vw, 2.15rem);
-    line-height: 1.08;
-    font-weight: 700;
-    color: var(--text-white);
-    letter-spacing: 0;
   }
 }
 
@@ -73,11 +66,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.22rem;
-  color: rgb(0, 149, 246);
+  color: var(--color-info);
   font-size: clamp(0.8rem, 1.1vw, 1rem);
   font-weight: 400;
   line-height: 1;
-  text-shadow: 0 0 18px rgba(0, 149, 246, 0.32);
+  text-shadow: 0 0 18px color-mix(in srgb, var(--color-info) 32%, transparent);
 
   .material-symbols-outlined {
     font-size: clamp(1.15rem, 1.55vw, 1.45rem);
@@ -89,7 +82,7 @@
   margin: 0.6rem 0 0;
   font-size: clamp(0.98rem, 1.55vw, 1.16rem);
   font-weight: 700;
-  color: #a8b0d4;
+  color: color-mix(in srgb, var(--on-primary) 78%, transparent);
 }
 
 .vl-user-profile__bio {
@@ -97,7 +90,7 @@
   margin: 1rem 0 0;
   font-size: clamp(0.98rem, 1.55vw, 1.16rem);
   line-height: 1.55;
-  color: #d8dcef;
+  color: color-mix(in srgb, var(--on-primary) 86%, transparent);
 }
 
 .vl-user-profile__vibes {
@@ -113,8 +106,8 @@
   gap: 0.85rem;
   margin: clamp(1rem, 2.4vw, 1.35rem) calc(clamp(1.5rem, 4vw, 3rem) * -1) calc(clamp(1.5rem, 4vw, 3rem) * -1);
   padding: 0.95rem clamp(1rem, 2.4vw, 1.4rem) 1rem;
-  border-top: 1px solid rgba(148, 163, 184, 0.13);
-  background: rgba(5, 9, 23, 0.36);
+  border-top: 1px solid var(--color-border-ghost);
+  background: var(--color-overlay-soft);
 }
 
 .vl-user-profile__photo-strip-header {
@@ -123,9 +116,6 @@
     align-items: center;
     gap: 0.45rem;
     margin: 0;
-    color: var(--text-white);
-    font-size: clamp(0.9rem, 1.5vw, 1.05rem);
-    font-weight: 900;
 
     > .material-symbols-outlined {
       display: grid;
@@ -133,13 +123,13 @@
       width: 1.75rem;
       height: 1.75rem;
       border-radius: var(--radius-sm);
-      background: rgba(88, 28, 135, 0.45);
-      color: var(--color-brand-tint);
+      background: color-mix(in srgb, var(--color-action-primary) 25%, var(--color-surface-raised));
+      color: var(--color-action-primary);
       font-size: 1rem;
     }
 
     span:not(.material-symbols-outlined) {
-      color: var(--text-subtle);
+      color: var(--color-text-muted);
     }
   }
 }
@@ -157,9 +147,9 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
-  border: 1px solid rgba(98, 116, 161, 0.42);
+  border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
-  background: var(--surface-dark-4);
+  background: var(--color-surface-canvas);
   cursor: pointer;
 
   &:focus-visible {
@@ -179,8 +169,8 @@
     inset: 0;
     display: grid;
     place-items: center;
-    background: rgba(3, 6, 15, 0.62);
-    color: var(--text-white);
+    background: var(--color-overlay-scrim);
+    color: var(--color-text-on-primary);
     font-size: clamp(1.3rem, 2.4vw, 1.9rem);
     font-weight: 900;
     backdrop-filter: blur(5px);
@@ -209,14 +199,6 @@
 
     .material-symbols-outlined {
       font-size: 1.18rem;
-    }
-  }
-
-  .vl-user-profile__identity {
-    h1 {
-      font-size: 1rem;
-      font-weight: 500;
-      line-height: 1.02;
     }
   }
 
@@ -273,13 +255,6 @@
 
   .vl-user-profile__avatar-wrap {
     width: 104px;
-  }
-
-  .vl-user-profile__identity {
-    h1 {
-      font-size: 1rem;
-      font-weight: 500;
-    }
   }
 
   .vl-user-profile__handle {

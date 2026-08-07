@@ -20,14 +20,14 @@
     .verified-check {
       color: var(--color-brand-primary);
       font-size: 0.94rem;
-      filter: drop-shadow(0 0 0.7rem rgba(var(--color-brand-accent-rgb), 0.42));
+      filter: drop-shadow(0 0 0.7rem var(--color-action-primary));
     }
   }
 
   .host-heading {
     min-width: 0;
     margin: 0;
-    color: var(--text-white);
+    color: var(--color-text-primary);
     font-size: 1.08rem;
     font-weight: 900;
     line-height: 1.15;
@@ -49,11 +49,11 @@
   .host-avatar {
     width: 3.7rem;
     height: 3.7rem;
-    border: 2px solid rgba(var(--color-brand-accent-rgb), 0.68);
+    border: 2px solid color-mix(in srgb, var(--color-brand-accent) 68%, transparent);
     border-radius: var(--radius-pill);
     object-fit: cover;
     cursor: pointer;
-    box-shadow: 0 1rem 1.8rem rgba(0, 0, 0, 0.28);
+    box-shadow: var(--shadow-md);
   }
 
   .host-summary__content {
@@ -76,28 +76,28 @@
     padding: 0 0.64rem;
     font-size: 0.71rem;
     font-weight: 900;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+    box-shadow: var(--shadow-panel);
 
     i {
       font-size: 0.73rem;
     }
 
     &--new {
-      border: 1px solid rgba(var(--color-brand-accent-rgb), 0.62);
-      background: linear-gradient(135deg, rgba(88, 28, 135, 0.58), rgba(var(--color-brand-accent-rgb), 0.2));
+      border: 1px solid color-mix(in srgb, var(--color-brand-accent) 62%, transparent);
+      background: color-mix(in srgb, var(--color-action-primary) 28%, var(--color-surface-raised));
       color: var(--color-brand-tint);
     }
 
     &--verified {
-      border: 1px solid rgba(16, 185, 129, 0.24);
-      background: rgba(6, 78, 59, 0.54);
+      border: 1px solid color-mix(in srgb, var(--color-success) 24%, transparent);
+      background: color-mix(in srgb, var(--color-success) 18%, var(--color-surface-raised));
       color: var(--color-success);
     }
 
     &--rating {
-      border: 1px solid rgba(245, 158, 11, 0.34);
-      background: rgba(120, 53, 15, 0.42);
-      color: #fbbf24;
+      border: 1px solid color-mix(in srgb, var(--color-warning) 34%, transparent);
+      background: color-mix(in srgb, var(--color-warning) 18%, var(--color-surface-raised));
+      color: var(--color-warning-dim);
     }
   }
 
@@ -111,7 +111,7 @@
     grid-template-columns: 1.9rem minmax(0, 1fr);
     align-items: center;
     gap: 0.62rem;
-    color: #c7bfd8;
+    color: var(--color-text-secondary);
     font-size: 0.74rem;
     font-weight: 750;
     line-height: 1.35;
@@ -123,9 +123,9 @@
     height: 1.9rem;
     place-items: center;
     border-radius: 0.55rem;
-    background: rgba(88, 28, 135, 0.38);
+    background: color-mix(in srgb, var(--color-action-primary) 38%, transparent);
     color: var(--color-brand-tint);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    box-shadow: var(--shadow-panel);
 
     i {
       font-size: 0.85rem;

@@ -8,7 +8,7 @@
         <h2 id="event-people-drawer-heading">{{ title() }}</h2>
         <p>{{ subtitle() }}</p>
       </div>
-      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="close.emit()">
+      <button type="button" class="event-detail-drawer__close vl-icon-button" aria-label="Close drawer" (click)="close.emit()">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
       </button>
     </header>
@@ -37,11 +37,11 @@
                     Wait
                   </span>
                 } @else {
-                  <button type="button" class="event-request-action event-request-action--primary"
+                  <button type="button" class="event-request-action event-request-action--primary vl-button vl-button--primary"
                     (click)="accept.emit(request)">
                     Confirm
                   </button>
-                  <button type="button" class="event-request-action event-request-action--secondary"
+                  <button type="button" class="event-request-action event-request-action--secondary vl-button vl-button--secondary"
                     (click)="reject.emit(request)">
                     Decline
                   </button>

@@ -1,0 +1,305 @@
+/*
+ * Global UI primitives
+ *
+ * Use these classes for new or migrated UI. Feature styles may use the mixins
+ * when a global class cannot be applied because of view encapsulation.
+ */
+
+@mixin interactive-base {
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-fast);
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-4);
+  border: 0;
+  border-radius: var(--radius-md);
+  font: inherit;
+  font-weight: 700;
+  line-height: var(--line-height-normal);
+  text-decoration: none;
+  cursor: pointer;
+
+  @include interactive-base;
+}
+
+@mixin surface-base {
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+}
+
+@mixin field-base {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-section);
+  color: var(--color-text-primary);
+  font: inherit;
+  line-height: var(--line-height-normal);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+  }
+
+  &:focus {
+    border-color: var(--color-action-primary);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+}
+
+@mixin action-row($gap: var(--space-3)) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+@mixin stack($gap: var(--space-3)) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+.vl-button {
+  @include button-base;
+
+  &--primary {
+    background: linear-gradient(135deg, var(--color-action-primary), var(--color-brand-accent));
+    box-shadow: var(--shadow-brand-primary);
+    color: var(--on-primary);
+
+    &:hover {
+      box-shadow: var(--shadow-brand-glow);
+      transform: translateY(-1px);
+    }
+  }
+
+  &--secondary {
+    border: 1px solid var(--color-border-ghost);
+    background: var(--color-surface-raised);
+    color: var(--color-text-primary);
+
+    &:hover {
+      background: var(--color-surface-section);
+      border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+    }
+  }
+
+  &--tertiary {
+    min-height: auto;
+    padding: var(--space-1) 0;
+    background: transparent;
+    color: var(--color-action-primary);
+
+    &:hover {
+      color: var(--color-action-primary-hover);
+    }
+  }
+
+  &--destructive {
+    background: var(--error);
+    color: var(--on-error);
+
+    &:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+  }
+
+  &--block {
+    width: 100%;
+  }
+}
+
+/* Legacy neutral button used throughout the existing app. */
+.vl-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  background-color: var(--btn-bg);
+  box-shadow: var(--shadow-btn);
+  color: var(--btn-secondary-text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  outline: transparent;
+  transition: 0.2s ease;
+}
+
+.vl-icon-button {
+  @include button-base;
+
+  width: 2.75rem;
+  min-width: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-full);
+  background: var(--color-surface-raised);
+  color: var(--color-text-primary);
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+    color: var(--color-action-primary);
+    transform: translateY(-1px);
+  }
+}
+
+/* Compact, left-aligned action for menus and popovers. */
+.vl-menu-item {
+  @include button-base;
+
+  width: 100%;
+  min-height: 0;
+  justify-content: flex-start;
+  padding: 0.78rem 0.95rem;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-brand-tint-soft);
+  font-size: var(--font-size-sm);
+  text-align: left;
+
+  &:hover {
+    background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
+  }
+
+  i,
+  .material-symbols-outlined {
+    color: var(--color-brand-tint);
+  }
+}
+
+.vl-surface {
+  @include surface-base;
+
+  &--section {
+    background: var(--color-surface-section);
+  }
+
+  &--glass {
+    background: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
+    backdrop-filter: blur(16px);
+  }
+
+  &--interactive {
+    @include interactive-base;
+
+    cursor: pointer;
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    &[aria-pressed='true'],
+    &.is-selected {
+      border-color: var(--color-action-primary);
+      box-shadow: var(--focus-ring), var(--shadow-brand-glow);
+    }
+  }
+}
+
+.vl-field {
+  @include field-base;
+
+  &--invalid,
+  &[aria-invalid='true'] {
+    border-color: var(--error);
+  }
+}
+
+.vl-field-label {
+  display: inline-block;
+  margin-bottom: var(--space-2);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.vl-chip,
+.vl-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 2rem;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: var(--line-height-normal);
+}
+
+.vl-chip {
+  @include interactive-base;
+
+  border-color: var(--color-border-ghost);
+  background: var(--color-surface-section);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+    color: var(--color-text-primary);
+  }
+
+  &[aria-pressed='true'],
+  &.is-selected {
+    border-color: var(--color-action-primary);
+    background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
+    color: var(--color-action-primary);
+  }
+}
+
+.vl-status {
+  background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
+  color: var(--color-action-primary);
+
+  &--success {
+    background: color-mix(in srgb, var(--color-success) 16%, transparent);
+    color: var(--color-success);
+  }
+
+  &--warning {
+    background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+    color: var(--color-warning);
+  }
+
+  &--error {
+    background: color-mix(in srgb, var(--error) 16%, transparent);
+    color: var(--error);
+  }
+}

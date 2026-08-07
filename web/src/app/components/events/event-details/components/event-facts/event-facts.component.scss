@@ -14,7 +14,7 @@
     grid-template-columns: 1.35rem minmax(0, 1fr);
     align-items: center;
     column-gap: 0.65rem;
-    color: #d9d3e8;
+    color: var(--color-text-secondary);
     font-size: 0.92rem;
     line-height: 1.35;
 
@@ -32,11 +32,11 @@
     }
 
     strong {
-      color: var(--text-white);
+      color: var(--color-text-primary);
     }
 
     .dot {
-      color: #7f7798;
+      color: var(--color-text-muted);
       margin: 0 0.25rem;
     }
   }

@@ -74,7 +74,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em; // tracking-widest
   font-weight: 700; // font-bold
-  color: rgba(var(--on-surface-variant-rgb), 0.6); // text-on-surface-variant/60
+  color: var(--color-text-muted);
   font-family: var(--font-ui);
 
   &__link {
@@ -108,8 +108,8 @@
   overflow: hidden; // Keeps glows contained
 
   // Glassmorphism base
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-ghost);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 
@@ -132,13 +132,13 @@
     &--primary {
       top: -5rem; // -top-20
       right: -5rem; // -right-20
-      background-color: rgba(var(--primary-rgb), 0.1);
+      background-color: color-mix(in srgb, var(--color-action-primary) 10%, transparent);
     }
 
     &--secondary {
       bottom: -5rem; // -bottom-20
       left: -5rem; // -left-20
-      background-color: rgba(var(--secondary-rgb), 0.1);
+      background-color: color-mix(in srgb, var(--color-action-secondary) 10%, transparent);
     }
   }
 
@@ -152,7 +152,7 @@
     border-radius: 2.5rem;
     overflow: hidden;
     transform: rotate(3deg);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); // shadow-2xl
+    box-shadow: var(--shadow-overlay);
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
@@ -174,7 +174,7 @@
   &__img-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(var(--bg-surface-rgb), 0.6), transparent);
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-surface-canvas) 60%, transparent), transparent);
   }
 
   // --- Banner Content ---
@@ -235,21 +235,21 @@
 
     // Modifiers matching TS data
     &--primary {
-      background-color: rgba(var(--primary-rgb), 0.1);
-      border: 1px solid rgba(var(--primary-rgb), 0.2);
-      color: var(--primary);
+      background-color: color-mix(in srgb, var(--color-action-primary) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 20%, transparent);
+      color: var(--color-action-primary);
     }
 
     &--secondary {
-      background-color: rgba(var(--secondary-rgb), 0.1);
-      border: 1px solid rgba(var(--secondary-rgb), 0.2);
-      color: var(--secondary);
+      background-color: color-mix(in srgb, var(--color-action-secondary) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-action-secondary) 20%, transparent);
+      color: var(--color-action-secondary);
     }
 
     &--tertiary {
-      background-color: rgba(var(--tertiary-rgb), 0.1);
-      border: 1px solid rgba(var(--tertiary-rgb), 0.2);
-      color: var(--tertiary);
+      background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+      color: var(--color-accent);
     }
   }
 }
@@ -283,13 +283,13 @@
   justify-content: center;
   padding: 0.5rem; // p-2
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border-ghost);
+  background: var(--color-surface-glass);
   color: var(--on-surface);
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1); // hover:bg-white/10
+    background-color: var(--color-surface-glass-strong);
   }
 }

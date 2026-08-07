@@ -6,7 +6,7 @@
         <span class="material-symbols-outlined" translate="no">chevron_left</span>
       </button>
 
-      <h1>Edit Profile</h1>
+      <h1 class="vl-title-md">Edit Profile</h1>
     </header>
 
     <section class="vl-edit-profile__photo">
@@ -36,7 +36,7 @@
         </span>
 
         @if (!isVerified) {
-          <button class="vl-edit-profile__verification-action" type="button" (click)="verifySelfie()">
+          <button class="vl-button vl-button--primary vl-edit-profile__verification-action" type="button" (click)="verifySelfie()">
             Verify Selfie
             <span class="material-symbols-outlined" translate="no">chevron_right</span>
           </button>

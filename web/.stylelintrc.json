@@ -20,13 +20,51 @@
       {
         "message": "Hardcoded brand-purple hex/rgb detected — use var(--color-brand-primary), var(--color-brand-accent), var(--color-brand-tint), var(--color-brand-tint-soft) (or their -rgb variants) instead. See styles.scss."
       }
+    ],
+    "color-no-hex": [
+      true,
+      {
+        "severity": "error",
+        "message": "Raw component color detected — use a semantic var(--color-...) token from styles.scss."
+      }
+    ],
+    "function-disallowed-list": [
+      ["rgb", "rgba"],
+      {
+        "severity": "error",
+        "message": "Raw rgb/rgba component color detected — use a semantic var(--color-...) token or color-mix() expression."
+      }
     ]
   },
   "overrides": [
     {
       "files": ["src/styles.scss"],
       "rules": {
-        "declaration-property-value-disallowed-list": null
+        "declaration-property-value-disallowed-list": null,
+        "color-no-hex": null,
+        "function-disallowed-list": null
+      }
+    },
+    {
+      "files": [
+        "src/app/components/home/**/*.scss",
+        "src/app/components/events/my-events/**/*.scss"
+      ],
+      "rules": {
+        "color-no-hex": [
+          true,
+          {
+            "severity": "warning",
+            "message": "Raw component color detected in a deferred screen — migrate it when Home or My Events work resumes."
+          }
+        ],
+        "function-disallowed-list": [
+          ["rgb", "rgba"],
+          {
+            "severity": "warning",
+            "message": "Raw rgb/rgba component color detected in a deferred screen — migrate it when Home or My Events work resumes."
+          }
+        ]
       }
     }
   ]

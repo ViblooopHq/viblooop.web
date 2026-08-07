@@ -2,7 +2,7 @@
 
 .safety-agreement-card-v2 {
   background: var(--surface-dark-4);
-  border: 1px solid rgba(var(--color-brand-primary-rgb), 0.1);
+  border: 1px solid color-mix(in srgb, var(--color-action-primary) 10%, transparent);
   border-radius: var(--radius-lg);
   padding: 16px;
   margin-bottom: 24px;
@@ -23,9 +23,9 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      .agreement-title { font-size: var(--font-size-md); font-weight: 700; color: white; }
+      .agreement-title { font-size: var(--font-size-md); font-weight: 700; color: var(--color-text-primary); }
       .required-pill {
-        background: rgba(var(--color-brand-primary-rgb), 0.15);
+        background: color-mix(in srgb, var(--color-action-primary) 15%, transparent);
         color: var(--color-brand-tint);
         font-size: var(--font-size-xs);
         font-weight: 700;
@@ -36,7 +36,7 @@
     }
     .agreement-subtitle {
       font-size: var(--font-size-xs);
-      color: var(--text-muted-strong);
+      color: var(--color-text-muted);
       margin: 4px 0 0;
       line-height: 1.5;
     }
@@ -44,8 +44,8 @@
 }
 
 .agreement-items-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-lg);
   padding: 4px 0;
   margin-bottom: 20px;
@@ -59,7 +59,7 @@
   width: 100%;
   padding: 10px 16px;
   border: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--color-border-ghost);
   background: transparent;
   color: inherit;
   font: inherit;
@@ -78,15 +78,15 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--color-surface-glass);
 
     .material-symbols-outlined { font-size: var(--font-size-md); }
 
-    &.heart-icon { color: var(--tertiary); background: rgba(255, 77, 141, 0.1); }
-    &.leaf-icon { color: var(--color-success); background: rgba(0, 210, 106, 0.1); }
-    &.shield-item-icon { color: var(--color-brand-primary); background: rgba(var(--color-brand-primary-rgb), 0.1); }
-    &.groups-icon { color: var(--color-info); background: rgba(0, 194, 255, 0.1); }
-    &.gavel-icon { color: var(--color-warning); background: rgba(255, 157, 0, 0.1); }
+    &.heart-icon { color: var(--tertiary); background: color-mix(in srgb, var(--tertiary) 10%, transparent); }
+    &.leaf-icon { color: var(--color-success); background: color-mix(in srgb, var(--color-success) 10%, transparent); }
+    &.shield-item-icon { color: var(--color-brand-primary); background: color-mix(in srgb, var(--color-action-primary) 10%, transparent); }
+    &.groups-icon { color: var(--color-info); background: color-mix(in srgb, var(--color-info) 10%, transparent); }
+    &.gavel-icon { color: var(--color-warning); background: color-mix(in srgb, var(--color-warning) 10%, transparent); }
   }
 
   .item-text {
@@ -99,7 +99,7 @@
 
   .expand-chevron {
     margin-left: auto;
-    color: var(--text-muted-strong);
+    color: var(--color-text-muted);
     font-size: var(--font-size-lg);
     transition: transform 0.3s;
     &.rotated { transform: rotate(180deg); }
@@ -114,16 +114,16 @@
   width: 100%;
   padding: 10px;
   border: 0;
-  background: rgba(var(--color-brand-primary-rgb), 0.03);
+  background: color-mix(in srgb, var(--color-action-primary) 3%, transparent);
   cursor: pointer;
-  &:hover { background: rgba(var(--color-brand-primary-rgb), 0.06); }
+  &:hover { background: color-mix(in srgb, var(--color-action-primary) 6%, transparent); }
   span { font-size: var(--font-size-xs); font-weight: 600; color: var(--color-brand-tint); }
   .trigger-chevron { font-size: var(--font-size-sm); color: var(--color-brand-primary); }
 }
 
 .agreement-checkbox-box {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-lg);
   padding: 16px;
   display: flex;
@@ -132,8 +132,8 @@
   margin-bottom: 12px;
 
   .checkbox-text-wrap {
-    .checkbox-main { font-size: var(--font-size-xs); font-weight: 600; color: white; margin: 0; }
-    .checkbox-sub { font-size: var(--font-size-xs); color: var(--text-muted-strong); margin: 4px 0 0; }
+    .checkbox-main { font-size: var(--font-size-xs); font-weight: 600; color: var(--color-text-primary); margin: 0; }
+    .checkbox-sub { font-size: var(--font-size-xs); color: var(--color-text-muted); margin: 4px 0 0; }
   }
 }
 
@@ -148,16 +148,16 @@
     position: absolute;
     inset: 0;
     background: var(--surface-dark-1);
-    border: 2px solid rgba(255, 255, 255, 0.15);
+    border: 2px solid var(--color-border-strong);
     border-radius: var(--radius-xs);
-    transition: all 0.2s;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
   }
   input:checked + .checkmark-v2 {
     background: var(--color-brand-primary);
     border-color: var(--color-brand-primary);
     &:after {
       content: "✓";
-      color: white;
+      color: var(--color-text-on-primary);
       position: absolute;
       left: 50%;
       top: 45%;
@@ -169,8 +169,8 @@
 }
 
 .agreement-footer-banner {
-  background: rgba(var(--color-brand-primary-rgb), 0.05);
-  border: 1px solid rgba(var(--color-brand-primary-rgb), 0.1);
+  background: color-mix(in srgb, var(--color-action-primary) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-action-primary) 10%, transparent);
   border-radius: var(--radius-md);
   padding: 10px 14px;
   display: flex;

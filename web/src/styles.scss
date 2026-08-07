@@ -9,6 +9,7 @@
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @theme {
+  /* Tailwind consumes the same semantic tokens used by component SCSS. */
   --color-primary: var(--primary);
   --color-primary-fixed: var(--primary-fixed);
   --color-primary-dim: var(--primary-dim);
@@ -27,10 +28,17 @@
   --color-outline-variant: var(--outline-variant);
   --color-error: var(--error);
   --color-on-error: var(--on-error);
+  --color-success: var(--color-status-success);
+  --color-warning: var(--color-status-warning);
+  --color-info: var(--color-status-info);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
   --font-inter: "Inter", "sans-serif";
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 .cdk-overlay-container,
 .cdk-global-overlay-wrapper,
@@ -40,7 +48,14 @@
 
 
 :root {
-  /* Design System Variables (Light Theme defaults) */
+  /*
+   * Design foundations
+   *
+   * These are the canonical semantic tokens for both component SCSS and
+   * Tailwind. Existing aliases remain below while screens are migrated.
+   */
+
+  /* Light theme: neutral canvas, violet action, azure support, magenta accent. */
   --primary: #8a2be2;
   --primary-rgb: 138, 43, 226;
   --secondary-rgb: 0, 123, 255;
@@ -69,12 +84,37 @@
   --error: #ef4444;
   --on-error: #ffffff;
 
+  --color-action-primary: var(--primary);
+  --color-action-primary-rgb: var(--primary-rgb);
+  --color-action-primary-hover: var(--primary-dim);
+  --color-action-secondary: var(--secondary);
+  --color-action-secondary-rgb: var(--secondary-rgb);
+  --color-accent: var(--tertiary);
+  --color-accent-rgb: var(--tertiary-rgb);
+  --color-text-primary: var(--on-surface);
+  --color-text-secondary: var(--on-surface-variant);
+  --color-text-muted: #6b7280;
+  --color-surface-canvas: var(--bg-surface);
+  --color-surface-section: var(--bg-surface-container);
+  --color-surface-raised: var(--bg-surface-container-highest);
+  --color-border-ghost: rgba(0, 0, 0, 0.15);
+  --color-border-strong: rgba(0, 0, 0, 0.28);
+  --color-surface-glass: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
+  --color-surface-glass-strong: color-mix(in srgb, var(--color-surface-raised) 90%, transparent);
+  --color-overlay-scrim: rgba(17, 24, 39, 0.72);
+  --color-overlay-soft: rgba(17, 24, 39, 0.48);
+  --color-danger-surface: #fff1f2;
+  --color-danger-border: #fda4af;
+
   /* Backgrounds */
   --bg-body: var(--bg-surface-container);
   --bg-card: var(--bg-surface);
   --btn-bg: #FDFCFC;
 
-  --font: "Poppins", sans-serif;
+  /* Inter is the application typeface. --font is retained for legacy SCSS. */
+  --font-ui: "Inter", sans-serif;
+  --font-heading: var(--font-ui);
+  --font: var(--font-ui);
 
   --card-hover-bg: rgba(0, 0, 0, 0.1);
 
@@ -89,19 +129,19 @@
   --event-card-bg: #FFFFFF;
   --event-details-card-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 
-  /* Buttons */
-  --btn-primary-bg: var(--primary);
+  /* Component recipes */
+  --btn-primary-bg: var(--color-action-primary);
   --btn-primary-text: var(--on-primary);
-  --btn-primary-hover: var(--primary-dim);
+  --btn-primary-hover: var(--color-action-primary-hover);
 
   --btn-secondary-bg: var(--bg-surface-container-highest);
   --btn-secondary-text: var(--on-surface);
   --btn-secondary-hover: #cbd5e1;
 
   /* Text */
-  --text-heading: var(--on-surface);
-  --text-body: var(--on-surface-variant);
-  --text-muted: #6b7280;
+  --text-heading: var(--color-text-primary);
+  --text-body: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
   --text-green: #2CFF05;
   --text-white: #ffffff;
 
@@ -113,12 +153,17 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-floating: 0 16px 40px rgba(0, 0, 0, 0.18);
+  --shadow-overlay: 0 30px 90px rgba(0, 0, 0, 0.28);
 
   --hover-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
 
-  // Common
-  --font-body: 'Josefin Sans', sans-serif;
-  --transition: 0.3s ease;
+  --font-body: var(--font-ui);
+  --transition-fast: 160ms ease;
+  --transition-base: 240ms ease;
+  --transition-slow: 360ms ease;
+  --transition: var(--transition-base);
+  --focus-ring: 0 0 0 3px rgba(var(--color-action-primary-rgb), 0.28);
 
   // Light Theme
   --footer-bg: #111827;
@@ -139,9 +184,12 @@
   --bg-tag-color: rgba(124, 58, 237, 0.1);
   --tag-text-color: #7C3AED;
 
-  /* Consolidated brand palette */
-  --color-brand-primary: #7d52ff;
-  --color-brand-primary-rgb: 125, 82, 255;
+  /*
+   * Legacy brand aliases. New work should use --color-action-primary and
+   * --color-accent; these names remain stable until every screen migrates.
+   */
+  --color-brand-primary: var(--color-action-primary);
+  --color-brand-primary-rgb: var(--color-action-primary-rgb);
   --color-brand-accent: #a855f7;
   --color-brand-accent-rgb: 168, 85, 247;
   --color-brand-tint: #cbbeff;
@@ -150,7 +198,7 @@
   --shadow-brand-glow: 0 0 18px rgba(125, 82, 255, 0.3);
   --gradient-brand-cta: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-accent));
 
-  /* Radius scale */
+  /* Layout scale */
   --radius-xs: 4px;
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -168,12 +216,10 @@
   --space-5: 20px;
   --space-6: 24px;
   --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
 
-  /* Font family tokens */
-  --font-heading: "Poppins", sans-serif;
-  --font-ui: "Inter", sans-serif;
-
-  /* Font size scale (CSS custom properties — usable in any component without @use) */
+  /* Type scale */
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-md: 1rem;
@@ -182,6 +228,9 @@
   --font-size-2xl: 1.5rem;
   --font-size-3xl: 2rem;
   --font-size-4xl: 2.5rem;
+  --line-height-tight: 1.15;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.6;
 
   /* Dark canvas surfaces (used in create-event, user-profile, chat — light theme shows as light equivalents) */
   --surface-dark-1: #f3f4f6;
@@ -190,15 +239,18 @@
   --surface-dark-4: #f9fafb;
 
   /* Status / semantic colors */
-  --color-success: #22c55e;
+  --color-status-success: #22c55e;
+  --color-success: var(--color-status-success);
   --color-success-dim: #4ade80;
   --color-success-soft: #86efac;
   --color-success-tint: #66f09a;
-  --color-warning: #f59e0b;
+  --color-status-warning: #f59e0b;
+  --color-warning: var(--color-status-warning);
   --color-warning-dim: #fbbf24;
   --color-error-soft: #fee2e2;
   --color-error-border: #fca5a5;
-  --color-info: #4cc9f0;
+  --color-status-info: #4cc9f0;
+  --color-info: var(--color-status-info);
   --color-pink: #f472b6;
   --color-star: #f59e0b;
 
@@ -217,6 +269,7 @@
   --color-linkedin: #0a66c2;
   --color-youtube: #ff0033;
   --color-google: #ea4335;
+  --gradient-instagram: radial-gradient(circle at 30% 105%, #fdf497 0 14%, #fd5949 36%, #d6249f 62%, #285aeb 100%);
 
   /* Extended shadow tokens */
   --shadow-btn: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
@@ -229,7 +282,7 @@
 }
 
 [data-theme='dark'] {
-  /* Design System Variables (Deep Dark Canvas) */
+  /* Dark theme: the Neon Pulse production canvas. */
   --primary: #bd9dff;
   --primary-rgb: 189, 157, 255;
   --secondary-rgb: 52, 181, 250;
@@ -257,6 +310,28 @@
   --error: #ff4d4d;
   --on-error: #ffffff;
 
+  --color-action-primary: var(--primary);
+  --color-action-primary-rgb: var(--primary-rgb);
+  --color-action-primary-hover: var(--primary-dim);
+  --color-action-secondary: var(--secondary);
+  --color-action-secondary-rgb: var(--secondary-rgb);
+  --color-accent: var(--tertiary);
+  --color-accent-rgb: var(--tertiary-rgb);
+  --color-text-primary: var(--on-surface);
+  --color-text-secondary: var(--on-surface-variant);
+  --color-text-muted: #94a3b8;
+  --color-surface-canvas: var(--bg-surface);
+  --color-surface-section: var(--bg-surface-container);
+  --color-surface-raised: var(--bg-surface-container-highest);
+  --color-border-ghost: rgba(255, 255, 255, 0.15);
+  --color-border-strong: rgba(255, 255, 255, 0.28);
+  --color-surface-glass: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
+  --color-surface-glass-strong: color-mix(in srgb, var(--color-surface-raised) 90%, transparent);
+  --color-overlay-scrim: rgba(3, 6, 15, 0.72);
+  --color-overlay-soft: rgba(3, 6, 15, 0.48);
+  --color-danger-surface: #4c111d;
+  --color-danger-border: #fb7185;
+
   /* Backgrounds */
   --bg-body: var(--bg-surface-container);
   --bg-card: var(--bg-surface-container-highest);
@@ -276,18 +351,18 @@
   --event-card-bg: #06080b;
 
   /* Buttons */
-  --btn-primary-bg: var(--primary);
+  --btn-primary-bg: var(--color-action-primary);
   --btn-primary-text: var(--on-primary);
-  --btn-primary-hover: var(--primary-dim);
+  --btn-primary-hover: var(--color-action-primary-hover);
 
   --btn-secondary-bg: var(--bg-surface-container-highest);
   --btn-secondary-text: var(--on-surface);
   --btn-secondary-hover: #475569;
 
   /* Text */
-  --text-heading: var(--on-surface);
-  --text-body: var(--on-surface-variant);
-  --text-muted: #94a3b8;
+  --text-heading: var(--color-text-primary);
+  --text-body: var(--color-text-secondary);
+  --text-muted: var(--color-text-muted);
 
   /* Borders */
   --border-default: var(--surface-variant);
@@ -320,7 +395,8 @@
   --surface-dark-4: #0f0d17;
 
   /* Status colors — adjusted for dark backgrounds */
-  --color-success: #4ade80;
+  --color-status-success: #4ade80;
+  --color-success: var(--color-status-success);
   --color-success-soft: #86efac;
   --color-success-tint: #66f09a;
 
@@ -330,33 +406,35 @@
   --text-muted-strong: #8888a0;
   --text-subtle: #aeb3cf;
 
-  /* Font family tokens (same across themes) */
-  --font-heading: "Poppins", sans-serif;
-  --font-ui: "Inter", sans-serif;
+  --color-brand-primary: var(--color-action-primary);
+  --color-brand-primary-rgb: var(--color-action-primary-rgb);
 
   /* Shadow tokens — slightly stronger in dark mode */
   --shadow-profile-card: 0 28px 80px rgba(0, 0, 0, 0.6);
+  --shadow-floating: 0 16px 40px rgba(0, 0, 0, 0.38);
+  --shadow-overlay: 0 30px 90px rgba(0, 0, 0, 0.75);
   --shadow-profile-avatar: 0 0 0 8px rgba(189, 157, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.65);
   --shadow-modal: 0 30px 90px rgba(0, 0, 0, 0.75);
   --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 64px rgba(0, 0, 0, 0.45);
 }
 
 * {
-  // margin: 0;
-  // padding: 0;
   box-sizing: border-box;
   scroll-behavior: smooth;
-  // font-family: "Montserrat", sans-serif;
-  font-family: var(--font);
 }
 
 body {
   color: var(--text-heading);
-  line-height: 1.6;
+  line-height: var(--line-height-relaxed);
   font-size: var(--font-size-md);
   background-color: var(--bg-color);
-  transition: 0.3s cubic-bezier(.02, .34, .95, .8);
+  transition: background-color var(--transition-base), color var(--transition-base);
   font-family: var(--font-ui);
+}
+
+:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .vl-section-top-padding {
@@ -376,26 +454,6 @@ body {
     border-radius: var(--radius-2xl);
     cursor: context-menu;
   }
-}
-
-.vl-btn {
-  padding: 0.5rem 1rem;
-  background-color: var(--btn-bg);
-
-  color: var(--btn-secondary-text);
-  font-size: 0.8rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-  outline: transparent;
-  box-shadow: var(--shadow-btn);
-
-  transition: 0.2s ease;
-
-  // &:hover {
-  //   transform: translateY(-4px);
-  // }
 }
 
 ul {
@@ -426,6 +484,7 @@ h4 {
   color: var(--text-heading);
   font-weight: 700;
   margin-bottom: 0.5rem;
+  font-family: var(--font-heading);
 }
 
 h1 {
@@ -529,4 +588,58 @@ img[ngSrc].blur-up {
 img[ngSrc].blur-up[data-loaded="true"] {
   filter: blur(0);
   transform: scale(1);
+}
+
+/* Angular Material system-token bridge. The prebuilt theme supplies component
+ * structure; these semantic mappings keep its controls aligned with Viblooop. */
+:root {
+  --mat-sys-primary: var(--color-action-primary);
+  --mat-sys-on-primary: var(--on-primary);
+  --mat-sys-primary-container: color-mix(in srgb, var(--color-action-primary) 18%, var(--color-surface-raised));
+  --mat-sys-on-primary-container: var(--color-text-primary);
+  --mat-sys-secondary: var(--color-action-secondary);
+  --mat-sys-on-secondary: var(--on-primary);
+  --mat-sys-secondary-container: color-mix(in srgb, var(--color-action-secondary) 16%, var(--color-surface-raised));
+  --mat-sys-on-secondary-container: var(--color-text-primary);
+  --mat-sys-tertiary: var(--color-accent);
+  --mat-sys-on-tertiary: var(--on-primary);
+  --mat-sys-tertiary-container: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface-raised));
+  --mat-sys-on-tertiary-container: var(--color-text-primary);
+  --mat-sys-error: var(--error);
+  --mat-sys-on-error: var(--on-error);
+  --mat-sys-error-container: var(--color-danger-surface);
+  --mat-sys-on-error-container: var(--error);
+  --mat-sys-background: var(--color-surface-canvas);
+  --mat-sys-on-background: var(--color-text-primary);
+  --mat-sys-surface: var(--color-surface-canvas);
+  --mat-sys-on-surface: var(--color-text-primary);
+  --mat-sys-surface-variant: var(--color-surface-raised);
+  --mat-sys-on-surface-variant: var(--color-text-secondary);
+  --mat-sys-surface-dim: var(--color-surface-section);
+  --mat-sys-surface-bright: var(--color-surface-raised);
+  --mat-sys-surface-container-lowest: var(--color-surface-canvas);
+  --mat-sys-surface-container-low: var(--color-surface-section);
+  --mat-sys-surface-container: var(--color-surface-section);
+  --mat-sys-surface-container-high: var(--color-surface-raised);
+  --mat-sys-surface-container-highest: var(--color-surface-raised);
+  --mat-sys-surface-tint: var(--color-action-primary);
+  --mat-sys-outline: var(--color-border-strong);
+  --mat-sys-outline-variant: var(--color-border-ghost);
+  --mat-sys-inverse-surface: var(--color-text-primary);
+  --mat-sys-inverse-on-surface: var(--color-surface-canvas);
+  --mat-sys-inverse-primary: var(--color-brand-tint);
+  --mat-sys-corner-extra-small: var(--radius-xs);
+  --mat-sys-corner-small: var(--radius-sm);
+  --mat-sys-corner-medium: var(--radius-md);
+  --mat-sys-corner-large: var(--radius-lg);
+  --mat-sys-corner-extra-large: var(--radius-xl);
+  --mat-sys-body-large-font: var(--font-ui);
+  --mat-sys-body-medium-font: var(--font-ui);
+  --mat-sys-body-small-font: var(--font-ui);
+  --mat-sys-label-large-font: var(--font-ui);
+  --mat-sys-label-medium-font: var(--font-ui);
+  --mat-sys-label-small-font: var(--font-ui);
+  --mat-sys-headline-large-font: var(--font-heading);
+  --mat-sys-headline-medium-font: var(--font-heading);
+  --mat-sys-headline-small-font: var(--font-heading);
 }

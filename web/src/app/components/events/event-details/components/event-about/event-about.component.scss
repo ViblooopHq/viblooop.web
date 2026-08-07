@@ -10,7 +10,7 @@
   p {
     max-width: 52rem;
     margin: 0 0 1.1rem;
-    color: #c7bfd8;
+    color: var(--color-text-secondary);
     font-size: 0.98rem;
     line-height: 1.65;
     white-space: pre-wrap;
@@ -26,7 +26,7 @@
       align-items: center;
       justify-content: flex-start;
       gap: 0.55rem;
-      color: #f5f3ff;
+      color: var(--color-text-primary);
       font-size: 0.82rem;
       font-weight: 800;
       white-space: nowrap;

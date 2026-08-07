@@ -4,14 +4,14 @@
       (error)="imageError.emit($event)" />
 
     @if (isCurrentUser()) {
-      <button class="vl-user-profile__edit-avatar" type="button" (click)="editProfile.emit()" aria-label="Edit profile">
+      <button class="vl-icon-button vl-user-profile__edit-avatar" type="button" (click)="editProfile.emit()" aria-label="Edit profile">
         <span class="material-symbols-outlined" translate="no">edit</span>
       </button>
     }
   </div>
 
   <div class="vl-user-profile__identity">
-    <h1>
+    <h1 class="vl-title-lg">
       <span>{{ displayName() }}</span>
       @if (isVerified()) {
         <span class="vl-user-profile__verified-badge" aria-label="Verified profile">
@@ -20,8 +20,8 @@
         </span>
       }
     </h1>
-    <p class="vl-user-profile__handle">{{ handle() }}</p>
-    <p class="vl-user-profile__bio">{{ bio() }}</p>
+    <p class="vl-meta vl-user-profile__handle">{{ handle() }}</p>
+    <p class="vl-body vl-user-profile__bio">{{ bio() }}</p>
 
     <div class="vl-user-profile__vibes">
       <vl-interest-pill-list [interests]="previewInterests()"></vl-interest-pill-list>
@@ -31,7 +31,7 @@
   @if (photoPreviewItems().length > 0) {
     <section class="vl-user-profile__photo-strip" aria-label="Profile photos">
       <header class="vl-user-profile__photo-strip-header">
-        <h2>
+        <h2 class="vl-title-md">
           <span class="material-symbols-outlined" translate="no">photo_camera</span>
           Photos
         </h2>

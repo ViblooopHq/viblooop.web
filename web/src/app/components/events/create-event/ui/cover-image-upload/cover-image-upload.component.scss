@@ -2,17 +2,18 @@
 
 /* ── UPLOAD CARD ── */
 .upload-card {
-  border: 1.5px dashed rgba(var(--color-brand-primary-rgb), 0.4);
+  @include selectable-card-base;
+
+  border: 1.5px dashed color-mix(in srgb, var(--color-action-primary) 40%, transparent);
   border-radius: var(--radius-2xl);
   overflow: hidden;
   position: relative;
-  cursor: pointer;
   background: var(--surface-dark-4);
   height: 160px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
   padding: 12px;
 
   @media (min-width: 640px) {
@@ -21,9 +22,9 @@
 
   &:hover {
     border-color: var(--color-brand-primary);
-    background: rgba(var(--color-brand-primary-rgb), 0.05);
+    background: color-mix(in srgb, var(--color-action-primary) 5%, transparent);
     transform: translateY(-2px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-floating);
   }
 
   &--loading {
@@ -54,8 +55,8 @@
     &::after {
       z-index: 1;
       background:
-        radial-gradient(circle at 50% 36%, rgba(var(--color-brand-primary-rgb), .18), transparent 48%),
-        linear-gradient(180deg, rgba(15, 13, 23, .54), rgba(15, 13, 23, .78));
+        radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--color-action-primary) 18%, transparent) 0, transparent 48%),
+        linear-gradient(180deg, var(--color-overlay-soft), var(--color-overlay-scrim));
     }
 
     &:hover {
@@ -85,14 +86,13 @@
 }
 
 .upload-loading-overlay {
+  @include stack(12px);
+
   position: absolute;
   inset: 0;
-  background: rgba(15, 13, 23, 0.8);
-  display: flex;
-  flex-direction: column;
+  background: var(--color-overlay-scrim);
   align-items: center;
   justify-content: center;
-  gap: 12px;
   z-index: 20;
   backdrop-filter: blur(4px);
 
@@ -108,7 +108,7 @@
 .loader-vibe {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(var(--color-brand-primary-rgb), 0.1);
+  border: 3px solid color-mix(in srgb, var(--color-action-primary) 10%, transparent);
   border-top-color: var(--color-brand-primary);
   border-radius: var(--radius-full);
   animation: spin 1s linear infinite;
@@ -168,8 +168,8 @@
   height: 80px;
   object-fit: cover;
   border-radius: var(--radius-sm);
-  border: 1.5px solid #1c1a25;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  border: 1.5px solid var(--color-border-strong);
+  box-shadow: var(--shadow-floating);
   transition: transform .3s;
 
   &.photo-1 {
@@ -212,11 +212,11 @@
   width: 52px;
   height: 52px;
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--color-brand-primary), #ff4785);
+  background: var(--gradient-brand-cta);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 15px rgba(var(--color-brand-primary-rgb), 0.4);
+  box-shadow: var(--shadow-brand-primary);
   position: relative;
   flex-shrink: 0;
 
@@ -230,19 +230,17 @@
     position: absolute;
     inset: -3px;
     border-radius: var(--radius-full);
-    border: 1.5px solid rgba(var(--color-brand-primary-rgb), 0.2);
+    border: 1.5px solid color-mix(in srgb, var(--color-action-primary) 20%, transparent);
   }
 
   .upload-camera-icon {
     font-size: var(--font-size-2xl);
-    color: white;
+    color: var(--color-text-on-primary);
   }
 }
 
 .upload-text-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  @include stack(2px);
   min-width: 0;
 }
 
@@ -259,7 +257,7 @@
 
 .upload-sub-new {
   font-size: var(--font-size-xs);
-  color: var(--text-muted-strong);
+  color: var(--color-text-muted);
   margin: 0;
 }
 
@@ -303,7 +301,7 @@
   position: absolute;
   top: 10px;
   right: 10px;
-  background: rgba(0, 0, 0, .6);
+  background: var(--color-overlay-scrim);
   border: none;
   border-radius: var(--radius-full);
   width: 32px;

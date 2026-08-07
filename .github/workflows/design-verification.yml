@@ -1,0 +1,40 @@
+name: Design verification
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '.github/workflows/design-verification.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'web/**'
+      - '.github/workflows/design-verification.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  verify-design:
+    name: Lint styles and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify design system
+        run: npm run verify:design

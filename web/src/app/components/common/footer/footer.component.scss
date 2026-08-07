@@ -3,11 +3,11 @@
 .vl-footer {
   position: relative;
   padding: 6rem 1.5rem 3rem;
-  background: rgba(var(--bg-surface-rgb), 0.4);
+  background: color-mix(in srgb, var(--color-surface-section) 88%, transparent);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  border-top: 1px solid rgba(var(--on-surface-rgb), 0.1);
-  color: var(--on-surface);
+  border-top: 1px solid var(--color-border-ghost);
+  color: var(--color-text-primary);
   overflow: hidden;
 
   // Background glow
@@ -19,7 +19,7 @@
     transform: translateX(-50%);
     width: 40rem;
     height: 20rem;
-    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.05) 0%, transparent 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-action-primary) 8%, transparent) 0%, transparent 70%);
     filter: blur(60px);
     z-index: 0;
     pointer-events: none;
@@ -58,7 +58,7 @@
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    color: var(--primary);
+    color: var(--color-action-primary);
   }
 
   &__logo-svg {
@@ -70,7 +70,7 @@
     font-size: 1.75rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    background: linear-gradient(to right, var(--primary), var(--secondary));
+    background: linear-gradient(to right, var(--color-action-primary), var(--color-action-secondary));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -79,7 +79,7 @@
   &__tagline {
     font-size: 1rem;
     line-height: 1.6;
-    color: var(--on-surface-variant);
+    color: var(--color-text-secondary);
     max-width: 20rem;
   }
 
@@ -96,10 +96,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(var(--on-surface-rgb), 0.05);
-    border: 1px solid rgba(var(--on-surface-rgb), 0.1);
-    color: var(--on-surface);
-    transition: all 0.3s ease;
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-border-ghost);
+    color: var(--color-text-primary);
+    transition: background-color var(--transition-base), border-color var(--transition-base), color var(--transition-base), transform var(--transition-fast), box-shadow var(--transition-base);
     text-decoration: none;
 
     i {
@@ -107,11 +107,11 @@
     }
 
     &:hover {
-      background: rgba(var(--primary-rgb), 0.15);
-      border-color: var(--primary);
-      color: var(--primary);
-      transform: translateY(-3px);
-      box-shadow: 0 5px 15px rgba(var(--primary-rgb), 0.2);
+      background: color-mix(in srgb, var(--color-action-primary) 15%, transparent);
+      border-color: var(--color-action-primary);
+      color: var(--color-action-primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-brand-glow);
     }
   }
 
@@ -119,7 +119,7 @@
     font-size: 1.125rem;
     font-weight: 700;
     margin-bottom: 1.5rem;
-    color: var(--on-surface);
+    color: var(--color-text-primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -134,18 +134,18 @@
 
   &__link {
     font-size: 0.95rem;
-    color: var(--on-surface-variant);
+    color: var(--color-text-secondary);
     text-decoration: none;
     transition: color 0.2s ease;
 
     &:hover {
-      color: var(--primary);
+      color: var(--color-action-primary);
     }
   }
 
   &__bottom {
     padding-top: 2rem;
-    border-top: 1px solid rgba(var(--on-surface-rgb), 0.05);
+    border-top: 1px solid var(--color-border-ghost);
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -162,7 +162,7 @@
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--on-surface-variant);
+    color: var(--color-text-secondary);
   }
 
   &__copyright-icon {
@@ -171,7 +171,7 @@
 
   &__meta {
     font-size: 0.875rem;
-    color: var(--on-surface-variant);
+    color: var(--color-text-secondary);
     opacity: 0.8;
   }
 }

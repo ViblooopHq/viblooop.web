@@ -7,29 +7,27 @@
   border-radius: var(--radius-full);
   z-index: 150;
 
-  // Glassmorphism
-  background: rgba(255, 255, 255, 0.05);
+  background: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-color: var(--color-border-ghost);
 
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: var(--primary);
+  color: var(--color-action-primary);
 
   // Transitions
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-md);
 
   // Hover effects
   &:hover {
     transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(var(--primary-rgb), 0.4);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 0 20px rgba(var(--primary-rgb), 0.2);
-    color: var(--primary);
+    background: var(--color-surface-raised);
+    border-color: color-mix(in srgb, var(--color-action-primary) 40%, transparent);
+    box-shadow: var(--shadow-lg), var(--shadow-brand-glow);
+    color: var(--color-action-primary);
   }
 
   &:active {

@@ -1,8 +1,5 @@
 @use "../../../../styles/index" as *;
 
-// Local aliases onto the shared theme tokens (styles.scss)
-$outline-variant: rgba(255, 255, 255, 0.15);
-
 :host {
   display: block;
   min-height: 100vh;
@@ -12,11 +9,11 @@ $outline-variant: rgba(255, 255, 255, 0.15);
 
 // Mixins
 @mixin ghost-border {
-  border: 1px solid $outline-variant;
+  border: 1px solid var(--color-border-ghost);
 }
 
 @mixin glassmorphism {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
@@ -43,7 +40,7 @@ $outline-variant: rgba(255, 255, 255, 0.15);
     right: -10%;
     width: 60vw;
     height: 60vw;
-    background: radial-gradient(circle, rgba(var(--primary-rgb), 0.15) 0%, rgba(var(--bg-surface-rgb), 0) 70%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--color-action-primary) 15%, transparent) 0%, transparent 70%);
     z-index: 0;
     pointer-events: none;
   }
@@ -69,7 +66,7 @@ header {
 
 .subtitle {
   font-size: 1.125rem;
-  color: rgba(var(--on-surface-rgb), 0.7);
+  color: var(--color-text-secondary);
   margin-top: 0.5rem;
 }
 
@@ -135,7 +132,7 @@ header {
     min-width: 0;
     border-radius: var(--radius-pill);
     padding: 0.5rem 1rem;
-    background: rgba(var(--bg-surface-container-rgb), 0.4);
+    background: var(--color-surface-glass);
 
     .search-icon {
       font-size: 1.25rem;
@@ -153,7 +150,7 @@ header {
       outline: none;
 
       &::placeholder {
-        color: rgba(var(--on-surface-rgb), 0.4);
+        color: var(--color-text-muted);
       }
     }
 
@@ -165,7 +162,7 @@ header {
       border-radius: var(--radius-pill);
       font-size: 0.875rem;
       font-weight: 500;
-      background: rgba(255, 255, 255, 0.03);
+      background: color-mix(in srgb, var(--color-surface-raised) 60%, transparent);
       cursor: pointer;
       transition: background 0.3s ease;
 
@@ -174,7 +171,7 @@ header {
       }
 
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: color-mix(in srgb, var(--color-surface-raised) 80%, transparent);
       }
     }
   }
@@ -204,17 +201,17 @@ header {
       font-size: 0.875rem;
       font-weight: 500;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
       @include ghost-border;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.1);
+        background: color-mix(in srgb, var(--color-surface-raised) 80%, transparent);
       }
 
       &.active {
-        background: rgba(var(--color-brand-accent-rgb), 0.62);
+        background: color-mix(in srgb, var(--color-accent) 62%, transparent);
         color: var(--text-white);
-        border-color: rgba(var(--color-brand-accent-rgb), 0.62);
+        border-color: color-mix(in srgb, var(--color-accent) 62%, transparent);
       }
     }
   }
@@ -287,7 +284,7 @@ header {
           background-color: var(--bg-surface-container-highest);
           border: 2px solid var(--bg-surface);
           z-index: 2;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+          box-shadow: var(--shadow-md);
 
           i {
             font-size: 0.875rem;
@@ -297,7 +294,7 @@ header {
       }
 
       .category-name {
-        color: rgba(var(--on-surface-rgb), 0.9);
+        color: var(--color-text-primary);
         text-align: center;
         margin-top: 0.25rem;
         font-weight: 600;
@@ -307,18 +304,18 @@ header {
 
       &:hover .image-wrapper .category-image {
         transform: scale(1.05);
-        border-color: rgba(var(--primary-rgb), 0.4);
+        border-color: color-mix(in srgb, var(--color-action-primary) 40%, transparent);
       }
 
       &.active {
         .image-wrapper .category-image {
           transform: scale(1.05);
-          border-color: rgba(var(--color-brand-accent-rgb), 0.62);
-          box-shadow: 0 0 0 3px rgba(var(--color-brand-accent-rgb), 0.18);
+          border-color: color-mix(in srgb, var(--color-accent) 62%, transparent);
+          box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
         }
 
         .icon-badge {
-          background: rgba(var(--color-brand-accent-rgb), 0.62);
+          background: color-mix(in srgb, var(--color-accent) 62%, transparent);
           border-color: var(--bg-surface);
 
           i {
@@ -327,7 +324,7 @@ header {
         }
 
         .category-name {
-          color: rgba(var(--color-brand-accent-rgb), 0.92);
+          color: var(--color-accent);
         }
       }
     }
@@ -370,10 +367,10 @@ header {
     gap: 0.7rem;
     min-height: 5.5rem;
     overflow: hidden;
-    border: 1px solid rgba(112, 125, 185, 0.42);
+    border: 1px solid var(--color-border-strong);
     border-radius: 1.2rem;
     color: var(--text-white);
-    background: rgba(var(--bg-surface-rgb), 0.86);
+    background: var(--color-surface-glass-strong);
     padding: 0.75rem;
     text-align: left;
     font: inherit;
@@ -384,8 +381,8 @@ header {
     &:hover,
     &.active {
       transform: translateY(-2px);
-      border-color: rgba(var(--color-brand-accent-rgb), 0.58);
-      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+      border-color: color-mix(in srgb, var(--color-accent) 58%, transparent);
+      box-shadow: var(--shadow-panel);
     }
   }
 
@@ -412,8 +409,8 @@ header {
 
   .featured-vibe-card__shade {
     background:
-      linear-gradient(90deg, rgba(8, 12, 28, 0.96) 0%, rgba(8, 12, 28, 0.82) 42%, rgba(8, 12, 28, 0.42) 100%),
-      radial-gradient(circle at 0% 50%, rgba(var(--color-brand-accent-rgb), 0.24), transparent 58%);
+      linear-gradient(90deg, var(--color-overlay-scrim) 0%, color-mix(in srgb, var(--color-overlay-scrim) 82%, transparent) 42%, color-mix(in srgb, var(--color-overlay-scrim) 42%, transparent) 100%),
+      radial-gradient(circle at 0% 50%, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent 58%);
   }
 
   .featured-vibe-card__icon,
@@ -430,10 +427,10 @@ header {
     height: 3rem;
     border-radius: 0.85rem;
     color: var(--text-white);
-    background: linear-gradient(135deg, #fb4d73, #b91c6a);
+    background: linear-gradient(135deg, var(--color-accent), var(--color-action-primary));
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.22),
-      0 14px 30px rgba(var(--color-brand-accent-rgb), 0.2);
+      inset 0 1px 0 color-mix(in srgb, var(--on-primary) 22%, transparent),
+      0 14px 30px color-mix(in srgb, var(--color-accent) 20%, transparent);
 
     i {
       font-size: 1.2rem;
@@ -441,11 +438,11 @@ header {
   }
 
   .featured-vibe-card--games .featured-vibe-card__icon {
-    background: linear-gradient(135deg, #9b5cff, #4c1d95);
+    background: linear-gradient(135deg, var(--color-action-primary-hover), var(--color-action-primary));
   }
 
   .featured-vibe-card--travel .featured-vibe-card__icon {
-    background: linear-gradient(135deg, #0ea5e9, #1d4ed8);
+    background: linear-gradient(135deg, var(--color-action-secondary), var(--color-action-primary));
   }
 
   .featured-vibe-card__content {
@@ -462,7 +459,7 @@ header {
     }
 
     > span {
-      color: rgba(var(--on-surface-rgb), 0.78);
+      color: var(--color-text-secondary);
       font-size: 0.66rem;
       font-weight: 600;
       line-height: 1.35;
@@ -473,12 +470,12 @@ header {
       align-items: center;
       gap: 0.45rem;
       margin-top: 0.25rem;
-      color: rgba(var(--on-surface-rgb), 0.78);
+      color: var(--color-text-secondary);
       font-size: 0.58rem;
       font-weight: 800;
 
       i {
-        color: #e879f9;
+        color: var(--color-accent);
       }
     }
   }
@@ -488,11 +485,11 @@ header {
     place-items: center;
     width: 1.9rem;
     height: 1.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid var(--color-border-ghost);
     border-radius: var(--radius-pill);
     color: var(--text-white);
-    background: rgba(255, 255, 255, 0.11);
-    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+    background: var(--color-surface-glass);
+    box-shadow: var(--shadow-floating);
     backdrop-filter: blur(10px);
   }
 
@@ -570,11 +567,8 @@ header {
 
   .trending-card {
     min-width: 62dvw;
-    border-radius: var(--radius-xl);
     position: relative;
-    overflow: hidden;
     scroll-snap-align: start;
-    cursor: pointer;
 
     @media (min-width: 768px) {
       min-width: 400px;
@@ -608,7 +602,7 @@ header {
         position: absolute;
         inset: 0;
         border-radius: var(--radius-lg);
-        background: radial-gradient(circle at top left, rgba(var(--primary-rgb), 0.15) 0%, transparent 70%);
+        background: radial-gradient(circle at top left, color-mix(in srgb, var(--color-action-primary) 15%, transparent) 0%, transparent 70%);
         z-index: -1;
       }
 
@@ -618,7 +612,7 @@ header {
         align-items: center;
 
         .live-badge {
-          background: rgba(var(--tertiary-rgb), 0.2);
+          background: color-mix(in srgb, var(--color-accent) 20%, transparent);
           color: var(--tertiary);
           padding: 4px 8px;
           border-radius: var(--radius-xs);
@@ -632,8 +626,8 @@ header {
 
         .spots-left {
           font-size: 0.75rem;
-          color: rgba(255, 255, 255, 0.8);
-          background: rgba(0, 0, 0, 0.4);
+          color: var(--on-primary);
+          background: var(--color-overlay-soft);
           padding: 4px 8px;
           border-radius: var(--radius-xs);
         }
@@ -650,7 +644,7 @@ header {
         .event-time,
         .event-location {
           margin: 0;
-          color: rgba(var(--on-surface-rgb), 0.8);
+          color: var(--color-text-secondary);
           display: flex;
           align-items: center;
           gap: 6px;
@@ -728,12 +722,12 @@ header {
   align-items: center;
   cursor: pointer;
   z-index: 50;
-  box-shadow: 0 8px 32px rgba(var(--primary-rgb), 0.4);
+  box-shadow: 0 8px 32px color-mix(in srgb, var(--color-action-primary) 40%, transparent);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 40px rgba(var(--primary-rgb), 0.6);
+    box-shadow: 0 12px 40px color-mix(in srgb, var(--color-action-primary) 60%, transparent);
   }
 
   &:active {

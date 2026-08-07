@@ -6,12 +6,12 @@
     <span class="empty-state__close material-symbols-outlined" translate="no">close</span>
   </div>
 
-  <h3>
+  <h3 class="vl-title-md">
     No <span>{{ titleSubject }}</span> plans
     <ng-container *ngIf="titleContext"> {{ titleContext }}</ng-container>
   </h3>
 
-  <p>{{ description }}</p>
+  <p class="vl-body-sm">{{ description }}</p>
 
   <div class="empty-state__actions">
     <a class="empty-state__button empty-state__button--primary" [routerLink]="createLink">

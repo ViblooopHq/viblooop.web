@@ -22,4 +22,10 @@ export class VibeCategoryCardComponent {
   readonly title = computed(() => this.categoryPresentation.getDisplayTitle(this.category()));
   readonly description = computed(() => this.categoryPresentation.getDisplayDescription(this.category()));
   readonly icon = computed(() => this.categoryPresentation.getDisplayIcon(this.category()));
+
+  selectCategory(): void {
+    if (!this.isSoon()) {
+      this.select.emit();
+    }
+  }
 }

@@ -2,24 +2,24 @@
   <img [src]="event()?.image || ''" class="hero-img" alt="{{ event()?.title || 'Event' }}">
   <div class="hero-gradient" aria-hidden="true"></div>
 
-  <button type="button" class="hero-back" aria-label="Go back" (click)="goBack.emit()">
+  <button type="button" class="hero-back vl-icon-button" aria-label="Go back" (click)="goBack.emit()">
     <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
   </button>
 
   @if (isEventCreator()) {
   <div class="hero-owner-menu">
-    <button type="button" class="hero-menu-trigger" aria-haspopup="menu" [attr.aria-expanded]="isEventMenuOpen()"
+    <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="menu" [attr.aria-expanded]="isEventMenuOpen()"
       aria-label="Event options" (click)="toggleMenu.emit()">
       <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
     </button>
 
     @if (isEventMenuOpen()) {
     <div class="hero-menu-popover" role="menu">
-      <button type="button" role="menuitem" (click)="editEvent.emit()">
+      <button type="button" role="menuitem" class="vl-menu-item" (click)="editEvent.emit()">
         <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
         Edit
       </button>
-      <button type="button" role="menuitem" (click)="closeMenu.emit()">
+      <button type="button" role="menuitem" class="vl-menu-item" (click)="closeMenu.emit()">
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         Cancel
       </button>
@@ -42,47 +42,47 @@
       </span>
     </div>
 
-    @if (isEventEnded()) {
-    <div class="hero-status-row">
-      <span class="event-status-pill event-status-pill--ended">
-        <i class="fa-solid fa-circle-check event-status-pill__icon" aria-hidden="true"></i>
-        Event ended
-      </span>
-    </div>
-    }
-
     <div class="hero-action-row">
-      <button type="button" class="hero-attendance" (click)="openAttendees.emit()"
-        [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
-        <div class="avatar-stack">
-          <img
-            [src]="event()?.createdBy?.profileImage ? (event()!.createdBy!.profileImage! | imageUrl) : 'assets/images/default-profile.png'"
-            (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-            alt=""
-            [matTooltip]="'Creator: ' + event()?.createdBy?.username">
-          @for (attendee of attendeePreviewProfiles(); track attendee.userId) {
-          <img [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-            (error)="$any($event.target).src = 'assets/images/default-profile.png'" alt="">
-          }
-          @if (totalAttendeesCount() > 6) {
-          <span class="more-count">+{{ totalAttendeesCount() - 6 }}</span>
-          }
-        </div>
-        <span class="hero-attendance-label">
-          <i class="fa-solid fa-users" aria-hidden="true"></i>
-          {{ attendanceSummaryLabel() }}
+      <div class="hero-attendance-group">
+        <button type="button" class="hero-attendance" (click)="openAttendees.emit()"
+          [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
+          <div class="avatar-stack">
+            <img
+              [src]="event()?.createdBy?.profileImage ? (event()!.createdBy!.profileImage! | imageUrl) : 'assets/images/default-profile.png'"
+              (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+              alt=""
+              [matTooltip]="'Creator: ' + event()?.createdBy?.username">
+            @for (attendee of attendeePreviewProfiles(); track attendee.userId) {
+            <img [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+              (error)="$any($event.target).src = 'assets/images/default-profile.png'" alt="">
+            }
+            @if (totalAttendeesCount() > 6) {
+            <span class="more-count">+{{ totalAttendeesCount() - 6 }}</span>
+            }
+          </div>
+          <span class="hero-attendance-label">
+            <i class="fa-solid fa-users" aria-hidden="true"></i>
+            {{ attendanceSummaryLabel() }}
+          </span>
+        </button>
+
+        @if (isEventEnded()) {
+        <span class="event-status-pill event-status-pill--ended">
+          <i class="fa-solid fa-circle-check event-status-pill__icon" aria-hidden="true"></i>
+          Event ended
         </span>
-      </button>
+        }
+      </div>
 
       @if (!isEventEnded()) {
       @if (!isEventCreator()) {
-      <button type="button" class="btn-join-hero" (click)="requestJoin.emit()" [disabled]="!canRequestJoin()">
+      <button type="button" class="btn-join-hero vl-button vl-button--primary" (click)="requestJoin.emit()" [disabled]="!canRequestJoin()">
         <i class="fa-solid fa-fire" aria-hidden="true"></i>
         {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}
         <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
       </button>
       } @else {
-      <button type="button" class="btn-view-requests" (click)="openRequests.emit()">
+      <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
         <i class="fa-solid fa-user-group" aria-hidden="true"></i>
         View Requests
         @if (pendingJoinRequestCount() > 0) {

@@ -4,11 +4,11 @@
 .host-notes-card {
   padding: 24px !important;
   background:
-    radial-gradient(circle at 12% 0%, rgba(var(--color-brand-primary-rgb), .1), transparent 36%),
-    #0f0d17 !important;
-  border: 1px solid rgba(255, 255, 255, .08);
+    radial-gradient(circle at 12% 0%, color-mix(in srgb, var(--color-action-primary) 10%, transparent) 0, transparent 36%),
+    var(--color-surface-canvas) !important;
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-xl) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .03), 0 18px 42px rgba(0, 0, 0, .2);
+  box-shadow: var(--shadow-panel);
   gap: 22px;
   margin-bottom: 0;
 }
@@ -40,7 +40,7 @@
 }
 
 .host-notes-subtitle {
-  color: var(--text-muted-strong);
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   font-weight: 500;
   line-height: 21px;
@@ -49,16 +49,16 @@
 
 .notes-input-wrapper {
   position: relative;
-  background: rgba(18, 16, 28, .72);
-  border: 1.5px solid rgba(var(--color-brand-accent-rgb), .62);
+  background: var(--color-surface-glass);
+  border: 1.5px solid color-mix(in srgb, var(--color-accent) 62%, transparent);
   border-radius: var(--radius-lg);
   overflow: hidden;
   transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 
   &:focus-within {
     border-color: var(--color-brand-accent);
-    background: rgba(18, 16, 28, .88);
-    box-shadow: 0 0 0 3px rgba(var(--color-brand-accent-rgb), .12);
+    background: var(--color-surface-raised);
+    box-shadow: var(--focus-ring);
   }
 }
 
@@ -77,7 +77,7 @@
   outline: none;
 
   &::placeholder {
-    color: rgba(170, 163, 184, .74);
+    color: var(--color-text-muted);
     font-weight: 400;
     white-space: pre-line;
   }
@@ -87,16 +87,14 @@
   position: absolute;
   right: 20px;
   bottom: 16px;
-  color: var(--text-subtle);
+  color: var(--color-text-secondary);
   font-size: var(--font-size-sm);
   font-weight: 700;
   pointer-events: none;
 }
 
 .host-quick-add {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  @include stack(14px);
 }
 
 .host-quick-add-toggle {
@@ -128,7 +126,7 @@
 
 .host-quick-add-subtitle {
   display: block;
-  color: var(--text-muted-strong);
+  color: var(--color-text-muted);
   font-size: var(--font-size-sm);
   font-weight: 500;
   line-height: 18px;
@@ -136,7 +134,7 @@
 }
 
 .host-quick-add-chevron {
-  color: var(--text-muted-strong);
+  color: var(--color-text-muted);
   font-size: var(--font-size-2xl);
   transition: transform .2s ease;
 }
@@ -169,9 +167,9 @@
   z-index: 2;
   width: 30px;
   height: 30px;
-  border: 1px solid rgba(var(--color-brand-accent-rgb), .35);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
   border-radius: var(--radius-full);
-  background: rgba(15, 13, 23, .94);
+  background: var(--color-surface-glass-strong);
   color: var(--color-brand-tint-soft);
   display: flex;
   align-items: center;
@@ -179,7 +177,7 @@
   padding: 0;
   transform: translateY(-50%);
   cursor: pointer;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .3);
+  box-shadow: var(--shadow-floating);
 
   .material-symbols-outlined {
     font-size: var(--font-size-xl);
@@ -197,9 +195,9 @@
 .host-note-pill {
   flex: 0 0 auto;
   min-height: 46px;
-  border: 1px solid rgba(var(--color-brand-accent-rgb), .24);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, .035);
+  background: var(--color-surface-glass);
   color: var(--color-brand-tint-soft);
   display: flex;
   align-items: center;
@@ -212,14 +210,14 @@
 
   &:hover {
     transform: translateY(-1px);
-    border-color: rgba(var(--color-brand-accent-rgb), .55);
-    background: rgba(var(--color-brand-accent-rgb), .08);
+    border-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
   }
 
   &--selected {
     border-color: var(--color-brand-accent);
-    background: rgba(var(--color-brand-accent-rgb), .14);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 10px 22px rgba(var(--color-brand-accent-rgb), .12);
+    background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+    box-shadow: var(--shadow-brand-primary);
   }
 }
 

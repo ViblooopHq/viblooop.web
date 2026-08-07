@@ -11,7 +11,7 @@
   @if (isEventCreator()) {
   <label for="photoUploadInput" class="sr-only">Upload event photos</label>
   <input #photoUploadInput id="photoUploadInput" type="file" accept="image/*,.heic,.heif" multiple (change)="onFilesSelected($event)" hidden />
-  <button type="button" class="btn-upload" (click)="triggerUpload()">
+  <button type="button" class="btn-upload vl-button vl-button--secondary" (click)="triggerUpload()">
     <i class="fa-solid fa-camera" aria-hidden="true"></i> Upload Photos
   </button>
   }

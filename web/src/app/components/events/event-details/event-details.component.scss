@@ -4,10 +4,10 @@
   min-height: 100dvh;
   padding: 6.9rem 1.25rem 2.5rem;
   background:
-    radial-gradient(circle at 8% 18%, rgba(124, 58, 237, 0.2), transparent 24rem),
-    radial-gradient(circle at 92% 12%, rgba(59, 130, 246, 0.12), transparent 26rem),
-    #050711;
-  color: #f8f7ff;
+    radial-gradient(circle at 8% 18%, color-mix(in srgb, var(--color-action-primary) 20%, transparent), transparent 24rem),
+    radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--color-action-secondary) 12%, transparent), transparent 26rem),
+    var(--color-surface-canvas);
+  color: var(--color-text-primary);
 
   &__layout {
     display: grid;
@@ -36,9 +36,9 @@
 
 .ed-section-placeholder {
   min-height: 8rem;
-  border: 1px solid rgba(148, 163, 184, 0.16);
+  border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-lg);
-  background: rgba(13, 15, 31, 0.5);
+  background: var(--color-surface-glass);
 }
 
 @media (min-width: 981px) {
@@ -57,6 +57,12 @@
     &__layout {
       display: block;
       width: min(100%, 560px);
+    }
+
+    &__main {
+      display: grid;
+      align-content: start;
+      gap: 1rem;
     }
 
     &__sidebar {

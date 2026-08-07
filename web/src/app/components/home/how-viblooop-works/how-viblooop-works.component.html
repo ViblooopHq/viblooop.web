@@ -7,7 +7,7 @@
 
     <div class="vl-how-works__grid">
       @for (card of infoCards; track card.title; let i = $index) {
-      <article class="vl-how-works__card" [ngClass]="{
+      <article class="vl-how-works__card vl-surface vl-surface--interactive" [ngClass]="{
             'vl-how-works__card--primary': i === 0,
             'vl-how-works__card--secondary': i === 1,
             'vl-how-works__card--tertiary': i === 2

@@ -1,8 +1,8 @@
 <div class="auth-container verification-screen">
-    <div class="login-card">
+    <div class="login-card vl-surface vl-surface--glass">
         @if (isUserAlreadyExist) {
         <header class="header-nav">
-            <button class="icon-btn back-btn" (click)="onBack()" [disabled]="isLoading()">
+            <button class="icon-btn back-btn vl-icon-button" (click)="onBack()" [disabled]="isLoading()">
                 <span class="material-symbols-outlined">arrow_back</span>
             </button>
         </header>
@@ -28,10 +28,10 @@
             <form class="email-form" [formGroup]="createUsernameForm" (ngSubmit)="createUsername()">
                 <div class="input-group">
                     <span class="material-symbols-outlined input-icon">person</span>
-                    <input type="text" formControlName="username" placeholder="Username" class="form-input">
+                    <input type="text" formControlName="username" placeholder="Username" class="form-input vl-field">
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block" [disabled]="isLoading()">
+                <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isLoading()">
                     @if (isLoading()) {
                         <span class="spinner"></span> Creating...
                     } @else {
@@ -52,7 +52,7 @@
             <!-- 4-digit OTP Input Group -->
             <div class="otp-input-group" (paste)="onPaste($event)">
                 @for (digit of otp; track $index) {
-                <input #otpInput type="tel" inputmode="numeric" maxlength="1" class="otp-input"
+                <input #otpInput type="tel" inputmode="numeric" maxlength="1" class="otp-input vl-field"
                     [class.active]="otp[$index] !== ''" [placeholder]="otp[$index] === '' ? '-' : ''"
                     (input)="onInput($index, $event)" (keydown)="onKeyDown($index, $event)" (focus)="onFocus($index)"
                     (click)="onFocus($index)" [disabled]="isLoading()">
@@ -60,7 +60,7 @@
             </div>
 
             <!-- Main Verify Button -->
-            <button class="btn btn-primary btn-block" (click)="verifyOtp()" [disabled]="isLoading() || otp.join('').length < 4">
+            <button class="vl-button vl-button--primary vl-button--block" (click)="verifyOtp()" [disabled]="isLoading() || otp.join('').length < 4">
                 @if (isLoading()) {
                     <span class="spinner"></span> Verifying...
                 } @else {
@@ -69,7 +69,7 @@
             </button>
 
             <!-- Resend Code Button -->
-            <button class="btn btn-outlined btn-icon-gap" 
+            <button class="vl-button vl-button--secondary btn-outlined btn-icon-gap" 
                 (click)="resendOtp()" 
                 [disabled]="resendTimer() > 0 || isResending()">
                 @if (isResending()) {
