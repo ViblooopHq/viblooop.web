@@ -1,17 +1,11 @@
 // --- Theme Variables ---
-$surface: #070d1f;
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface: #dfe4fe;
-$on-surface-variant: #a5aac2;
 
 // --- Viblooop Edge Section Styles ---
 .vl-edge {
     padding: 8rem 1.5rem; // py-32 px-6
 
     // Section background: Dark slate with heavy backdrop blur
-    background-color: rgba($surface, 0.4);
+    background-color: rgba(var(--bg-surface-rgb), 0.4);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
 
@@ -35,8 +29,8 @@ $on-surface-variant: #a5aac2;
         letter-spacing: -0.05em; // tracking-tighter
         margin-bottom: 1.5rem; // mb-6
         font-style: italic;
-        color: #ffffff;
-        font-family: 'Inter', sans-serif;
+        color: var(--text-white);
+        font-family: var(--font-ui);
 
         @media (min-width: 768px) {
             font-size: 3.75rem; // md:text-6xl
@@ -44,12 +38,12 @@ $on-surface-variant: #a5aac2;
     }
 
     &__subtitle {
-        color: $on-surface-variant;
+        color: var(--on-surface-variant);
         max-width: 36rem; // max-w-xl
         margin: 0 auto;
         font-size: 1.125rem; // text-lg
         line-height: 1.5;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     &__grid {
@@ -102,45 +96,45 @@ $on-surface-variant: #a5aac2;
         font-size: 1.5rem; // text-2xl
         font-weight: 700; // font-bold
         margin-bottom: 1rem; // mb-4
-        color: $on-surface;
-        font-family: 'Inter', sans-serif;
+        color: var(--on-surface);
+        font-family: var(--font-ui);
     }
 
     &__card-desc {
-        color: $on-surface-variant;
+        color: var(--on-surface-variant);
         line-height: 1.625; // leading-relaxed
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     // --- Card Color Modifiers ---
     &__card--primary {
         .vl-edge__icon-wrapper {
-            background-color: rgba($primary, 0.15);
+            background-color: rgba(var(--primary-rgb), 0.15);
         }
 
         .vl-edge__icon {
-            color: $primary;
+            color: var(--primary);
         }
     }
 
     &__card--secondary {
         .vl-edge__icon-wrapper {
-            background-color: rgba($secondary, 0.15);
+            background-color: rgba(var(--secondary-rgb), 0.15);
         }
 
         .vl-edge__icon {
-            color: $secondary;
+            color: var(--secondary);
         }
     }
 
     &__card--tertiary {
         .vl-edge__icon-wrapper {
-            background-color: rgba($tertiary, 0.15);
+            background-color: rgba(var(--tertiary-rgb), 0.15);
         }
 
         .vl-edge__icon {
-            color: $tertiary;
+            color: var(--tertiary);
         }
     }
 }

@@ -3,7 +3,7 @@
 
   <div class="vl-categories__grid">
     @for (category of eventCategories; track category._id; let i = $index) {
-    <div class="vl-categories__card" [ngClass]="{
+    <div class="vl-categories__card vl-surface vl-surface--interactive" [ngClass]="{
           'vl-categories__card--featured': i % 4 === 0,
           'vl-categories__card--wide': i % 4 === 3
         }" (click)="goToEventCategory('/eventCategories', category._id); setActiveEventCategory(category)"

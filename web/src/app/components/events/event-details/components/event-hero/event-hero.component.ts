@@ -1,0 +1,38 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { DatePipe } from '@angular/common';
+import { MatTooltip } from '@angular/material/tooltip';
+import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
+import { AttendeeProfile, EventDetails } from '../../../../../shared/interfaces/event.interface';
+
+@Component({
+  selector: 'vl-event-hero',
+  imports: [MatTooltip, ImageUrlPipe, DatePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  templateUrl: './event-hero.component.html',
+  styleUrl: './event-hero.component.scss',
+})
+export class EventHeroComponent {
+  event = input<EventDetails | null>(null);
+  isEventCreator = input(false);
+  isEventMenuOpen = input(false);
+  isEscapeEvent = input(false);
+  isEventEnded = input(false);
+  eventDate = input<string | undefined>(undefined);
+  timeLeftLabel = input('');
+  locationLabel = input('');
+  attendeePreviewProfiles = input<AttendeeProfile[]>([]);
+  totalAttendeesCount = input(0);
+  attendanceSummaryLabel = input('');
+  joinRequestStatus = input('Request Join');
+  canRequestJoin = input(true);
+  eventPriceLabel = input('Free');
+  pendingJoinRequestCount = input(0);
+
+  goBack = output<void>();
+  toggleMenu = output<void>();
+  editEvent = output<void>();
+  closeMenu = output<void>();
+  requestJoin = output<void>();
+  openAttendees = output<void>();
+  openRequests = output<void>();
+}

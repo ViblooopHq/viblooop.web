@@ -1,6 +1,6 @@
 <!-- Desktop Floating Navbar -->
 <nav
-  class="hidden md:flex fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl z-[100] items-center justify-between px-8 py-3 rounded-full bg-white/60 dark:bg-surface/10 backdrop-blur-xl border border-gray-300/50 dark:border-outline-variant/15 shadow-lg dark:shadow-[0_0_40px_rgba(223,228,254,0.06)] transition-all duration-300">
+  class="vl-app-header vl-app-header--desktop hidden md:flex fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl z-[100] items-center justify-between px-8 py-3 rounded-full transition-all duration-300">
 
   <!-- Logo -->
   <div
@@ -31,13 +31,13 @@
   <!-- Right Actions -->
   <div class="flex items-center gap-4">
     <button type="button" [matTooltip]="'Create Event'" (click)="openCreateDrawer()"
-      class="flex items-center justify-center w-10 h-10 rounded-full bg-primary/20 dark:bg-primary/10 text-primary hover:bg-primary hover:text-on-primary transition-all shadow-md group hover:shadow-[0_0_20px_rgba(255,134,195,0.4)] dark:hover:shadow-[0_0_20px_rgba(255,134,195,0.6)]">
+      class="vl-icon-button vl-app-header__create-action group">
       <span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300"
         translate="no">add</span>
     </button>
 
     <button
-      class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-variant/40 dark:bg-surface-variant/40 text-on-surface transition-all hover:bg-surface-variant/80 dark:hover:bg-surface-variant/80"
+      class="vl-icon-button"
       (click)="toggleTheme()" [matTooltip]="isLightTheme() ? 'Dark Mode' : 'Light Mode'">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
@@ -45,7 +45,7 @@
     @if (userDetails) {
     <div class="notification-anchor relative flex items-center">
       <button type="button" [matTooltip]="'Notifications'" (click)="$event.stopPropagation(); toggleNotification()"
-        class="relative flex items-center justify-center w-10 h-10 rounded-full bg-surface-variant/40 dark:bg-surface-variant/40 text-on-surface transition-all hover:bg-surface-variant/80 dark:hover:bg-surface-variant/80">
+        class="vl-icon-button relative">
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
         <span
@@ -63,7 +63,7 @@
     </div>
 
     <button
-      class="relative flex items-center justify-center w-10 h-10 rounded-full bg-surface-variant/40 dark:bg-surface-variant/40 text-on-surface transition-all hover:bg-surface-variant/80 dark:hover:bg-surface-variant/80">
+      class="vl-icon-button relative">
       <a [matTooltip]="'Chats'" routerLink="/chats">
         <span class="material-symbols-outlined" translate="no">chat</span>
       </a>
@@ -77,22 +77,21 @@
       }
     </button>
 
-    <div class="relative group">
+    <div class="relative">
       <!-- Desktop Profile Trigger -->
-      <button [matTooltip]="'Profile'"
-        class="pl-4 pr-1 py-1 rounded-full bg-gradient-to-r from-primary to-primary-dim text-on-primary font-medium hover:brightness-110 transition-all shadow-lg shadow-primary/30 flex items-center gap-3 cursor-pointer">
-        <span>{{ userName }}</span>
-        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-sm">
-          <span class="material-symbols-outlined text-[20px]" translate="no">person</span>
+      <button type="button" [matTooltip]="'Profile'" class="header-profile-trigger" aria-label="Open profile menu"
+        [attr.aria-expanded]="isUserProfileVisible" (click)="$event.stopPropagation(); toggleUserProfile()">
+        <div class="header-profile-avatar">
+          <img [src]="getMobileProfileImage()" alt="Your profile" />
         </div>
       </button>
 
-      <!-- Dropdown Container with Bridge Padding -->
-      <div
-        class="absolute top-[80%] right-0 pt-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 pointer-events-none group-hover:pointer-events-auto">
+      @if (isUserProfileVisible) {
+      <!-- Desktop profile menu -->
+      <div class="absolute top-[80%] right-0 pt-6 z-50">
 
         <ul
-          class="min-w-[220px] py-2 rounded-2xl bg-white/95 dark:bg-surface/95 backdrop-blur-2xl dark:text-on-surface border border-gray-200/50 dark:border-outline-variant/15 shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col gap-1 overflow-hidden transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300"
+          class="min-w-[220px] py-2 rounded-2xl bg-white/95 dark:bg-surface/95 backdrop-blur-2xl dark:text-on-surface border border-gray-200/50 dark:border-outline-variant/15 shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col gap-1 overflow-hidden animate-fade-in"
           vibOutsideClick (onOutsideClick)="closeDropDown()">
 
           <li
@@ -124,6 +123,7 @@
           </li>
         </ul>
       </div>
+      }
     </div>
     } @else {
     <button
@@ -138,14 +138,14 @@
 
 <!-- Mobile Top Header (Logo & Actions) -->
 <header
-  class="md:hidden fixed top-0 left-0 w-full z-50 bg-white/60 dark:bg-surface/10 backdrop-blur-xl border-b border-gray-200 dark:border-outline-variant/15 flex items-center justify-between px-6 py-4 shadow-sm dark:shadow-[0_0_40px_rgba(223,228,254,0.06)]">
+  class="vl-app-header vl-app-header--mobile md:hidden fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4">
   <div class="flex items-center gap-3 text-primary-fixed dark:text-primary cursor-pointer" routerLink="/">
     <img src="logo.png" alt="Viblooop Logo" style="width: 40px;">
   </div>
 
   <div class="flex items-center gap-3">
     <button
-      class="flex items-center justify-center w-9 h-9 rounded-full bg-surface-variant/40 dark:bg-surface-variant/40 text-on-surface transition-all active:scale-95"
+      class="vl-icon-button w-9 min-w-9 h-9 active:scale-95"
       (click)="toggleTheme()">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
@@ -153,7 +153,7 @@
     @if (userDetails) {
     <div class="notification-anchor relative flex items-center">
       <button type="button"
-        class="relative flex items-center justify-center w-9 h-9 rounded-full bg-surface-variant/40 dark:bg-surface-variant/40 text-on-surface transition-all active:scale-95"
+        class="vl-icon-button relative w-9 min-w-9 h-9 active:scale-95"
         (click)="navigateTo('/notifications')" aria-label="Notifications">
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
@@ -201,8 +201,7 @@
 }
 
 <!-- Mobile Bottom Sticky App-Like Navbar -->
-<div
-  class="flex md:hidden fixed bottom-0 left-0 w-full z-50 bg-white/5 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 shadow-[0_-10px_25px_rgba(108,59,255,0.05)] rounded-t-[32px] justify-around items-center px-4 pb-8 pt-4">
+<div class="mobile-navigation-shell md:hidden">
   @if (!isCreateRoute()) {
   <button
     class="mobile-create-event-fab fixed bottom-28 right-6 w-14 h-14 rounded-full flex items-center justify-center z-50 active:scale-90 duration-200 transition-transform"
@@ -214,12 +213,12 @@
 
   <!-- Bottom Navigation Bar -->
   <nav
-    class="fixed bottom-0 left-0 w-full z-50 bg-white/5 dark:bg-slate-950/80 backdrop-blur-xl border-t border-slate-800 shadow-[0_-10px_25px_rgba(108,59,255,0.05)] rounded-t-[32px] flex justify-around items-center px-4 pb-8 pt-4">
+    class="vl-app-bottom-nav fixed bottom-0 left-0 w-full z-50 rounded-t-[32px] flex justify-around items-center px-4 pb-6 pt-4">
 
     @for (item of getMobileMenu(); track $index) {
     <a [routerLink]="item.path"
       (click)="handleMobileNavClick(item)"
-      routerLinkActive="text-[#6C3BFF] bg-[#6C3BFF]/10 rounded-2xl px-4 py-1.5 active:scale-90"
+      routerLinkActive="text-primary bg-primary/10 rounded-2xl px-4 py-1.5 active:scale-90"
       [routerLinkActiveOptions]="{exact: true}"
       class="flex flex-col items-center justify-center text-slate-500 hover:opacity-80 transition-opacity"
       #rla="routerLinkActive">
@@ -229,12 +228,11 @@
         <img [src]="getMobileProfileImage()" alt="Profile" />
       </span>
       } @else {
-      <span class="material-symbols-outlined" [style.font-variation-settings]="getActiveFill(rla)">
+      <span class="material-symbols-outlined mobile-nav-icon" [style.font-variation-settings]="getActiveFill(rla)">
         {{ item.icon }}
       </span>
       }
-
-      <span class="font-['Spline_Sans'] text-[11px] font-semibold">
+      <span class="vl-meta">
         {{ item.label }}
       </span>
 

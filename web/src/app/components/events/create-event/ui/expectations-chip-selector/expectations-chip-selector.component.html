@@ -1,0 +1,20 @@
+<div class="form-card">
+  <div class="card-header">
+    <span class="material-symbols-outlined header-icon" aria-hidden="true">interests</span>
+    <span>
+      <span class="header-label" id="expectations-label">What to expect</span>
+      <small>Help attendees know what's planned</small>
+    </span>
+  </div>
+
+  <div class="chips-wrap" role="group" aria-labelledby="expectations-label">
+    @for (tag of options(); track tag) {
+      <button type="button" class="chip" [class.chip--selected]="isSelected(tag)" [attr.aria-pressed]="isSelected(tag)" (click)="toggle.emit(tag)">
+        @if (isSelected(tag)) {
+          <span class="material-symbols-outlined chip-check" aria-hidden="true">check</span>
+        }
+        {{ tag }}
+      </button>
+    }
+  </div>
+</div>

@@ -1,17 +1,11 @@
 // --- Theme Variables ---
-$surface: #070d1f;
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
 $accent: #ffaa00;
-$on-surface: #dfe4fe;
-$on-surface-variant: #a5aac2;
 
 .vl-community {
   padding: 6rem 1.5rem;
 
   // Section background matching Why Choose Us
-  background-color: rgba($surface, 0.4);
+  background-color: rgba(var(--bg-surface-rgb), 0.4);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
   border-top: 1px solid rgba(255, 255, 255, 0.05);
@@ -75,36 +69,36 @@ $on-surface-variant: #a5aac2;
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 0.75rem;
-    color: $on-surface;
-    font-family: 'Inter', sans-serif;
+    color: var(--on-surface);
+    font-family: var(--font-ui);
   }
 
   &__card-desc {
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     line-height: 1.625;
     margin: 0;
     font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   // --- Card Color Modifiers ---
   &__card--primary {
-    .vl-community__icon-wrapper { background-color: rgba($primary, 0.15); }
-    .vl-community__icon { color: $primary; }
+    .vl-community__icon-wrapper { background-color: rgba(var(--primary-rgb), 0.15); }
+    .vl-community__icon { color: var(--primary); }
   }
 
   &__card--secondary {
-    .vl-community__icon-wrapper { background-color: rgba($secondary, 0.15); }
-    .vl-community__icon { color: $secondary; }
+    .vl-community__icon-wrapper { background-color: rgba(var(--secondary-rgb), 0.15); }
+    .vl-community__icon { color: var(--secondary); }
   }
 
   &__card--tertiary {
-    .vl-community__icon-wrapper { background-color: rgba($tertiary, 0.15); }
-    .vl-community__icon { color: $tertiary; }
+    .vl-community__icon-wrapper { background-color: rgba(var(--tertiary-rgb), 0.15); }
+    .vl-community__icon { color: var(--tertiary); }
   }
 
   &__card--accent {
     .vl-community__icon-wrapper { background-color: rgba($accent, 0.15); }
-    .vl-community__icon { color: $accent; }
+    .vl-community__icon { color: var(--color-warning-dim); }
   }
 }

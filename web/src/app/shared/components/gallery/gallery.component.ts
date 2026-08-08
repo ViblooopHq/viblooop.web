@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, HostListener, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, HostListener, input, output, signal } from '@angular/core';
 
 export interface GalleryImage {
   url: string;
@@ -10,50 +10,51 @@ export interface GalleryImage {
 @Component({
   selector: 'vl-gallery',
   imports: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss'
 })
 export class GalleryComponent {
-  @Input() images: GalleryImage[] = [];  // Images will come from events API
-  @Input() showHeader = true;
-  @Input() showGrid = true;
-  @Input() showArchiveAction = true;
-  @Input() showActions = false;
-  @Input() canDownload = false;
-  @Input() canDelete = false;
-  @Input() deletingImagePath = '';
+  images = input<GalleryImage[]>([]);  // Images will come from events API
+  showHeader = input(true);
+  showGrid = input(true);
+  showArchiveAction = input(true);
+  showActions = input(false);
+  canDownload = input(false);
+  canDelete = input(false);
+  deletingImagePath = input('');
 
-  @Output() deleteImage = new EventEmitter<GalleryImage>();
+  deleteImage = output<GalleryImage>();
 
-  selectedImage: GalleryImage | null = null;
-  currentIndex: number = -1;
-  isActionsOpen = false;
-  isDeleteConfirmOpen = false;
-  isDesktop: boolean = window.innerWidth >= 768; // tablet & laptop only
+  selectedImage = signal<GalleryImage | null>(null);
+  currentIndex = signal(-1);
+  isActionsOpen = signal(false);
+  isDeleteConfirmOpen = signal(false);
+  isDesktop = signal(window.innerWidth >= 768); // tablet & laptop only
 
   // Update view on resize
   @HostListener('window:resize')
   onResize() {
-    this.isDesktop = window.innerWidth >= 768;
+    this.isDesktop.set(window.innerWidth >= 768);
   }
 
   onImageSelect(img: GalleryImage) {
-    this.currentIndex = this.images.findIndex(i => i === img);
-    this.selectedImage = img;
+    this.currentIndex.set(this.images().findIndex(i => i === img));
+    this.selectedImage.set(img);
     this.closeActionPanels();
   }
 
   openAtIndex(index: number) {
-    if (index < 0 || index >= this.images.length) return;
+    if (index < 0 || index >= this.images().length) return;
 
-    this.currentIndex = index;
-    this.selectedImage = this.images[index];
+    this.currentIndex.set(index);
+    this.selectedImage.set(this.images()[index]);
     this.closeActionPanels();
   }
 
   closePreview() {
-    this.selectedImage = null;
-    this.currentIndex = -1;
+    this.selectedImage.set(null);
+    this.currentIndex.set(-1);
     this.closeActionPanels();
   }
 
@@ -64,52 +65,56 @@ export class GalleryComponent {
 
   // Navigate Left
   showPrevImage() {
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-      this.selectedImage = this.images[this.currentIndex];
+    const index = this.currentIndex();
+    if (index > 0) {
+      this.currentIndex.set(index - 1);
+      this.selectedImage.set(this.images()[index - 1]);
       this.closeActionPanels();
     }
   }
 
   // Navigate Right
   showNextImage() {
-    if (this.currentIndex < this.images.length - 1) {
-      this.currentIndex++;
-      this.selectedImage = this.images[this.currentIndex];
+    const index = this.currentIndex();
+    if (index < this.images().length - 1) {
+      this.currentIndex.set(index + 1);
+      this.selectedImage.set(this.images()[index + 1]);
       this.closeActionPanels();
     }
   }
 
   get selectedImageKey(): string {
-    return this.selectedImage?.path || this.selectedImage?.url || '';
+    const image = this.selectedImage();
+    return image?.path || image?.url || '';
   }
 
   get shouldShowActions(): boolean {
-    return this.showActions && (this.canDownload || this.canDelete);
+    return this.showActions() && (this.canDownload() || this.canDelete());
   }
 
   toggleActions() {
     if (!this.shouldShowActions) return;
-    this.isActionsOpen = !this.isActionsOpen;
+    this.isActionsOpen.update((isOpen) => !isOpen);
   }
 
   openDeleteConfirm() {
-    if (!this.canDelete) return;
-    this.isActionsOpen = false;
-    this.isDeleteConfirmOpen = true;
+    if (!this.canDelete()) return;
+    this.isActionsOpen.set(false);
+    this.isDeleteConfirmOpen.set(true);
   }
 
   closeDeleteConfirm() {
-    this.isDeleteConfirmOpen = false;
+    this.isDeleteConfirmOpen.set(false);
   }
 
   requestDelete() {
-    if (!this.canDelete || !this.selectedImage) return;
-    this.deleteImage.emit(this.selectedImage);
+    const image = this.selectedImage();
+    if (!this.canDelete() || !image) return;
+    this.deleteImage.emit(image);
   }
 
   private closeActionPanels() {
-    this.isActionsOpen = false;
-    this.isDeleteConfirmOpen = false;
+    this.isActionsOpen.set(false);
+    this.isDeleteConfirmOpen.set(false);
   }
 }

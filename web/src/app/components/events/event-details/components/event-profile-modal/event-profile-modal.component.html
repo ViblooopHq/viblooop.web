@@ -1,0 +1,16 @@
+@if (isOpen()) {
+<div class="fixed inset-0 z-[999] flex items-center justify-center bg-black/50">
+  <div class="bg-white rounded-2xl shadow-xl w-[95%] h-[95%] p-6 relative overflow-y-auto" role="dialog"
+    aria-modal="true" aria-labelledby="event-profile-modal-heading" cdkTrapFocus cdkTrapFocusAutoCapture
+    (keydown.escape)="close.emit()">
+    <button type="button" (click)="close.emit()" aria-label="Close profile"
+      class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">
+      <i class="fa-solid fa-xmark text-xl" aria-hidden="true"></i>
+    </button>
+    <h2 id="event-profile-modal-heading" class="text-xl font-semibold mb-4">User Profile</h2>
+    @if (userId()) {
+      <vl-profile [userId]="userId()"></vl-profile>
+    }
+  </div>
+</div>
+}

@@ -1,0 +1,79 @@
+<div class="form-card host-notes-card">
+  <div class="host-notes-heading">
+    <span class="material-symbols-outlined host-notes-icon" aria-hidden="true">edit_note</span>
+    <div class="host-notes-heading-copy">
+      <h3 class="host-notes-title">{{ title() }}</h3>
+      <p class="host-notes-subtitle">{{ subtitle() }}</p>
+    </div>
+  </div>
+
+  <div class="notes-input-wrapper">
+    <label class="sr-only" for="host-notes-textarea">{{ title() }}</label>
+    <textarea
+      id="host-notes-textarea"
+      class="notes-textarea"
+      [value]="descriptionValue()"
+      [placeholder]="placeholder()"
+      [attr.maxlength]="maxLength"
+      (input)="onDescriptionInput($event)"></textarea>
+    <div class="notes-char-count">{{ descriptionValue()?.length || 0 }}/{{ maxLength }}</div>
+  </div>
+
+  <div class="host-quick-add">
+    <button
+      type="button"
+      class="host-quick-add-toggle"
+      [attr.aria-expanded]="isExpanded()"
+      (click)="toggleExpanded()">
+      <span class="host-quick-add-header">
+        <span class="host-quick-add-title">Quick add</span>
+        <span class="host-quick-add-subtitle">Tap to add to your notes.</span>
+      </span>
+      <span
+        class="material-symbols-outlined host-quick-add-chevron"
+        [class.host-quick-add-chevron--expanded]="isExpanded()"
+        aria-hidden="true">
+        keyboard_arrow_down
+      </span>
+    </button>
+
+    @if (isExpanded()) {
+      <div class="host-note-pills-shell">
+        @if (canScrollLeft()) {
+          <button
+            type="button"
+            class="host-note-scroll-btn host-note-scroll-btn--left"
+            aria-label="Scroll quick add left"
+            (click)="scrollPills('left')">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+          </button>
+        }
+
+        <div
+          #pillsEl
+          class="host-note-pills"
+          (scroll)="updateScrollState()">
+          @for (item of quickAdds(); track item.label) {
+            <button type="button" class="host-note-pill"
+              [class.host-note-pill--selected]="isNoteSelected(item.note)"
+              [attr.aria-pressed]="isNoteSelected(item.note)"
+              (click)="addNote(item.note)">
+              <span class="host-note-pill-emoji" aria-hidden="true">{{ item.emoji }}</span>
+              <span class="host-note-pill-label">{{ item.label }}</span>
+            </button>
+          }
+        </div>
+
+        @if (canScrollRight()) {
+          <button
+            type="button"
+            class="host-note-scroll-btn host-note-scroll-btn--right"
+            aria-label="Scroll quick add right"
+            (click)="scrollPills('right')">
+            <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+</div>

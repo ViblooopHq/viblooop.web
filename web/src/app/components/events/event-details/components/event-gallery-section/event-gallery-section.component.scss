@@ -1,0 +1,59 @@
+@use "../../_tokens" as *;
+
+.ed-section {
+  @include ed-panel;
+}
+
+.ed-section-title {
+  @include ed-section-title;
+}
+
+.gallery-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+
+  &::-webkit-scrollbar {
+    height: 0;
+    display: none;
+  }
+}
+
+.gallery-item {
+  position: relative;
+  flex-shrink: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0.75rem;
+  background: transparent;
+  cursor: pointer;
+  overflow: hidden;
+
+  img {
+    height: 100px;
+    width: 160px;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    display: block;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+
+  &:hover img {
+    filter: brightness(1.08);
+    transform: scale(1.03);
+  }
+}
+
+.btn-upload {
+  gap: 0.375rem;
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-action-primary);
+  border-style: dashed;
+
+  &:hover {
+    background: color-mix(in srgb, var(--color-action-primary) 8%, transparent);
+  }
+}

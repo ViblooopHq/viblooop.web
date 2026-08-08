@@ -1,0 +1,35 @@
+<button type="button" class="vibe-card"
+  [ngClass]="'vibe-card--' + accent()"
+  [class.vibe-card--monochrome]="isSoon()"
+  [class.vibe-card--disabled]="isSoon()"
+  [class.vibe-card--selected]="selected()"
+  [attr.aria-pressed]="selected()"
+  [attr.aria-label]="isSoon() ? title() + ' is coming soon' : title()"
+  [disabled]="isSoon()"
+  (click)="selectCategory()">
+
+  @if (selected()) {
+    <div class="vibe-check"><span class="material-symbols-outlined" aria-hidden="true">check</span></div>
+  }
+
+  <div class="vibe-img-wrap">
+    @if (category().image) {
+      <img class="vibe-img" [src]="category().image" [alt]="title()" />
+    } @else {
+      <div class="vibe-img-placeholder">
+        <span class="material-symbols-outlined vibe-img-icon" aria-hidden="true">{{ icon() }}</span>
+      </div>
+    }
+    @if (isSoon()) {
+      <span class="vibe-soon">Soon</span>
+    }
+    <div class="vibe-badge" [ngClass]="'vibe-badge--' + accent()">
+      <span class="material-symbols-outlined" aria-hidden="true">{{ icon() }}</span>
+    </div>
+  </div>
+
+  <span class="vibe-label">{{ title() }}</span>
+  @if (description()) {
+    <span class="vibe-tags">{{ description() }}</span>
+  }
+</button>

@@ -1,47 +1,47 @@
-<section class="chat-box" [class.embedded]="isEmbedded">
+<section class="chat-box" [class.embedded]="isEmbedded()" role="region" [attr.aria-label]="chatTitle()">
   <header class="chat-header">
-    @if (showBackButton) {
+    @if (showBackButton()) {
       <button class="chat-back" type="button" aria-label="Back to chats" (click)="backToInbox.emit()">
-        <span class="material-symbols-outlined" translate="no">arrow_back_ios_new</span>
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">arrow_back_ios_new</span>
       </button>
     }
 
-    <div class="chat-avatar">
+    <div class="chat-avatar" aria-hidden="true">
       <span class="material-symbols-outlined" translate="no">groups</span>
     </div>
 
     <div class="chat-heading">
-      <h1>{{ chatTitle }}</h1>
-      @if (chatSubtitle) {
-        <p>{{ chatSubtitle }}</p>
+      <h1 class="vl-title-md">{{ chatTitle() }}</h1>
+      @if (chatSubtitle()) {
+        <p class="vl-body-sm">{{ chatSubtitle() }}</p>
       }
     </div>
 
     <div class="chat-actions">
-      @if (!isEmbedded) {
+      @if (!isEmbedded()) {
         <button class="icon-btn" type="button" aria-label="Close chat" (click)="closeChat.emit()">
-          <span class="material-symbols-outlined" translate="no">close</span>
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
         </button>
       } @else {
         <button class="icon-btn" type="button" aria-label="Chat options">
-          <span class="material-symbols-outlined" translate="no">more_vert</span>
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">more_vert</span>
         </button>
       }
     </div>
   </header>
 
-  <div class="chat-messages" #messagesContainer>
-    @if (messages.length === 0) {
+  <div class="chat-messages" #messagesContainer role="log" aria-live="polite">
+    @if (messages().length === 0) {
       <div class="chat-empty">
-        <span class="material-symbols-outlined" translate="no">forum</span>
-        <h2>No messages yet</h2>
-        <p>Start the conversation with this group.</p>
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">forum</span>
+        <h2 class="vl-title-md">No messages yet</h2>
+        <p class="vl-body-sm">Start the conversation with this group.</p>
       </div>
     } @else {
       <div class="timeline-chip">Today</div>
 
       <div class="system-note">
-        <strong>You joined "{{ chatTitle }}"</strong>
+        <strong>You joined "{{ chatTitle() }}"</strong>
         <span>You can now start chatting with the group.</span>
       </div>
 
@@ -49,7 +49,7 @@
         <span>New Messages</span>
       </div>
 
-      @for (msg of messages; track msg._id || $index; let i = $index) {
+      @for (msg of messages(); track msg._id || $index; let i = $index) {
         <article class="message-row" [class.own]="isOwnMessage(msg)">
           @if (!isOwnMessage(msg)) {
             <div class="message-avatar" aria-hidden="true">
@@ -70,15 +70,18 @@
   </div>
 
   <form class="chat-input" (ngSubmit)="sendMessage()">
+    <label for="chat-message-input" class="sr-only">Type a message</label>
     <input
+      id="chat-message-input"
       type="text"
       name="newMessage"
-      [(ngModel)]="newMessage"
+      [ngModel]="newMessage()"
+      (ngModelChange)="newMessage.set($event)"
       placeholder="Type a message..."
       autocomplete="off"
     />
-    <button type="submit" aria-label="Send message" [disabled]="!newMessage.trim()">
-      <span class="material-symbols-outlined" translate="no">send</span>
+    <button type="submit" aria-label="Send message" [disabled]="!newMessage().trim()">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">send</span>
     </button>
   </form>
 </section>

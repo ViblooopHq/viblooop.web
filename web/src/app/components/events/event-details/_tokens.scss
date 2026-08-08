@@ -1,0 +1,37 @@
+// Shared design tokens for the event-details feature tree.
+// @use'd (not @import'd) by the container and every child component's SCSS so
+// none of them re-hardcode these hex values individually.
+@use "../../../../styles/index" as *;
+
+$purple-dark: var(--color-brand-primary);
+$purple-mid: var(--color-brand-primary);
+$purple-light: var(--color-brand-tint-soft);
+$orange-gradient: linear-gradient(135deg, var(--color-warning) 0%, var(--color-accent) 100%);
+$green-verified: var(--color-success);
+$star-gold: var(--color-warning);
+$card-radius: 20px;
+
+// Base surface shared by every panel-shaped section (host card, facts, map, chat, drawer person cards).
+@mixin ed-panel {
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 18rem),
+    var(--color-surface-raised);
+  box-shadow: var(--shadow-sm);
+  padding: 1.35rem 1.45rem;
+}
+
+@mixin ed-section-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin: 0 0 1rem;
+  color: var(--color-text-primary);
+  font-size: 1.1rem;
+  font-weight: 900;
+
+  i {
+    color: var(--color-brand-accent);
+  }
+}

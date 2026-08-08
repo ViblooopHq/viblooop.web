@@ -1,0 +1,19 @@
+<main class="step-content">
+  <div class="vibe-grid">
+    @for (cat of categories(); track categoryKey(cat)) {
+      <vl-vibe-category-card
+        [category]="cat"
+        [selected]="selectedCategoryId() === categoryKey(cat)"
+        (select)="select(categoryKey(cat))" />
+    }
+
+    <!-- Custom placeholder -->
+    <button type="button" class="vibe-card vibe-card--custom">
+      <div class="vibe-custom-mark">
+        <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+      </div>
+      <span class="vibe-label">Custom</span>
+      <span class="vibe-tags">Create your own vibe</span>
+    </button>
+  </div>
+</main>

@@ -13,8 +13,8 @@
           <span class="vl-selfie-verification__progress" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
-          <h2 id="selfie-verification-title">Add Profile Photo</h2>
-          <p>This photo will be used to verify your identity.</p>
+          <h2 id="selfie-verification-title" class="vl-title-md">Add Profile Photo</h2>
+          <p class="vl-body-sm">This photo will be used to verify your identity.</p>
         </span>
         <button type="button" aria-label="Close verification" (click)="closeSelfieCamera()">
           <span class="material-symbols-outlined" translate="no">close</span>
@@ -53,8 +53,8 @@
           <span class="vl-selfie-verification__progress vl-selfie-verification__progress--selfie" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
-          <h2 id="selfie-verification-title">Verify Your Identity</h2>
-          <p>Take a clear selfie to get your Photo Verified badge</p>
+          <h2 id="selfie-verification-title" class="vl-title-md">Verify Your Identity</h2>
+          <p class="vl-body-sm">Take a clear selfie to get your Photo Verified badge</p>
         </span>
         <button type="button" aria-label="Close camera" (click)="closeSelfieCamera()">
           <span class="material-symbols-outlined" translate="no">close</span>
@@ -122,10 +122,10 @@
           <span class="vl-selfie-verification__progress vl-selfie-verification__progress--progress" aria-hidden="true">
             <span></span><span></span><span></span>
           </span>
-          <h2 id="selfie-verification-title">
+          <h2 id="selfie-verification-title" class="vl-title-md">
             {{ selfieVerificationStep === 'verified' ? 'Photo Verified' : 'Verification in Progress' }}
           </h2>
-          <p>
+          <p class="vl-body-sm">
             {{ selfieVerificationStep === 'verified' ? 'Your verified badge is ready.' : 'Submitting your profile photo and selfie.' }}
           </p>
         </span>

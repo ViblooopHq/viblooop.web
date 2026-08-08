@@ -1,0 +1,218 @@
+@use "../../create-event-shared" as *;
+
+/* ── LOCATION ── */
+.location-address-card {
+  display: grid;
+  gap: 18px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+  border-radius: var(--radius-xl);
+  background:
+    radial-gradient(circle at 7% 0%, color-mix(in srgb, var(--color-action-primary) 16%, transparent) 0, transparent 15rem),
+    linear-gradient(180deg, var(--color-surface-glass), var(--color-surface-canvas));
+  padding: 18px;
+}
+
+.location-line {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 7px 16px;
+  align-items: start;
+
+  &__icon {
+    grid-row: 1 / span 2;
+    margin-top: 2px;
+    color: var(--color-brand-accent);
+    font-size: var(--font-size-2xl);
+    font-variation-settings: 'FILL' 0, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+  }
+
+  &__copy {
+    display: grid;
+    gap: 5px;
+    min-width: 0;
+  }
+
+  &__label {
+    color: var(--color-brand-tint-soft);
+    font-size: var(--font-size-sm);
+    font-weight: 950;
+    line-height: 1.2;
+
+    strong {
+      color: var(--error);
+      font-weight: 950;
+    }
+  }
+
+  &__hint {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 650;
+    line-height: 1.25;
+  }
+
+  .location-input {
+    grid-column: 1 / -1;
+  }
+}
+
+.location-stack-field {
+  position: relative;
+  display: grid;
+  gap: 8px;
+
+  &__label {
+    color: var(--color-brand-tint-soft);
+    font-size: var(--font-size-sm);
+    font-weight: 950;
+    line-height: 1.2;
+
+    strong {
+      color: var(--error);
+      font-weight: 950;
+    }
+  }
+}
+
+.location-input {
+  width: 100%;
+  min-height: 54px;
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-md);
+  outline: 0;
+  background:
+    linear-gradient(180deg, var(--color-surface-glass), var(--color-surface-raised));
+  color: var(--color-brand-tint-soft);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: 400;
+  padding: 0 42px 0 18px;
+  box-shadow: var(--shadow-panel);
+  transition: border-color .2s, background .2s, box-shadow .2s;
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    font-weight: 400;
+  }
+
+  &:focus {
+    border-color: color-mix(in srgb, var(--color-accent) 62%, transparent);
+    background: var(--color-surface-raised);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+@media (max-width: 680px) {
+  .location-address-card {
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .location-line {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 7px 12px;
+  }
+
+  .location-input {
+    font-size: var(--font-size-sm);
+    min-height: 50px;
+  }
+}
+
+/* ── Material Customization ── */
+::ng-deep {
+  @include material-input-foundation;
+
+  .material-input-custom {
+    width: 100%;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--color-surface-glass) !important;
+      border: 1px solid var(--color-border-ghost) !important;
+      border-radius: var(--radius-md) !important;
+      padding: 0 14px !important;
+      box-shadow: var(--shadow-panel) !important;
+    }
+
+    .mat-mdc-form-field-flex {
+      height: 56px !important;
+      align-items: center !important;
+
+      @media (max-width: 480px) {
+        height: 32px !important;
+      }
+    }
+
+    .mdc-notched-outline {
+      border: 0 !important;
+
+      &__leading,
+      &__notch,
+      &__trailing {
+        border: 0 !important;
+        border-color: transparent !important;
+      }
+    }
+
+    .mat-mdc-input-element {
+      color: white !important;
+      font-size: var(--font-size-sm) !important;
+      font-weight: 400 !important;
+      caret-color: var(--color-brand-primary) !important;
+      color-scheme: dark;
+      accent-color: var(--color-brand-primary);
+
+      @media (max-width: 480px) {
+        font-size: var(--font-size-xs) !important;
+      }
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+
+    .mat-datepicker-toggle {
+      color: var(--color-brand-primary) !important;
+
+      @media (max-width: 480px) {
+        transform: scale(0.8);
+      }
+    }
+  }
+
+  /* Calendar Popup Styling */
+  .mat-datepicker-content {
+    background-color: var(--surface-dark-2) !important;
+    border: 1px solid color-mix(in srgb, var(--color-action-primary) 30%, transparent) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-overlay) !important;
+    transform: scale(0.85) !important;
+    transform-origin: top center !important;
+
+    @media (max-width: 480px) {
+      transform: scale(0.65) !important;
+    }
+
+    .mat-calendar-body-label {
+      color: var(--color-text-secondary) !important;
+    }
+
+    .mat-calendar-table-header,
+    .mat-calendar-body-cell-content {
+      color: var(--color-text-primary) !important;
+    }
+
+    .mat-calendar-body-selected {
+      background-color: var(--color-brand-primary) !important;
+    }
+
+    .mat-calendar-arrow {
+      fill: var(--color-text-primary) !important;
+    }
+
+    .mat-calendar-previous-button,
+    .mat-calendar-next-button {
+      color: var(--color-text-primary) !important;
+    }
+  }
+}

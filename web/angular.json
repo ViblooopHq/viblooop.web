@@ -33,15 +33,10 @@
               "src/assets/firebase-messaging-sw.js"
             ],
             "styles": [
-              "src/styles/_index.scss",
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss",
               "src/assets/icons/font-awesome/css/all.min.css",
-              "node_modules/mapbox-gl/dist/mapbox-gl.css",
-              "node_modules/flowbite/dist/flowbite.css"
-            ],
-            "scripts": [
-              "node_modules/flowbite/dist/flowbite.js"
+              "node_modules/mapbox-gl/dist/mapbox-gl.css"
             ],
             "allowedCommonJsDependencies": [
               "heic2any",
@@ -121,7 +116,6 @@
               "src/assets/firebase-messaging-sw.js"
             ],
             "styles": [
-              "src/styles/_index.scss",
               "@angular/material/prebuilt-themes/azure-blue.css",
               "src/styles.scss",
               "src/assets/icons/font-awesome/css/all.min.css"

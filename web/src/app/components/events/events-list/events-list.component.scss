@@ -8,7 +8,7 @@
     padding: 24px;
     background-color: var(--events-list-header-bg);
     box-shadow: var(--card-shadow);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     height: 220px;
 
     @include flex($align: center, $gap: 1rem);
@@ -35,7 +35,7 @@
   &__cards {
     padding: 32px 16px;
     margin-top: 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
 
     @include flex($gap: 2rem, $align: center, $justify: center, $wrap: wrap);
   }
@@ -63,14 +63,6 @@
   }
 }
 
-// --- Theme Variables ---
-$background: #070d1f; // Main page background
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface: #dfe4fe;
-$on-surface-variant: #a5aac2;
-
 // --- Main Layout ---
 // --- Breadcrumb Navigation ---
 .vl-breadcrumb {
@@ -82,8 +74,8 @@ $on-surface-variant: #a5aac2;
   text-transform: uppercase;
   letter-spacing: 0.1em; // tracking-widest
   font-weight: 700; // font-bold
-  color: rgba($on-surface-variant, 0.6); // text-on-surface-variant/60
-  font-family: 'Inter', sans-serif;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
 
   &__link {
     color: inherit;
@@ -91,7 +83,7 @@ $on-surface-variant: #a5aac2;
     transition: color 0.3s ease;
 
     &:hover {
-      color: $primary;
+      color: var(--primary);
     }
   }
 
@@ -100,7 +92,7 @@ $on-surface-variant: #a5aac2;
   }
 
   &__current {
-    color: $primary;
+    color: var(--primary);
   }
 }
 
@@ -116,8 +108,8 @@ $on-surface-variant: #a5aac2;
   overflow: hidden; // Keeps glows contained
 
   // Glassmorphism base
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border-ghost);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
 
@@ -133,20 +125,20 @@ $on-surface-variant: #a5aac2;
     position: absolute;
     width: 20rem; // w-80
     height: 20rem; // h-80
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     filter: blur(100px);
     z-index: 0;
 
     &--primary {
       top: -5rem; // -top-20
       right: -5rem; // -right-20
-      background-color: rgba($primary, 0.1);
+      background-color: color-mix(in srgb, var(--color-action-primary) 10%, transparent);
     }
 
     &--secondary {
       bottom: -5rem; // -bottom-20
       left: -5rem; // -left-20
-      background-color: rgba($secondary, 0.1);
+      background-color: color-mix(in srgb, var(--color-action-secondary) 10%, transparent);
     }
   }
 
@@ -160,7 +152,7 @@ $on-surface-variant: #a5aac2;
     border-radius: 2.5rem;
     overflow: hidden;
     transform: rotate(3deg);
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); // shadow-2xl
+    box-shadow: var(--shadow-overlay);
     transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 
     &:hover {
@@ -182,7 +174,7 @@ $on-surface-variant: #a5aac2;
   &__img-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba($background, 0.6), transparent);
+    background: linear-gradient(to top, color-mix(in srgb, var(--color-surface-canvas) 60%, transparent), transparent);
   }
 
   // --- Banner Content ---
@@ -206,9 +198,9 @@ $on-surface-variant: #a5aac2;
     font-weight: 900; // font-black
     line-height: 1; // leading-none
     letter-spacing: -0.025em; // tracking-tight
-    color: $on-surface;
+    color: var(--on-surface);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 
     @media (min-width: 768px) {
       font-size: 4.5rem; // md:text-7xl
@@ -219,10 +211,10 @@ $on-surface-variant: #a5aac2;
     font-size: 1.125rem; // text-lg
     font-weight: 300; // font-light
     line-height: 1.625; // leading-relaxed
-    color: $on-surface-variant;
+    color: var(--on-surface-variant);
     max-width: 42rem; // max-w-2xl
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   // --- Dynamic Tags ---
@@ -234,30 +226,30 @@ $on-surface-variant: #a5aac2;
 
   &__tag {
     padding: 0.375rem 1rem; // py-1.5 px-4
-    border-radius: 9999px;
+    border-radius: var(--radius-pill);
     font-size: 0.75rem; // text-xs
     font-weight: 700; // font-bold
     text-transform: uppercase;
     letter-spacing: 0.1em; // tracking-widest
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 
     // Modifiers matching TS data
     &--primary {
-      background-color: rgba($primary, 0.1);
-      border: 1px solid rgba($primary, 0.2);
-      color: $primary;
+      background-color: color-mix(in srgb, var(--color-action-primary) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 20%, transparent);
+      color: var(--color-action-primary);
     }
 
     &--secondary {
-      background-color: rgba($secondary, 0.1);
-      border: 1px solid rgba($secondary, 0.2);
-      color: $secondary;
+      background-color: color-mix(in srgb, var(--color-action-secondary) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-action-secondary) 20%, transparent);
+      color: var(--color-action-secondary);
     }
 
     &--tertiary {
-      background-color: rgba($tertiary, 0.1);
-      border: 1px solid rgba($tertiary, 0.2);
-      color: $tertiary;
+      background-color: color-mix(in srgb, var(--color-accent) 10%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+      color: var(--color-accent);
     }
   }
 }
@@ -273,9 +265,9 @@ $on-surface-variant: #a5aac2;
     font-size: 1.5rem; // text-2xl
     font-weight: 700; // font-bold
     letter-spacing: -0.025em; // tracking-tight
-    color: $on-surface;
+    color: var(--on-surface);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
   }
 
   &__actions {
@@ -290,14 +282,14 @@ $on-surface-variant: #a5aac2;
   align-items: center;
   justify-content: center;
   padding: 0.5rem; // p-2
-  border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  background: rgba(255, 255, 255, 0.02);
-  color: $on-surface;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--color-border-ghost);
+  background: var(--color-surface-glass);
+  color: var(--on-surface);
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.1); // hover:bg-white/10
+    background-color: var(--color-surface-glass-strong);
   }
 }

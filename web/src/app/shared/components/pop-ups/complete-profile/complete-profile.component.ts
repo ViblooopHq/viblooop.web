@@ -27,7 +27,7 @@ export class CompleteProfileComponent {
 
   completeNow() {
     this.closePopup();
-    this.router.navigate(['profile/edit2']); // go to profile page
+    this.router.navigate(['profile/edit']); // go to profile page
   }
 
   later() {

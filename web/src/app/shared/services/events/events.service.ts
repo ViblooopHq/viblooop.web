@@ -11,7 +11,7 @@ export class EventsService {
   eventDetails: any = []
   selectedCategory: any = {};
   categoryList: string[] = [
-    'House Party',
+    'Social',
     'Travel Companion',
     'Sports Activities',
     'Local Events',
@@ -135,5 +135,25 @@ export class EventsService {
       userId: userId
     };
     return this.httpService.http.post(`${this.baseUrl}/getJoinStatus`, body);
+  }
+
+  getNearbyEvents(lat: number, lng: number, radius: number = 50000): Observable<any> {
+    return this.httpService.http.get(`${this.baseUrl}/events/nearby?lat=${lat}&lng=${lng}&radius=${radius}`);
+  }
+
+  getRelatedNearbyEvents(eventId: string): Observable<any> {
+    return this.httpService.http.get(`${this.baseUrl}/events/getRelatedEvents?eventId=${eventId}`);
+  }
+
+  requestJoinEvent(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/requestJoinEvent`, { eventId, userId });
+  }
+
+  acceptJoinRequest(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/acceptJoinRequest`, { eventId, userId });
+  }
+
+  rejectJoinEventRequest(eventId: string, userId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/rejectJoinEventRequest`, { eventId, userId });
   }
 }

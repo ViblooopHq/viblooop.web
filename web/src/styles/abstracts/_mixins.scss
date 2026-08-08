@@ -2,7 +2,7 @@
 @use "sass:map";
 
 
-@mixin button($bgColor: #fff, $color: #4c4c4c, $radius: 12px, ) {
+@mixin button($bgColor: var(--btn-bg), $color: var(--on-surface), $radius: var(--radius-md)) {
   border: none;
   border-radius: $radius;
   outline: transparent;
@@ -100,6 +100,11 @@
   @if $align-content != null {
     align-content: $align-content;
   }
+}
+
+// Brand primary→accent CTA gradient, reused across event-creation cards/buttons/progress indicators
+@mixin brand-cta-gradient($direction: 135deg) {
+  background: linear-gradient($direction, var(--color-brand-primary), var(--color-brand-accent));
 }
 
 // for dynamically generating pre-fixes like --moz-property, --webkit-property

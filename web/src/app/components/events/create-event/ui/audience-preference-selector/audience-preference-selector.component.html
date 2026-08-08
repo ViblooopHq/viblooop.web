@@ -1,0 +1,45 @@
+<div class="form-card audience-card">
+  <div class="audience-header">
+    <div class="header-main">
+      <span class="material-symbols-outlined header-icon" aria-hidden="true">groups</span>
+      <h2 class="header-title">Audience Preference <span class="sparkle" aria-hidden="true">✨</span></h2>
+    </div>
+    <p class="header-subtitle">Safe, respectful crowd</p>
+  </div>
+
+  <div class="audience-grid-row">
+    <button type="button" class="preference-card preference-card--open"
+      [class.preference-card--active]="mixType() === 'open'" [attr.aria-pressed]="mixType() === 'open'"
+      (click)="mixTypeChange.emit('open')">
+      <div class="icon-ring icon-ring--open">
+        <span class="material-symbols-outlined" aria-hidden="true">public</span>
+      </div>
+      <span class="card-title">Open</span>
+    </button>
+
+    <button type="button" class="preference-card preference-card--women"
+      [class.preference-card--active]="mixType() === 'women'" [attr.aria-pressed]="mixType() === 'women'"
+      (click)="mixTypeChange.emit('women')">
+      <div class="icon-ring icon-ring--women">
+        <span class="material-symbols-outlined" aria-hidden="true">female</span>
+        <span class="material-symbols-outlined icon-overlap" aria-hidden="true">female</span>
+      </div>
+      <span class="card-title">Women</span>
+    </button>
+
+    <button type="button" class="preference-card preference-card--men"
+      [class.preference-card--active]="mixType() === 'men'" [attr.aria-pressed]="mixType() === 'men'"
+      (click)="mixTypeChange.emit('men')">
+      <div class="icon-ring icon-ring--men">
+        <span class="material-symbols-outlined" aria-hidden="true">male</span>
+        <span class="material-symbols-outlined icon-overlap" aria-hidden="true">male</span>
+      </div>
+      <span class="card-title">Men</span>
+    </button>
+  </div>
+
+  <div class="audience-footer">
+    <span class="material-symbols-outlined spark-icon" aria-hidden="true">verified_user</span>
+    <span><strong>Recommended:</strong> Open to everyone</span>
+  </div>
+</div>

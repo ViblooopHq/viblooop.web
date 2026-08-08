@@ -1,0 +1,292 @@
+<vl-form-drawer ariaLabel="Edit profile">
+<main class="vl-edit-profile">
+  <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="vl-edit-profile__shell">
+    <header class="vl-edit-profile__header">
+      <button type="button" class="vl-edit-profile__icon-button" aria-label="Go back" (click)="goBack()">
+        <span class="material-symbols-outlined" translate="no">chevron_left</span>
+      </button>
+
+      <h1 class="vl-title-md">Edit Profile</h1>
+    </header>
+
+    <section class="vl-edit-profile__photo">
+      <label class="vl-edit-profile__avatar-picker">
+        <img [src]="profilePreview || defaultProfile" alt="Profile photo" />
+        <span>
+          <span class="material-symbols-outlined" translate="no">photo_camera</span>
+        </span>
+        <input type="file" accept="image/*,.heic,.heif" (change)="onProfileSelected($event)" />
+      </label>
+      <p>Tap to change photo</p>
+
+      <section
+        class="vl-edit-profile__verification"
+        [class.vl-edit-profile__verification--verified]="isVerified"
+        aria-label="Photo verification">
+        <span class="vl-edit-profile__verification-icon">
+          <span class="material-symbols-outlined" translate="no">{{ isVerified ? 'verified' : 'person_check' }}</span>
+        </span>
+
+        <span class="vl-edit-profile__verification-copy">
+          <span class="vl-edit-profile__verification-heading">
+            <strong>Photo Verification</strong>
+            <span>{{ isVerified ? 'Verified' : 'Pending' }}</span>
+          </span>
+          <small>{{ isVerified ? 'Your profile has the verified badge' : 'Verify your selfie to get the verified badge' }}</small>
+        </span>
+
+        @if (!isVerified) {
+          <button class="vl-button vl-button--primary vl-edit-profile__verification-action" type="button" (click)="verifySelfie()">
+            Verify Selfie
+            <span class="material-symbols-outlined" translate="no">chevron_right</span>
+          </button>
+        }
+      </section>
+
+      <div class="vl-edit-profile__field vl-edit-profile__profile-photos">
+        <span>Profile Photos</span>
+        <div class="vl-edit-profile__photo-uploader">
+          <label class="vl-edit-profile__photo-add" [class.vl-edit-profile__photo-add--disabled]="profilePhotos.length >= maxProfilePhotos || isProfilePhotosSaving">
+            <span class="material-symbols-outlined" translate="no">add_a_photo</span>
+            <strong>{{ isProfilePhotosSaving ? 'Saving...' : 'Add photos' }}</strong>
+            <small>{{ profilePhotos.length }}/{{ maxProfilePhotos }}</small>
+            <input
+              type="file"
+              accept="image/*,.heic,.heif"
+              multiple
+              [disabled]="profilePhotos.length >= maxProfilePhotos || isProfilePhotosSaving"
+              (change)="onProfilePhotosSelected($event)" />
+          </label>
+
+          @for (photo of profilePhotos; track photo.id) {
+            <figure class="vl-edit-profile__photo-thumb">
+              <img [src]="photo.url" alt="Profile photo" />
+              <button type="button" aria-label="Remove profile photo" [disabled]="isProfilePhotosSaving" (click)="removeProfilePhoto(photo)">
+                <span class="material-symbols-outlined" translate="no">close</span>
+              </button>
+            </figure>
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="vl-edit-profile__fields">
+      @if (saveError) {
+        <p class="vl-edit-profile__error">{{ saveError }}</p>
+      }
+
+      <label class="vl-edit-profile__field">
+        <span>Full Name</span>
+        <input type="text" formControlName="name" placeholder="Your name" />
+      </label>
+
+      <label class="vl-edit-profile__field">
+        <span>Username</span>
+        <input type="text" formControlName="username" placeholder="username" />
+        <small>This is your unique username.</small>
+      </label>
+
+      <label class="vl-edit-profile__field">
+        <span>Bio</span>
+        <textarea formControlName="bio" maxlength="500" placeholder="Tell people what you vibe with"></textarea>
+        <small class="vl-edit-profile__counter">{{ profileForm.get('bio')?.value?.length || 0 }}/500</small>
+      </label>
+
+      <label class="vl-edit-profile__field">
+        <span>Date of Birth</span>
+        <div class="vl-edit-profile__input-icon">
+          <input #dobInput type="date" formControlName="dob" />
+          <span
+            class="material-symbols-outlined"
+            translate="no"
+            role="button"
+            tabindex="0"
+            aria-label="Open date picker"
+            (click)="openDatePicker(dobInput)"
+            (keydown.enter)="openDatePicker(dobInput)"
+            (keydown.space)="openDatePicker(dobInput)">calendar_month</span>
+        </div>
+        <small>DOB is used to calculate age.</small>
+      </label>
+
+      <div class="vl-edit-profile__field">
+        <span>Gender</span>
+        <div class="vl-edit-profile__gender-grid">
+          @for (gender of genderOptions; track gender.value) {
+            <button
+              type="button"
+              class="vl-edit-profile__gender-chip"
+              [class.vl-edit-profile__gender-chip--active]="profileForm.get('gender')?.value === gender.value"
+              (click)="selectGender(gender.value)">
+              <i [class]="gender.icon" aria-hidden="true"></i>
+              <span>{{ gender.label }}</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <label class="vl-edit-profile__field">
+        <span>Location</span>
+        <div class="vl-edit-profile__input-icon">
+          <input type="text" formControlName="location" placeholder="Bangalore, India" />
+          <span class="material-symbols-outlined" translate="no">location_on</span>
+        </div>
+      </label>
+
+      <div class="vl-edit-profile__field">
+        <span>Interests</span>
+        <div class="vl-edit-profile__interest-grid">
+          @for (interest of displayInterests; track interest?._id || interest?.label || $index) {
+            <button
+              type="button"
+              class="vl-edit-profile__interest-chip"
+              [class.vl-edit-profile__interest-chip--active]="isInterestSelected(interest)"
+              [disabled]="isInterestDisabled(interest)"
+              (click)="toggleInterest(interest)">
+              <span>{{ interest?.displayLabel || interest?.label || interest }}</span>
+              @if (isInterestSelected(interest)) {
+                <span class="material-symbols-outlined" translate="no">check_circle</span>
+              } @else {
+                <i [class]="interest?.icon" aria-hidden="true"></i>
+              }
+            </button>
+          }
+
+        </div>
+      </div>
+
+      <div class="vl-edit-profile__field">
+        <span>Social Links</span>
+        <div class="vl-edit-profile__socials">
+          @for (platform of socialPlatforms; track platform.key) {
+            <button
+              type="button"
+              [attr.aria-label]="platform.label"
+              [class.vl-edit-profile__social-button--active]="selectedSocialPlatform === platform.key"
+              [class.vl-edit-profile__social-button--linked]="hasSocialLink(platform.key)"
+              (click)="selectSocialPlatform(platform)">
+              <i [class]="platform.icon"></i>
+            </button>
+          }
+        </div>
+
+        <div class="vl-edit-profile__social-editor">
+          <span class="vl-edit-profile__social-editor-icon">
+            <i [class]="selectedSocial.icon"></i>
+          </span>
+          <input
+            type="text"
+            [placeholder]="selectedSocial.placeholder"
+            [(ngModel)]="socialLinkDraft"
+            [ngModelOptions]="{ standalone: true }"
+            (ngModelChange)="onSocialLinkDraftChanged($event)" />
+          <button type="button" class="vl-edit-profile__social-save" (click)="saveSocialLink()">
+            Save
+          </button>
+          @if (hasSocialLink(selectedSocialPlatform)) {
+            <button type="button" class="vl-edit-profile__social-remove" aria-label="Remove social link" (click)="removeSocialLink()">
+              <span class="material-symbols-outlined" translate="no">close</span>
+            </button>
+          }
+        </div>
+      </div>
+
+      <button type="submit" class="vl-edit-profile__save" [disabled]="!canSaveProfile">
+        {{ isSaving ? 'Saving...' : 'Save' }}
+      </button>
+
+      <section class="vl-edit-profile__account">
+        <p class="vl-edit-profile__account-label">Account &amp; Privacy</p>
+
+        <div class="vl-edit-profile__account-list">
+          <button type="button" class="vl-edit-profile__account-item" (click)="openLogoutDialog()">
+            <span class="vl-edit-profile__account-icon vl-edit-profile__account-icon--logout">
+              <span class="material-symbols-outlined" translate="no">logout</span>
+            </span>
+            <span class="vl-edit-profile__account-copy">
+              <strong>Logout</strong>
+              <small>Sign out from this device</small>
+            </span>
+            <span class="material-symbols-outlined vl-edit-profile__account-chevron" translate="no">chevron_right</span>
+          </button>
+
+          <button type="button" class="vl-edit-profile__account-item vl-edit-profile__account-item--danger"
+            (click)="openDeleteDialog()">
+            <span class="vl-edit-profile__account-icon vl-edit-profile__account-icon--danger">
+              <span class="material-symbols-outlined" translate="no">delete</span>
+            </span>
+            <span class="vl-edit-profile__account-copy">
+              <strong>Delete Account</strong>
+              <small>Permanently remove your profile and data</small>
+            </span>
+            <span class="material-symbols-outlined vl-edit-profile__account-chevron" translate="no">chevron_right</span>
+          </button>
+        </div>
+      </section>
+    </section>
+  </form>
+
+  <vl-selfie-verification
+    [isOpen]="isSelfieVerificationOpen"
+    [compareImage]="$any(profilePreview) || defaultProfile"
+    [defaultImage]="defaultProfile"
+    (closed)="closeSelfieVerification()"
+    (verified)="onSelfieVerified()">
+  </vl-selfie-verification>
+
+  @if (showLogoutDialog) {
+    <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
+      <section class="vl-edit-profile__dialog vl-edit-profile__dialog--logout" (click)="$event.stopPropagation()">
+        <div class="vl-edit-profile__dialog-handle"></div>
+        <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--logout">
+          <span class="material-symbols-outlined" translate="no">logout</span>
+        </div>
+        <h2 id="logout-confirm-title">Sign out?</h2>
+        <p>You’ll need to sign in again to access your account.</p>
+
+        <div class="vl-edit-profile__dialog-actions">
+          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
+            (click)="closeLogoutDialog()">Cancel</button>
+          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
+            (click)="confirmLogout()">Logout</button>
+        </div>
+      </section>
+    </div>
+  }
+
+  @if (showDeleteDialog) {
+    <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title">
+      <section class="vl-edit-profile__dialog vl-edit-profile__dialog--delete" (click)="$event.stopPropagation()">
+        <div class="vl-edit-profile__dialog-handle"></div>
+        <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--delete">
+          <span class="material-symbols-outlined" translate="no">delete</span>
+        </div>
+        <h2 id="delete-confirm-title">Delete Account</h2>
+        <p>This action cannot be undone.</p>
+
+        <ul class="vl-edit-profile__dialog-list">
+          <li>
+            <span class="material-symbols-outlined" translate="no">person_off</span>
+            Your profile will be removed
+          </li>
+          <li>
+            <span class="material-symbols-outlined" translate="no">event_busy</span>
+            Events you’ve created will be cancelled
+          </li>
+          <li>
+            <span class="material-symbols-outlined" translate="no">chat_bubble</span>
+            Chats, reviews and data will be deleted
+          </li>
+        </ul>
+
+        <div class="vl-edit-profile__dialog-actions">
+          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
+            (click)="closeDeleteDialog()">Keep Account</button>
+          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
+            (click)="confirmDeleteAccount()">Continue</button>
+        </div>
+      </section>
+    </div>
+  }
+</main>
+</vl-form-drawer>

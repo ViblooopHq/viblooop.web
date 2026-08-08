@@ -1,8 +1,4 @@
 // --- Theme Variables ---
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface-variant: #a5aac2;
 
 .vl-features {
     padding: 8rem 1.5rem; // py-32 px-6
@@ -43,7 +39,7 @@ $on-surface-variant: #a5aac2;
         text-transform: uppercase;
         letter-spacing: 0.4em; // tracking-[0.4em]
         font-size: 0.875rem; // text-sm
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     &__title {
@@ -52,9 +48,9 @@ $on-surface-variant: #a5aac2;
         font-style: italic;
         letter-spacing: -0.05em; // tracking-tighter
         line-height: 1; // leading-none
-        color: #ffffff;
+        color: var(--text-white);
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
 
         @media (min-width: 768px) {
             font-size: 4.5rem; // md:text-7xl
@@ -63,11 +59,11 @@ $on-surface-variant: #a5aac2;
 
     &__description {
         font-size: 1.25rem; // text-xl
-        color: $on-surface-variant;
+        color: var(--on-surface-variant);
         line-height: 1.625; // leading-relaxed
         font-weight: 300; // font-light
         margin: 0;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-ui);
     }
 
     &__list {
@@ -84,8 +80,8 @@ $on-surface-variant: #a5aac2;
         align-items: center;
         gap: 1rem; // gap-4
         font-size: 1.125rem; // text-lg
-        color: #ffffff;
-        font-family: 'Inter', sans-serif;
+        color: var(--text-white);
+        font-family: var(--font-ui);
     }
 
     &__list-icon {
@@ -121,7 +117,7 @@ $on-surface-variant: #a5aac2;
     &__glow {
         position: absolute;
         z-index: -1;
-        border-radius: 50%;
+        border-radius: var(--radius-full);
     }
 
     // --- Theme Specific Modifiers ---
@@ -130,7 +126,7 @@ $on-surface-variant: #a5aac2;
 
         .vl-feature__label,
         .vl-feature__list-icon {
-            color: $primary;
+            color: var(--primary);
         }
 
         .vl-feature__glass {
@@ -142,7 +138,7 @@ $on-surface-variant: #a5aac2;
             left: -2.5rem;
             width: 10rem;
             height: 10rem;
-            background-color: rgba($primary, 0.2);
+            background-color: rgba(var(--primary-rgb), 0.2);
             filter: blur(3rem);
         }
     }
@@ -151,7 +147,7 @@ $on-surface-variant: #a5aac2;
 
         .vl-feature__label,
         .vl-feature__list-icon {
-            color: $secondary;
+            color: var(--secondary);
         }
 
         .vl-feature__glass {
@@ -163,7 +159,7 @@ $on-surface-variant: #a5aac2;
             right: -2.5rem;
             width: 10rem;
             height: 10rem;
-            background-color: rgba($secondary, 0.2);
+            background-color: rgba(var(--secondary-rgb), 0.2);
             filter: blur(3rem);
         }
     }
@@ -172,7 +168,7 @@ $on-surface-variant: #a5aac2;
 
         .vl-feature__label,
         .vl-feature__list-icon {
-            color: $tertiary;
+            color: var(--tertiary);
         }
 
         .vl-feature__glass {
@@ -185,7 +181,7 @@ $on-surface-variant: #a5aac2;
             transform: translate(-50%, -50%);
             width: 15rem;
             height: 15rem;
-            background-color: rgba($tertiary, 0.1);
+            background-color: rgba(var(--tertiary-rgb), 0.1);
             filter: blur(100px); // blur-[100px]
         }
     }

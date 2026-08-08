@@ -7,11 +7,11 @@
     <!-- Left Section: Branding and Features -->
     <section class="branding-section">
       <!-- Main Headings -->
-      <h1 class="hero-heading">
+      <h1 class="hero-heading vl-title-lg">
         Find your <span class="text-accent-vibe">vibe.</span><br>
         Join the <span class="text-accent-moment">moment.</span>
       </h1>
-      <p class="hero-subtext">
+      <p class="hero-subtext vl-body">
         Discover amazing people and real plans near you. Parties, play, trips or chill moments - Viblooop has it all.
       </p>
 
@@ -20,22 +20,22 @@
         <li class="feature-item">
           <div class="feature-icon"><i class="fa-solid fa-user-group"></i></div>
           <div class="feature-text">
-            <h3>Real People</h3>
-            <p>Connect with verified people</p>
+            <h3 class="vl-body-sm">Real People</h3>
+            <p class="vl-body-sm">Connect with verified people</p>
           </div>
         </li>
         <li class="feature-item">
           <div class="feature-icon"><i class="fa-regular fa-calendar-check"></i></div>
           <div class="feature-text">
-            <h3>Real Plans</h3>
-            <p>Join events that excite you</p>
+            <h3 class="vl-body-sm">Real Plans</h3>
+            <p class="vl-body-sm">Join events that excite you</p>
           </div>
         </li>
         <li class="feature-item">
           <div class="feature-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div class="feature-text">
-            <h3>Near You</h3>
-            <p>Happening around your city</p>
+            <h3 class="vl-body-sm">Near You</h3>
+            <p class="vl-body-sm">Happening around your city</p>
           </div>
         </li>
       </ul>
@@ -46,8 +46,8 @@
 
     <!-- Right Section: Login Card -->
     <section class="login-section">
-      <div class="login-card">
-        <button class="login-back-btn" type="button" aria-label="Go back" (click)="goBack()">
+      <div class="login-card vl-surface vl-surface--glass">
+        <button class="login-back-btn vl-icon-button" type="button" aria-label="Go back" (click)="goBack()">
           <span class="material-symbols-outlined" translate="no">arrow_back_ios_new</span>
         </button>
 
@@ -57,11 +57,11 @@
         </div>
 
         <div class="login-card-header">
-          <h2>Welcome back! 👋</h2>
-          <p>Sign in to continue your vibe</p>
+          <h2 class="vl-title-md">Welcome back! 👋</h2>
+          <p class="vl-body-sm">Sign in to continue your vibe</p>
         </div>
 
-        <button class="btn btn-google" (click)="loginWithGoogle()" aria-label="Continue with Google">
+        <button class="btn-google vl-button vl-button--secondary vl-button--block" (click)="loginWithGoogle()" aria-label="Continue with Google">
           <span class="google-icon-wrapper"><i class="fa-brands fa-google"></i></span>
           <span>Continue with Google</span>
         </button>
@@ -75,11 +75,11 @@
         <form class="email-form" [formGroup]="loginForm" (ngSubmit)="sendOtp()">
           <div class="input-group">
             <span class="material-symbols-outlined input-icon">mail</span>
-            <input type="email" formControlName="email" placeholder="Email address" class="form-input"
+            <input type="email" formControlName="email" placeholder="Email address" class="form-input vl-field"
               aria-label="Email address">
           </div>
 
-          <button type="submit" class="btn btn-primary btn-block">
+          <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isOtpSending()">
             {{isOtpSending() ? "Sending OTP..." : "Send OTP"}}
           </button>
 

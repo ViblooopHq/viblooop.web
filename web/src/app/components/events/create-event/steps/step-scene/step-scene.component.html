@@ -1,0 +1,39 @@
+<main class="step-content">
+  <div class="form-stack">
+
+    <vl-cover-image-upload
+      [defaultCoverImage]="formService.defaultCoverImage()"
+      [isEditMode]="formService.isEditMode()" />
+
+    <vl-pricing-selector
+      [cost]="formService.formValue().cost"
+      [price]="formService.formValue().price"
+      (costChange)="formService.setCost($event)"
+      (priceInput)="setPrice($event)" />
+
+    <vl-chat-access-selector
+      [hostOnlyChat]="formService.formValue().hostOnlyChat"
+      [subtitle]="formService.chatAccessSubtitle()"
+      [everyoneDescription]="formService.everyoneChatMobileDescription()"
+      [hostOnlyDescription]="formService.hostOnlyChatMobileDescription()"
+      (hostOnlyChatChange)="formService.setChatAccess($event)" />
+
+    <vl-expectations-chip-selector
+      [selected]="formService.expectationsValue()"
+      [options]="formService.availableExpectations"
+      (toggle)="formService.toggleExpectation($event)" />
+
+    <vl-host-notes-quick-add
+      [title]="formService.hostNotesTitle()"
+      [subtitle]="formService.hostNotesSubtitle()"
+      [placeholder]="formService.hostNotesPlaceholder()"
+      [quickAdds]="formService.hostNoteQuickAdds()" />
+  </div>
+
+  <!-- Navigation Footer -->
+  <div class="step-footer-row">
+    <button type="button" class="btn-next btn-next--step3" (click)="next.emit()">
+      {{ formService.isEditMode() ? 'Review Changes' : 'Review & Launch' }} <span class="material-symbols-outlined" aria-hidden="true">rocket_launch</span>
+    </button>
+  </div>
+</main>

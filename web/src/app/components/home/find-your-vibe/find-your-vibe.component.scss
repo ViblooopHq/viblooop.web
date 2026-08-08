@@ -1,11 +1,3 @@
-// --- Theme Variables (Mapped from your configuration) ---
-$surface-container-highest: #1c253e;
-$primary: #bd9dff;
-$secondary: #34b5fa;
-$tertiary: #ff86c3;
-$on-surface: #dfe4fe;
-$outline-variant: #41475b;
-
 // --- Categories Section Styles ---
 .vl-categories {
   padding: 8rem 1.5rem; // py-32 px-6
@@ -27,8 +19,8 @@ $outline-variant: #41475b;
     overflow: hidden;
     height: 20rem; // h-80
     border-radius: 2rem; // rounded-[2rem]
-    background: rgba(255, 255, 255, 0.02); // Base Glass
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
+    border-color: var(--color-border-ghost);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     cursor: pointer;
@@ -56,7 +48,7 @@ $outline-variant: #41475b;
     // Hover State
     &:hover,
     &:focus-visible {
-      border-color: rgba(255, 255, 255, 0.2);
+      border-color: rgba(var(--color-action-primary-rgb), 0.45);
       outline: none;
 
       .vl-categories__image {
@@ -83,8 +75,8 @@ $outline-variant: #41475b;
     inset: 0;
     // Matches the tailwind bg-gradient-to-t
     background: linear-gradient(to top,
-        $surface-container-highest 0%,
-        rgba($surface-container-highest, 0) 60%);
+        var(--bg-surface-container-highest) 0%,
+        rgba(var(--bg-surface-container-highest-rgb), 0) 60%);
   }
 
   &__content {
@@ -106,7 +98,7 @@ $outline-variant: #41475b;
   &__icon {
     font-size: 1.5rem; // text-2xl
     margin-bottom: 0.5rem; // mb-2
-    color: $primary; // Default color
+      color: var(--color-action-primary); // Default color
 
     // Larger icon for the featured card
     .vl-categories__card--featured & {
@@ -116,20 +108,20 @@ $outline-variant: #41475b;
 
     // Auto-cycle colors based on the card's position in the grid
     .vl-categories__card:nth-child(4n + 2) & {
-      color: $secondary;
+      color: var(--color-action-secondary);
     }
 
     .vl-categories__card:nth-child(4n + 3) & {
-      color: $tertiary;
+      color: var(--color-accent);
     }
   }
 
   &__title {
     font-size: 1.25rem; // text-xl
     font-weight: 700; // font-bold
-    color: #ffffff;
+    color: var(--text-white);
     margin: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-ui);
 
     // Distinct typography for the featured card
     .vl-categories__card--featured & {
@@ -144,7 +136,7 @@ $outline-variant: #41475b;
     grid-column: 1 / -1;
     text-align: center;
     padding: 4rem;
-    color: $outline-variant;
-    font-family: 'Inter', sans-serif;
+    color: var(--color-text-muted);
+    font-family: var(--font-ui);
   }
 }

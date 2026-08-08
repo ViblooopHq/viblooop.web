@@ -7,7 +7,7 @@
 
     <div class="vl-community__grid">
       @for (card of trustedCardData; track card.title; let i = $index) {
-      <article class="vl-community__card" [ngClass]="{
+      <article class="vl-community__card vl-surface vl-surface--interactive" [ngClass]="{
             'vl-community__card--primary': i === 0,
             'vl-community__card--secondary': i === 1,
             'vl-community__card--tertiary': i === 2,

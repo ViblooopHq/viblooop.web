@@ -22,8 +22,8 @@
     min-height: 100dvh;
     padding: 0;
     background:
-      radial-gradient(circle at 82% 16%, rgba(124, 58, 237, 0.18), transparent 22rem),
-      rgba(3, 6, 15, 0.72);
+      radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--color-action-primary) 18%, transparent), transparent 22rem),
+      color-mix(in srgb, var(--color-surface-canvas) 72%, transparent);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
   }
@@ -37,15 +37,15 @@
     margin-left: auto;
     overflow-y: auto;
     overflow-x: hidden;
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    border: 1px solid var(--color-border-ghost);
     border-right: 0;
     border-radius: 0;
     background:
-      linear-gradient(180deg, rgba(10, 15, 32, 0.98), rgba(5, 10, 24, 0.99));
-    box-shadow: -28px 0 90px rgba(0, 0, 0, 0.5);
+      linear-gradient(180deg, var(--color-surface-raised), var(--color-surface-canvas));
+    box-shadow: var(--shadow-modal);
     animation: vl-form-drawer-roll-in 0.32s cubic-bezier(0.2, 0.86, 0.2, 1) both;
     scrollbar-width: thin;
-    scrollbar-color: rgba(168, 85, 247, 0.58) rgba(15, 23, 42, 0.5);
+    scrollbar-color: color-mix(in srgb, var(--color-action-primary) 58%, transparent) var(--color-surface-section);
 
     &--closing {
       animation: vl-form-drawer-roll-out 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
@@ -55,19 +55,17 @@
   .vl-form-drawer__close {
     position: absolute;
     top: 1rem;
-    left: 0.9rem;
+    right: calc(min(100vw, 760px) + 1rem);
     z-index: 40;
     display: grid;
     place-items: center;
     width: 2.65rem;
     height: 2.65rem;
     margin: 0;
-    border: 1px solid rgba(148, 163, 184, 0.16);
-    border-radius: 999px;
-    background: rgba(15, 23, 42, 0.82);
-    color: #dbe4ff;
-    cursor: pointer;
-    box-shadow: 0 10px 26px rgba(0, 0, 0, 0.22);
+    border-color: var(--color-border-ghost);
+    background: color-mix(in srgb, var(--color-surface-raised) 86%, transparent);
+    color: var(--color-brand-tint);
+    box-shadow: var(--shadow-md);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
 
@@ -76,13 +74,19 @@
     }
   }
 
+  @media (max-width: 840px) {
+    .vl-form-drawer__close {
+      right: calc(100vw - 3.65rem);
+    }
+  }
+
   .vl-form-drawer__handle {
     display: block;
     width: 3.8rem;
     height: 0.28rem;
     margin: 0.85rem auto 0;
-    border-radius: 999px;
-    background: rgba(196, 201, 231, 0.34);
+    border-radius: var(--radius-pill);
+    background: var(--color-border-strong);
   }
 }
 

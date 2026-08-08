@@ -1,209 +1,37 @@
-<section class="vl-create-event section-padding">
-  <div class="vl-create-event__container">
-    <!-- Header -->
-    <div class="vl-create-event__header">
-      <div><span><i class="fa-solid fa-plus"></i></span></div>
-      <h1 i18n>Create Your Next Vibe</h1>
-      <p i18n>Fill in the details below to get your vibe started</p>
-    </div>
+<vl-form-drawer [ariaLabel]="formService.isEditMode() ? 'Edit event' : 'Create event'">
+@if (isEventCreatedOverlayVisible()) {
+  <vl-event-created-overlay
+    [animationPath]="formService.eventCreatedAnimationPath()"
+    (done)="finishEventCreation()"
+    (viewEvent)="viewCreatedEvent()">
+  </vl-event-created-overlay>
+} @else {
+  <vl-create-event-header
+    [steps]="totalSteps"
+    [currentStep]="currentStep()"
+    [title]="currentStepTitle()"
+    [subtitle]="currentStepSubtitle()"
+    [showBack]="currentStep() > 0"
+    (back)="prevStep()" />
 
-    <!-- Form -->
-    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="vl-create-event__form-group">
-      <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Event Details</h2>
-
-      <!-- Title -->
-      <div>
-        <label for="event-title" class="block font-medium text-gray-600 mb-2">
-          Event Title<span class="text-red-500">*</span>
-        </label>
-        <input type="text" id="event-title" placeholder="e.g., Rooftop Sunset Party" formControlName="title" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-               focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-      </div>
-
-      <!-- Description -->
-      <div>
-        <label for="description" class="block font-medium text-gray-600 mb-2">Description</label>
-        <textarea id="description" rows="4" placeholder="Tell everyone what your vibe is about..."
-          formControlName="description" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-               focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200"></textarea>
-      </div>
-
-      <!-- Event category -->
-      <div class="mb-4">
-        <select class="select select-primary" formControlName="category">
-          <option disabled value="">Category</option>
-          @for (category of categories; track category) {
-          <option [value]="category._id">{{ category.title }}</option>
-          }
-        </select>
-      </div>
-
-      <!-- Address Section -->
-      <div formGroupName="address" class="mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Event Location</h2>
-        <div class="grid sm:grid-cols-2 gap-6">
-
-          <div>
-            <label for="street" class="block font-medium text-gray-600 mb-2">
-              Street<span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="street" placeholder="e.g., 3rd main road" formControlName="street" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="area" class="block font-medium text-gray-600 mb-2">Area</label>
-            <input type="text" id="area" placeholder="e.g., BTM Layout" formControlName="area" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="landmark" class="block font-medium text-gray-600 mb-2">Landmark</label>
-            <input type="text" id="landmark" placeholder="e.g., Near City Hall" formControlName="landmark" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="pinCode" class="block font-medium text-gray-600 mb-2">
-              Pin Code<span class="text-red-500">*</span>
-            </label>
-            <input (focusout)="onPinCodeBlur()" type="text" id="pinCode" placeholder="e.g., 560068"
-              formControlName="pinCode" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="city" class="block font-medium text-gray-600 mb-2">
-              City<span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="city" placeholder="e.g., Bangalore" formControlName="city" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="state" class="block font-medium text-gray-600 mb-2">
-              State<span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="state" placeholder="e.g., Karnataka" formControlName="state" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="country" class="block font-medium text-gray-600 mb-2">
-              Country<span class="text-red-500">*</span>
-            </label>
-            <input type="text" id="country" placeholder="e.g., India" formControlName="country" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-        </div>
-      </div>
-
-      <!-- Date, Time, Limits Section -->
-      <div class="mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Schedule & Capacity</h2>
-        <div class="grid sm:grid-cols-2 gap-6">
-
-          <div>
-            <label for="date" class="block font-medium text-gray-600 mb-2">
-              Date<span class="text-red-500">*</span>
-            </label>
-            <input type="date" id="date" formControlName="eventDate" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="time" class="block font-medium text-gray-600 mb-2">
-              Time<span class="text-red-500">*</span>
-            </label>
-            <input type="time" id="time" formControlName="eventTime" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="attendee-limit" class="block font-medium text-gray-600 mb-2">Attendee Limit</label>
-            <input type="number" id="attendee-limit" placeholder="e.g., 100" formControlName="attendeeLimit" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-
-          <div>
-            <label for="tags" class="block font-medium text-gray-600 mb-2">Tags</label>
-            <input type="text" id="tags" placeholder="e.g., #music, #party, #food" formControlName="tags" class="w-full p-3 border border-gray-300 rounded-xl text-base transition duration-200 ease-in-out
-                 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200">
-          </div>
-        </div>
-      </div>
-
-      <!-- Image Upload Section -->
-      <div class="mb-8">
-        <h2 class="text-2xl font-semibold text-gray-800 mb-6 border-b-2 border-gray-200 pb-2">Event Media</h2>
-        <div class="grid sm:grid-cols-2 gap-6">
-          <!-- Event Image -->
-          <div>
-            <label class="block font-medium text-gray-600 mb-2">Event Image<span class="text-red-500">*</span></label>
-            <div (click)="eventImageInput.click()"
-              class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 text-gray-400 text-center cursor-pointer transition-colors duration-200 hover:border-blue-500 hover:text-blue-500"
-              [class.hidden]="mainImagePreview">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-16 h-16 mb-2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" />
-              </svg>
-              <span>Click to upload event image</span>
-            </div>
-            <input type="file" #eventImageInput class="hidden" (change)="onMainImageChange($event)" accept="image/*,.heic,.heif">
-            @if (mainImagePreview) {
-            <div class="relative w-full h-48 rounded-xl overflow-hidden border border-gray-300">
-              <img [src]="mainImagePreview" alt="Event Image Preview" class="w-full h-full object-cover">
-              <button type="button" (click)="removeEventImage()"
-                class="absolute top-2 right-2 bg-red-500/80 text-white rounded-full p-2 cursor-pointer transition-colors duration-200 hover:bg-red-600 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                  stroke="currentColor" class="w-5 h-5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            }
-          </div>
-
-          <!-- Gallery Images -->
-          <div>
-            <label class="block font-medium text-gray-600 mb-2">Gallery Images</label>
-            <div (click)="galleryImagesInput.click()"
-              class="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 text-gray-400 text-center cursor-pointer transition-colors duration-200 hover:border-blue-500 hover:text-blue-500"
-              [class.hidden]="galleryPreviews.length > 0">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-16 h-16 mb-2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M15.75 17.25L12 13.5M12 13.5L8.25 17.25M12 13.5L12 21M21 17.25H3a2.25 2.25 0 01-2.25-2.25V6.75a2.25 2.25 0 012.25-2.25h16.5a2.25 2.25 0 012.25 2.25v8.25a2.25 2.25 0 01-2.25 2.25z" />
-              </svg>
-              <span>Click to upload gallery images</span>
-            </div>
-            <input type="file" #galleryImagesInput class="hidden" multiple (change)="onGalleryChange($event)"
-              accept="image/*,.heic,.heif">
-            @if (galleryPreviews.length > 0) {
-            <div class="grid grid-cols-[repeat(auto-fill,minmax(80px,1fr))] gap-4 mt-4">
-              @for (imageUrl of galleryPreviews; track $index) {
-              <div class="relative w-full pt-[100%] rounded-lg overflow-hidden border border-gray-300">
-                <img [src]="imageUrl" alt="Gallery Image Preview" class="absolute inset-0 w-full h-full object-cover">
-                <button type="button" (click)="removeGalleryImage($index)"
-                  class="absolute top-1 right-1 bg-red-500/80 text-white rounded-full p-1 cursor-pointer transition-colors duration-200 hover:bg-red-600 flex items-center justify-center w-6 h-6">
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
-              }
-            </div>
-            }
-          </div>
-        </div>
-      </div>
-
-      <button type="submit" class="w-full sm:w-auto px-10 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg
-             hover:bg-blue-700 transition duration-300">
-        Create Event
-      </button>
-    </form>
-  </div>
-</section>
+  <form class="create-form">
+    @switch (currentStep()) {
+      @case (0) {
+        <vl-step-vibe (categorySelected)="onCategorySelected()" />
+      }
+      @case (1) {
+        <vl-step-essentials (next)="nextStep()" />
+      }
+      @case (2) {
+        <vl-step-scene (next)="nextStep()" />
+      }
+      @case (3) {
+        <vl-step-review
+          [isSubmittingEvent]="isSubmittingEvent()"
+          (editScene)="currentStep.set(2)"
+          (launch)="submitForm()" />
+      }
+    }
+  </form>
+}
+</vl-form-drawer>

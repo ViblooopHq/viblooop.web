@@ -1,0 +1,24 @@
+<section class="ed-section map-panel">
+  <div class="map-card">
+    <div class="map-copy">
+      <h2 class="ed-section-title">
+        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+        Location
+      </h2>
+      <p class="map-title">{{ locationLabel() }}</p>
+      @if (showLocationSubtitle()) {
+      <p class="map-subtitle">{{ locationSubtitle() }}</p>
+      }
+    </div>
+
+    @if (isMapVisible()) {
+    <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
+      (click)="openInMaps.emit()"
+      (keydown.enter)="openInMaps.emit()" (keydown.space)="$event.preventDefault(); openInMaps.emit()">
+      <google-map [options]="mapOptions()" [height]="'160px'" [width]="'100%'" (mapClick)="openInMaps.emit()">
+        <map-marker [position]="mapPosition()" />
+      </google-map>
+    </div>
+    }
+  </div>
+</section>

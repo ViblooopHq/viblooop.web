@@ -1,6 +1,8 @@
 /* ------------------------
    Gallery Section (BEM)
 ------------------------- */
+@use "../../../../styles/components/primitives" as primitives;
+
 .vl-gallery {
   margin-top: 20px;
 
@@ -21,8 +23,17 @@
 
   &__item {
     position: relative;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
+
+    &-trigger {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
 
     img {
       width: 100%;
@@ -30,7 +41,7 @@
       object-fit: cover;
       cursor: pointer;
       transition: transform 0.3s ease;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
 
       &:hover {
         transform: scale(1.05);
@@ -52,17 +63,17 @@
     right: 8px;
 
     button {
-      background: rgba(0, 0, 0, 0.6);
-      color: #fff;
+      background: var(--color-overlay-soft);
+      color: var(--text-white);
       border: none;
       padding: 4px 8px;
-      border-radius: 6px;
+      border-radius: var(--radius-xs);
       cursor: pointer;
-      font-size: 12px;
+      font-size: var(--font-size-xs);
       transition: background 0.2s ease;
 
       &:hover {
-        background: rgba(0, 0, 0, 0.8);
+        background: var(--color-overlay-scrim);
       }
     }
   }
@@ -70,17 +81,17 @@
   /* ------------------------
      Modal Preview
   ------------------------- */
- 
+
 .vl-gallery__modal {
     position: fixed;
     inset: 0;
-    background: rgba(3, 3, 12, 0.82);
+    background: var(--color-overlay-scrim);
     backdrop-filter: blur(10px);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
-  
+
     &-content {
       position: relative;
       max-width: 90%;
@@ -88,81 +99,87 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-  
+
       img {
         width: auto;
         height: auto;
         max-width: 800px;
         max-height: 500px;
         object-fit: contain;
-        border-radius: 12px;
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-floating);
       }
-  
-      p {
+
+      .vl-body-sm {
         margin-top: 10px;
-        color: #f5f5f5;
-        font-size: 14px;
       }
     }
-  
+
     /* Close button */
     .close {
+      @include primitives.button-base;
+
       position: absolute;
       top: -3.25rem;
       right: 0;
-      cursor: pointer;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: rgba(255, 255, 255, 0.14);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-glass);
       backdrop-filter: blur(16px) saturate(150%);
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      border-radius: 50%;
+      box-shadow: var(--shadow-floating);
+      border-radius: var(--radius-full);
       width: 2.4rem;
       height: 2.4rem;
+      min-height: 0;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 0;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: var(--color-surface-glass-strong);
       }
     }
-  
+
     /* Carousel arrows */
     .vl-gallery__nav {
+      @include primitives.button-base;
+
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       font-size: 1rem;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: rgba(255, 255, 255, 0.14);
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-glass);
       backdrop-filter: blur(16px) saturate(150%);
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
-      border-radius: 50%;
+      box-shadow: var(--shadow-floating);
+      border-radius: var(--radius-full);
       width: 2.75rem;
       height: 2.75rem;
-      cursor: pointer;
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-  
+      padding: 0;
+
       &:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: var(--color-surface-glass-strong);
         transform: translateY(-50%) scale(1.04);
       }
-  
+
       &--left {
         left: -4rem;
       }
-  
+
       &--right {
         right: -4rem;
       }
     }
 
     .vl-gallery__menu-trigger {
+      @include primitives.button-base;
+
       position: absolute;
       top: -3.25rem;
       right: 3rem;
@@ -171,16 +188,16 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-glass);
+      color: var(--text-white);
       cursor: pointer;
       backdrop-filter: blur(16px) saturate(150%);
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+      box-shadow: var(--shadow-floating);
 
       &:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: var(--color-surface-glass-strong);
       }
     }
 
@@ -190,11 +207,12 @@
       right: 0;
       display: inline-flex;
       overflow: hidden;
+      min-height: 0;
       padding: 0;
-      border: 1px solid rgba(168, 85, 247, 0.75);
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 75%, transparent);
       border-radius: 0.75rem;
-      background: rgba(17, 17, 27, 0.94);
-      box-shadow: 0 22px 65px rgba(0, 0, 0, 0.42);
+      background: var(--color-surface-glass-strong);
+      box-shadow: var(--shadow-overlay);
       backdrop-filter: blur(18px);
     }
 
@@ -209,34 +227,33 @@
       padding: 0.65rem 0.9rem;
       border: 0;
       background: transparent;
-      color: #f8f7ff;
-      cursor: pointer;
+      color: var(--color-text-primary);
       font-size: 0.8rem;
       font-weight: 750;
       text-decoration: none;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.08);
+        background: var(--color-surface-glass);
       }
 
       + .vl-gallery__menu-item {
-        border-left: 1px solid rgba(255, 255, 255, 0.12);
+        border-left: 1px solid var(--color-border-ghost);
       }
 
       i {
-        color: #a855f7;
+        color: var(--color-brand-accent);
         font-size: 1.35rem;
       }
 
       &--danger {
-        color: #ff4545;
+        color: var(--error);
 
         &:hover {
-          background: rgba(220, 38, 38, 0.12);
+          background: var(--color-danger-surface);
         }
 
         i {
-          color: #ff4545;
+          color: var(--error);
         }
       }
     }
@@ -249,25 +266,22 @@
       width: min(22rem, calc(100vw - 2rem));
       padding: 1.5rem;
       transform: translate(-50%, -50%);
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--color-border-ghost);
       border-radius: 1.25rem;
-      background: rgba(17, 17, 27, 0.96);
-      color: #ffffff;
+      background: var(--color-surface-glass-strong);
+      color: var(--color-text-primary);
       text-align: center;
-      box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+      box-shadow: var(--shadow-overlay);
       backdrop-filter: blur(18px);
 
-      h3 {
+      .vl-title-md {
         margin: 0.75rem 0 0.5rem;
         font-size: 1.25rem;
-        font-weight: 900;
       }
 
-      p {
+      .vl-body {
         max-width: 19rem;
         margin: 0 auto 1.35rem;
-        color: rgba(255, 255, 255, 0.72);
-        line-height: 1.45;
       }
     }
 
@@ -277,9 +291,9 @@
       height: 3.35rem;
       align-items: center;
       justify-content: center;
-      border-radius: 999px;
-      background: rgba(220, 38, 38, 0.18);
-      color: #ff4545;
+      border-radius: var(--radius-pill);
+      background: var(--color-danger-surface);
+      color: var(--error);
       font-size: 1.25rem;
     }
 
@@ -291,29 +305,28 @@
 
     .vl-gallery__delete-confirm-cancel,
     .vl-gallery__delete-confirm-delete {
+      @include primitives.button-base;
+
       min-height: 3.1rem;
-      border: 0;
       border-radius: 0.75rem;
-      color: #ffffff;
-      cursor: pointer;
+      color: var(--color-text-primary);
       font-weight: 900;
-      transition: background 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
     }
 
     .vl-gallery__delete-confirm-cancel {
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid var(--color-border-ghost);
       background: transparent;
 
       &:hover {
-        background: rgba(255, 255, 255, 0.07);
+        background: var(--color-surface-glass);
       }
     }
 
     .vl-gallery__delete-confirm-delete {
-      background: #dc2626;
+      background: var(--error);
 
       &:hover {
-        background: #b91c1c;
+        background: var(--error);
         transform: translateY(-1px);
       }
 
@@ -324,7 +337,7 @@
       }
     }
   }
-  
+
 }
 
 @media (max-width: 767px) {

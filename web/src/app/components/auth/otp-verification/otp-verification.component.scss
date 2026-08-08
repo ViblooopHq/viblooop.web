@@ -1,5 +1,4 @@
 @use "../../../../styles/index" as *;
-@use "../auth-common" as auth;
 
 .auth-container {
     display: flex;
@@ -12,15 +11,11 @@
 
     &.verification-screen {
         .login-card {
-            background: rgba(20, 20, 30, 0.5);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 24px;
+            border-radius: var(--radius-xl);
             padding: 2.5rem 2rem;
             width: 100%;
             max-width: 420px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            box-shadow: var(--shadow-panel);
             position: relative;
         }
 
@@ -30,20 +25,12 @@
             left: 1.5rem;
 
             .icon-btn {
-                background: rgba(255, 255, 255, 0.05);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                color: #fff;
-                border-radius: 50%;
-                cursor: pointer;
                 width: 36px;
+                min-width: 36px;
                 height: 36px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
 
                 &:hover:not(:disabled) {
-                    background: rgba(255, 255, 255, 0.15);
+                    background: var(--color-surface-raised);
                 }
 
                 &:disabled {
@@ -93,14 +80,14 @@
             }
 
             .sub-heading {
-                color: #a0a0b0;
+                color: var(--color-text-muted);
                 font-size: 0.9rem;
                 margin: 0;
                 line-height: 1.5;
             }
 
             .accent-text {
-                color: #b154f0;
+                color: var(--color-brand-accent);
                 font-weight: 600;
             }
         }
@@ -116,24 +103,20 @@
             .otp-input {
                 width: 3.5rem;
                 height: 3.5rem;
-                background-color: rgba(0, 0, 0, 0.3);
-                color: #fff;
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 12px;
                 font-size: 1.5rem;
                 text-align: center;
                 padding: 0;
-                transition: all 0.3s;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 
                 &::placeholder {
-                    color: rgba(255, 255, 255, 0.2);
+                    color: var(--color-text-muted);
                 }
 
                 &.active,
                 &:focus {
                     outline: none;
-                    border-color: #b154f0;
-                    box-shadow: 0 0 0 2px rgba(177, 84, 240, 0.2);
+                    border-color: var(--color-action-primary);
+                    box-shadow: var(--focus-ring);
                 }
 
                 &:disabled {
@@ -157,24 +140,13 @@
                 .input-icon {
                     position: absolute;
                     left: 1rem;
-                    color: #a0a0b0;
+                    color: var(--color-text-muted);
                     font-size: 1.2rem;
                 }
 
                 .form-input {
                     width: 100%;
-                    background: rgba(0, 0, 0, 0.3);
-                    border: 1px solid rgba(255, 255, 255, 0.1);
-                    border-radius: 12px;
                     padding: 0.9rem 1rem 0.9rem 3rem;
-                    color: #fff;
-                    font-size: 0.95rem;
-                    transition: border-color 0.3s;
-
-                    &:focus {
-                        outline: none;
-                        border-color: #b154f0;
-                    }
                 }
             }
         }
@@ -186,11 +158,11 @@
             gap: 0.5rem;
             width: 100%;
             padding: 0.9rem;
-            border-radius: 12px;
+            border-radius: var(--radius-md);
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
             border: none;
 
             &:disabled {
@@ -200,8 +172,8 @@
         }
 
         .btn-primary {
-            background: linear-gradient(90deg, #7048e8, #b154f0);
-            color: #fff;
+            background: var(--gradient-brand-cta);
+            color: var(--text-white);
 
             &:hover:not(:disabled) {
                 opacity: 0.9;
@@ -210,16 +182,16 @@
 
         .btn-outlined {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: #fff;
+            border-color: var(--color-border-ghost);
+            color: var(--color-text-primary);
 
             &:hover:not(:disabled) {
-                background: rgba(255, 255, 255, 0.05);
+                background: var(--color-surface-raised);
             }
         }
 
         .change-email-link {
-            color: #b154f0;
+            color: var(--color-brand-accent);
             text-decoration: none;
             font-size: 0.9rem;
             margin-top: 0.5rem;
@@ -231,9 +203,9 @@
 
         // Secure Info Box
         .secure-info-box {
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+            background-color: var(--color-surface-section);
+            border: 1px solid var(--color-border-ghost);
+            border-radius: var(--radius-md);
             padding: 1rem;
             display: flex;
             align-items: center;
@@ -242,13 +214,13 @@
             width: 100%;
 
             .secure-icon {
-                color: #a0a0b0;
+                color: var(--color-text-muted);
                 font-size: 1.2rem;
             }
 
             .secure-text {
                 font-size: 0.85rem;
-                color: #a0a0b0;
+                color: var(--color-text-muted);
                 margin: 0;
             }
         }
@@ -259,17 +231,17 @@
         margin-top: 2rem;
 
         .footer-text {
-            color: #888;
+            color: var(--color-text-muted);
             font-size: 0.85rem;
             line-height: 1.5;
 
             .footer-link {
-                color: #b154f0;
+                color: var(--color-brand-accent);
                 text-decoration: none;
                 transition: color 0.3s;
 
                 &:hover {
-                    color: #d08cf8;
+                    color: var(--color-brand-tint);
                     text-decoration: underline;
                 }
             }
@@ -285,7 +257,7 @@
         &.verification-screen {
             .login-card {
                 max-width: 100%;
-                border-radius: 18px;
+                border-radius: var(--radius-lg);
                 padding: 1.25rem;
             }
 
@@ -353,9 +325,9 @@
 .spinner {
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top: 2px solid #fff;
-    border-radius: 50%;
+    border: 2px solid color-mix(in srgb, var(--on-primary) 30%, transparent);
+    border-top: 2px solid var(--on-primary);
+    border-radius: var(--radius-full);
     animation: spin 1s linear infinite;
 }
 

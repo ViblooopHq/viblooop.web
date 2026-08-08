@@ -75,6 +75,14 @@ export class RouteService {
     this.navigateByUrl(fallbackPath);
   }
 
+  closeDrawerAndNavigateByUrl(path: string) {
+    if (this.appDrawerService.hasOpenDrawer) {
+      this.appDrawerService.close();
+    }
+
+    this.navigateByUrl(path);
+  }
+
   navigateBack() {
     if (this.browserService.isBrowserPlatform()) {
       window.history.back();

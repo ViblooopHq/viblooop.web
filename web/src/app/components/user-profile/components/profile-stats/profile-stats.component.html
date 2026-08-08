@@ -1,0 +1,19 @@
+<div class="vl-user-profile__stats" aria-label="Profile stats">
+  <div class="vl-user-profile__stat">
+    <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">star</span>
+    <strong>{{ averageRating() | number:'1.1-1' }}</strong>
+    <span>{{ totalRatings() }} {{ totalRatings() === 1 ? 'Rating' : 'Ratings' }}</span>
+  </div>
+
+  <div class="vl-user-profile__stat">
+    <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">event_available</span>
+    <strong>{{ joinedCount() }}</strong>
+    <span>Joined Events</span>
+  </div>
+
+  <div class="vl-user-profile__stat">
+    <span class="vl-user-profile__stat-icon material-symbols-outlined" translate="no">edit_calendar</span>
+    <strong>{{ hostedCount() }}</strong>
+    <span>Hosted Events</span>
+  </div>
+</div>

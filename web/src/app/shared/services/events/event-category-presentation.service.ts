@@ -4,7 +4,7 @@ import {
   CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS,
   CREATE_EVENT_CATEGORY_ICON_MAP,
   CreationKind,
-} from '../../../components/events/create-event2/create-event/create-event.config';
+} from '../../../components/events/create-event/create-event.config';
 
 @Injectable({
   providedIn: 'root'

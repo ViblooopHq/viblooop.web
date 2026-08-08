@@ -1,0 +1,314 @@
+@use "../../create-event-shared" as *;
+
+/* ── UPLOAD CARD ── */
+.upload-card {
+  @include selectable-card-base;
+
+  border: 1.5px dashed color-mix(in srgb, var(--color-action-primary) 40%, transparent);
+  border-radius: var(--radius-2xl);
+  overflow: hidden;
+  position: relative;
+  background: var(--surface-dark-4);
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  padding: 12px;
+
+  @media (min-width: 640px) {
+    height: 220px;
+  }
+
+  &:hover {
+    border-color: var(--color-brand-primary);
+    background: color-mix(in srgb, var(--color-action-primary) 5%, transparent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-floating);
+  }
+
+  &--loading {
+    cursor: wait;
+    pointer-events: none;
+    opacity: 0.8;
+  }
+
+  &--empty {
+    background: var(--surface-dark-4);
+
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    &::before {
+      z-index: 0;
+      background: var(--default-cover-image) center / cover no-repeat;
+      opacity: .26;
+      filter: saturate(1.08) contrast(.95);
+      transform: scale(1.02);
+    }
+
+    &::after {
+      z-index: 1;
+      background:
+        radial-gradient(circle at 50% 36%, color-mix(in srgb, var(--color-action-primary) 18%, transparent) 0, transparent 48%),
+        linear-gradient(180deg, var(--color-overlay-soft), var(--color-overlay-scrim));
+    }
+
+    &:hover {
+      background: var(--surface-dark-4);
+
+      &::before {
+        opacity: .34;
+      }
+    }
+
+    .upload-placeholder-new {
+      position: relative;
+      z-index: 2;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .photo-stack {
+      display: none;
+    }
+
+    .upload-actions-wrap {
+      flex: 0 1 auto;
+      justify-content: center;
+    }
+  }
+}
+
+.upload-loading-overlay {
+  @include stack(12px);
+
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay-scrim);
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  backdrop-filter: blur(4px);
+
+  p {
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-brand-tint);
+    margin: 0;
+    animation: pulse 2s infinite;
+  }
+}
+
+.loader-vibe {
+  width: 32px;
+  height: 32px;
+  border: 3px solid color-mix(in srgb, var(--color-action-primary) 10%, transparent);
+  border-top-color: var(--color-brand-primary);
+  border-radius: var(--radius-full);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.upload-placeholder-new {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  gap: 16px;
+  padding: 0 8px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 12px 0;
+    gap: 12px;
+  }
+}
+
+/* Photo Stack Left */
+.photo-stack {
+  position: relative;
+  width: 130px;
+  height: 90px;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+.vibe-photo {
+  position: absolute;
+  width: 60px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-border-strong);
+  box-shadow: var(--shadow-floating);
+  transition: transform .3s;
+
+  &.photo-1 {
+    z-index: 1;
+    transform: rotate(-12deg);
+    left: 0;
+    top: 5px;
+  }
+
+  &.photo-2 {
+    z-index: 2;
+    transform: rotate(-4deg);
+    left: 30px;
+    top: 10px;
+  }
+
+  &.photo-3 {
+    z-index: 3;
+    transform: rotate(6deg);
+    left: 60px;
+    top: 5px;
+  }
+}
+
+/* Upload Actions Right */
+.upload-actions-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+.upload-icon-ring-large {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-full);
+  background: var(--gradient-brand-cta);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-brand-primary);
+  position: relative;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    width: 56px;
+    height: 56px;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid color-mix(in srgb, var(--color-action-primary) 20%, transparent);
+  }
+
+  .upload-camera-icon {
+    font-size: var(--font-size-2xl);
+    color: var(--color-text-on-primary);
+  }
+}
+
+.upload-text-content {
+  @include stack(2px);
+  min-width: 0;
+}
+
+.upload-title-new {
+  font-size: var(--font-size-sm);
+  font-weight: 800;
+  color: var(--color-brand-tint);
+  margin: 0;
+
+  @media (max-width: 480px) {
+    font-size: var(--font-size-sm);
+  }
+}
+
+.upload-sub-new {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  margin: 0;
+}
+
+.joins-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: var(--color-brand-tint);
+
+  @media (max-width: 480px) {
+    justify-content: center;
+  }
+
+  .arrow-curve {
+    font-size: var(--font-size-sm);
+    transform: rotate(180deg) scaleX(-1);
+    opacity: 0.6;
+
+    @media (max-width: 480px) {
+      display: none;
+    }
+  }
+
+  .note-text {
+    font-size: var(--font-size-xs);
+    font-style: italic;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+.upload-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: var(--color-overlay-scrim);
+  border: none;
+  border-radius: var(--radius-full);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+}

@@ -7,10 +7,14 @@
     </vl-section-headers>
 
     <div class="explore-controls">
-      <div class="search-bar surface-container-lowest ghost-border">
+      <div class="search-bar vl-surface vl-surface--glass">
         <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
-        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
-        <div class="location-pill ghost-border">
+        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input vl-field">
+        <div class="location-pill vl-chip"
+             [class.active]="activeFilterId === 'nearby'"
+             (click)="setActiveFilter('nearby')"
+             role="button"
+             tabindex="0">
           <i class="fa-solid fa-location-dot"></i>
           <span>Near You</span>
         </div>
@@ -18,7 +22,7 @@
 
       <section class="filter-tags-scroll" aria-label="Quick filters">
         <div class="filter-tags">
-          <button *ngFor="let filter of filters; let i = index" class="filter-tag"
+          <button *ngFor="let filter of filters; let i = index" class="filter-tag vl-chip"
             [class.active]="activeFilterId === filter.id" (click)="setActiveFilter(filter.id)">
             {{filter.label}}
           </button>
@@ -89,7 +93,7 @@
     </div>
     <div class="trending-scroll" [class.single-result]="trendingEvents.length === 1"
       [class.empty-result]="trendingEvents.length === 0">
-      <div class="trending-card ghost-border" *ngFor="let event of trendingEvents">
+      <div class="trending-card" *ngFor="let event of trendingEvents">
         <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
       </div>
       <vl-empty-state *ngIf="trendingEvents.length === 0" [subject]="emptyStateSubject"
@@ -106,7 +110,7 @@
     </div>
     <div class="trending-scroll" [class.single-result]="justForYouEvents.length === 1"
       [class.empty-result]="justForYouEvents.length === 0">
-      <div class="trending-card ghost-border" *ngFor="let event of justForYouEvents">
+      <div class="trending-card" *ngFor="let event of justForYouEvents">
         <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
       </div>
       <vl-empty-state *ngIf="justForYouEvents.length === 0" subject="events" context="near you"

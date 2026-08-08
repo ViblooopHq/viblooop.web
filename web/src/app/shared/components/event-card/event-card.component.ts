@@ -1,5 +1,5 @@
 import { DatePipe, SlicePipe, CurrencyPipe, NgClass } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { RouteService } from '../../services/route/route.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { EventsService } from '../../services/events/events.service';
@@ -9,15 +9,15 @@ import { TimePipe } from '../../pipes/time.pipe';
 
 @Component({
   selector: 'vl-event-card',
-  standalone: true,
   imports: [DatePipe, SlicePipe, ImageUrlPipe, CurrencyPipe, NgClass, TimePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.scss'
 })
 export class EventCardComponent {
-  @Input() config:any = {};
-  @Input() presentation: 'default' | 'profile' = 'default';
-  @Input() profileStatus: 'attended' | 'hosted' = 'attended';
+  config = input<any>({});
+  presentation = input<'default' | 'profile'>('default');
+  profileStatus = input<'attended' | 'hosted'>('attended');
 
   router = inject(RouteService)
   authService = inject(AuthService);
@@ -25,12 +25,12 @@ export class EventCardComponent {
   _shared = inject(SharedService);
 
   onViewEventClick() {
-    this.router.navigate('/events', this.config._id)
+    this.router.navigate('/events', this.config()._id)
   }
 
   get isWishlisted(): boolean {
     if (!this.authService.isLoggedIn() || !this.authService.userDetails) return false;
-    return this.authService.userDetails?.wishlist?.includes(this.config?._id) || false;
+    return this.authService.userDetails?.wishlist?.includes(this.config()?._id) || false;
   }
 
   onWishlistToggle(event: Event) {
@@ -40,44 +40,48 @@ export class EventCardComponent {
       return;
     }
 
+    const eventId = this.config()._id;
+
     // Optimistic Update
     if (this.isWishlisted) {
-      this.authService.userDetails.wishlist = this.authService.userDetails.wishlist.filter((id: string) => id !== this.config._id);
+      this.authService.userDetails.wishlist = this.authService.userDetails.wishlist.filter((id: string) => id !== eventId);
     } else {
       if (!this.authService.userDetails.wishlist) this.authService.userDetails.wishlist = [];
-      this.authService.userDetails.wishlist.push(this.config._id);
+      this.authService.userDetails.wishlist.push(eventId);
     }
-    
+
     // We no longer save to local storage
     this.authService.userDetails$.next(this.authService.userDetails);
 
     // Backend Request
-    this.authService.toggleSavedEvent(this.config._id).subscribe({
+    this.authService.toggleSavedEvent(eventId).subscribe({
       error: (err) => console.error('Failed to toggle wishlist', err)
     });
   }
 
   getRemainingSpots(): number {
-    if (!this.config || !this.config.attendeeLimit) return 0;
-    const totalCurrentAttendees = (this.config.attendees?.length || 0) + 1; // +1 includes creator
-    return Math.max(0, this.config.attendeeLimit - totalCurrentAttendees);
+    const config = this.config();
+    if (!config || !config.attendeeLimit) return 0;
+    const totalCurrentAttendees = (config.attendees?.length || 0) + 1; // +1 includes creator
+    return Math.max(0, config.attendeeLimit - totalCurrentAttendees);
   }
 
   getInterestedCount(): number {
     // Basic logic: actual attendees + a small random factor for "interested" look
-    const length = this.config.attendees?.length || 0;
+    const length = this.config().attendees?.length || 0;
     if (length === 0) return 0;
     return length + Math.floor(Math.random() * 5) + 2;
   }
 
   getEventBadge(): { text: string; icon: string } | null {
-    if (!this.config?.eventDate) return null;
+    const config = this.config();
+    if (!config?.eventDate) return null;
 
     const eventDateTime = this.getEventDateTime();
     if (!eventDateTime) return null;
 
     const now = new Date();
-    const eventDate = new Date(this.config.eventDate);
+    const eventDate = new Date(config.eventDate);
 
     if (eventDateTime < now) {
       return { text: 'Event Over', icon: 'event_busy' };
@@ -103,7 +107,7 @@ export class EventCardComponent {
 
     // 2. Today
     if (eventDay.getTime() === today.getTime()) {
-      const formattedTime = new TimePipe().transform(this.config.eventTime);
+      const formattedTime = new TimePipe().transform(config.eventTime);
       return { text: `Today • ${formattedTime}`, icon: 'calendar_today' };
     }
 
@@ -135,15 +139,16 @@ export class EventCardComponent {
   }
 
   get location(): string {
-    return this.config?.address?.city || this.config?.location || this.config?.city || 'Location';
+    const address = this.config()?.address;
+    return address?.area || address?.pinCode || this.config()?.location || this.config()?.city || 'Location';
   }
 
   get hostName(): string {
-    return this.config?.createdBy?.username || this.config?.createdBy?.userName || this.config?.createdBy?.name || 'Host';
+    return this.config()?.createdBy?.username || this.config()?.createdBy?.userName || this.config()?.createdBy?.name || 'Host';
   }
 
   get attendees(): any[] {
-    return this.config?.attendees || this.config?.participants || [];
+    return this.config()?.attendees || this.config()?.participants || [];
   }
 
   get remainingAttendeeCount(): number {
@@ -151,18 +156,18 @@ export class EventCardComponent {
   }
 
   get profileStatusLabel(): string {
-    return this.profileStatus === 'hosted' ? 'Hosted' : 'Attended';
+    return this.profileStatus() === 'hosted' ? 'Hosted' : 'Attended';
   }
 
   get categoryTitle(): string {
-    return this.config?.category?.title || this.config?.category || this.config?.tags?.[0] || 'Event';
+    return this.config()?.category?.title || this.config()?.category || this.config()?.tags?.[0] || 'Event';
   }
 
   get audiencePreferenceType(): 'open' | 'women' | 'men' {
-    const preference = String(this.config?.audiencePreference || '').toLowerCase();
+    const preference = String(this.config()?.audiencePreference || '').toLowerCase();
     if (preference === 'women' || preference === 'men' || preference === 'open') return preference;
 
-    const attendeeMix = Number(this.config?.attendeeMix);
+    const attendeeMix = Number(this.config()?.attendeeMix);
     if (Number.isFinite(attendeeMix)) {
       if (attendeeMix <= 20) return 'women';
       if (attendeeMix >= 80) return 'men';
@@ -198,16 +203,18 @@ export class EventCardComponent {
   }
 
   get isEscapeEvent(): boolean {
-    const category = this.config?.category;
-    const hasEndDate = Boolean(this.config?.endDate);
+    const config = this.config();
+    const category = config?.category;
+    const hasEndDate = Boolean(config?.endDate);
     const categoryTitle = String(category?.title || category?.name || category || '').toLowerCase();
 
     return hasEndDate || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
   }
 
   get tripDateRangeLabel(): string {
-    const start = this.formatTripDate(this.config?.eventDate);
-    const end = this.formatTripDate(this.config?.endDate);
+    const config = this.config();
+    const start = this.formatTripDate(config?.eventDate);
+    const end = this.formatTripDate(config?.endDate);
 
     if (start && end) return `${start} - ${end}`;
     if (start) return start;
@@ -215,18 +222,19 @@ export class EventCardComponent {
   }
 
   private getEventDateTime(): Date | null {
-    if (!this.config?.eventDate) return null;
+    const config = this.config();
+    if (!config?.eventDate) return null;
 
-    const eventDateTime = new Date(this.config.eventDate);
-    if (this.config.eventTime) {
+    const eventDateTime = new Date(config.eventDate);
+    if (config.eventTime) {
       try {
-        const timeStr = this.config.eventTime.trim();
+        const timeStr = config.eventTime.trim();
         const [time, modifier] = timeStr.split(/\s+/);
         let [hours, minutes] = time.split(':').map(Number);
-        
+
         if (modifier?.toUpperCase() === 'PM' && hours < 12) hours += 12;
         if (modifier?.toUpperCase() === 'AM' && hours === 12) hours = 0;
-        
+
         eventDateTime.setHours(hours || 0, minutes || 0, 0, 0);
       } catch (e) {
         console.error('Error parsing event time', e);

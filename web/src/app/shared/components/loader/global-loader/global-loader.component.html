@@ -1,5 +1,5 @@
 @if (loaderService.loading$ | async) {
-  <div class="overlay">
+  <div class="overlay" role="status" aria-live="polite" aria-label="Loading">
     <ng-lottie
       [options]="options"
       width="200px"

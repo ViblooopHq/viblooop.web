@@ -1,5 +1,5 @@
-.map { height: 320px; border-radius: 8px; }
+.map { height: 320px; border-radius: var(--radius-sm); }
 .search-row { display:flex; gap:8px; margin-bottom:6px; }
-.input { flex:1; padding:8px; border-radius:6px; border:1px solid #ddd; }
+.input { flex:1; padding:8px; border-radius: var(--radius-xs); border:1px solid var(--surface-variant); }
 .search-results { list-style:none; padding:0; margin:0 0 8px 0; max-height:180px; overflow:auto; }
-.search-results li { padding:8px; border-bottom:1px solid #eee; cursor:pointer; }
+.search-results li { padding:8px; border-bottom:1px solid var(--bg-surface-container-low); cursor:pointer; }
