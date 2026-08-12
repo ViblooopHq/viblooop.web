@@ -7,6 +7,10 @@
         [isEventMenuOpen]="isEventMenuOpen()"
         [isEscapeEvent]="isEscapeEvent()"
         [isEventEnded]="isEventEnded()"
+        [isUserAttendee]="isUserAttendee()"
+        [isCancelled]="isCancelled()"
+        [isAuthInitialized]="isAuthInitialized()"
+        [isJoinRequestPending]="isJoinRequestPending()"
         [eventDate]="eventDetails()?.eventDate"
         [timeLeftLabel]="timeLeftLabel()"
         [locationLabel]="locationLabel()"
@@ -23,7 +27,10 @@
         (closeMenu)="closeEventMenu()"
         (requestJoin)="requestJoinEvent()"
         (openAttendees)="openAttendeesDrawer()"
-        (openRequests)="openRequestsDrawer()" />
+        (openRequests)="openRequestsDrawer()"
+        (deleteEvent)="openDeleteConfirmation()"
+        (cancelEvent)="openCancelConfirmation()"
+        (leaveEvent)="openLeaveConfirmation()" />
 
       <div class="mobile-event-overview">
         <vl-event-host-card class="host-panel--mobile"
@@ -160,3 +167,18 @@
   (accept)="acceptJoinRequest($event)"
   (reject)="rejectJoinRequest($event)"
   (viewPerson)="openPersonProfile($event)" />
+
+<vl-action-modal
+  [isOpen]="actionModal().isOpen"
+  [variant]="actionModal().variant"
+  [title]="actionModal().title"
+  [message]="actionModal().message"
+  [confirmLabel]="actionModal().confirmLabel"
+  [cancelLabel]="actionModal().cancelLabel"
+  [showCancelButton]="actionModal().showCancelButton"
+  [showInput]="actionModal().showInput"
+  [inputPlaceholder]="actionModal().inputPlaceholder"
+  [inputRequired]="actionModal().inputRequired"
+  [isLoading]="actionModal().isLoading"
+  (confirmed)="actionModal().action ? onModalConfirmed($event) : onResultModalDismissed()"
+  (cancelled)="onModalCancelled()" />

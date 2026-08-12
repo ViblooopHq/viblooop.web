@@ -70,8 +70,31 @@
     border: 1px solid color-mix(in srgb, var(--color-action-primary) 28%, transparent);
     border-radius: 0.85rem;
     background: var(--color-surface-raised);
-    box-shadow: var(--shadow-modal);
+    box-shadow: var(--shadow-modal, var(--shadow-lg));
 
+    .vl-menu-item--warning {
+      color: var(--color-warning);
+
+      i {
+        color: var(--color-warning);
+      }
+
+      &:hover {
+        background: color-mix(in srgb, var(--color-warning) 14%, transparent);
+      }
+    }
+
+    .vl-menu-item--danger {
+      color: var(--error);
+
+      i {
+        color: var(--error);
+      }
+
+      &:hover {
+        background: color-mix(in srgb, var(--error) 14%, transparent);
+      }
+    }
   }
 
   .hero-bottom {
@@ -149,14 +172,61 @@
         color: var(--color-error-border);
       }
     }
+
+    &--cancelled {
+      border-color: color-mix(in srgb, var(--color-warning) 56%, transparent);
+      background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+      box-shadow: var(--shadow-md);
+      color: var(--color-warning);
+
+      .event-status-pill__icon {
+        color: var(--color-warning);
+      }
+    }
+  }
+
+  .btn-leave-hero {
+    gap: 0.4rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius-pill);
+    border-color: color-mix(in srgb, var(--color-warning) 45%, transparent);
+    color: var(--color-warning);
+    font-size: 0.875rem;
+    font-weight: 800;
+
+    i {
+      font-size: 0.95rem;
+      color: var(--color-warning);
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-warning) 14%, transparent);
+      border-color: var(--color-warning);
+    }
   }
 
   .hero-action-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
+  .hero-action-skeleton {
+    width: 140px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-surface-raised) 50%, transparent);
+    animation: skeletonPulse 1.5s infinite ease-in-out;
+  }
+
+  @keyframes skeletonPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* Attendees group & overlapping avatars */
   .hero-attendance-group {
     display: flex;
     align-items: center;

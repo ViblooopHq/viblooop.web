@@ -17,6 +17,10 @@ export class EventHeroComponent {
   isEventMenuOpen = input(false);
   isEscapeEvent = input(false);
   isEventEnded = input(false);
+  isUserAttendee = input(false);
+  isCancelled = input(false);
+  isAuthInitialized = input(false);
+  isJoinRequestPending = input(false);
   eventDate = input<string | undefined>(undefined);
   timeLeftLabel = input('');
   locationLabel = input('');
@@ -35,4 +39,7 @@ export class EventHeroComponent {
   requestJoin = output<void>();
   openAttendees = output<void>();
   openRequests = output<void>();
+  deleteEvent = output<void>();
+  cancelEvent = output<void>();
+  leaveEvent = output<void>();
 }

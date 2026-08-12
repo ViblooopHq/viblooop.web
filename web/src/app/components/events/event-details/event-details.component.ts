@@ -41,6 +41,37 @@ import { EventGallerySectionComponent } from './components/event-gallery-section
 import { EventRelatedComponent } from './components/event-related/event-related.component';
 import { EventPeopleDrawerComponent, JoinRequestView } from './components/event-people-drawer/event-people-drawer.component';
 import { EventProfileModalComponent } from './components/event-profile-modal/event-profile-modal.component';
+import { ActionModalComponent, ActionModalVariant } from '../../../shared/components/action-modal/action-modal.component';
+
+export interface ActionModalState {
+  isOpen: boolean;
+  variant: ActionModalVariant;
+  title: string;
+  message: string;
+  confirmLabel: string;
+  cancelLabel: string;
+  showCancelButton: boolean;
+  showInput: boolean;
+  inputPlaceholder: string;
+  inputRequired: boolean;
+  isLoading: boolean;
+  action: 'delete' | 'cancel' | 'leave' | null;
+}
+
+const defaultModalState: ActionModalState = {
+  isOpen: false,
+  variant: 'confirm',
+  title: '',
+  message: '',
+  confirmLabel: 'Confirm',
+  cancelLabel: 'Cancel',
+  showCancelButton: true,
+  showInput: false,
+  inputPlaceholder: '',
+  inputRequired: false,
+  isLoading: false,
+  action: null,
+};
 
 @Component({
   selector: 'vl-event-details',
@@ -52,11 +83,11 @@ import { EventProfileModalComponent } from './components/event-profile-modal/eve
     EventChatCardComponent,
     EventAboutComponent,
     EventGallerySectionComponent,
-    EventRelatedComponent,
     EventPeopleDrawerComponent,
     EventProfileModalComponent,
     ChatComponent,
     EventCommentsComponent,
+    ActionModalComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-details.component.html',
@@ -90,12 +121,15 @@ export class EventDetailsComponent {
   notifications = toSignal(this.socketService.notifications$);
 
   // ── UI state ──
+  isAuthInitialized = toSignal(this.authService.isAuthInitialized$, { initialValue: false });
+  isJoinRequestPending = signal(false);
   isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
   profileModal = signal<{ open: boolean; userId: string }>({ open: false, userId: '' });
   requestActionStates = signal<Record<string, RequestActionState>>({});
   deletingGalleryImagePath = signal('');
+  actionModal = signal<ActionModalState>({ ...defaultModalState });
   private readonly now = signal(Date.now());
 
   // ── Derived data ──
@@ -113,8 +147,15 @@ export class EventDetailsComponent {
     return isMember || joinStatus === 'accepted';
   });
   isUserAttendee = computed(() => this.canAccessPrivateEventData());
-  isEventCreator = computed(() =>
-    this.authService.isLoggedIn() && this.currentUser()?.id === this.eventDetails()?.createdBy?._id);
+  isEventCreator = computed(() => {
+    const user = this.currentUser();
+    const details = this.eventDetails();
+    return this.authService.isLoggedIn() && user?.id === details?.createdBy?._id;
+  });
+  isCancelled = computed(() => {
+    const status = String(this.eventDetails()?.['status'] || '').toLowerCase();
+    return status === 'cancelled' || status === 'canceled';
+  });
   canLeaveReview = computed(() => this.isUserAttendee() && !this.isEventCreator());
   isMapVisible = computed(() => this.canAccessPrivateEventData() && hasEventCoordinates(this.eventDetails()));
   isChatVisible = computed(() => this.canAccessPrivateEventData());
@@ -401,14 +442,21 @@ export class EventDetailsComponent {
   requestJoinEvent(): void {
     const eventId = this.eventId();
     const userId = this.currentUser()?.id;
-    if (!eventId || !userId) return;
+    if (!eventId || !userId || this.isJoinRequestPending()) return;
 
-    this.eventsService.requestJoinEvent(eventId, userId).subscribe((res: any) => {
-      if (!res?.success || res.statusCode !== 200) {
-        console.warn('Unexpected response format or status code:', res);
-        return;
+    this.isJoinRequestPending.set(true);
+    this.eventsService.requestJoinEvent(eventId, userId).subscribe({
+      next: (res: any) => {
+        this.isJoinRequestPending.set(false);
+        if (!res?.success || res.statusCode !== 200) {
+          console.warn('Unexpected response format or status code:', res);
+          return;
+        }
+        this.eventJoinStatusStore.setStatus(eventId, 'pending');
+      },
+      error: () => {
+        this.isJoinRequestPending.set(false);
       }
-      this.eventJoinStatusStore.setStatus(eventId, 'pending');
     });
   }
 
@@ -560,6 +608,183 @@ export class EventDetailsComponent {
 
   closeEventDrawer(): void {
     this.activeDrawer.set(null);
+  }
+
+  // ── Modal flows for event actions ──
+
+  openDeleteConfirmation(): void {
+    this.isEventMenuOpen.set(false);
+    this.actionModal.set({
+      ...defaultModalState,
+      isOpen: true,
+      variant: 'warning',
+      title: 'Delete Event',
+      message: 'This will permanently delete this event and all its data. This action cannot be undone.',
+      confirmLabel: 'Delete',
+      showInput: false,
+      action: 'delete',
+    });
+  }
+
+  openCancelConfirmation(): void {
+    this.isEventMenuOpen.set(false);
+    this.actionModal.set({
+      ...defaultModalState,
+      isOpen: true,
+      variant: 'warning',
+      title: 'Cancel Event',
+      message: 'All attendees will be notified that this event has been cancelled. Please provide a reason.',
+      confirmLabel: 'Cancel Event',
+      showInput: true,
+      inputPlaceholder: 'Why are you cancelling this event?',
+      inputRequired: true,
+      action: 'cancel',
+    });
+  }
+
+  openLeaveConfirmation(): void {
+    this.actionModal.set({
+      ...defaultModalState,
+      isOpen: true,
+      variant: 'confirm',
+      title: 'Leave Event',
+      message: 'You will be removed from the attendee list. The host will be notified.',
+      confirmLabel: 'Leave Event',
+      showInput: true,
+      inputPlaceholder: 'Why are you leaving? (optional for the host)',
+      inputRequired: true,
+      action: 'leave',
+    });
+  }
+
+  onModalConfirmed(inputValue: string): void {
+    const action = this.actionModal().action;
+    switch (action) {
+      case 'delete':
+        this.performDeleteEvent();
+        break;
+      case 'cancel':
+        this.performCancelEvent(inputValue);
+        break;
+      case 'leave':
+        this.performLeaveEvent(inputValue);
+        break;
+    }
+  }
+
+  onModalCancelled(): void {
+    this.actionModal.set({ ...defaultModalState });
+  }
+
+  private performDeleteEvent(): void {
+    this.actionModal.update((state) => ({ ...state, isLoading: true }));
+    const eventId = this.eventId();
+
+    this.eventsService.deleteEvent(eventId).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          this.showErrorModal(res?.message || 'Failed to delete event');
+          return;
+        }
+        this.actionModal.set({
+          ...defaultModalState,
+          isOpen: true,
+          variant: 'success',
+          title: 'Event Deleted',
+          message: 'The event has been permanently deleted.',
+          confirmLabel: 'Done',
+          showCancelButton: false,
+          action: null,
+        });
+      },
+      error: (err: any) => {
+        const message = err?.error?.message || err?.message || 'Failed to delete event';
+        this.showErrorModal(message);
+      },
+    });
+  }
+
+  private performCancelEvent(reason: string): void {
+    this.actionModal.update((state) => ({ ...state, isLoading: true }));
+    const eventId = this.eventId();
+
+    this.eventsService.cancelEvent(eventId, reason).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          this.showErrorModal(res?.message || 'Failed to cancel event');
+          return;
+        }
+        this.actionModal.set({
+          ...defaultModalState,
+          isOpen: true,
+          variant: 'success',
+          title: 'Event Cancelled',
+          message: 'All attendees have been notified about the cancellation.',
+          confirmLabel: 'Done',
+          showCancelButton: false,
+          action: null,
+        });
+        this.fetchEventDetails(eventId);
+      },
+      error: (err: any) => {
+        const message = err?.error?.message || err?.message || 'Failed to cancel event';
+        this.showErrorModal(message);
+      },
+    });
+  }
+
+  private performLeaveEvent(reason: string): void {
+    this.actionModal.update((state) => ({ ...state, isLoading: true }));
+    const eventId = this.eventId();
+
+    this.eventsService.leaveEvent(eventId, reason).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          this.showErrorModal(res?.message || 'Failed to leave event');
+          return;
+        }
+        this.actionModal.set({
+          ...defaultModalState,
+          isOpen: true,
+          variant: 'success',
+          title: 'You Left the Event',
+          message: 'You have been removed from the attendee list. The host has been notified.',
+          confirmLabel: 'Done',
+          showCancelButton: false,
+          action: null,
+        });
+        this.fetchEventDetails(eventId);
+      },
+      error: (err: any) => {
+        const message = err?.error?.message || err?.message || 'Failed to leave event';
+        this.showErrorModal(message);
+      },
+    });
+  }
+
+  private showErrorModal(message: string): void {
+    this.actionModal.set({
+      ...defaultModalState,
+      isOpen: true,
+      variant: 'error',
+      title: 'Something Went Wrong',
+      message,
+      confirmLabel: 'Close',
+      showCancelButton: false,
+      action: null,
+    });
+  }
+
+  /** Called when a non-action success/error modal's confirm button is clicked (just close). */
+  onResultModalDismissed(): void {
+    const modal = this.actionModal();
+    // If this was a successful delete, navigate away
+    if (modal.variant === 'success' && modal.title === 'Event Deleted') {
+      this.actionModal.set({ ...defaultModalState });
+      this.routeService.navigateByUrl('/explore');
+      return;
+    }
+    this.actionModal.set({ ...defaultModalState });
   }
 }
 

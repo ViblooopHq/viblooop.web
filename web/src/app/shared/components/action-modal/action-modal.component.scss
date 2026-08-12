@@ -1,0 +1,281 @@
+/* ──────────────────────────────────────────────────────────
+ * Action Modal — all values driven from the global design
+ * tokens declared in :root (styles.scss). No magic numbers
+ * for colours, radii, shadows, spacing, or typography.
+ * ────────────────────────────────────────────────────────── */
+
+/* Backdrop */
+.vl-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10001; /* above CDK overlays (10 000) */
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: var(--color-overlay-scrim);
+  backdrop-filter: blur(6px);
+  animation: modalBackdropIn var(--transition-base) both;
+}
+
+/* Card */
+.vl-modal {
+  position: relative;
+  width: min(100%, 420px);
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-raised);
+  box-shadow: var(--shadow-overlay);
+  padding: var(--space-8) var(--space-6) var(--space-6);
+  text-align: center;
+  animation: modalCardIn var(--transition-base) both;
+}
+
+/* ── Icon ring ── */
+.vl-modal__icon-ring {
+  display: grid;
+  place-items: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  margin: 0 auto var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: 1.65rem;
+  transition: box-shadow var(--transition-base);
+}
+
+/* Per-variant icon colours — driven from semantic tokens */
+.vl-modal--confirm .vl-modal__icon-ring {
+  background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
+  color: var(--color-action-primary);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-action-primary) 22%, transparent);
+}
+
+.vl-modal--warning .vl-modal__icon-ring {
+  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
+  color: var(--color-warning);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-warning) 22%, transparent);
+}
+
+.vl-modal--error .vl-modal__icon-ring {
+  background: color-mix(in srgb, var(--error) 16%, transparent);
+  color: var(--error);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--error) 22%, transparent);
+}
+
+.vl-modal--success .vl-modal__icon-ring {
+  background: color-mix(in srgb, var(--color-success) 16%, transparent);
+  color: var(--color-success);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-success) 22%, transparent);
+}
+
+.vl-modal--info .vl-modal__icon-ring {
+  background: color-mix(in srgb, var(--color-action-secondary) 14%, transparent);
+  color: var(--color-action-secondary);
+  box-shadow: 0 0 24px color-mix(in srgb, var(--color-action-secondary) 22%, transparent);
+}
+
+/* ── Title ── */
+.vl-modal__title {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-lg);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+}
+
+/* ── Message ── */
+.vl-modal__message {
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  line-height: var(--line-height-relaxed);
+}
+
+/* ── Textarea input ── */
+.vl-modal__input {
+  display: block;
+  width: 100%;
+  min-height: 5rem;
+  margin-bottom: var(--space-5);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border-ghost);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-section);
+  color: var(--color-text-primary);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  resize: vertical;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+  &::placeholder {
+    color: var(--color-text-muted);
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+  }
+
+  &:focus {
+    border-color: var(--color-action-primary);
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+/* ── Action buttons row ── */
+.vl-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+/* Shared button base */
+.vl-modal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  padding: var(--space-2) var(--space-5);
+  border: 0;
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+  font-weight: 700;
+  line-height: var(--line-height-normal);
+  cursor: pointer;
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-fast);
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+}
+
+/* Cancel / secondary */
+.vl-modal__btn--cancel {
+  border: 1px solid var(--color-border-ghost);
+  background: var(--color-surface-section);
+  color: var(--color-text-primary);
+
+  &:hover {
+    background: var(--color-surface-glass-strong);
+    border-color: color-mix(in srgb, var(--color-action-primary) 35%, transparent);
+  }
+}
+
+/* Confirm / primary — variant-coloured */
+.vl-modal__btn--confirm {
+  color: var(--on-primary);
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+}
+
+.vl-modal__btn--confirm.vl-modal__btn--confirm {
+  background: linear-gradient(135deg, var(--color-action-primary), var(--color-brand-accent));
+  box-shadow: var(--shadow-brand-primary);
+
+  &:hover {
+    box-shadow: var(--shadow-brand-glow);
+  }
+}
+
+.vl-modal__btn--confirm.vl-modal__btn--warning {
+  background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dim));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-warning) 28%, transparent);
+
+  &:hover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-warning) 38%, transparent);
+  }
+}
+
+.vl-modal__btn--confirm.vl-modal__btn--error {
+  background: linear-gradient(135deg, var(--error), #f87171);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--error) 28%, transparent);
+
+  &:hover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--error) 38%, transparent);
+  }
+}
+
+.vl-modal__btn--confirm.vl-modal__btn--success {
+  background: linear-gradient(135deg, var(--color-success), var(--color-success-dim));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-success) 28%, transparent);
+
+  &:hover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-success) 38%, transparent);
+  }
+}
+
+.vl-modal__btn--confirm.vl-modal__btn--info {
+  background: linear-gradient(135deg, var(--color-action-secondary), var(--color-action-primary));
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-action-secondary) 28%, transparent);
+
+  &:hover {
+    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-action-secondary) 38%, transparent);
+  }
+}
+
+/* ── Loading spinner ── */
+.vl-modal__spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid color-mix(in srgb, var(--on-primary) 35%, transparent);
+  border-top-color: var(--on-primary);
+  border-radius: var(--radius-full);
+  animation: modalSpin 0.6s linear infinite;
+}
+
+/* ── Animations ── */
+@keyframes modalBackdropIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalCardIn {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes modalSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Responsive ── */
+@media (max-width: 480px) {
+  .vl-modal {
+    padding: var(--space-6) var(--space-4) var(--space-4);
+  }
+
+  .vl-modal__actions {
+    flex-direction: column-reverse;
+    gap: var(--space-2);
+  }
+
+  .vl-modal__btn {
+    width: 100%;
+  }
+}

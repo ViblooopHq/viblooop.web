@@ -156,4 +156,16 @@ export class EventsService {
   rejectJoinEventRequest(eventId: string, userId: string): Observable<any> {
     return this.httpService.http.post(`${this.baseUrl}/rejectJoinEventRequest`, { eventId, userId });
   }
+
+  deleteEvent(eventId: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/deleteEvent`, { eventId });
+  }
+
+  cancelEvent(eventId: string, reason: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/cancelEvent`, { eventId, reason });
+  }
+
+  leaveEvent(eventId: string, reason: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/leaveEvent`, { eventId, reason });
+  }
 }

@@ -19,9 +19,19 @@
         <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
         Edit
       </button>
+      @if (!isEventEnded() && !isCancelled()) {
+      <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--warning" (click)="cancelEvent.emit()">
+        <i class="fa-solid fa-ban" aria-hidden="true"></i>
+        Cancel Event
+      </button>
+      }
+      <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--danger" (click)="deleteEvent.emit()">
+        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+        Delete Event
+      </button>
       <button type="button" role="menuitem" class="vl-menu-item" (click)="closeMenu.emit()">
         <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        Cancel
+        Close
       </button>
     </div>
     }
@@ -66,7 +76,12 @@
           </span>
         </button>
 
-        @if (isEventEnded()) {
+        @if (isCancelled()) {
+        <span class="event-status-pill event-status-pill--cancelled">
+          <i class="fa-solid fa-ban event-status-pill__icon" aria-hidden="true"></i>
+          Event cancelled
+        </span>
+        } @else if (isEventEnded()) {
         <span class="event-status-pill event-status-pill--ended">
           <i class="fa-solid fa-circle-check event-status-pill__icon" aria-hidden="true"></i>
           Event ended
@@ -74,21 +89,36 @@
         }
       </div>
 
-      @if (!isEventEnded()) {
-      @if (!isEventCreator()) {
-      <button type="button" class="btn-join-hero vl-button vl-button--primary" (click)="requestJoin.emit()" [disabled]="!canRequestJoin()">
-        <i class="fa-solid fa-fire" aria-hidden="true"></i>
-        {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}
-        <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
-      </button>
+      @if (!isEventEnded() && !isCancelled()) {
+      @if (!isAuthInitialized()) {
+        <div class="hero-action-skeleton"></div>
       } @else {
-      <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
-        <i class="fa-solid fa-user-group" aria-hidden="true"></i>
-        View Requests
-        @if (pendingJoinRequestCount() > 0) {
-        <span class="btn-view-requests__count">{{ pendingJoinRequestCount() }}</span>
+        @if (!isEventCreator()) {
+          @if (isUserAttendee()) {
+          <button type="button" class="btn-leave-hero vl-button vl-button--secondary" (click)="leaveEvent.emit()">
+            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
+            Leave Event
+          </button>
+          } @else {
+          <button type="button" class="btn-join-hero vl-button vl-button--primary" (click)="requestJoin.emit()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
+            @if (isJoinRequestPending()) {
+              <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+            } @else {
+              <i class="fa-solid fa-fire" aria-hidden="true"></i>
+            }
+            {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+          }
+        } @else {
+        <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
+          <i class="fa-solid fa-user-group" aria-hidden="true"></i>
+          View Requests
+          @if (pendingJoinRequestCount() > 0) {
+          <span class="btn-view-requests__count">{{ pendingJoinRequestCount() }}</span>
+          }
+        </button>
         }
-      </button>
       }
       }
     </div>
