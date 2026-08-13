@@ -2,19 +2,52 @@
   <!-- Header & Search -->
   <header class="explore-header">
 
-    <vl-section-headers [label]="'Vibes'" [title]="'Explore'"
-      [description]="'Find your vibe. Join the moment. Enjoy life.'">
-    </vl-section-headers>
+    <div class="mb-8">
+      <div style="height: 500px; border-radius: 20px; overflow: hidden; position: relative;">
+        <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="fullPageDummyItems">
+          <ng-template let-item>
+            <div class="full-page-slide" [style.background-image]="'url(' + item.image + ')'">
+              <div class="slide-overlay"></div>
+              <div class="slide-content">
+                @if (item.trending) {
+                <div class="trending-badge">
+                  <span class="fire-icon">🔥</span> Now Trending
+                </div>
+                }
+
+                <div class="tags-row">
+                  @for (tag of item.tags; track tag) {
+                  <span class="tag-pill">{{tag}}</span>
+                  }
+                </div>
+
+                <h1 class="slide-title">{{item.title}}</h1>
+                <p class="slide-description">{{item.description}}</p>
+
+                <div class="slide-actions">
+                  <button class="btn-play">
+                    <i class="fa-solid fa-play"></i> Watch Now
+                  </button>
+                  <button class="btn-icon">
+                    <i class="fa-solid fa-download"></i>
+                  </button>
+                  <button class="btn-icon">
+                    <i class="fa-solid fa-ellipsis"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </vl-full-page-carousel>
+      </div>
+    </div>
 
     <div class="explore-controls">
       <div class="search-bar vl-surface vl-surface--glass">
         <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
         <input type="text" placeholder="Search events, vibes, or locations..." class="search-input vl-field">
-        <div class="location-pill vl-chip"
-             [class.active]="activeFilterId === 'nearby'"
-             (click)="setActiveFilter('nearby')"
-             role="button"
-             tabindex="0">
+        <div class="location-pill vl-chip" [class.active]="activeFilterId === 'nearby'"
+          (click)="setActiveFilter('nearby')" role="button" tabindex="0">
           <i class="fa-solid fa-location-dot"></i>
           <span>Near You</span>
         </div>
@@ -22,10 +55,12 @@
 
       <section class="filter-tags-scroll" aria-label="Quick filters">
         <div class="filter-tags">
-          <button *ngFor="let filter of filters; let i = index" class="filter-tag vl-chip"
-            [class.active]="activeFilterId === filter.id" (click)="setActiveFilter(filter.id)">
+          @for (filter of filters; track filter.id) {
+          <button class="filter-tag vl-chip" [class.active]="activeFilterId === filter.id"
+            (click)="setActiveFilter(filter.id)">
             {{filter.label}}
           </button>
+          }
         </div>
       </section>
     </div>
@@ -38,13 +73,9 @@
     </h2>
 
     <div class="featured-vibes-grid">
-      <button
-        class="featured-vibe-card"
-        type="button"
-        *ngFor="let vibe of featuredVibes"
-        [class.active]="isFeaturedVibeActive(vibe)"
-        [ngClass]="'featured-vibe-card--' + vibe.tone"
-        (click)="setFeaturedVibe(vibe)">
+      @for (vibe of featuredVibes; track vibe.id) {
+      <button class="featured-vibe-card" type="button" [class.active]="isFeaturedVibeActive(vibe)"
+        [ngClass]="'featured-vibe-card--' + vibe.tone" (click)="setFeaturedVibe(vibe)">
         <img [src]="vibe.cover" [alt]="vibe.label" class="featured-vibe-card__image">
         <span class="featured-vibe-card__shade"></span>
 
@@ -65,6 +96,7 @@
           <i class="fa-solid fa-chevron-right"></i>
         </span>
       </button>
+      }
     </div>
   </section>
 
@@ -72,8 +104,8 @@
   <section class="categories-section mb-4 sm:mb-12">
     <h2 class="section-title">Explore by Vibe</h2>
     <div class="categories-scroll">
-      <button class="category-item" type="button" *ngFor="let cat of categories"
-        [class.active]="activeCategoryId === cat.id"
+      @for (cat of categories(); track cat.id) {
+      <button class="category-item" type="button" [class.active]="activeCategoryId === cat.id"
         (click)="setActiveCategory(cat.id)">
         <div class="image-wrapper">
           <img [src]="cat.cover" [alt]="cat.label" class="category-image">
@@ -83,6 +115,7 @@
         </div>
         <span class="category-name">{{cat.label}}</span>
       </button>
+      }
     </div>
   </section>
 
@@ -91,15 +124,18 @@
     <div class="section-header">
       <h2 class="section-title">Upcoming Vibes</h2>
     </div>
-    <div class="trending-scroll" [class.single-result]="trendingEvents.length === 1"
-      [class.empty-result]="trendingEvents.length === 0">
-      <div class="trending-card" *ngFor="let event of trendingEvents">
+    <div class="trending-scroll" [class.single-result]="trendingEvents().length === 1"
+      [class.empty-result]="trendingEvents().length === 0">
+      @for (event of trendingEvents(); track event._id || $index) {
+      <div class="trending-card">
         <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
       </div>
-      <vl-empty-state *ngIf="trendingEvents.length === 0" [subject]="emptyStateSubject"
-        [context]="emptyStateContext" [contextPrefix]="emptyStateContextPrefix"
-        (exploreAll)="resetFilters()">
+      }
+      @if (trendingEvents().length === 0) {
+      <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
+        [contextPrefix]="emptyStateContextPrefix" (exploreAll)="resetFilters()">
       </vl-empty-state>
+      }
     </div>
   </section>
 
@@ -108,32 +144,52 @@
     <div class="section-header">
       <h2 class="section-title">Just for you</h2>
     </div>
-    <div class="trending-scroll" [class.single-result]="justForYouEvents.length === 1"
-      [class.empty-result]="justForYouEvents.length === 0">
-      <div class="trending-card" *ngFor="let event of justForYouEvents">
+    <div class="trending-scroll" [class.single-result]="justForYouEvents().length === 1"
+      [class.empty-result]="justForYouEvents().length === 0">
+      @for (event of justForYouEvents(); track event._id || $index) {
+      <div class="trending-card">
         <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
       </div>
-      <vl-empty-state *ngIf="justForYouEvents.length === 0" subject="events" context="near you"
-        contextPrefix="" (exploreAll)="resetFilters()">
+      }
+      @if (justForYouEvents().length === 0) {
+      <vl-empty-state subject="events" context="near you" contextPrefix="" (exploreAll)="resetFilters()">
       </vl-empty-state>
+      }
     </div>
   </section>
 
   <section class="past-vibes-section">
-    <div class="section-header">
-      <h2 class="section-title">Past Vibes</h2>
+    <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
+      @if (pastEvents().length > 0) {
+      <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
+        preTitle="Memories" title="Past Vibes" description="Relive the best moments from our past events.">
+        <ng-template let-event>
+          <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewPastEvent(event)">
+          </vl-past-event-card>
+        </ng-template>
+      </vl-multi-carousel>
+      }
+
+      @if (pastEvents().length === 0) {
+      <vl-empty-state subject="past vibes" context="yet" contextPrefix="" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+      }
+    </div>
+  </section>
+
+  <section class="test-carousels-section mt-12 mb-12">
+    <div class="mb-8">
+      <vl-banner-carousel>
+        @for(img of dummyImages; track img.url) {
+        <swiper-slide>
+          <img [src]="img.url" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;">
+        </swiper-slide>
+        }
+      </vl-banner-carousel>
     </div>
 
-    <div class="past-vibes-grid" [class.empty-result]="pastEvents.length === 0">
-      <vl-past-event-card
-        *ngFor="let event of pastEvents"
-        [config]="getPastEventCardConfig(event)"
-        (viewMemories)="viewPastEvent(event)">
-      </vl-past-event-card>
-
-      <vl-empty-state *ngIf="pastEvents.length === 0" subject="past vibes" context="yet"
-        contextPrefix="" (exploreAll)="resetFilters()">
-      </vl-empty-state>
+    <div class="mb-8">
+      <vl-preview-carousel [items]="previewItems"></vl-preview-carousel>
     </div>
   </section>
 </div>

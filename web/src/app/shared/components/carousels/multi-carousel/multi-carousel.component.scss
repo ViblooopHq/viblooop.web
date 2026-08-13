@@ -1,0 +1,132 @@
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+.vl-multi-carousel-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pre-title {
+    display: inline-block;
+    padding: 4px 12px;
+    background-color: #f1eeff;
+    color: #5544ff;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    width: fit-content;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--on-surface);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+
+  .description {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .custom-nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-bottom: 8px;
+
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid var(--color-border-ghost, #ddd);
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-size: 14px;
+
+      &:hover {
+        border-color: var(--color-text-primary, #666);
+        background-color: rgba(0,0,0,0.02);
+      }
+      
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+}
+
+swiper-container {
+  display: block;
+  width: 100%;
+  min-height: 16rem; /* Match the height of the past event card */
+  padding-bottom: 12px; /* Reduced since pagination dots can be disabled */
+  
+  /* Overrides for this specific variant */
+  &::part(button-prev),
+  &::part(button-next) {
+    display: none; /* We use custom navigation now */
+  }
+}
+
+::ng-deep swiper-slide {
+  display: block;
+  height: auto;
+}
+
+.vl-multi-carousel-ssr-fallback {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+  width: 100%;
+  padding-bottom: 40px;
+  
+  ::ng-deep swiper-slide {
+    flex-shrink: 0;
+    width: 80%; /* Default mobile view width (1.2 slides per view) */
+    display: block;
+  }
+  
+  @media (min-width: 640px) {
+    ::ng-deep swiper-slide {
+      width: calc(45% - 16px); /* Roughly 2.2 slides */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    ::ng-deep swiper-slide {
+      width: calc(31% - 24px); /* Roughly 3.2 slides */
+    }
+  }
+
+  @media (min-width: 1280px) {
+    ::ng-deep swiper-slide {
+      width: calc(25% - 24px); /* 4 slides */
+    }
+  }
+}

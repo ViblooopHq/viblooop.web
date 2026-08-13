@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../../../../data';
 import { EventsService } from '../../../shared/services/events/events.service';
@@ -8,12 +8,13 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
+import { MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
+import { PopularCardComponent, PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
 export interface EventFilter {
   id: string;
   label: string;
   icon: string;
 }
-
 interface FeaturedVibe {
   id: string;
   label: string;
@@ -27,16 +28,17 @@ interface FeaturedVibe {
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
-  imports: [CommonModule, SectionHeadersComponent, EventCardComponent, EmptyStateComponent, PastEventCardComponent],
+  imports: [CommonModule, SectionHeadersComponent, EventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PopularCardComponent],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ExploreEventsComponent implements OnInit {
-  categories: any[] = [];
-  trendingEvents: any[] = [];
-  justForYouEvents: any[] = [];
-  pastEvents: any[] = [];
-  allEvents: any[] = [];
+  categories = signal<any[]>([]);
+  trendingEvents = signal<any[]>([]);
+  justForYouEvents = signal<any[]>([]);
+  pastEvents = signal<any[]>([]);
+  allEvents = signal<any[]>([]);
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
   private messageStore = inject(MessageStore);
@@ -79,6 +81,102 @@ export class ExploreEventsComponent implements OnInit {
     { id: 'nearby', label: 'Nearby', icon: 'location_on' }
   ];
 
+  dummyImages = [
+    { url: 'https://picsum.photos/800/400?random=1', alt: 'Dummy 1' },
+    { url: 'https://picsum.photos/800/400?random=2', alt: 'Dummy 2' },
+    { url: 'https://picsum.photos/800/400?random=3', alt: 'Dummy 3' }
+  ];
+
+  previewItems: PreviewSlide[] = [
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&q=80&w=1200&h=800',
+      preTitle: 'Iceland, a Nordic island nation',
+      title: 'Iceland',
+      description: 'Iceland, a Nordic island nation, is defined by its dramatic landscape with volcanoes, geysers, hot springs and lava fields.',
+      subtitle: 'Nordic island nation'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200&h=800',
+      preTitle: 'New Zealand, an island country',
+      title: 'New Zealand',
+      description: 'New Zealand is a country in the southwestern Pacific Ocean consisting of 2 main landmasses and over 700 smaller islands.',
+      subtitle: 'Island country'
+    },
+    {
+      type: 'image',
+      url: 'https://images.unsplash.com/photo-1786614840853-ab60bacc1cd2?auto=format&fit=crop&q=80&w=1200&h=800',
+      preTitle: 'Norway, a Scandinavian country',
+      title: 'Norway',
+      description: 'Norway is a Scandinavian country encompassing mountains, glaciers and deep coastal fjords.',
+      subtitle: 'Scandinavian country'
+    },
+    {
+      type: 'video',
+      url: 'https://www.w3schools.com/html/mov_bbb.mp4',
+      preTitle: 'Video Example',
+      title: 'Video Background',
+      description: 'This slide demonstrates how seamless video playback looks as a background element with the modern carousel layout.',
+      subtitle: 'Video demo'
+    }
+  ];
+
+  fullPageDummyItems = [
+    {
+      image: 'https://images.unsplash.com/photo-1540039155733-d7696d5eb3fc?auto=format&fit=crop&q=80&w=1200&h=600',
+      trending: true,
+      tags: ['Music', 'Festival'],
+      title: 'Neon Nights Festival',
+      description: 'Get ready for the biggest EDM festival of the year. Join thousands of music lovers for a night of unforgettable beats and lights.',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=1200&h=600',
+      trending: false,
+      tags: ['Chill', 'Acoustic'],
+      title: 'Acoustic Sunset',
+      description: 'Relaxing vibes by the beach with top indie artists playing stripped-down acoustic versions of their hits.',
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1478147424098-b80a56391b15?auto=format&fit=crop&q=80&w=1200&h=600',
+      trending: true,
+      tags: ['Party', 'Nightlife'],
+      title: 'Midnight Madness',
+      description: 'The ultimate underground party experience. Secret location, exclusive DJ sets, and a night you won\'t forget.',
+    }
+  ];
+
+  popularNowItems: PopularCardConfig[] = [
+    {
+      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=400&h=533', // Food/Pancakes
+      badgeText: 'Live',
+      badgeType: 'live',
+      viewCount: '12K',
+      title: 'Food'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=400&h=533', // Food plate
+      badgeText: 'Premier',
+      badgeType: 'premier',
+      viewCount: '12K',
+      title: 'Nathan 5'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=400&h=533', // Adventure/Mountain
+      badgeText: 'Live',
+      badgeType: 'live',
+      viewCount: '12K',
+      title: 'Adventure'
+    },
+    {
+      image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=400&h=533', // Photographer/Travel
+      badgeText: 'Premier',
+      badgeType: 'premier',
+      viewCount: '8.5K',
+      title: 'Travel Vibes'
+    }
+  ];
+
   ngOnInit() {
 
     this.loadCategories();
@@ -89,7 +187,7 @@ export class ExploreEventsComponent implements OnInit {
       return [...acc, ...cat.events];
     }, [] as any[]);
 
-    this.allEvents = allEvents;
+    this.allEvents.set(allEvents);
     this.applyFilters();
   }
 
@@ -118,8 +216,8 @@ export class ExploreEventsComponent implements OnInit {
         this.eventsService.getNearbyEvents(latitude, longitude, 50000).subscribe({
           next: (res: any) => {
             if (res?.success && res?.data) {
-              this.trendingEvents = res.data;
-              if (this.trendingEvents.length === 0) {
+              this.trendingEvents.set(res.data);
+              if (this.trendingEvents().length === 0) {
                 this.messageStore.addMessage('No nearby events found.', 'info');
               }
             } else {
@@ -164,7 +262,7 @@ export class ExploreEventsComponent implements OnInit {
     if (this.activeFeaturedVibeId === vibe.id) return true;
     if (this.activeFeaturedVibeId) return false;
 
-    const selectedCategory = this.categories.find((category) => category.id === this.activeCategoryId);
+    const selectedCategory = this.categories().find((category) => category.id === this.activeCategoryId);
     return !!selectedCategory && this.matchesVibeTerms(this.categorySearchText(selectedCategory), vibe);
   }
 
@@ -176,7 +274,7 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   getFeaturedVibeEventCount(vibe: FeaturedVibe): number {
-    return this.allEvents
+    return this.allEvents()
       .filter((event) => this.matchesFeaturedVibe(event, vibe))
       .filter((event) => this.matchesQuickFilter(event, this.activeFilterId))
       .filter((event) => !this.isPastEvent(event))
@@ -226,7 +324,7 @@ export class ExploreEventsComponent implements OnInit {
     if (activeVibe) return activeVibe.label;
     if (this.activeCategoryId === 'all') return 'events';
 
-    const selectedCategory = this.categories.find((category) => category.id === this.activeCategoryId);
+    const selectedCategory = this.categories().find((category) => category.id === this.activeCategoryId);
     return this.normalize(selectedCategory?.label) || 'events';
   }
 
@@ -250,7 +348,7 @@ export class ExploreEventsComponent implements OnInit {
   private loadCategories() {
     this.eventsService.getEventCategories().subscribe((categories: any) => {
       if (categories.success && categories.statusCode === 200) {
-        this.categories = categories.data.categories.map((category: any) => {
+        this.categories.set(categories.data.categories.map((category: any) => {
           return {
             id: category._id,
             label: category.title,
@@ -258,7 +356,7 @@ export class ExploreEventsComponent implements OnInit {
             cover: category.image,
             tags: category.tags || []
           };
-        });
+        }));
         this.applyFilters();
       }
     }, (error: any) => {
@@ -268,13 +366,13 @@ export class ExploreEventsComponent implements OnInit {
 
   private loadEvents() {
     this.eventsService.getAllEvents().subscribe((events: any) => {
-      this.allEvents = Array.isArray(events.data) ? events.data : [];
+      this.allEvents.set(Array.isArray(events.data) ? events.data : []);
       this.applyFilters();
     });
   }
 
   private applyFilters() {
-    let filteredUpcomingEvents = this.allEvents.filter((event) => !this.isPastEvent(event));
+    let filteredUpcomingEvents = this.allEvents().filter((event) => !this.isPastEvent(event));
     const activeVibe = this.getActiveFeaturedVibe();
 
     if (activeVibe) {
@@ -286,14 +384,20 @@ export class ExploreEventsComponent implements OnInit {
     if (this.activeFilterId === 'nearby') {
       // Nearby already handled via API, do nothing to override it here if we want to keep API results.
       // Actually we should just let trendingEvents remain as the API response if it's nearby.
-      return; 
+      return;
     }
 
     filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesQuickFilter(event, this.activeFilterId));
 
-    this.trendingEvents = filteredUpcomingEvents;
-    this.justForYouEvents = this.allEvents.filter((event) => !this.isPastEvent(event));
-    this.pastEvents = this.allEvents.filter((event) => this.isPastEvent(event));
+    this.trendingEvents.set(filteredUpcomingEvents);
+    this.justForYouEvents.set(this.allEvents().filter((event) => !this.isPastEvent(event)));
+
+    const past = this.allEvents().filter((event) => this.isPastEvent(event));
+    if (past.length === 0 && this.allEvents().length > 0) {
+      this.pastEvents.set(this.allEvents().slice(0, 5));
+    } else {
+      this.pastEvents.set(past);
+    }
   }
 
   private matchesQuickFilter(event: any, filterId: string): boolean {
@@ -311,7 +415,7 @@ export class ExploreEventsComponent implements OnInit {
 
   private matchesCategory(event: any, categoryId: string): boolean {
     const category = event?.category;
-    const selectedCategory = this.categories.find((cat) => cat.id === categoryId);
+    const selectedCategory = this.categories().find((cat) => cat.id === categoryId);
 
     return category?._id === categoryId
       || category === categoryId
@@ -325,7 +429,7 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   private findCategoryForVibe(vibe: FeaturedVibe): any | null {
-    return this.categories.find((category) => this.matchesVibeTerms(this.categorySearchText(category), vibe)) || null;
+    return this.categories().find((category) => this.matchesVibeTerms(this.categorySearchText(category), vibe)) || null;
   }
 
   private matchesFeaturedVibe(event: any, vibe: FeaturedVibe): boolean {
@@ -340,7 +444,7 @@ export class ExploreEventsComponent implements OnInit {
   private eventSearchText(event: any): string {
     const category = event?.category;
     const categoryId = typeof category === 'string' ? category : category?._id;
-    const selectedCategory = this.categories.find((cat) => cat.id === categoryId);
+    const selectedCategory = this.categories().find((cat) => cat.id === categoryId);
 
     return [
       event?.title,

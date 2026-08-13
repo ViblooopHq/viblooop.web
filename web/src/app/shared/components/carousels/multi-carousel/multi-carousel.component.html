@@ -1,0 +1,54 @@
+@if (!isServer) {
+<div class="vl-multi-carousel-wrapper">
+  @if (title() || preTitle() || description()) {
+    <div class="carousel-header">
+      <div class="header-content">
+        @if (preTitle()) {
+          <span class="pre-title">{{ preTitle() }}</span>
+        }
+        @if (title()) {
+          <h2 class="title">{{ title() }}</h2>
+        }
+        @if (description()) {
+          <p class="description">{{ description() }}</p>
+        }
+      </div>
+      @if (showNavigation()) {
+        <div class="custom-nav">
+          <button class="nav-btn prev-btn" (click)="slidePrev()">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="nav-btn next-btn" (click)="slideNext()">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+    </div>
+  }
+
+  <swiper-container init="false" #swiperContainer class="vl-multi-carousel">
+    @if (items() && template) {
+      @for (item of items(); track $index) {
+        <swiper-slide>
+          <ng-container *ngTemplateOutlet="template; context: { $implicit: item }"></ng-container>
+        </swiper-slide>
+      }
+    } @else {
+      <ng-content></ng-content>
+    }
+  </swiper-container>
+</div>
+} @else {
+<!-- SSR Fallback grid to prevent layout shift -->
+<div class="vl-multi-carousel-ssr-fallback">
+  @if (items() && template) {
+    @for (item of items(); track $index) {
+      <div class="ssr-slide">
+        <ng-container *ngTemplateOutlet="template; context: { $implicit: item }"></ng-container>
+      </div>
+    }
+  } @else {
+    <ng-content></ng-content>
+  }
+</div>
+}
