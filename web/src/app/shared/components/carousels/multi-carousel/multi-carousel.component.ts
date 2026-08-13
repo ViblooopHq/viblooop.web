@@ -69,11 +69,16 @@ export class MultiCarouselComponent {
         Object.assign(swiperEl, swiperParams);
         
         // Sometimes Angular content projection takes a moment
-        setTimeout(() => {
-          if (swiperEl && !swiperEl.initialized) {
-             swiperEl.initialize();
-          }
-        }, 50);
+        requestAnimationFrame(() => {
+          const tryInit = () => {
+            if (swiperEl && typeof swiperEl.initialize === 'function') {
+              if (!swiperEl.initialized) swiperEl.initialize();
+            } else {
+              setTimeout(tryInit, 50);
+            }
+          };
+          tryInit();
+        });
       }
     });
   }

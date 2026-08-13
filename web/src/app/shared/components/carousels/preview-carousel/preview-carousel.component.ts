@@ -60,8 +60,6 @@ export class PreviewCarouselComponent {
           ]
         };
         Object.assign(thumbEl, thumbParams);
-        thumbEl.initialize();
-
         // Initialize main swiper and link thumbs
         const mainParams = {
           spaceBetween: 0,
@@ -138,10 +136,15 @@ export class PreviewCarouselComponent {
         };
         Object.assign(mainEl, mainParams);
         
-        requestAnimationFrame(() => {
-          if (!thumbEl.initialized) thumbEl.initialize();
-          if (!mainEl.initialized) mainEl.initialize();
-        });
+        const tryInit = () => {
+          if (typeof thumbEl.initialize === 'function') {
+            if (!thumbEl.initialized) thumbEl.initialize();
+            if (!mainEl.initialized) mainEl.initialize();
+          } else {
+            setTimeout(tryInit, 50);
+          }
+        };
+        tryInit();
       }
     });
   }

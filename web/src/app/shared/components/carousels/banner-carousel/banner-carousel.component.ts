@@ -47,7 +47,14 @@ export class BannerCarouselComponent {
         };
         
         Object.assign(swiperEl, swiperParams);
-        swiperEl.initialize();
+        const tryInit = () => {
+          if (swiperEl && typeof swiperEl.initialize === 'function') {
+            if (!swiperEl.initialized) swiperEl.initialize();
+          } else {
+            setTimeout(tryInit, 50);
+          }
+        };
+        tryInit();
       }
     });
   }

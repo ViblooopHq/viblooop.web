@@ -52,11 +52,16 @@ export class FullPageCarouselComponent {
         // Use a tiny timeout to allow Angular's HMR to finish rendering the DOM nodes
         // before Swiper initializes, preventing the slider from going blank on save.
         // 10ms is fast enough to prevent the visual layout jump we saw earlier.
-        setTimeout(() => {
-          if (swiperEl && !swiperEl.initialized) {
-            swiperEl.initialize();
-          }
-        }, 10);
+        requestAnimationFrame(() => {
+          const tryInit = () => {
+            if (swiperEl && typeof swiperEl.initialize === 'function') {
+              if (!swiperEl.initialized) swiperEl.initialize();
+            } else {
+              setTimeout(tryInit, 50);
+            }
+          };
+          tryInit();
+        });
       }
     });
   }
