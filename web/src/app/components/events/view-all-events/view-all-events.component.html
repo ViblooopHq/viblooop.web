@@ -1,0 +1,49 @@
+<div class="view-all-container">
+  <header class="view-all-header vl-section-wrapper">
+    <div class="header-card">
+      <div class="header-content">
+        <h1 class="header-title">{{ bannerTitle() }}</h1>
+        <p class="header-description">{{ bannerDescription() }}</p>
+      </div>
+      <div class="header-decoration">
+        <img [src]="bannerImage()" [alt]="bannerTitle()" class="decoration-image" />
+      </div>
+    </div>
+  </header>
+
+  <main class="events-main vl-section-wrapper">
+    <div class="events-grid">
+      @if (isLoading() && isInitialLoad()) {
+        <div class="loading-state">
+          <i class="fa-solid fa-spinner fa-spin"></i> Loading events...
+        </div>
+      } @else if (events().length === 0) {
+        <div class="empty-state-wrapper">
+          <vl-empty-state subject="events" context="found here" contextPrefix="" (exploreAll)="loadEvents()"></vl-empty-state>
+        </div>
+      } @else {
+        @for (event of events(); track event._id || $index) {
+          <div class="grid-card-wrapper">
+            @if (isPastCollection()) {
+              <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewEvent(event)"></vl-past-event-card>
+            } @else {
+              <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+            }
+          </div>
+        }
+      }
+    </div>
+
+    @if (nextCursor()) {
+      <div class="load-more-container">
+        <button class="btn-load-more" (click)="loadMore()" [disabled]="isLoading()">
+          @if (isLoading()) {
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+          } @else {
+            Load More Events
+          }
+        </button>
+      </div>
+    }
+  </main>
+</div>

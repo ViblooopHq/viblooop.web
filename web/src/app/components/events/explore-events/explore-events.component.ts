@@ -10,6 +10,7 @@ import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
 import { MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
 import { PopularCardComponent, PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
+import { RouterModule } from '@angular/router';
 export interface EventFilter {
   id: string;
   label: string;
@@ -28,7 +29,7 @@ interface FeaturedVibe {
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
-  imports: [CommonModule, SectionHeadersComponent, EventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PopularCardComponent],
+  imports: [CommonModule, RouterModule, SectionHeadersComponent, EventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PopularCardComponent],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

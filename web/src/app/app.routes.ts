@@ -13,6 +13,7 @@ import { unsavedChangeGuard } from './guards/unsave-changes/unsave-change.guard'
 import { CreateEventComponent } from './components/events/create-event/create-event.component';
 import { EditProfileComponent } from './components/user-profile/edit-profile/edit-profile.component';
 import { ExploreEventsComponent } from './components/events/explore-events/explore-events.component';
+import { ViewAllEventsComponent } from './components/events/view-all-events/view-all-events.component';
 
 export const routes: Routes = [
   {
@@ -60,6 +61,10 @@ export const routes: Routes = [
   {
     path: 'explore',
     component: ExploreEventsComponent
+  },
+  {
+    path: 'events/view-all/:collection',
+    component: ViewAllEventsComponent
   },
   {
     path: 'create-event',

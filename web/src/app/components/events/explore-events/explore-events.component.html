@@ -121,8 +121,11 @@
 
   <!-- Trending Events -->
   <section class="trending-section mb-4 sm:mb-12">
-    <div class="section-header">
-      <h2 class="section-title">Upcoming Vibes</h2>
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 class="section-title" style="margin: 0;">Upcoming Vibes</h2>
+      @if (trendingEvents().length > 10) {
+        <a routerLink="/events/view-all/trending" style="color: var(--vl-primary); font-weight: 600; text-decoration: none;">See All <i class="fa-solid fa-arrow-right"></i></a>
+      }
     </div>
     <div class="trending-scroll" [class.single-result]="trendingEvents().length === 1"
       [class.empty-result]="trendingEvents().length === 0">
@@ -141,8 +144,11 @@
 
   <!-- Just for You Grid -->
   <section class="just-for-you-section">
-    <div class="section-header">
-      <h2 class="section-title">Just for you</h2>
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 class="section-title" style="margin: 0;">Just for you</h2>
+      @if (justForYouEvents().length > 10) {
+        <a routerLink="/events/view-all/popular" style="color: var(--vl-primary); font-weight: 600; text-decoration: none;">See All <i class="fa-solid fa-arrow-right"></i></a>
+      }
     </div>
     <div class="trending-scroll" [class.single-result]="justForYouEvents().length === 1"
       [class.empty-result]="justForYouEvents().length === 0">
@@ -178,16 +184,6 @@
   </section>
 
   <section class="test-carousels-section mt-12 mb-12">
-    <div class="mb-8">
-      <vl-banner-carousel>
-        @for(img of dummyImages; track img.url) {
-        <swiper-slide>
-          <img [src]="img.url" style="width: 100%; height: 300px; object-fit: cover; border-radius: 12px;">
-        </swiper-slide>
-        }
-      </vl-banner-carousel>
-    </div>
-
     <div class="mb-8">
       <vl-preview-carousel [items]="previewItems"></vl-preview-carousel>
     </div>
