@@ -2,8 +2,8 @@
   <!-- Header & Search -->
   <header class="explore-header">
 
-    <div class="mb-8">
-      <div style="height: 500px; border-radius: 20px; overflow: hidden; position: relative;">
+    <div class="explore-hero-carousel-wrap">
+      <div class="explore-hero-carousel">
         <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="fullPageDummyItems">
           <ng-template let-item>
             <div class="full-page-slide" [style.background-image]="'url(' + item.image + ')'">
@@ -66,7 +66,7 @@
     </div>
   </header>
 
-  <section class="featured-vibes-section mb-4 sm:mb-12">
+  <section class="featured-vibes-section">
     <h2 class="section-title">
       <i class="fa-solid fa-wave-square"></i>
       <span>Explore by Vibe</span>
@@ -101,7 +101,7 @@
   </section>
 
   <!-- Categories -->
-  <section class="categories-section mb-4 sm:mb-12">
+  <section class="categories-section">
     <h2 class="section-title">Explore by Vibe</h2>
     <div class="categories-scroll">
       @for (cat of categories(); track cat.id) {
@@ -120,7 +120,7 @@
   </section>
 
   <!-- Trending Events -->
-  <section class="trending-section mb-4 sm:mb-12">
+  <section class="trending-section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
       <h2 class="section-title" style="margin: 0;">Upcoming Vibes</h2>
       @if (trendingEvents().length > 10) {
@@ -183,8 +183,8 @@
     </div>
   </section>
 
-  <section class="test-carousels-section mt-12 mb-12">
-    <div class="mb-8">
+  <section class="test-carousels-section">
+    <div>
       <vl-preview-carousel [items]="previewItems"></vl-preview-carousel>
     </div>
   </section>

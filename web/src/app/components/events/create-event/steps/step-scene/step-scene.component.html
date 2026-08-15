@@ -20,7 +20,7 @@
 
     <vl-expectations-chip-selector
       [selected]="formService.expectationsValue()"
-      [options]="formService.availableExpectations"
+      [options]="formService.availableExpectations()"
       (toggle)="formService.toggleExpectation($event)" />
 
     <vl-host-notes-quick-add

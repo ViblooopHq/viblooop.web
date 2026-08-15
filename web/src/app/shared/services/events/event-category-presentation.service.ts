@@ -42,6 +42,15 @@ export class EventCategoryPresentationService {
     return this.getDisplayConfig(category)?.kind ?? 'event';
   }
 
+  getExpectationTags(category: any): string[] {
+    return this.getDisplayConfig(category)?.tags ?? [];
+  }
+
+  withDisplayTags(category: any): any {
+    const tags = this.getExpectationTags(category);
+    return tags.length ? { ...category, tags } : category;
+  }
+
   private getFallbackIcon(category: any): string {
     if (category?.materialIcon) return category.materialIcon;
 

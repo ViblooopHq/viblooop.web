@@ -163,6 +163,18 @@ export class EventCardComponent {
     return this.config()?.category?.title || this.config()?.category || this.config()?.tags?.[0] || 'Event';
   }
 
+  get displayTags(): string[] {
+    const expectations = this.config()?.expectations;
+    if (Array.isArray(expectations) && expectations.length) return expectations;
+
+    const tags = this.config()?.tags;
+    return Array.isArray(tags)
+      ? tags
+      : typeof tags === 'string'
+        ? tags.split(',').map((tag: string) => tag.trim()).filter(Boolean)
+        : [];
+  }
+
   get audiencePreferenceType(): 'open' | 'women' | 'men' {
     const preference = String(this.config()?.audiencePreference || '').toLowerCase();
     if (preference === 'women' || preference === 'men' || preference === 'open') return preference;

@@ -88,10 +88,10 @@
             {{ audiencePreferenceLabel }}
           </div>
         }
-        @for (tag of (config()?.tags | slice:0:2); track $index) {
+        @for (tag of (displayTags | slice:0:2); track tag) {
         <div
           class="vl-chip flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-0.5 sm:py-1.5 text-[11px] sm:text-[13px] font-medium whitespace-nowrap">
-          <span class="material-symbols-outlined !text-[13px] sm:!text-[16px] text-sky-400" aria-hidden="true">chair</span>
+          <span class="material-symbols-outlined !text-[13px] sm:!text-[16px] text-sky-400" aria-hidden="true">local_offer</span>
           {{ tag }}
         </div>
         }

@@ -258,3 +258,120 @@
     object-fit: cover;
   }
 }
+
+@media (max-width: 768px) {
+  .vl-preview-wrapper {
+    min-height: 34rem;
+    border-radius: 1.5rem;
+
+    .main-swiper swiper-slide {
+      .slide-overlay-gradient {
+        background:
+          linear-gradient(180deg, rgba(8, 11, 29, 0.1) 0%, rgba(8, 11, 29, 0.38) 46%, rgba(8, 11, 29, 0.88) 100%),
+          linear-gradient(90deg, rgba(8, 11, 29, 0.46) 0%, transparent 72%);
+      }
+
+      .slide-content-container {
+        align-items: flex-start;
+        padding: 4.5rem 1.5rem 0;
+
+        .slide-content {
+          max-width: 100%;
+
+          .pre-title {
+            max-width: 15rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.45;
+          }
+
+          .main-title {
+            margin-bottom: 0.75rem;
+            font-size: clamp(3.5rem, 17vw, 5rem);
+            line-height: 0.95;
+          }
+
+          .description {
+            max-width: 15rem;
+            font-size: 0.9rem;
+            line-height: 1.45;
+          }
+        }
+      }
+    }
+
+    .slider-overlay-container {
+      .bottom-right-container {
+        right: auto;
+        bottom: 1.5rem;
+        left: 1.5rem;
+        width: calc(100% - 1.5rem);
+        max-width: none;
+        gap: 1rem;
+
+        .thumb-container .thumb-swiper {
+          ::ng-deep swiper-slide {
+            width: 8rem !important;
+
+            &.swiper-slide-prev {
+              opacity: 1 !important;
+              transform: none !important;
+              pointer-events: auto;
+            }
+
+            .thumb-card {
+              height: 9.5rem;
+              border-radius: 1rem;
+
+              .thumb-info {
+                padding: 3.25rem 0.85rem 0.85rem;
+
+                .thumb-title {
+                  font-size: 0.9rem;
+                }
+
+                .thumb-subtitle {
+                  overflow: hidden;
+                  font-size: 0.72rem;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                }
+              }
+            }
+          }
+        }
+
+        .bottom-controls {
+          gap: 1rem;
+          margin-top: 0;
+
+          .nav-controls {
+            button:first-child {
+              display: none;
+            }
+
+            button {
+              width: 3rem;
+              height: 3rem;
+              border-color: rgba(255, 255, 255, 0.72);
+            }
+          }
+
+          ::ng-deep .vl-custom-pagination {
+            gap: 0.85rem;
+
+            .slide-count {
+              font-size: 1.4rem;
+              font-weight: 700;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .vl-preview-ssr-fallback {
+    height: 34rem;
+    border-radius: 1.5rem;
+  }
+}

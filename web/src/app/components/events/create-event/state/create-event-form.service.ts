@@ -245,14 +245,18 @@ export class CreateEventFormService {
   }
 
   // ── Expectations chips (previously orphaned, now wired to Step 3) ─
-  readonly availableExpectations = CREATE_EVENT_EXPECTATIONS;
+  readonly availableExpectations = computed(() =>
+    this.categoryPresentation.getExpectationTags(this.selectedCategory()).length
+      ? this.categoryPresentation.getExpectationTags(this.selectedCategory())
+      : CREATE_EVENT_EXPECTATIONS
+  );
 
   toggleExpectation(tag: string): void {
     const current: string[] = this.eventForm.get('expectations')?.value ?? [];
     const updated = current.includes(tag)
       ? current.filter(t => t !== tag)
       : [...current, tag];
-    this.eventForm.patchValue({ expectations: updated });
+    this.eventForm.patchValue({ expectations: updated, tags: updated.join(', ') });
   }
 
   isExpectationSelected(tag: string): boolean {
@@ -320,13 +324,16 @@ export class CreateEventFormService {
     });
     this.eventForm.get('category')?.valueChanges.subscribe(() => {
       this.updateDateValidatorsForCreationKind();
+      if (!this.isEditMode()) {
+        this.eventForm.patchValue({ expectations: [], tags: '' });
+      }
     });
   }
 
   init(): void {
     this.eventsService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
-        this.categories.set(res.data.categories);
+        this.categories.set(res.data.categories.map((category: any) => this.categoryPresentation.withDisplayTags(category)));
         this.updateDateValidatorsForCreationKind();
       }
     });

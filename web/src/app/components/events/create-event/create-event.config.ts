@@ -6,6 +6,7 @@ export interface CategoryDisplayConfig {
   description: string;
   materialIcon: string;
   accent: 'purple' | 'green' | 'blue' | 'orange' | 'pink';
+  tags: string[];
   kind?: CreationKind;
   soon?: boolean;
 }
@@ -36,7 +37,7 @@ export interface CreationTypeConfig {
 
 export const CREATE_EVENT_STEPS = ['Vibe', 'Essentials', 'Scene', 'Review'];
 
-export const CREATE_EVENT_EXPECTATIONS = ['Live DJ', 'Drinks', 'Games', 'Networking', 'Food', 'Music'];
+export const CREATE_EVENT_EXPECTATIONS = ['Music', 'Food', 'Drinks', 'Networking', 'Games', 'Photography'];
 
 export const CREATE_EVENT_HOST_NOTES_MAX_LENGTH = 500;
 
@@ -222,43 +223,48 @@ Day 2: Main activities and return journey 🌄`,
 
 export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
   {
-    matches: ['party', 'house party'],
+    matches: ['party', 'house party', 'social'],
     title: 'Social',
     description: 'Parties, meetups, rooftop & more',
     materialIcon: 'celebration',
     accent: 'purple',
+    tags: ['Music', 'Live DJ', 'Drinks', 'Food', 'Dance Floor', 'Networking'],
     kind: 'event'
   },
   {
-    matches: ['travel', 'trip', 'escape'],
+    matches: ['travel', 'trip', 'escape', 'travel companion', 'escapes'],
     title: 'Escapes',
     description: 'Trips, treks, road trips & getaways',
     materialIcon: 'travel_explore',
     accent: 'green',
+    tags: ['Scenic Stops', 'Road Trip', 'Trekking', 'Photography', 'Local Food', 'Campfire'],
     kind: 'escape'
   },
   {
-    matches: ['sports', 'play', 'game'],
+    matches: ['sports', 'play', 'game', 'sports activities'],
     title: 'Play',
     description: 'Games, sports, fitness & more',
     materialIcon: 'sports_soccer',
     accent: 'blue',
+    tags: ['Friendly Matches', 'Team Games', 'Fitness', 'Coaching', 'Equipment', 'Refreshments'],
     kind: 'play'
   },
   {
-    matches: ['shopping', 'buddy', 'buddies'],
+    matches: ['shopping', 'buddy', 'buddies', 'shopping buddy'],
     title: 'Shopping Buddy',
     description: 'Shop together, explore & more',
     materialIcon: 'shopping_bag',
     accent: 'pink',
+    tags: ['Store Hopping', 'Style Advice', 'Best Deals', 'New Finds', 'Coffee Break', 'Fashion'],
     soon: true
   },
   {
-    matches: ['local events', 'events', 'quick'],
+    matches: ['local events', 'events', 'quick', 'quickies'],
     title: 'Quickies',
     description: 'Coffee, chai, quick hangouts & more',
     materialIcon: 'local_cafe',
     accent: 'orange',
+    tags: ['Coffee', 'Chai', 'Conversation', 'Board Games', 'Walk & Talk', 'Work Friendly'],
     soon: true
   }
 ];

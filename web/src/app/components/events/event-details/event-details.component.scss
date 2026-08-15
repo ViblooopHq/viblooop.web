@@ -2,7 +2,8 @@
 
 .vl-ed {
   min-height: 100dvh;
-  padding: 6.9rem 1.25rem 2.5rem;
+  // Keep the first row of cards clear of the fixed desktop header.
+  padding: 7.9rem 1.25rem 2.5rem;
   background:
     radial-gradient(circle at 8% 18%, color-mix(in srgb, var(--color-action-primary) 20%, transparent), transparent 24rem),
     radial-gradient(circle at 92% 12%, color-mix(in srgb, var(--color-action-secondary) 12%, transparent), transparent 26rem),
@@ -52,7 +53,8 @@
 
 @media (max-width: 980px) {
   .vl-ed {
-    padding: 4.75rem 0 6rem;
+    // The mobile header is fixed too, so reserve an extra gap below it.
+    padding: 5.75rem 0 6rem;
 
     &__layout {
       display: block;
