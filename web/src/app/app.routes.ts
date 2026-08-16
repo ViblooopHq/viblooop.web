@@ -1,11 +1,9 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
 import { EventsListComponent } from './components/events/events-list/events-list.component';
 import { EventDetailsComponent } from './components/events/event-details/event-details.component';
 import { NotFoundComponent } from './shared/components/not-found/not-found.component';
 import { LoginComponent } from './components/auth/login/login.component';
 import { authGuard } from './guards/auth/auth.guard';
-import { MyEventsComponent } from './components/events/my-events/my-events.component';
 import { ProfileSetupComponent } from './components/user-profile/profile-setup/profile-setup.component';
 import { NotificationComponent } from './shared/components/notification/notification.component';
 import { profileScoreGuard } from './guards/profile-score/profile-score.guard';
@@ -18,7 +16,8 @@ import { ViewAllEventsComponent } from './components/events/view-all-events/view
 export const routes: Routes = [
   {
     path: '',
-    component: HomeComponent,
+    pathMatch: 'full',
+    redirectTo: 'explore',
   },
   {
     path: 'events/:eventId',
@@ -41,10 +40,6 @@ export const routes: Routes = [
     component: NotificationComponent
   },
   {
-    path: 'my-events',
-    component: MyEventsComponent
-  },
-  {
     path: 'chats',
     canActivate: [authGuard],
     loadComponent: () => import('./components/chat/inbox/inbox.component').then(c => c.InboxComponent)
@@ -60,7 +55,7 @@ export const routes: Routes = [
   },
   {
     path: 'explore',
-    component: ExploreEventsComponent
+    component: ExploreEventsComponent,
   },
   {
     path: 'events/view-all/:collection',

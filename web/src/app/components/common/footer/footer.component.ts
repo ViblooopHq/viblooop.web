@@ -14,9 +14,8 @@ export class FooterComponent {
   copyRightInfo = `${this.currentYear} Viblooop. All rights reserved. Version ${this.currentAppVersion}`;
 
   quickLinks = [
-    { label: 'Home', url: '/' },
+    { label: 'Explore', url: '/explore' },
     { label: 'Discover', url: '/discover' },
-    { label: 'My Events', url: '/my-events' },
     { label: 'Messages', url: '/messages' }
   ];
 

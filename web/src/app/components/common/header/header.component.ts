@@ -47,33 +47,21 @@ export class HeaderComponent implements OnInit {
   userName = ''
 
   mobileMenu = [
-    { path: '/', label: 'Home', icon: 'home' },
     { path: '/explore', label: 'Explore', icon: 'explore' },
     { path: '/chats', label: 'Chats', icon: 'forum' },
     { path: '/profile', label: 'Profile', icon: 'person' }
   ];
 
   guestMobileMenu = [
-    { path: '/', label: 'Home', icon: 'home' },
     { path: '/explore', label: 'Explore', icon: 'explore' },
     { path: '/login', label: 'Sign In', icon: 'login' }
   ];
 
   desktopMenu = [
     {
-      title: 'Home',
-      icon: 'home',
-      url: '/'
-    },
-    {
       title: 'Explore',
       icon: 'search',
       url: 'explore'
-    },
-    {
-      title: 'My Events',
-      icon: 'event',
-      url: 'my-events'
     }
   ]
 
