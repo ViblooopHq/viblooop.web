@@ -26,14 +26,20 @@ export class SocketService {
   }
 
   connect(): void {
-    this.socket = io(this.SERVER_URL);
+    if (this.socket?.connected || this.socket?.active) return;
+
+    this.socket = io(this.SERVER_URL, { withCredentials: true });
 
     // Automatically re-register on connect or reconnect
     this.socket.on('connect', () => {
       const userId = this.userService.userDetails?.id;
       if (userId) {
-        this.registerUser(userId);
+        this.registerUser();
       }
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('Socket connection failed:', error.message);
     });
 
     this.getNotifications();
@@ -42,36 +48,37 @@ export class SocketService {
 
   disconnect(): void {
     if (this.socket) this.socket.disconnect();
+    this.inbox$.next([]);
+    this.unreadCount$.next(0);
+    this.sharedService.notificationCount.set(0);
   }
 
   getNotifications() {
     this.socket.on('notifications', (notifications) => {
       this.notifications$.next(notifications);
-      
-      // Update the global notification count in SharedService (unread only)
-      if (Array.isArray(notifications)) {
-        const unreadCount = notifications.filter((n: any) => !n.read).length;
-        this.sharedService.notificationCount.set(unreadCount);
-      }
+    });
+
+    this.socket.on('notifications:unread_total', (total: number) => {
+      this.sharedService.notificationCount.set(Number.isFinite(total) ? total : 0);
     });
   }
 
   markAllRead() {
-    this.socket.emit('mark_all_read', this.userService.userDetails.id);
+    this.socket.emit('mark_all_read');
   }
 
   markNotificationAsRead(notificationId: string) {
     // Send as an array for backend consistency
-    this.socket.emit('mark_as_read', this.userService.userDetails.id, [notificationId]);
+    this.socket.emit('mark_as_read', [notificationId]);
   }
 
   markNotificationsAsRead(notificationIds: string[]) {
     if (!notificationIds.length) return;
-    this.socket.emit('mark_as_read', this.userService.userDetails.id, notificationIds);
+    this.socket.emit('mark_as_read', notificationIds);
   }
 
-  registerUser(userId: string) {
-    this.socket.emit('register', userId);
+  registerUser() {
+    this.socket.emit('register');
   }
 
   // ─── Chat Methods ─────────────────────────────────────
@@ -140,9 +147,8 @@ export class SocketService {
   }
 
   joinChatRoom(eventId: string): void {
-    const userId = this.userService.userDetails?.id;
-    if (!userId || !eventId) return;
-    this.socket.emit('chat:join', { eventId, userId });
+    if (!eventId) return;
+    this.socket.emit('chat:join', { eventId });
   }
 
   leaveChatRoom(eventId: string): void {
@@ -151,9 +157,8 @@ export class SocketService {
   }
 
   markChatAsRead(eventId: string): void {
-    const userId = this.userService.userDetails?.id;
-    if (!userId || !eventId) return;
-    this.socket.emit('chat:mark_read', { eventId, userId });
+    if (!eventId) return;
+    this.socket.emit('chat:mark_read', { eventId });
   }
 
   sendChatMessage(eventId: string, text: string): void {
@@ -162,16 +167,12 @@ export class SocketService {
 
     this.socket.emit('chat:message', {
       eventId,
-      senderId: user.id,
-      senderName: user.username,
-      senderImage: user.profileImage || '',
       text: text.trim(),
     });
   }
 
   getInbox(): void {
-    const userId = this.userService.userDetails?.id;
-    if (!userId) return;
-    this.socket.emit('chat:get_inbox', userId);
+    if (!this.userService.userDetails?.id) return;
+    this.socket.emit('chat:get_inbox');
   }
 }

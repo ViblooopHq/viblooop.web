@@ -60,7 +60,9 @@ export class AppComponent implements OnInit {
 
     this.authService.initAuth();
 
-    this.authService.userDetails$.subscribe(userData => {
+    this.authService.userDetails$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(userData => {
       if (userData) {
         if (!this.completeProfileService.timerId) {
           this.completeProfileService.timerId = setTimeout(() => {
@@ -68,6 +70,8 @@ export class AppComponent implements OnInit {
           }, 10000);
         }
         this.socketService.connect();
+      } else {
+        this.socketService.disconnect();
       }
     });
 
