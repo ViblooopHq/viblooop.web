@@ -3,51 +3,48 @@
 /* ── LOCATION ── */
 .location-address-card {
   display: grid;
-  gap: 18px;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
-  border-radius: var(--radius-xl);
-  background:
-    radial-gradient(circle at 7% 0%, color-mix(in srgb, var(--color-action-primary) 16%, transparent) 0, transparent 15rem),
-    linear-gradient(180deg, var(--color-surface-glass), var(--color-surface-canvas));
-  padding: 18px;
+  gap: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  padding: var(--space-4);
 }
 
 .location-line {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr);
-  gap: 7px 16px;
+  gap: 6px 12px;
   align-items: start;
 
   &__icon {
     grid-row: 1 / span 2;
     margin-top: 2px;
-    color: var(--color-brand-accent);
-    font-size: var(--font-size-2xl);
-    font-variation-settings: 'FILL' 0, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+    color: var(--color-primary);
+    font-size: 1.5rem;
   }
 
   &__copy {
     display: grid;
-    gap: 5px;
+    gap: 4px;
     min-width: 0;
   }
 
   &__label {
-    color: var(--color-brand-tint-soft);
-    font-size: var(--font-size-sm);
-    font-weight: 950;
+    color: var(--color-text-primary);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
     line-height: 1.2;
 
     strong {
-      color: var(--error);
-      font-weight: 950;
+      color: var(--color-error);
+      font-weight: 700;
     }
   }
 
   &__hint {
-    color: var(--color-text-muted);
-    font-size: var(--font-size-xs);
-    font-weight: 650;
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption);
+    font-weight: 500;
     line-height: 1.25;
   }
 
@@ -59,63 +56,59 @@
 .location-stack-field {
   position: relative;
   display: grid;
-  gap: 8px;
+  gap: 6px;
 
   &__label {
-    color: var(--color-brand-tint-soft);
-    font-size: var(--font-size-sm);
-    font-weight: 950;
+    color: var(--color-text-primary);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
     line-height: 1.2;
 
     strong {
-      color: var(--error);
-      font-weight: 950;
+      color: var(--color-error);
+      font-weight: 700;
     }
   }
 }
 
 .location-input {
   width: 100%;
-  min-height: 54px;
-  border: 1px solid var(--color-border-ghost);
+  min-height: 48px;
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: 0;
-  background:
-    linear-gradient(180deg, var(--color-surface-glass), var(--color-surface-raised));
-  color: var(--color-brand-tint-soft);
+  background-color: var(--color-surface-interactive);
+  color: var(--color-text-primary);
   font: inherit;
-  font-size: var(--font-size-sm);
-  font-weight: 400;
-  padding: 0 42px 0 18px;
-  box-shadow: var(--shadow-panel);
-  transition: border-color .2s, background .2s, box-shadow .2s;
+  font-size: var(--text-body-sm);
+  padding: 0 42px 0 14px;
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
 
   &::placeholder {
-    color: var(--color-text-muted);
-    font-weight: 400;
+    color: var(--color-text-tertiary);
   }
 
   &:focus {
-    border-color: color-mix(in srgb, var(--color-accent) 62%, transparent);
-    background: var(--color-surface-raised);
+    border-color: var(--color-primary);
+    background-color: var(--color-surface);
     box-shadow: var(--focus-ring);
   }
 }
 
 @media (max-width: 680px) {
   .location-address-card {
-    padding: 16px;
-    gap: 16px;
+    padding: var(--space-3);
+    gap: var(--space-3);
   }
 
   .location-line {
     grid-template-columns: 24px minmax(0, 1fr);
-    gap: 7px 12px;
+    gap: 6px 10px;
   }
 
   .location-input {
-    font-size: var(--font-size-sm);
-    min-height: 50px;
+    min-height: 44px;
   }
 }
 
@@ -127,19 +120,19 @@
     width: 100%;
 
     .mat-mdc-text-field-wrapper {
-      background-color: var(--color-surface-glass) !important;
-      border: 1px solid var(--color-border-ghost) !important;
+      background-color: var(--color-surface-interactive) !important;
+      border: 1px solid var(--color-border) !important;
       border-radius: var(--radius-md) !important;
       padding: 0 14px !important;
-      box-shadow: var(--shadow-panel) !important;
+      box-shadow: var(--shadow-xs) !important;
     }
 
     .mat-mdc-form-field-flex {
-      height: 56px !important;
+      height: 48px !important;
       align-items: center !important;
 
       @media (max-width: 480px) {
-        height: 32px !important;
+        height: 36px !important;
       }
     }
 
@@ -155,16 +148,10 @@
     }
 
     .mat-mdc-input-element {
-      color: white !important;
-      font-size: var(--font-size-sm) !important;
-      font-weight: 400 !important;
-      caret-color: var(--color-brand-primary) !important;
-      color-scheme: dark;
-      accent-color: var(--color-brand-primary);
-
-      @media (max-width: 480px) {
-        font-size: var(--font-size-xs) !important;
-      }
+      color: var(--color-text-primary) !important;
+      font-size: var(--text-body-sm) !important;
+      font-weight: 500 !important;
+      caret-color: var(--color-primary) !important;
     }
 
     .mat-mdc-form-field-subscript-wrapper {
@@ -172,26 +159,16 @@
     }
 
     .mat-datepicker-toggle {
-      color: var(--color-brand-primary) !important;
-
-      @media (max-width: 480px) {
-        transform: scale(0.8);
-      }
+      color: var(--color-primary) !important;
     }
   }
 
   /* Calendar Popup Styling */
   .mat-datepicker-content {
-    background-color: var(--surface-dark-2) !important;
-    border: 1px solid color-mix(in srgb, var(--color-action-primary) 30%, transparent) !important;
+    background-color: var(--color-surface) !important;
+    border: 1px solid var(--color-border) !important;
     border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-overlay) !important;
-    transform: scale(0.85) !important;
-    transform-origin: top center !important;
-
-    @media (max-width: 480px) {
-      transform: scale(0.65) !important;
-    }
+    box-shadow: var(--shadow-lg) !important;
 
     .mat-calendar-body-label {
       color: var(--color-text-secondary) !important;
@@ -203,7 +180,8 @@
     }
 
     .mat-calendar-body-selected {
-      background-color: var(--color-brand-primary) !important;
+      background-color: var(--color-primary) !important;
+      color: #ffffff !important;
     }
 
     .mat-calendar-arrow {

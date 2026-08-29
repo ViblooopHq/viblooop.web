@@ -1,10 +1,10 @@
-@use "../../../../styles/index" as *;
+@use '../../../../styles/index' as *;
 
 :host {
   display: block;
   position: relative;
   min-height: 100dvh;
-  background: radial-gradient(circle at 12% 12%, color-mix(in srgb, var(--color-action-primary) 14%, transparent), transparent 30rem), var(--color-surface-canvas);
+  background-color: var(--color-bg);
   color: var(--color-text-primary);
   overflow-x: hidden;
   overflow-y: auto;
@@ -17,6 +17,7 @@
   width: 100%;
   height: 100%;
   z-index: 0;
+  pointer-events: none;
 }
 
 .login-page {
@@ -25,11 +26,11 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  padding: 1rem 2rem;
+  padding: var(--space-6) var(--space-4);
 
   @media (max-width: 768px) {
     min-height: 100dvh;
-    padding: 1rem;
+    padding: var(--space-4);
   }
 }
 
@@ -46,17 +47,15 @@
   flex: 1;
   align-items: center;
   justify-content: center;
-  max-width: 1100px;
+  max-width: 1040px;
   margin: 0 auto;
   width: 100%;
-  gap: 4rem;
-  max-height: 100dvh;
+  gap: var(--space-12);
 
   @media (max-width: 992px) {
     flex-direction: column;
-    gap: 2rem;
-    margin-top: 4rem;
-    max-height: none;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
   }
 
   @media (max-width: 768px) {
@@ -68,83 +67,70 @@
 
 .branding-section {
   flex: 1;
-  max-width: 500px;
-
-  @media (max-width: 992px) {
-    text-align: center;
-
-    .features-list {
-      display: none;
-    }
-  }
+  max-width: 480px;
 
   @media (max-width: 768px) {
     display: none;
   }
 
   .hero-heading {
-    font-size: 2.5rem;
+    font-size: var(--text-display);
     font-weight: 800;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-
-    @media (max-width: 768px) {
-      font-size: 2.8rem;
-    }
+    line-height: var(--text-display-line);
+    margin-bottom: var(--space-4);
+    color: var(--color-text-primary);
 
     .text-accent-vibe {
-      background: linear-gradient(90deg, var(--color-brand-accent), var(--color-brand-tint));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--color-primary);
     }
 
     .text-accent-moment {
-      background: var(--gradient-brand-cta);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--color-secondary);
     }
   }
 
   .hero-subtext {
-    font-size: 1.1rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    margin-bottom: 3rem;
+    font-size: var(--text-body-lg);
+    color: var(--color-text-secondary);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-8);
   }
 
   .features-list {
-    list-style: none;
-    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--space-4);
 
     .feature-item {
       display: flex;
       align-items: flex-start;
-      gap: 1rem;
+      gap: var(--space-3);
 
       .feature-icon {
-        width: 40px;
-        height: 40px;
-        border-radius: var(--radius-full);
-        background: var(--color-surface-glass);
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: var(--radius-md);
+        background-color: var(--color-surface-raised);
+        border: 1px solid var(--color-border);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--color-brand-accent);
-        font-size: 1.1rem;
+        color: var(--color-primary);
+        font-size: 1.15rem;
+        flex-shrink: 0;
       }
 
       .feature-text {
-        .vl-body-sm {
-          font-size: 1.1rem;
-          margin: 0 0 0.25rem 0;
+        h3 {
+          font-size: var(--text-body);
+          font-weight: 700;
+          color: var(--color-text-primary);
+          margin: 0 0 2px;
         }
 
-        p.vl-body-sm {
-          font-size: 0.9rem;
-          color: var(--color-text-muted);
+        p {
+          font-size: var(--text-body-sm);
+          color: var(--color-text-secondary);
           margin: 0;
         }
       }
@@ -168,75 +154,53 @@
 .login-card {
   position: relative;
   border-radius: var(--radius-xl);
-  padding: 2.5rem 2rem;
+  padding: var(--space-8) var(--space-6);
   width: 100%;
-  box-shadow: var(--shadow-panel);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
 
   .login-back-btn {
     position: absolute;
-    top: 1.1rem;
-    left: 1.1rem;
-    width: 2.35rem;
-    height: 2.35rem;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--color-border-ghost);
-    border-radius: var(--radius-pill);
-    background: var(--color-surface-glass);
-    color: var(--color-brand-tint-soft);
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
-
-    &:hover {
-      background: color-mix(in srgb, var(--color-accent) 18%, transparent);
-      border-color: color-mix(in srgb, var(--color-accent) 38%, transparent);
-      transform: translateX(-1px);
-    }
-
-    &:active {
-      transform: scale(0.96);
-    }
-
-    .material-symbols-outlined {
-      font-size: 1.15rem;
-    }
+    top: var(--space-4);
+    left: var(--space-4);
   }
 
   .login-brand {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.85rem;
-    margin-bottom: 1.55rem;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
 
     .logo-icon {
-      width: 54px;
-      height: 54px;
+      width: 40px;
+      height: 40px;
       object-fit: contain;
     }
 
     .logo-text {
-      color: var(--color-brand-tint-soft);
-      font-size: 2rem;
+      color: var(--color-text-primary);
+      font-size: var(--text-h2);
       font-weight: 800;
-      letter-spacing: 0.01em;
-      line-height: 1;
+      letter-spacing: -0.02em;
     }
   }
 
   .login-card-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: var(--space-6);
 
     .vl-title-md {
-      font-size: 1.4rem;
-      margin: 0 0 0.5rem 0;
+      font-size: var(--text-h3);
+      font-weight: 700;
+      color: var(--color-text-primary);
+      margin: 0 0 var(--space-1);
     }
 
     .vl-body-sm {
-      color: var(--color-text-muted);
-      font-size: 0.9rem;
+      color: var(--color-text-secondary);
+      font-size: var(--text-body-sm);
       margin: 0;
     }
   }
@@ -245,26 +209,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
+    gap: var(--space-2);
     width: 100%;
-    background: var(--color-surface-raised);
-    color: var(--color-text-primary);
-    border: none;
-    padding: 0.8rem;
-    border-radius: var(--radius-md);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-bottom: 1.5rem;
-
-    &:hover {
-      background: var(--color-surface-section);
-    }
+    margin-bottom: var(--space-4);
 
     .google-icon-wrapper {
       color: var(--color-google);
-      font-size: 1.45rem;
+      font-size: 1.25rem;
       display: flex;
       align-items: center;
     }
@@ -273,25 +224,27 @@
   .separator-section {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: var(--space-3);
+    margin-bottom: var(--space-4);
 
     .separator-line {
       flex: 1;
       height: 1px;
-      background: var(--color-border-ghost);
+      background-color: var(--color-border);
     }
 
     .separator-text {
-      color: var(--color-text-muted);
-      font-size: 0.85rem;
+      color: var(--color-text-tertiary);
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      font-weight: 600;
     }
   }
 
   .email-form {
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: var(--space-3);
 
     .input-group {
       position: relative;
@@ -300,84 +253,66 @@
 
       .input-icon {
         position: absolute;
-        left: 1rem;
-        color: var(--color-text-muted);
-        font-size: 1.45rem;
+        left: var(--space-3);
+        color: var(--color-text-tertiary);
+        font-size: 1.25rem;
       }
 
       .form-input {
-        width: 100%;
-        padding: 0.9rem 1rem 0.9rem 3rem;
-      }
-    }
-
-    .btn-primary {
-      background: var(--gradient-brand-cta);
-      color: var(--text-white);
-      border: none;
-      padding: 1rem;
-      border-radius: var(--radius-md);
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.3s;
-
-      &:hover {
-        opacity: 0.9;
+        padding-left: 2.75rem;
       }
     }
   }
 
   .form-error {
-    margin: -0.35rem 0 0;
-    color: var(--color-error-border);
-    font-size: 0.78rem;
-    line-height: 1.35;
+    margin: var(--space-1) 0 0;
+    color: var(--color-error);
+    font-size: var(--text-caption);
     text-align: center;
+    font-weight: 600;
   }
 
   .caption-text {
     text-align: center;
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
-    margin-top: 1.5rem;
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption);
+    margin-top: var(--space-3);
+    margin-bottom: 0;
   }
 
   .card-divider {
     height: 1px;
-    margin: 1.75rem 0 1.6rem;
-    background: var(--color-border-ghost);
+    margin: var(--space-4) 0;
+    background-color: var(--color-border);
   }
 
   .community-trust {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: 2rem;
-    color: var(--color-text-muted);
-    font-size: 0.85rem;
+    gap: var(--space-2);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-sm);
 
     .trust-icon {
-      font-size: 1.35rem;
+      font-size: 1.125rem;
+      color: var(--color-success);
     }
   }
 
   .terms-text {
-    margin: 0.85rem 0 0;
+    margin: var(--space-3) 0 0;
     text-align: center;
-    color: var(--color-text-muted);
-    font-size: 0.78rem;
-    line-height: 1.5;
-    white-space: nowrap;
+    color: var(--color-text-tertiary);
+    font-size: var(--text-caption);
+    line-height: var(--line-height-normal);
 
     .footer-link {
-      color: var(--color-brand-accent);
+      color: var(--color-primary);
       text-decoration: none;
-      transition: color 0.3s;
+      font-weight: 500;
 
       &:hover {
-        color: var(--color-brand-tint);
         text-decoration: underline;
       }
     }

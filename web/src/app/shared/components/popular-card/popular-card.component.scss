@@ -2,19 +2,20 @@
   position: relative;
   width: 100%;
   aspect-ratio: 3 / 4;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 12px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
   }
 
   .card-bg {
@@ -29,7 +30,7 @@
   .card-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%);
+    background-color: rgba(10, 13, 24, 0.65);
     z-index: 2;
   }
 
@@ -42,19 +43,18 @@
 
     .badge {
       padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      color: #fff;
+      border-radius: var(--radius-pill);
+      font-size: var(--text-caption);
+      font-weight: 700;
+      color: #ffffff;
       text-transform: capitalize;
-      
+
       &.badge-live {
-        background-color: #ff4733;
+        background-color: var(--color-error);
       }
-      
+
       &.badge-premier {
-        background-color: rgba(30, 30, 30, 0.85);
-        backdrop-filter: blur(4px);
+        background-color: var(--color-primary);
       }
     }
 
@@ -62,12 +62,12 @@
       display: flex;
       align-items: center;
       gap: 4px;
-      color: #fff;
-      font-size: 11px;
+      color: #ffffff;
+      font-size: var(--text-caption);
       font-weight: 600;
 
       i {
-        font-size: 10px;
+        font-size: 0.75rem;
       }
     }
   }
@@ -77,11 +77,11 @@
     z-index: 3;
 
     .card-title {
-      color: #fff;
-      font-size: 18px;
-      font-weight: 600;
+      color: #ffffff;
+      font-size: var(--text-h3);
+      font-weight: 700;
       margin: 0;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      line-height: 1.25;
     }
   }
 }

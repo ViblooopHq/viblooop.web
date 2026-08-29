@@ -1,11 +1,8 @@
 .vl-user-profile-container {
   width: 100%;
   min-height: 100dvh;
-  padding: 8.75rem clamp(1rem, 4vw, 3rem) 7.5rem;
-  background:
-    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--color-action-primary) 18%, transparent) 0, transparent 28rem),
-    radial-gradient(circle at 84% 28%, color-mix(in srgb, var(--color-accent) 8%, transparent) 0, transparent 24rem),
-    var(--color-surface-canvas);
+  padding: 6.5rem clamp(1rem, 4vw, 3rem) 5rem;
+  background-color: var(--color-bg);
   color: var(--color-text-primary);
 }
 
@@ -24,13 +21,6 @@
 
 @media (max-width: 768px) {
   .vl-user-profile-container {
-    padding: 4.35rem 0.65rem calc(4.8rem + env(safe-area-inset-bottom));
-  }
-}
-
-@media (max-width: 440px) {
-  .vl-user-profile-container {
-    padding-inline: 0.55rem;
-    padding-bottom: calc(4.45rem + env(safe-area-inset-bottom));
+    padding: 4.5rem 0.75rem calc(5rem + env(safe-area-inset-bottom, 0px));
   }
 }

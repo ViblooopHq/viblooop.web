@@ -1,0 +1,33 @@
+/*
+ * Viblooop Design System — Motion & Transition Tokens
+ * Subtle, purposeful micro-interactions with reduced motion support.
+ */
+
+:root {
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: 350ms cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  --transition-drawer: 350ms cubic-bezier(0.32, 0.72, 0, 1);
+
+  --transition: var(--transition-base);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0ms !important;
+    --transition-base: 0ms !important;
+    --transition-slow: 0ms !important;
+    --transition-spring: 0ms !important;
+    --transition-drawer: 0ms !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

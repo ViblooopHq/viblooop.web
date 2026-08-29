@@ -3,19 +3,17 @@
 .map-panel {
   width: auto;
   display: grid;
-  gap: 1rem;
-  padding: 1.35rem;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary) 22%, transparent);
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  background:
-    radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--color-action-primary) 12%, transparent), transparent 18rem),
-    var(--color-surface-glass-strong);
-  box-shadow: var(--shadow-panel);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 
   .map-card {
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(12rem, 1.2fr);
-    gap: 1rem;
+    gap: var(--space-4);
     align-items: center;
   }
 
@@ -24,25 +22,24 @@
   }
 
   .ed-section-title {
-    @include ed-section-title;
-    margin-bottom: 0.65rem;
+    margin-bottom: var(--space-2);
     color: var(--color-text-primary);
-    font-size: 1rem;
-    font-weight: 600;
+    font-size: var(--text-body);
+    font-weight: 700;
   }
 
   .map-title {
     margin: 0;
     color: var(--color-text-primary);
-    font-size: 0.92rem;
-    font-weight: 500;
+    font-size: var(--text-body-sm);
+    font-weight: 600;
     line-height: 1.25;
   }
 
   .map-subtitle {
-    margin: 0.55rem 0 0;
-    color: var(--color-text-muted);
-    font-size: 0.8rem;
+    margin: 4px 0 0;
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption);
     font-weight: 400;
     line-height: 1.35;
   }
@@ -52,26 +49,26 @@
     border-radius: var(--radius-md);
     overflow: hidden;
     cursor: pointer;
-    filter: saturate(0.78) brightness(0.72) contrast(1.08);
+    border: 1px solid var(--color-border);
 
     &:focus-visible {
-      outline: 2px solid var(--color-action-primary);
-      outline-offset: 3px;
+      outline: none;
+      box-shadow: var(--focus-ring);
     }
   }
 }
 
 @media (max-width: 560px) {
   .map-panel {
-    padding: 1rem;
+    padding: var(--space-3);
 
     .map-card {
       grid-template-columns: 1fr;
-      gap: 1rem;
+      gap: var(--space-3);
     }
 
     .map-preview {
-      height: 9.75rem;
+      height: 9rem;
     }
   }
 }

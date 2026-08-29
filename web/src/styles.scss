@@ -10,413 +10,52 @@
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
 @theme {
-  /* Tailwind consumes the same semantic tokens used by component SCSS. */
-  --color-primary: var(--primary);
-  --color-primary-fixed: var(--primary-fixed);
-  --color-primary-dim: var(--primary-dim);
+  /* Tailwind consumes canonical semantic design tokens */
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-soft: var(--color-primary-soft);
   --color-secondary: var(--secondary);
   --color-secondary-dim: var(--secondary-dim);
   --color-tertiary: var(--tertiary);
-  --color-surface: var(--bg-surface);
-  --color-surface-container: var(--bg-surface-container);
-  --color-surface-container-low: var(--bg-surface-container-low);
-  --color-surface-container-highest: var(--bg-surface-container-highest);
-  --color-surface-variant: var(--surface-variant);
-  --color-on-background: var(--on-background);
-  --color-on-surface: var(--on-surface);
-  --color-on-surface-variant: var(--on-surface-variant);
-  --color-on-primary: var(--on-primary);
-  --color-outline-variant: var(--outline-variant);
-  --color-error: var(--error);
-  --color-on-error: var(--on-error);
-  --color-success: var(--color-status-success);
-  --color-warning: var(--color-status-warning);
-  --color-info: var(--color-status-info);
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-interactive: var(--color-surface-interactive);
+  --color-surface-container: var(--color-surface-elevated);
+  --color-surface-container-low: var(--color-bg);
+  --color-surface-container-highest: var(--color-surface-interactive);
+  --color-surface-variant: var(--color-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-on-background: var(--color-text-primary);
+  --color-on-surface: var(--color-text-primary);
+  --color-on-surface-variant: var(--color-text-secondary);
+  --color-on-primary: var(--color-on-primary);
+  --color-outline-variant: var(--color-border);
+  --color-error: var(--color-error);
+  --color-on-error: var(--color-on-error);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+  --radius-xs: var(--radius-xs);
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
-  --font-inter: "Inter", "sans-serif";
+  --radius-2xl: var(--radius-2xl);
+  --radius-pill: var(--radius-pill);
+  --font-inter: var(--font-family-primary);
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 .cdk-overlay-container,
 .cdk-global-overlay-wrapper,
 .cdk-overlay-pane {
   z-index: 10000 !important;
-}
-
-
-:root {
-  /*
-   * Design foundations
-   *
-   * These are the canonical semantic tokens for both component SCSS and
-   * Tailwind. Existing aliases remain below while screens are migrated.
-   */
-
-  /* Light theme: neutral canvas, violet action, azure support, magenta accent. */
-  --primary: #8a2be2;
-  --primary-rgb: 138, 43, 226;
-  --secondary-rgb: 0, 123, 255;
-  --bg-surface-rgb: 255, 255, 255;
-  --on-surface-rgb: 17, 24, 39;
-  --on-surface-variant-rgb: 55, 65, 81;
-  --tertiary-rgb: 233, 30, 99;
-  --bg-surface-container-rgb: 249, 250, 251;
-  --bg-surface-container-highest-rgb: 229, 231, 235;
-  /* darker shade for light theme contrast */
-  --primary-fixed: #8a2be2;
-  --primary-dim: #9b72ff;
-  --secondary: #007bff;
-  --secondary-dim: #1ea0e6;
-  --tertiary: #e91e63;
-  --bg-surface: #ffffff;
-  --bg-surface-container: #f9fafb;
-  --bg-surface-container-low: #f3f4f6;
-  --bg-surface-container-highest: #e5e7eb;
-  --surface-variant: #e5e7eb;
-  --on-background: #111827;
-  --on-surface: #111827;
-  --on-surface-variant: #374151;
-  --on-primary: #ffffff;
-  --outline-variant: #000000;
-  --error: #ef4444;
-  --on-error: #ffffff;
-
-  --color-action-primary: var(--primary);
-  --color-action-primary-rgb: var(--primary-rgb);
-  --color-action-primary-hover: var(--primary-dim);
-  --color-action-secondary: var(--secondary);
-  --color-action-secondary-rgb: var(--secondary-rgb);
-  --color-accent: var(--tertiary);
-  --color-accent-rgb: var(--tertiary-rgb);
-  --color-text-primary: var(--on-surface);
-  --color-text-secondary: var(--on-surface-variant);
-  --color-text-muted: #6b7280;
-  --color-surface-canvas: var(--bg-surface);
-  --color-surface-section: var(--bg-surface-container);
-  --color-surface-raised: var(--bg-surface-container-highest);
-  --color-border-ghost: rgba(0, 0, 0, 0.15);
-  --color-border-strong: rgba(0, 0, 0, 0.28);
-  --color-surface-glass: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
-  --color-surface-glass-strong: color-mix(in srgb, var(--color-surface-raised) 90%, transparent);
-  --color-overlay-scrim: rgba(17, 24, 39, 0.72);
-  --color-overlay-soft: rgba(17, 24, 39, 0.48);
-  --color-danger-surface: #fff1f2;
-  --color-danger-border: #fda4af;
-
-  /* Backgrounds */
-  --bg-body: var(--bg-surface-container);
-  --bg-card: var(--bg-surface);
-  --btn-bg: #FDFCFC;
-
-  /* Inter is the application typeface. --font is retained for legacy SCSS. */
-  --font-ui: "Inter", sans-serif;
-  --font-heading: var(--font-ui);
-  --font: var(--font-ui);
-
-  --card-hover-bg: rgba(0, 0, 0, 0.1);
-
-  --card-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
-
-  --ready-to-vibe-bg: linear-gradient(to right, hsl(262.1 83.3% 67.8%), #9333ea, hsl(340.9 82.6% 75.1%));
-  --how-viblooop-works-bg: linear-gradient(to bottom right, #f3e8ff, #fce7f3, #dbeafe);
-  --trusted-community-bg: #FFFFFF;
-  --events-list-bg: #FBE7F5;
-  --events-list-header-bg: #FFFFFF;
-  --tags-bg: #FBE7F5;
-  --event-card-bg: #FFFFFF;
-  --event-details-card-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
-
-  /* Component recipes */
-  --btn-primary-bg: var(--color-action-primary);
-  --btn-primary-text: var(--on-primary);
-  --btn-primary-hover: var(--color-action-primary-hover);
-
-  --btn-secondary-bg: var(--bg-surface-container-highest);
-  --btn-secondary-text: var(--on-surface);
-  --btn-secondary-hover: #cbd5e1;
-
-  /* Text */
-  --text-heading: var(--color-text-primary);
-  --text-body: var(--color-text-secondary);
-  --text-muted: var(--color-text-muted);
-  --text-green: #2CFF05;
-  --text-white: #ffffff;
-
-  /* Borders */
-  --border-default: var(--surface-variant);
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-  --shadow-floating: 0 16px 40px rgba(0, 0, 0, 0.18);
-  --shadow-overlay: 0 30px 90px rgba(0, 0, 0, 0.28);
-
-  --hover-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
-
-  --font-body: var(--font-ui);
-  --transition-fast: 160ms ease;
-  --transition-base: 240ms ease;
-  --transition-slow: 360ms ease;
-  --transition: var(--transition-base);
-  --focus-ring: 0 0 0 3px rgba(var(--color-action-primary-rgb), 0.28);
-
-  // Light Theme
-  --footer-bg: #111827;
-  --footer-text: #f1f1f1;
-  --footer-link: #ccc;
-  --footer-copyright-bg: #ccc;
-  --footer-link-hover: #66aaff;
-  --footer-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-
-  --bg-color: var(--bg-surface);
-  --text-color: var(--on-surface);
-  --highlight-color: var(--tertiary);
-  --gradient-start: var(--primary);
-  --gradient-end: var(--secondary);
-  --logo-blue: var(--secondary);
-  --button-text-color: var(--on-primary);
-
-  --bg-tag-color: rgba(124, 58, 237, 0.1);
-  --tag-text-color: #7C3AED;
-
-  /*
-   * Legacy brand aliases. New work should use --color-action-primary and
-   * --color-accent; these names remain stable until every screen migrates.
-   */
-  --color-brand-primary: var(--color-action-primary);
-  --color-brand-primary-rgb: var(--color-action-primary-rgb);
-  --color-brand-accent: #a855f7;
-  --color-brand-accent-rgb: 168, 85, 247;
-  --color-brand-tint: #cbbeff;
-  --color-brand-tint-rgb: 203, 190, 255;
-  --color-brand-tint-soft: #f4efff;
-  --shadow-brand-glow: 0 0 18px rgba(125, 82, 255, 0.3);
-  --gradient-brand-cta: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-accent));
-
-  /* Layout scale */
-  --radius-xs: 4px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
-  --radius-pill: 999px;
-  --radius-full: 50%;
-
-  /* Spacing scale */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
-  --space-10: 40px;
-  --space-12: 48px;
-
-  /* Type scale */
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-md: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --font-size-3xl: 2rem;
-  --font-size-4xl: 2.5rem;
-  --line-height-tight: 1.15;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.6;
-
-  /* Dark canvas surfaces (used in create-event, user-profile, chat — light theme shows as light equivalents) */
-  --surface-dark-1: #f3f4f6;
-  --surface-dark-2: #e5e7eb;
-  --surface-dark-3: #d1d5db;
-  --surface-dark-4: #f9fafb;
-
-  /* Status / semantic colors */
-  --color-status-success: #22c55e;
-  --color-success: var(--color-status-success);
-  --color-success-dim: #4ade80;
-  --color-success-soft: #86efac;
-  --color-success-tint: #66f09a;
-  --color-status-warning: #f59e0b;
-  --color-warning: var(--color-status-warning);
-  --color-warning-dim: #fbbf24;
-  --color-error-soft: #fee2e2;
-  --color-error-border: #fca5a5;
-  --color-status-info: #4cc9f0;
-  --color-info: var(--color-status-info);
-  --color-pink: #f472b6;
-  --color-star: #f59e0b;
-
-  /* Brand purple scale */
-  --color-brand-deep: #4b23b7;
-  --color-brand-soft: #9b5cff;
-  --color-brand-light: #a970ff;
-
-  /* Text semantic scale */
-  --text-dark: #1a1a2e;
-  --text-mid: #4a4a68;
-  --text-muted-strong: #8888a0;
-  --text-subtle: #aeb3cf;
-
-  /* Social brand colors (constants, not themeable) */
-  --color-linkedin: #0a66c2;
-  --color-youtube: #ff0033;
-  --color-google: #ea4335;
-  --gradient-instagram: radial-gradient(circle at 30% 105%, #fdf497 0 14%, #fd5949 36%, #d6249f 62%, #285aeb 100%);
-
-  /* Extended shadow tokens */
-  --shadow-btn: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
-  --shadow-profile-card: 0 28px 80px rgba(0, 0, 0, 0.38);
-  --shadow-profile-avatar: 0 0 0 8px rgba(124, 58, 237, 0.08), 0 18px 48px rgba(0, 0, 0, 0.45);
-  --shadow-brand-primary: 0 12px 28px rgba(91, 33, 255, 0.38);
-  --shadow-chat-bubble: 0 0.5rem 1.2rem rgba(106, 57, 255, 0.36);
-  --shadow-modal: 0 30px 90px rgba(0, 0, 0, 0.55);
-  --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 64px rgba(0, 0, 0, 0.28);
-}
-
-[data-theme='dark'] {
-  /* Dark theme: the Neon Pulse production canvas. */
-  --primary: #bd9dff;
-  --primary-rgb: 189, 157, 255;
-  --secondary-rgb: 52, 181, 250;
-  --bg-surface-rgb: 7, 13, 31;
-  --on-surface-rgb: 223, 228, 254;
-  --on-surface-variant-rgb: 176, 181, 209;
-  --tertiary-rgb: 255, 134, 195;
-  --bg-surface-container-rgb: 12, 19, 38;
-  --bg-surface-container-highest-rgb: 28, 37, 62;
-  --primary-fixed: #bd9dff;
-  --primary-dim: #966bff;
-  --secondary: #34b5fa;
-  --secondary-dim: #1ea0e6;
-  --tertiary: #ff86c3;
-  --bg-surface: #070d1f;
-  --bg-surface-container: #0c1326;
-  --bg-surface-container-low: #0c1326;
-  --bg-surface-container-highest: #1c253e;
-  --surface-variant: #1c253e;
-  --on-background: #dfe4fe;
-  --on-surface: #dfe4fe;
-  --on-surface-variant: #b0b5d1;
-  --on-primary: #ffffff;
-  --outline-variant: #ffffff;
-  --error: #ff4d4d;
-  --on-error: #ffffff;
-
-  --color-action-primary: var(--primary);
-  --color-action-primary-rgb: var(--primary-rgb);
-  --color-action-primary-hover: var(--primary-dim);
-  --color-action-secondary: var(--secondary);
-  --color-action-secondary-rgb: var(--secondary-rgb);
-  --color-accent: var(--tertiary);
-  --color-accent-rgb: var(--tertiary-rgb);
-  --color-text-primary: var(--on-surface);
-  --color-text-secondary: var(--on-surface-variant);
-  --color-text-muted: #94a3b8;
-  --color-surface-canvas: var(--bg-surface);
-  --color-surface-section: var(--bg-surface-container);
-  --color-surface-raised: var(--bg-surface-container-highest);
-  --color-border-ghost: rgba(255, 255, 255, 0.15);
-  --color-border-strong: rgba(255, 255, 255, 0.28);
-  --color-surface-glass: color-mix(in srgb, var(--color-surface-raised) 78%, transparent);
-  --color-surface-glass-strong: color-mix(in srgb, var(--color-surface-raised) 90%, transparent);
-  --color-overlay-scrim: rgba(3, 6, 15, 0.72);
-  --color-overlay-soft: rgba(3, 6, 15, 0.48);
-  --color-danger-surface: #4c111d;
-  --color-danger-border: #fb7185;
-
-  /* Backgrounds */
-  --bg-body: var(--bg-surface-container);
-  --bg-card: var(--bg-surface-container-highest);
-  --btn-bg: #4C4B4B;
-
-  --card-hover-bg: rgba(255, 255, 255, 0.1);
-
-  --card-shadow: rgba(0, 0, 0, 0.4) 0px 2px 5px 0px,
-    rgba(0, 0, 0, 0.2) 0px 1px 1px 0px;
-
-  --ready-to-vibe-bg: radial-gradient(circle, #2a375a 0%, #4d2f3f 100%);
-  --how-viblooop-works-bg: linear-gradient(to bottom right, #111827, #581c87, #1e3a8a);
-  --trusted-community-bg: #1F2937;
-  --events-list-bg: #1F2937;
-  --events-list-header-bg: #0f172a;
-  --tags-bg: #06080b;
-  --event-card-bg: #06080b;
-
-  /* Buttons */
-  --btn-primary-bg: var(--color-action-primary);
-  --btn-primary-text: var(--on-primary);
-  --btn-primary-hover: var(--color-action-primary-hover);
-
-  --btn-secondary-bg: var(--bg-surface-container-highest);
-  --btn-secondary-text: var(--on-surface);
-  --btn-secondary-hover: #475569;
-
-  /* Text */
-  --text-heading: var(--color-text-primary);
-  --text-body: var(--color-text-secondary);
-  --text-muted: var(--color-text-muted);
-
-  /* Borders */
-  --border-default: var(--surface-variant);
-
-  /* Shadows */
-  --hover-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
-
-  --footer-bg: #000000;
-  --footer-text: #f1f1f1;
-  --footer-link: #ccc;
-  --footer-copyright-bg: #ccc;
-  --footer-link-hover: #66aaff;
-  --footer-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
-
-  --bg-color: var(--bg-surface);
-  --text-color: var(--on-surface);
-  --highlight-color: var(--tertiary);
-  --gradient-start: var(--primary);
-  --gradient-end: var(--secondary);
-  --logo-blue: var(--secondary);
-  --button-text-color: var(--on-primary);
-
-  --bg-tag-color: rgba(255, 255, 255, 0.1);
-  --tag-text-color: #ffffff;
-
-  /* Dark canvas surfaces (deep dark theme values) */
-  --surface-dark-1: #14121c;
-  --surface-dark-2: #1c1a25;
-  --surface-dark-3: #2b2834;
-  --surface-dark-4: #0f0d17;
-
-  /* Status colors — adjusted for dark backgrounds */
-  --color-status-success: #4ade80;
-  --color-success: var(--color-status-success);
-  --color-success-soft: #86efac;
-  --color-success-tint: #66f09a;
-
-  /* Text semantic scale */
-  --text-dark: #dfe4fe;
-  --text-mid: #b0b5d1;
-  --text-muted-strong: #8888a0;
-  --text-subtle: #aeb3cf;
-
-  --color-brand-primary: var(--color-action-primary);
-  --color-brand-primary-rgb: var(--color-action-primary-rgb);
-
-  /* Shadow tokens — slightly stronger in dark mode */
-  --shadow-profile-card: 0 28px 80px rgba(0, 0, 0, 0.6);
-  --shadow-floating: 0 16px 40px rgba(0, 0, 0, 0.38);
-  --shadow-overlay: 0 30px 90px rgba(0, 0, 0, 0.75);
-  --shadow-profile-avatar: 0 0 0 8px rgba(189, 157, 255, 0.12), 0 18px 48px rgba(0, 0, 0, 0.65);
-  --shadow-modal: 0 30px 90px rgba(0, 0, 0, 0.75);
-  --shadow-panel: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 20px 64px rgba(0, 0, 0, 0.45);
 }
 
 * {
@@ -425,44 +64,50 @@
 }
 
 body {
-  color: var(--text-heading);
-  line-height: var(--line-height-relaxed);
-  font-size: var(--font-size-md);
-  background-color: var(--bg-color);
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  font-size: var(--text-body);
+  background-color: var(--color-bg);
   transition: background-color var(--transition-base), color var(--transition-base);
-  font-family: var(--font-ui);
+  font-family: var(--font-family-primary);
+  min-height: 100vh;
+  margin: 0;
 }
 
-:where(button, a, input, select, textarea, [tabindex]):focus-visible {
+/* Accessible focus rings across all interactive elements */
+:where(button, a, input, select, textarea, [tabindex], .vl-chip):focus-visible {
   outline: none;
   box-shadow: var(--focus-ring);
 }
 
 .vl-section-top-padding {
-  padding-top: 8rem;
+  padding-top: 6.5rem;
 
-  @include screenSize(sm) {
-    padding-top: 6rem;
+  @media (max-width: 640px) {
+    padding-top: 5rem;
   }
 }
 
 .tags {
-  @include flex($align: center, $gap: 0.5rem, $wrap: wrap);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
 
   .tag {
-    padding: 8px 20px;
-    background: var(--tags-bg);
-    border-radius: var(--radius-2xl);
-    cursor: context-menu;
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-surface-interactive);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
   }
 }
 
 ul {
   list-style: none;
-
-  li {
-    cursor: pointer;
-  }
+  margin: 0;
+  padding: 0;
 }
 
 .has-section-height {
@@ -470,177 +115,175 @@ ul {
 }
 
 .vl-section-wrapper {
-  padding: 0.5rem 10%;
-
-  @include screenSize(sm) {
-    padding: 1rem 5%;
-    min-height: fit-content;
-  }
+  padding-left: var(--page-padding-x);
+  padding-right: var(--page-padding-x);
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 h1,
 h2,
 h3,
-h4 {
-  color: var(--text-heading);
+h4,
+h5,
+h6 {
+  color: var(--color-text-primary);
   font-weight: 700;
-  margin-bottom: 0.5rem;
-  font-family: var(--font-heading);
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.015em;
 }
 
 h1 {
-  font-size: 2.5rem;
+  font-size: var(--text-h1);
+  line-height: var(--text-h1-line);
 }
 
 h2 {
-  font-size: 2rem;
+  font-size: var(--text-h2);
+  line-height: var(--text-h2-line);
 }
 
 h3 {
-  font-size: 1.5rem;
+  font-size: var(--text-h3);
+  line-height: var(--text-h3-line);
 }
 
-// p {
-//   margin-bottom: 1rem;
-// }
-
-// a {
-//   color: var(--accent-color);
-//   text-decoration: none;
-//   cursor: pointer;
-// }
-
-.page-title {
-  font-size: $font-4xl;
-  font-weight: $font-bold;
-}
-
-.card-title {
-  font-size: $font-xl;
-  font-weight: $font-semibold;
+h4 {
+  font-size: var(--text-h4);
+  line-height: var(--text-h4-line);
 }
 
 p {
-  font-size: $font-md;
-  font-weight: $font-regular;
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+}
+
+.page-title {
+  font-size: var(--text-display);
+  font-weight: 700;
+  line-height: var(--text-display-line);
+}
+
+.card-title {
+  font-size: var(--text-h3);
+  font-weight: 600;
 }
 
 .responsive-grid {
-  @include grid($columns: repeat(4, 1fr), $gap: 1.5rem);
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
 
-  @include screenSize(md) {
-    @include grid($columns: repeat(2, 1fr), $gap: 1rem);
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
   }
 
-  @include screenSize(sm) {
-    @include grid($columns: 1fr, $gap: 0.5rem);
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
   }
 }
 
 .typography-h1 {
-  @include title($font-4xl);
+  font-size: var(--text-h1);
+  font-weight: 700;
 }
 
 .typography-body {
-  @include text($font-md);
+  font-size: var(--text-body);
+  color: var(--color-text-secondary);
 }
-
-html {
-  font-size: 100%; // 16px
-
-  @media (max-width: 1024px) {
-    font-size: 95%; // ~15px
-  }
-
-  @media (max-width: 768px) {
-    font-size: 90%; // ~14.4px
-  }
-
-  @media (max-width: 480px) {
-    font-size: 87.5%; // ~14px
-  }
-}
-
 
 select,
 textarea,
 input {
   width: 100%;
-  border-color: var(--border-default);
-  padding: 12px 16px;
-  border-radius: var(--radius-xs);
+  border-color: var(--color-border);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
   outline: transparent;
-  border-width: 2px;
+  border-width: 1px;
   border-style: solid;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-family: inherit;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
 
   &:focus {
-    border-color: var(--highlight-color);
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
   }
 }
 
-/* Initial state (before image fully loaded) */
+/* Image loading state */
 img[ngSrc].blur-up {
   filter: blur(20px);
-  transform: scale(1.05);
-  transition: filter 0.6s ease, transform 0.6s ease;
+  transform: scale(1.03);
+  transition: filter 0.5s ease, transform 0.5s ease;
 }
 
-/* After image has loaded */
 img[ngSrc].blur-up[data-loaded="true"] {
   filter: blur(0);
   transform: scale(1);
 }
 
-/* Angular Material system-token bridge. The prebuilt theme supplies component
- * structure; these semantic mappings keep its controls aligned with Viblooop. */
+/* Angular Material system-token bridge */
 :root {
-  --mat-sys-primary: var(--color-action-primary);
-  --mat-sys-on-primary: var(--on-primary);
-  --mat-sys-primary-container: color-mix(in srgb, var(--color-action-primary) 18%, var(--color-surface-raised));
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: var(--color-on-primary);
+  --mat-sys-primary-container: var(--color-primary-soft);
   --mat-sys-on-primary-container: var(--color-text-primary);
-  --mat-sys-secondary: var(--color-action-secondary);
-  --mat-sys-on-secondary: var(--on-primary);
-  --mat-sys-secondary-container: color-mix(in srgb, var(--color-action-secondary) 16%, var(--color-surface-raised));
+  --mat-sys-secondary: var(--secondary);
+  --mat-sys-on-secondary: var(--color-on-primary);
+  --mat-sys-secondary-container: var(--color-surface-interactive);
   --mat-sys-on-secondary-container: var(--color-text-primary);
-  --mat-sys-tertiary: var(--color-accent);
-  --mat-sys-on-tertiary: var(--on-primary);
-  --mat-sys-tertiary-container: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface-raised));
+  --mat-sys-tertiary: var(--tertiary);
+  --mat-sys-on-tertiary: var(--color-on-primary);
+  --mat-sys-tertiary-container: var(--color-surface-interactive);
   --mat-sys-on-tertiary-container: var(--color-text-primary);
-  --mat-sys-error: var(--error);
-  --mat-sys-on-error: var(--on-error);
-  --mat-sys-error-container: var(--color-danger-surface);
-  --mat-sys-on-error-container: var(--error);
-  --mat-sys-background: var(--color-surface-canvas);
+  --mat-sys-error: var(--color-error);
+  --mat-sys-on-error: var(--color-on-error);
+  --mat-sys-error-container: var(--color-error-soft);
+  --mat-sys-on-error-container: var(--color-error);
+  --mat-sys-background: var(--color-bg);
   --mat-sys-on-background: var(--color-text-primary);
-  --mat-sys-surface: var(--color-surface-canvas);
+  --mat-sys-surface: var(--color-surface);
   --mat-sys-on-surface: var(--color-text-primary);
-  --mat-sys-surface-variant: var(--color-surface-raised);
+  --mat-sys-surface-variant: var(--color-surface-elevated);
   --mat-sys-on-surface-variant: var(--color-text-secondary);
-  --mat-sys-surface-dim: var(--color-surface-section);
-  --mat-sys-surface-bright: var(--color-surface-raised);
-  --mat-sys-surface-container-lowest: var(--color-surface-canvas);
-  --mat-sys-surface-container-low: var(--color-surface-section);
-  --mat-sys-surface-container: var(--color-surface-section);
-  --mat-sys-surface-container-high: var(--color-surface-raised);
-  --mat-sys-surface-container-highest: var(--color-surface-raised);
-  --mat-sys-surface-tint: var(--color-action-primary);
+  --mat-sys-surface-dim: var(--color-bg);
+  --mat-sys-surface-bright: var(--color-surface-elevated);
+  --mat-sys-surface-container-lowest: var(--color-bg);
+  --mat-sys-surface-container-low: var(--color-surface);
+  --mat-sys-surface-container: var(--color-surface);
+  --mat-sys-surface-container-high: var(--color-surface-elevated);
+  --mat-sys-surface-container-highest: var(--color-surface-interactive);
+  --mat-sys-surface-tint: var(--color-primary);
   --mat-sys-outline: var(--color-border-strong);
-  --mat-sys-outline-variant: var(--color-border-ghost);
+  --mat-sys-outline-variant: var(--color-border);
   --mat-sys-inverse-surface: var(--color-text-primary);
-  --mat-sys-inverse-on-surface: var(--color-surface-canvas);
-  --mat-sys-inverse-primary: var(--color-brand-tint);
+  --mat-sys-inverse-on-surface: var(--color-bg);
+  --mat-sys-inverse-primary: var(--color-primary-soft);
   --mat-sys-corner-extra-small: var(--radius-xs);
   --mat-sys-corner-small: var(--radius-sm);
   --mat-sys-corner-medium: var(--radius-md);
   --mat-sys-corner-large: var(--radius-lg);
   --mat-sys-corner-extra-large: var(--radius-xl);
-  --mat-sys-body-large-font: var(--font-ui);
-  --mat-sys-body-medium-font: var(--font-ui);
-  --mat-sys-body-small-font: var(--font-ui);
-  --mat-sys-label-large-font: var(--font-ui);
-  --mat-sys-label-medium-font: var(--font-ui);
-  --mat-sys-label-small-font: var(--font-ui);
-  --mat-sys-headline-large-font: var(--font-heading);
-  --mat-sys-headline-medium-font: var(--font-heading);
-  --mat-sys-headline-small-font: var(--font-heading);
+  --mat-sys-body-large-font: var(--font-family-primary);
+  --mat-sys-body-medium-font: var(--font-family-primary);
+  --mat-sys-body-small-font: var(--font-family-primary);
+  --mat-sys-label-large-font: var(--font-family-primary);
+  --mat-sys-label-medium-font: var(--font-family-primary);
+  --mat-sys-label-small-font: var(--font-family-primary);
+  --mat-sys-headline-large-font: var(--font-family-heading);
+  --mat-sys-headline-medium-font: var(--font-family-heading);
+  --mat-sys-headline-small-font: var(--font-family-heading);
 }

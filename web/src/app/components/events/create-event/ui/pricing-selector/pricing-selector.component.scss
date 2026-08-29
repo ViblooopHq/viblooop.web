@@ -4,216 +4,178 @@
 .pricing-grid-new {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 8px;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
 }
 
 .pricing-card-new {
   @include selectable-card-base;
 
-  padding: 8px 6px;
+  padding: var(--space-3);
   position: relative;
   text-align: left;
-  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
   overflow: hidden;
   min-height: 72px;
 
   &:hover {
-    background: var(--surface-dark-2);
-    border-color: color-mix(in srgb, var(--color-action-primary) 20%, transparent);
+    background-color: var(--color-surface-interactive);
+    border-color: var(--color-primary);
   }
 
   &--selected {
-    background: var(--surface-dark-1);
-    border-color: var(--color-brand-primary);
-    box-shadow: var(--shadow-brand-primary);
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary);
 
     .selection-check {
-      background: var(--color-brand-primary);
-      border-color: var(--color-brand-primary);
-      color: var(--color-text-on-primary);
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
     }
   }
 }
 
 .selection-check {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  width: 15px;
-  height: 15px;
+  top: 8px;
+  right: 8px;
+  width: 18px;
+  height: 18px;
   border-radius: var(--radius-full);
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
   z-index: 5;
 
   .material-symbols-outlined {
-    font-size: var(--font-size-xs);
-    font-weight: 800;
+    font-size: var(--text-caption);
+    font-weight: 700;
   }
 }
 
 .pricing-card-flex {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   height: 100%;
 }
 
 .pricing-icon-circle {
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  position: relative;
 
   .material-symbols-outlined {
-    font-size: var(--font-size-md);
-  }
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: var(--radius-full);
-    opacity: 0.12;
-    background: currentColor;
+    font-size: 1.25rem;
   }
 
   &.free {
-    background: radial-gradient(circle at 30% 30%, var(--color-success), color-mix(in srgb, var(--color-success) 28%, var(--color-surface-canvas)));
+    background-color: var(--color-success-soft);
     color: var(--color-success);
-    box-shadow: var(--shadow-brand-primary);
   }
 
   &.paid {
-    background: radial-gradient(circle at 30% 30%, var(--color-action-primary), color-mix(in srgb, var(--color-action-primary) 28%, var(--color-surface-canvas)));
-    color: var(--color-action-primary);
-    box-shadow: var(--shadow-brand-primary);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
   }
 }
 
 .pricing-info-stack {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 2px;
 }
 
 .pricing-title-text {
-  font-size: var(--font-size-xs);
-  font-weight: 800;
-  color: var(--color-brand-tint);
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
 .pricing-sub-text {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  font-size: var(--text-caption);
+  color: var(--color-text-secondary);
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
 }
 
 .pricing-badge-pill {
   width: fit-content;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: var(--radius-pill);
-  font-size: 7.5px;
+  font-size: var(--text-micro);
   font-weight: 700;
-  margin-top: 1px;
+  margin-top: 2px;
   white-space: nowrap;
 
   &.free {
-    background: color-mix(in srgb, var(--color-success) 5%, transparent);
-    color: var(--color-success-dim);
+    background-color: var(--color-success-soft);
+    color: var(--color-success);
   }
 
   &.paid {
-    background: color-mix(in srgb, var(--color-action-primary) 5%, transparent);
-    color: var(--color-brand-light);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
   }
 }
 
-/* Corner decorations */
-.deco-top-right {
-  position: absolute;
-  top: 2px;
-  right: 2px;
-  font-size: var(--font-size-xs);
-  color: var(--color-brand-primary);
-  opacity: 0.25;
-  pointer-events: none;
-}
-
-.deco-bottom-left {
-  position: absolute;
-  bottom: 4px;
-  left: 4px;
-  font-size: var(--font-size-xs);
-  color: var(--color-brand-primary);
-  opacity: 0.15;
-  transform: rotate(45deg);
-  pointer-events: none;
-}
-
 .price-input-container {
-  margin-top: 10px;
+  margin-top: var(--space-3);
 }
 
 .price-field-wrap {
   position: relative;
-  background: var(--surface-dark-2);
-  border-radius: var(--radius-sm);
-  padding: 0 12px;
+  background-color: var(--color-surface-interactive);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
   display: flex;
   align-items: center;
-  border: 1px solid var(--color-border-ghost);
+  border: 1px solid var(--color-border);
 }
 
 .price-currency {
-  font-size: var(--font-size-xs);
+  font-size: var(--text-body-sm);
   font-weight: 700;
-  color: var(--color-brand-tint);
-  margin-right: 8px;
-  cursor: text;
+  color: var(--color-text-primary);
+  margin-right: var(--space-2);
 }
 
 .price-field-input {
   flex: 1;
   background: transparent;
   border: none;
-  padding: 8px 0;
-  color: var(--color-brand-tint);
-  font-size: var(--font-size-sm);
-  font-weight: 400;
+  padding: 10px 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-weight: 600;
   outline: none;
 
   &::placeholder {
-    color: var(--color-text-secondary);
-    font-weight: 400;
+    color: var(--color-text-tertiary);
   }
 }
 
 .pricing-footer-note {
   display: flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  padding: 0 4px;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: 0 var(--space-1);
 
   .info-icon {
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    font-size: var(--text-caption);
+    color: var(--color-text-secondary);
   }
 
   p {
-    font-size: var(--font-size-xs);
-    color: var(--color-text-muted);
+    font-size: var(--text-caption);
+    color: var(--color-text-secondary);
     margin: 0;
   }
 }

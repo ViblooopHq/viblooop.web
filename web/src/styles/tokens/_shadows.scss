@@ -1,0 +1,13 @@
+/*
+ * Viblooop Design System — Shadow Tokens
+ * Subtle elevations and deliberate focal glows.
+ */
+
+:root {
+  /* Common shadow variables defined per theme in _colors.scss */
+  --shadow-card: var(--shadow-sm);
+  --shadow-card-hover: var(--shadow-md);
+  --shadow-popover: var(--shadow-lg);
+  --shadow-modal: var(--shadow-floating);
+  --shadow-drawer: var(--shadow-floating);
+}

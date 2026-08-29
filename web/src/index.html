@@ -3,103 +3,81 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Vibloop</title>
+  <title>Viblooop — Discover, Experience & Connect</title>
   <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
 
-  <!-- Open Graph (covers 90% platforms) -->
-  <meta property="og:title" content="Viblooop - Start your Vibes" />
-  <meta property="og:description" content="A platform to start your Vibes" />
-  <!-- NOTE: og:image and og:url values are managed in environment.ts (ogImageUrl, ogPageUrl) -->
+  <!-- Open Graph -->
+  <meta property="og:title" content="Viblooop - Discover, Experience & Connect" />
+  <meta property="og:description" content="Discover events, connect with people, and experience real life near you." />
   <meta property="og:image" content="https://example.com/image.jpg" />
   <meta property="og:url" content="https://example.com/page" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Viblooop" />
 
-  <!-- Twitter (Twitter-specific enhancements) -->
+  <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Your Page Title" />
-  <meta name="twitter:description" content="Your page summary here." />
+  <meta name="twitter:title" content="Viblooop - Discover, Experience & Connect" />
+  <meta name="twitter:description" content="Discover events, connect with people, and experience real life near you." />
   <meta name="twitter:image" content="/assets/images/dark-logo.png" />
-  <meta name="twitter:site" content="@yourhandle" />
+  <meta name="twitter:site" content="@viblooop" />
 
   <link rel="manifest" href="manifest.webmanifest">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-  <link rel="manifest" href="manifest.webmanifest">
-
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&amp;display=swap" rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
 
   <style>
     body {
-      font-family: 'Inter', sans-serif;
-      background-color: #070d1f;
-      color: #dfe4fe;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow-x: hidden;
+      background-color: var(--color-bg);
+      color: var(--color-text-primary);
+      margin: 0;
+      padding: 0;
     }
 
     .material-symbols-outlined {
       font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
     }
 
-    .glass {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .glow-primary {
-      box-shadow: 0 0 40px rgba(189, 157, 255, 0.2);
-    }
-
-    .neon-radial-1 {
-      background: radial-gradient(circle at 0% 0%, rgba(189, 157, 255, 0.15) 0%, transparent 50%);
-    }
-
-    .neon-radial-2 {
-      background: radial-gradient(circle at 100% 100%, rgba(52, 181, 250, 0.1) 0%, transparent 50%);
-    }
-
-    .neon-radial-3 {
-      background: radial-gradient(circle at 50% 50%, rgba(255, 134, 195, 0.05) 0%, transparent 60%);
-    }
-
-    /* Hide scrollbar for Chrome, Safari and Opera */
     ::-webkit-scrollbar {
-      display: none;
+      width: 6px;
+      height: 6px;
     }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    body {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(128, 128, 128, 0.25);
+      border-radius: 999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(128, 128, 128, 0.45);
     }
   </style>
 </head>
 
 <body class="mat-typography selection:bg-primary selection:text-on-primary">
-  <!-- Atmospheric Background Layers -->
-  <div class="fixed inset-0 z-[-1] neon-radial-1"></div>
-  <div class="fixed inset-0 z-[-1] neon-radial-2"></div>
-  <div class="fixed inset-0 z-[-1] neon-radial-3"></div>
   <vl-app-root></vl-app-root>
 
-
-  <!-- Google Tag Manager (noscript) — GTM ID managed in environment.ts (gtmId) -->
+  <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-N6W7LSST" height="0" width="0"
       style="display:none;visibility:hidden"></iframe></noscript>
-  <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Google tag (gtag.js) — GA ID managed in environment.ts (gaId) -->
+  <!-- Google tag (gtag.js) -->
   <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-6HYQ5D4LEQ"></script>
-  <!-- Google Maps API Key managed in environment.ts (googleMapKey) -->
+  <!-- Google Maps API Key -->
   <script async=""
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBQKpsYqQb8hYmUsotg-7IDHcEW-hau_xg&amp;callback=console.debug&amp;libraries=maps,marker&amp;v=beta"></script>
 </body>

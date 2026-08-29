@@ -1,63 +1,57 @@
+/*
+ * Viblooop — Header & Navigation Styles
+ * Clean, solid desktop floating navbar & native mobile bottom navigation.
+ */
+
 .vl-app-header {
-  border: 1px solid color-mix(in srgb, var(--on-primary) 20%, var(--color-border-ghost));
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--on-primary) 30%, transparent),
-    inset 0 -1px 0 color-mix(in srgb, var(--color-action-primary) 5%, transparent),
-    0 0.5rem 1.25rem color-mix(in srgb, var(--color-action-primary) 5%, transparent);
-  backdrop-filter: blur(24px) saturate(150%);
-  -webkit-backdrop-filter: blur(24px) saturate(150%);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+
+  &--desktop {
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface);
+  }
 
   &--mobile {
     border-width: 0 0 1px;
+    border-radius: 0;
+    padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem));
   }
 }
 
-[data-theme='dark'] .vl-app-header {
-  border-color: color-mix(in srgb, var(--color-action-primary) 28%, transparent);
-  box-shadow:
-    inset 0 1px 0 color-mix(in srgb, var(--color-action-secondary) 14%, transparent),
-    inset 0 -1px 0 color-mix(in srgb, var(--color-action-primary) 8%, transparent),
-    0 0.5rem 1.25rem color-mix(in srgb, var(--color-action-primary) 5%, transparent);
-}
-
 .vl-app-header__create-action {
-  border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
-  background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
-  color: var(--color-action-primary);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface-interactive);
+  color: var(--color-primary);
 
   &:hover {
-    background: var(--color-action-primary);
-    color: var(--on-primary);
-    box-shadow: var(--shadow-brand-glow);
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
   }
 }
 
 .header-profile-trigger {
   display: grid;
   place-items: center;
-  width: 3.75rem;
-  height: 3.75rem;
-  padding: 0.25rem;
-  border: 1px solid color-mix(in srgb, var(--color-action-primary) 62%, transparent);
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 2px;
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-full);
-  background: linear-gradient(135deg, var(--color-action-primary), var(--color-brand-accent));
-  box-shadow:
-    0 0.5rem 1.25rem color-mix(in srgb, var(--color-action-primary) 28%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--on-primary) 34%, transparent);
+  background-color: var(--color-surface);
   cursor: pointer;
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+  transition: border-color var(--transition-base), transform var(--transition-fast);
 
   &:hover {
-    filter: brightness(1.08);
-    box-shadow:
-      0 0.65rem 1.5rem color-mix(in srgb, var(--color-action-primary) 42%, transparent),
-      inset 0 1px 0 color-mix(in srgb, var(--on-primary) 42%, transparent);
-    transform: translateY(-1px) scale(1.04);
+    border-color: var(--color-primary);
+    transform: scale(1.04);
   }
 
   &:focus-visible {
-    outline: 3px solid color-mix(in srgb, var(--color-action-secondary) 62%, transparent);
-    outline-offset: 3px;
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 }
 
@@ -65,10 +59,7 @@
   width: 100%;
   height: 100%;
   overflow: hidden;
-  border: 2px solid color-mix(in srgb, var(--on-primary) 86%, transparent);
   border-radius: var(--radius-full);
-  background: var(--color-surface-raised);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-text-primary) 10%, transparent);
 
   img {
     display: block;
@@ -78,54 +69,56 @@
   }
 }
 
+/* Mobile Bottom App Navigation */
 .vl-app-bottom-nav {
-  border-top: 1px solid var(--color-border-ghost);
-  background: color-mix(in srgb, var(--color-surface-canvas) 88%, transparent);
-  box-shadow: 0 -10px 25px color-mix(in srgb, var(--color-action-primary) 5%, transparent);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-floating);
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
 }
 
 .mobile-create-event-fab {
-  border: 1px solid color-mix(in srgb, var(--color-action-primary) 50%, transparent);
-  background: linear-gradient(135deg, var(--color-action-primary), var(--color-brand-accent));
-  box-shadow:
-    var(--shadow-brand-primary),
-    0 0 0 6px color-mix(in srgb, var(--color-action-primary) 8%, transparent),
-    inset 0 1px 0 color-mix(in srgb, var(--on-primary) 28%, transparent);
-  color: var(--on-primary);
-}
+  border: 0;
+  background-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+  color: #ffffff;
+  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
 
-.mobile-create-event-fab:hover {
-  filter: brightness(1.08);
+  &:hover,
+  &:active {
+    background-color: var(--color-primary-hover);
+  }
 }
 
 .mobile-nav-avatar {
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
   overflow: hidden;
-  border-radius: var(--radius-pill);
-  border: 1.5px solid var(--color-border-strong);
-  background: var(--color-surface-glass);
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  border: 1.5px solid var(--color-border);
 
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
-  }
-
-  &--active {
-    border-color: color-mix(in srgb, var(--color-action-primary) 80%, transparent);
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-action-primary) 14%, transparent);
-    transform: translateY(-1px);
   }
 }
 
-.mobile-nav-icon {
-  font-size: 2.25rem;
-  line-height: 1;
+.active .mobile-nav-avatar {
+  border-color: var(--color-primary);
+}
+
+.header-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  width: 15rem;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 100;
 }

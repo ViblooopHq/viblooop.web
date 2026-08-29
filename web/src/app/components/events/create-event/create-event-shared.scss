@@ -1,91 +1,92 @@
-@use "../../../../styles/components/primitives" as primitives;
+@use '../../../../styles/index' as *;
+@use '../../../../styles/components/primitives' as primitives;
+
+@mixin stack($gap: var(--space-3)) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
 
 @mixin material-input-foundation {
   .material-input-custom {
     width: 100%;
 
     .mat-mdc-text-field-wrapper {
-      border: 1px solid var(--color-border-ghost) !important;
+      border: 1px solid var(--color-border) !important;
       border-radius: var(--radius-md) !important;
-      background-color: var(--color-surface-glass) !important;
-      box-shadow: var(--shadow-panel) !important;
+      background-color: var(--color-surface) !important;
+      box-shadow: var(--shadow-xs) !important;
     }
 
     .mat-mdc-input-element {
       color: var(--color-text-primary) !important;
-      caret-color: var(--color-action-primary) !important;
-      color-scheme: dark;
+      caret-color: var(--color-primary) !important;
     }
   }
 }
 
 @mixin selectable-card-base {
-  border: 1px solid var(--color-border-ghost);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-glass);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
   color: var(--color-text-primary);
   font: inherit;
   cursor: pointer;
-  transition: border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 
   &:hover {
-    border-color: color-mix(in srgb, var(--color-action-primary) 38%, transparent);
-    background: var(--color-surface-raised);
+    border-color: var(--color-primary);
+    background-color: var(--color-surface-interactive);
   }
 
   &:focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
   }
-}
 
-@mixin stack($gap: var(--space-3)) {
-  @include primitives.stack($gap);
+  &.is-selected,
+  &[aria-pressed='true'] {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary);
+  }
 }
-
-/*
-  Shared low-level building blocks (form-card shell, field inputs, step footer
-  buttons) reused across several create-event step/ui components. Angular's
-  emulated view encapsulation scopes each component's own stylesheet to that
-  component's own template, so these common rules are authored once here and
-  `@use`d (not imported globally) by every component whose template renders
-  one of these classes.
-*/
 
 .sr-only {
   display: none;
 }
 
-/* ── STEP CONTENT SHELL (shared by all four wizard steps) ── */
+/* STEP CONTENT SHELL */
 .step-content {
-  max-width: 448px;
+  max-width: 540px;
   margin: 0 auto;
-  padding: 86px 20px 20px;
+  padding: var(--space-4) var(--space-4) calc(var(--space-8) + env(safe-area-inset-bottom, 0px));
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: var(--space-4);
 
   @media (min-width: 768px) {
-    max-width: 760px;
-    padding: 22px 96px 60px;
+    max-width: 680px;
+    padding: var(--space-6) var(--space-8) var(--space-8);
   }
 }
 
-/* ── FORM CARDS ── */
+/* FORM CARDS */
 .form-stack {
-  @include primitives.stack(14px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
 
 .form-card {
   position: relative;
-  background: linear-gradient(180deg, var(--color-surface-glass-strong), var(--color-surface-canvas));
-  border: 1px solid var(--color-border-ghost);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-panel);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 
   &--row {
     flex-direction: row;
@@ -97,29 +98,25 @@
 .card-header {
   display: flex;
   align-items: center;
-  gap: 14px;
-  margin-bottom: 2px;
+  gap: var(--space-3);
 
   .header-icon {
     display: grid;
     place-items: center;
     flex: 0 0 auto;
-    width: 52px;
-    height: 52px;
-    border-radius: var(--radius-pill);
-    background:
-      radial-gradient(circle at 35% 20%, color-mix(in srgb, var(--color-accent) 38%, transparent) 0, transparent 60%),
-      color-mix(in srgb, var(--color-action-primary) 22%, var(--color-surface-raised));
-    color: var(--color-brand-accent);
-    font-size: var(--font-size-2xl);
-    font-variation-settings: 'FILL' 0, 'wght' 650, 'GRAD' 0, 'opsz' 24;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-md);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-size: 1.35rem;
   }
 
   .header-label {
     display: block;
-    font-size: var(--font-size-sm);
-    font-weight: 900;
-    color: var(--color-brand-tint-soft);
+    font-size: var(--text-body);
+    font-weight: 700;
+    color: var(--color-text-primary);
     line-height: 1.25;
   }
 
@@ -127,22 +124,20 @@
     display: block;
     margin-top: 2px;
     color: var(--color-text-secondary);
-    font-size: var(--font-size-xs);
-    font-weight: 500;
-    line-height: 1.3;
+    font-size: var(--text-caption);
+    font-weight: 400;
   }
 }
 
-/* ── FIELD LABELS ── */
 .field-label,
 .field-label-white {
-  font-size: var(--font-size-sm);
-  font-weight: 700;
-  color: var(--color-brand-tint);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--color-text-primary);
   display: block;
+  margin-bottom: var(--space-1);
 }
 
-/* ── INPUTS ── */
 .input-wrapper {
   position: relative;
   width: 100%;
@@ -150,25 +145,21 @@
 
 .char-count {
   position: absolute;
-  right: 14px;
+  right: var(--space-3);
   top: 50%;
   transform: translateY(-50%);
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
+  font-size: var(--text-caption);
+  color: var(--color-text-tertiary);
   pointer-events: none;
 }
 
 .field-input {
   @include primitives.field-base;
-
-  min-height: 56px;
-  padding: 0 48px 0 18px;
-  font-size: var(--font-size-sm);
-  box-sizing: border-box;
+  height: 3rem;
+  padding: 0 var(--space-3);
 
   &--icon {
-    padding-left: 52px;
-    padding-right: 18px;
+    padding-left: 2.75rem;
   }
 
   &--center {
@@ -176,115 +167,78 @@
   }
 }
 
-input,
-textarea,
-select {
-  font-weight: 400;
-}
-
-input::placeholder,
-textarea::placeholder {
-  font-weight: 400;
-}
-
 .date-time-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 14px;
+  gap: var(--space-3);
   width: 100%;
 
-  >div {
+  > div {
     min-width: 0;
-    /* Prevents the time input from overflowing its grid cell */
   }
 }
 
-/* ── STEP FOOTER / NEXT BUTTON ── */
+/* STEP FOOTER / NEXT BUTTON */
 .step-footer {
-  margin: 2px 0 0;
+  margin-top: var(--space-4);
   padding: 0;
 }
 
 .btn-next {
   @include primitives.button-base;
-
   width: 100%;
-  min-height: 60px;
-  background: var(--gradient-brand-cta);
-  color: var(--color-text-on-primary);
-  padding: 0 18px;
-  font-size: var(--font-size-md);
-  font-weight: 900;
-  gap: 12px;
-  transition: transform var(--transition-fast), filter var(--transition-fast), box-shadow var(--transition-fast);
-  box-shadow: var(--shadow-brand-primary);
+  height: 3rem;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--text-body);
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
 
   &:hover:not(:disabled) {
-    transform: translateY(-2px);
-    filter: brightness(1.08);
-    box-shadow: var(--shadow-brand-primary);
-  }
-
-  &:active:not(:disabled) {
-    transform: scale(.98);
+    background-color: var(--color-primary-hover);
+    box-shadow: var(--shadow-brand-glow);
+    transform: translateY(-1px);
   }
 
   &:disabled {
-    opacity: .4;
-    background: var(--surface-dark-3);
+    opacity: 0.45;
+    background-color: var(--color-surface-interactive);
     color: var(--color-text-secondary);
     cursor: not-allowed;
-    box-shadow: none;
-  }
-
-  .material-symbols-outlined {
-    font-size: var(--font-size-2xl);
-  }
-
-  @media (max-width: 768px) {
-    padding: 8px;
-    font-size: var(--font-size-sm);
-    border-radius: var(--radius-lg);
-    font-weight: 500;
   }
 }
 
 .step-footer-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-bottom: 0;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
 }
 
 .btn-back-icon {
-  width: 48px;
-  height: 48px;
-  background: var(--color-surface-glass);
-  border: 1px solid var(--color-border-ghost);
-  color: var(--color-brand-tint);
-  border-radius: var(--radius-lg);
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--color-surface-interactive);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+  transition: background-color var(--transition-fast), color var(--transition-fast);
   flex-shrink: 0;
 
   &:hover {
-    background: var(--surface-dark-3);
-    color: var(--color-text-primary);
-  }
-
-  .material-symbols-outlined {
-    font-size: var(--font-size-xl);
+    background-color: var(--color-surface);
+    border-color: var(--color-border-strong);
   }
 }
 
 .btn-next--step3 {
   flex: 1;
   border-radius: var(--radius-md);
-  padding: 8px;
-  font-size: var(--font-size-md);
-  background: linear-gradient(135deg, var(--color-brand-primary), var(--color-brand-primary));
+  height: 3rem;
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
 }

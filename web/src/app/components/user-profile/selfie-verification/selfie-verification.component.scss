@@ -8,12 +8,7 @@
   place-items: center;
   padding: 1.25rem;
   overflow-y: auto;
-  background:
-    radial-gradient(circle at 18% 12%, color-mix(in srgb, var(--color-action-primary) 24%, transparent) 0, transparent 18rem),
-    radial-gradient(circle at 84% 68%, color-mix(in srgb, var(--color-accent) 20%, transparent) 0, transparent 18rem),
-    var(--color-overlay-scrim);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background-color: var(--color-overlay-scrim);
 
   &--open {
     display: grid;
@@ -23,11 +18,10 @@
     width: min(100%, 28rem);
     overflow: hidden;
     padding: clamp(0.85rem, 2vw, 1.2rem);
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
-    background:
-      linear-gradient(180deg, var(--color-surface-glass-strong), var(--color-surface-canvas));
-    box-shadow: var(--shadow-overlay);
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-modal);
   }
 
   &__header {
@@ -87,16 +81,16 @@
     span {
       height: 0.28rem;
       border-radius: var(--radius-pill);
-      background: var(--color-border-ghost);
+      background-color: var(--color-border);
 
       &:first-child {
-        background: linear-gradient(90deg, var(--color-brand-accent), var(--tag-text-color));
+        background-color: var(--color-primary);
       }
     }
 
     &--selfie span:nth-child(-n + 2),
     &--progress span {
-      background: linear-gradient(90deg, var(--color-brand-accent), var(--tag-text-color));
+      background-color: var(--color-primary);
     }
   }
 
@@ -396,9 +390,13 @@
     align-items: center;
     justify-content: center;
     gap: 0.55rem;
-    color: var(--color-text-on-primary);
-    background: linear-gradient(135deg, var(--color-brand-accent), var(--tag-text-color));
-    box-shadow: var(--shadow-brand-primary);
+    color: #ffffff;
+    background-color: var(--color-primary);
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+    }
 
     .material-symbols-outlined {
       font-size: 1.2rem;
@@ -413,7 +411,7 @@
     width: max-content;
     max-width: 100%;
     margin: 0.9rem auto 0;
-    color: var(--text-subtle);
+    color: var(--color-text-tertiary);
     font-size: 0.7rem;
     font-weight: 400;
     line-height: 1.42;
@@ -431,15 +429,13 @@
     min-height: 20rem;
     margin-top: 0.7rem;
     padding: 2rem 1rem;
-    border: 1px solid var(--color-border-ghost);
+    border: 1px solid var(--color-border);
     border-radius: var(--radius-lg);
-    background:
-      radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--color-accent) 16%, transparent) 0, transparent 9rem),
-      var(--color-surface-glass);
+    background-color: var(--color-surface);
     text-align: center;
 
     strong {
-      color: var(--text-white);
+      color: var(--color-text-primary);
       font-size: clamp(1rem, 2.2vw, 1.25rem);
       font-weight: 900;
       line-height: 1.2;
@@ -452,10 +448,8 @@
     }
 
     &--verified {
-      border-color: color-mix(in srgb, var(--color-success) 28%, transparent);
-      background:
-        radial-gradient(circle at 50% 32%, color-mix(in srgb, var(--color-success) 18%, transparent) 0, transparent 9rem),
-        var(--color-surface-glass);
+      border-color: var(--color-success);
+      background-color: var(--color-success-soft);
     }
   }
 

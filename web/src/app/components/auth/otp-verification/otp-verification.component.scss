@@ -172,11 +172,11 @@
         }
 
         .btn-primary {
-            background: var(--gradient-brand-cta);
-            color: var(--text-white);
+            background-color: var(--color-primary);
+            color: #ffffff;
 
             &:hover:not(:disabled) {
-                opacity: 0.9;
+                background-color: var(--color-primary-hover);
             }
         }
 

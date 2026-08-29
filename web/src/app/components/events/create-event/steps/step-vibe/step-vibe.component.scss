@@ -1,47 +1,45 @@
 @use "../../create-event-shared" as *;
 
-/*
-  NOTE: `.vibe-card` base rules are duplicated (in reduced form) here for the
-  inline "Custom" placeholder tile — see the matching note in
-  ui/vibe-category-card/vibe-category-card.component.scss for why this can't
-  be a single shared selector under Angular's view encapsulation.
-*/
-
-/* ── VIBE GRID ── */
 .vibe-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  gap: var(--space-3);
   margin-top: 2px;
 
   @media (min-width: 768px) {
-    gap: 12px;
+    gap: var(--space-4);
   }
 }
 
 .vibe-card {
-  background: linear-gradient(180deg, var(--color-surface-glass-strong), var(--color-surface-canvas));
-  border: 1px solid var(--color-border-ghost);
-  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
   min-height: 176px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-2);
   cursor: pointer;
   color: var(--color-text-primary);
-  padding: 18px 12px;
+  padding: var(--space-4) var(--space-3);
   text-align: center;
   width: 100%;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), background-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-surface-interactive);
+  }
 
   &--custom {
-    border: 1px dashed color-mix(in srgb, var(--color-action-primary) 90%, transparent);
-    background: color-mix(in srgb, var(--color-action-primary) 5%, transparent);
+    border: 1.5px dashed var(--color-primary);
+    background-color: var(--color-primary-soft);
 
     &:hover {
-      border-color: var(--color-brand-soft);
-      background: color-mix(in srgb, var(--color-action-primary) 10%, transparent);
+      background-color: var(--color-surface-interactive);
     }
   }
 
@@ -51,37 +49,28 @@
 }
 
 .vibe-custom-mark {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle, color-mix(in srgb, var(--color-action-primary) 22%, transparent) 0, color-mix(in srgb, var(--color-action-primary) 4%, transparent) 68%);
+  background-color: var(--color-primary);
+  color: #ffffff;
 
   .material-symbols-outlined {
-    font-size: var(--font-size-4xl);
-    color: var(--color-brand-soft);
+    font-size: 1.75rem;
+    color: #ffffff;
   }
 }
 
-.vibe-label {
+.vibe-custom-label {
+  font-size: var(--text-body);
   font-weight: 700;
-  font-size: var(--font-size-sm);
-  line-height: 18px;
   color: var(--color-text-primary);
-  margin-top: 0;
-  text-align: center;
 }
 
-.vibe-tags {
-  max-width: 128px;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-muted);
-  text-align: center;
-  line-height: 15px;
-
-  @media (min-width: 768px) {
-    max-width: 154px;
-  }
+.vibe-custom-hint {
+  font-size: var(--text-caption);
+  color: var(--color-text-secondary);
 }

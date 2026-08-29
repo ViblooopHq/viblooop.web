@@ -2,14 +2,13 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angu
 import { CommonModule } from '@angular/common';
 import { EventData } from '../../../../../data';
 import { EventsService } from '../../../shared/services/events/events.service';
-import { SectionHeadersComponent } from '../../../shared/components/section-headers/section-headers.component';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
-import { MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
-import { PopularCardComponent, PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
+import { MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
+import { PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
 import { RouterModule } from '@angular/router';
 export interface EventFilter {
   id: string;
@@ -29,7 +28,7 @@ interface FeaturedVibe {
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
-  imports: [CommonModule, RouterModule, SectionHeadersComponent, EventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, BannerCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PopularCardComponent],
+  imports: [CommonModule, RouterModule, EventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

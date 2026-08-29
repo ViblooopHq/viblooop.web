@@ -1,22 +1,26 @@
-<div class="vl-page-container w-full min-h-[50vh] p-4 lg:p-12">
-  <div class="max-w-7xl mx-auto">
-    <div class="mb-8">
-      <h2 class="text-3xl font-bold text-gray-900" i18n>My Wishlist</h2>
-      <p class="text-gray-500 mt-2" i18n>Events you have bookmarked for later.</p>
-    </div>
-
-    @if (wishlistedEvents.length > 0) {
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        @for (event of wishlistedEvents; track event._id) {
-          <vl-event-card [config]="event"></vl-event-card>
-        }
-      </div>
-    } @else {
-      <div class="flex flex-col items-center justify-center p-12 bg-white rounded-xl shadow-sm border border-gray-100 mt-8">
-        <i class="fa-regular fa-heart text-5xl text-gray-300 mb-4"></i>
-        <h3 class="text-xl font-semibold text-gray-700" i18n>Your wishlist is empty</h3>
-        <p class="text-gray-500 mt-2 text-center max-w-md" i18n>You haven't saved any events yet. Explore events and click the heart icon to save them for later!</p>
-      </div>
-    }
+<div class="vl-wishlist-page vl-section-wrapper vl-section-top-padding">
+  <div class="wishlist-header">
+    <h1 class="page-title" i18n>My Wishlist</h1>
+    <p class="subtitle" i18n>Events you have saved and bookmarked for later.</p>
   </div>
+
+  @if (wishlistedEvents.length > 0) {
+    <div class="responsive-grid">
+      @for (event of wishlistedEvents; track event._id) {
+        <vl-event-card [config]="event"></vl-event-card>
+      }
+    </div>
+  } @else {
+    <div class="empty-wishlist-card">
+      <div class="empty-icon-wrap">
+        <span class="material-symbols-outlined">favorite</span>
+      </div>
+      <h2 class="card-title" i18n>Your wishlist is empty</h2>
+      <p class="empty-desc" i18n>You haven't saved any events yet. Explore events and tap the heart icon to save your favorite vibes!</p>
+      <a routerLink="/explore" class="vl-button vl-button--primary" i18n>
+        <span class="material-symbols-outlined">explore</span>
+        Explore Events
+      </a>
+    </div>
+  }
 </div>

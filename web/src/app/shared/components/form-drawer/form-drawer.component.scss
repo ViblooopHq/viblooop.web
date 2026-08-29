@@ -21,11 +21,7 @@
     z-index: 9000;
     min-height: 100dvh;
     padding: 0;
-    background:
-      radial-gradient(circle at 82% 16%, color-mix(in srgb, var(--color-action-primary) 18%, transparent), transparent 22rem),
-      color-mix(in srgb, var(--color-surface-canvas) 72%, transparent);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background-color: var(--color-overlay-scrim);
   }
 
   .vl-form-drawer {
@@ -37,15 +33,12 @@
     margin-left: auto;
     overflow-y: auto;
     overflow-x: hidden;
-    border: 1px solid var(--color-border-ghost);
+    border: 1px solid var(--color-border);
     border-right: 0;
     border-radius: 0;
-    background:
-      linear-gradient(180deg, var(--color-surface-raised), var(--color-surface-canvas));
+    background-color: var(--color-surface);
     box-shadow: var(--shadow-modal);
     animation: vl-form-drawer-roll-in 0.32s cubic-bezier(0.2, 0.86, 0.2, 1) both;
-    scrollbar-width: thin;
-    scrollbar-color: color-mix(in srgb, var(--color-action-primary) 58%, transparent) var(--color-surface-section);
 
     &--closing {
       animation: vl-form-drawer-roll-out 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
@@ -59,57 +52,43 @@
     z-index: 40;
     display: grid;
     place-items: center;
-    width: 2.65rem;
-    height: 2.65rem;
-    margin: 0;
-    border-color: var(--color-border-ghost);
-    background: color-mix(in srgb, var(--color-surface-raised) 86%, transparent);
-    color: var(--color-brand-tint);
-    box-shadow: var(--shadow-md);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
 
-    .material-symbols-outlined {
-      font-size: 1.35rem;
+    &:hover {
+      background-color: var(--color-surface-interactive);
     }
   }
+}
 
-  @media (max-width: 840px) {
-    .vl-form-drawer__close {
-      right: calc(100vw - 3.65rem);
-    }
-  }
-
-  .vl-form-drawer__handle {
+@media (max-width: 767px) {
+  .vl-form-drawer {
     display: block;
-    width: 3.8rem;
-    height: 0.28rem;
-    margin: 0.85rem auto 0;
-    border-radius: var(--radius-pill);
-    background: var(--color-border-strong);
+    width: 100%;
+    background-color: var(--color-bg);
   }
 }
 
 @keyframes vl-form-drawer-roll-in {
   from {
-    opacity: 0.8;
     transform: translateX(100%);
   }
-
   to {
-    opacity: 1;
     transform: translateX(0);
   }
 }
 
 @keyframes vl-form-drawer-roll-out {
   from {
-    opacity: 1;
     transform: translateX(0);
   }
-
   to {
-    opacity: 0.8;
     transform: translateX(100%);
   }
 }

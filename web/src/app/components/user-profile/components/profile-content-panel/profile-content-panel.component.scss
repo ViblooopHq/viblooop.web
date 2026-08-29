@@ -3,112 +3,117 @@
 }
 
 .vl-user-profile__panel {
-  margin-top: 1.45rem;
+  margin-top: var(--space-4);
   overflow: hidden;
-  border: 1px solid var(--color-border-ghost);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
-  background: var(--color-surface-glass);
-  box-shadow: var(--shadow-profile-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .vl-user-profile__tabs {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  min-height: 88px;
-  border-bottom: 1px solid var(--color-border-ghost);
+  min-height: 64px;
+  border-bottom: 1px solid var(--color-border);
 
   button {
     position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.7rem;
+    gap: var(--space-2);
     border: 0;
     background: transparent;
-    color: var(--color-text-muted);
-    font-size: clamp(0.95rem, 2vw, 1.25rem);
-    font-weight: 800;
+    color: var(--color-text-secondary);
+    font-size: var(--text-body);
+    font-weight: 700;
     cursor: pointer;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
 
     &::after {
       content: "";
       position: absolute;
-      left: 8%;
-      right: 8%;
+      left: 12%;
+      right: 12%;
       bottom: 0;
-      height: 4px;
+      height: 3px;
       border-radius: var(--radius-pill) var(--radius-pill) 0 0;
       background: transparent;
     }
 
     &.active {
-      color: var(--color-brand-accent);
+      color: var(--color-primary);
 
       &::after {
-        background: linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-accent));
+        background-color: var(--color-primary);
       }
     }
   }
 }
 
 .vl-user-profile__tab-content {
-  padding: 1.35rem 1.25rem 0;
+  padding: var(--space-4);
 }
 
 .vl-user-profile__event-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .vl-user-profile__view-all {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  margin: 1.35rem auto 0;
+  gap: var(--space-1);
+  margin: var(--space-4) auto 0;
   border: 0;
   background: transparent;
-  color: var(--color-brand-accent);
-  font-size: 1.1rem;
-  font-weight: 900;
+  color: var(--color-primary);
+  font-size: var(--text-body);
+  font-weight: 700;
   cursor: pointer;
+
+  &:hover {
+    color: var(--color-primary-hover);
+    text-decoration: underline;
+  }
 }
 
 .vl-user-profile__empty {
   display: grid;
   place-items: center;
-  gap: 0.7rem;
-  min-height: 190px;
-  color: var(--color-text-muted);
+  gap: var(--space-2);
+  min-height: 160px;
+  color: var(--color-text-secondary);
 
   .material-symbols-outlined {
-    font-size: 2.4rem;
-    color: var(--color-action-primary);
+    font-size: 2.5rem;
+    color: var(--color-primary);
   }
 
   p {
     margin: 0;
-    font-weight: 700;
+    font-weight: 600;
   }
 }
 
 .vl-user-profile__interests {
-  padding: 1.3rem 1.7rem 1.6rem;
+  padding: var(--space-4);
 
   h2 {
-    margin: 0 0 0.95rem;
-    font-size: 1.45rem;
+    margin: 0 0 var(--space-3);
+    font-size: var(--text-h2);
     color: var(--color-text-primary);
-    font-weight: 900;
+    font-weight: 700;
   }
 }
 
 .vl-user-profile__interest-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: var(--space-2);
 }
 
 ::ng-deep .vl-user-profile__tab-content .vl-gallery {
@@ -129,49 +134,19 @@
 }
 
 @media (max-width: 768px) {
-  .vl-user-profile__interest-list {
-    justify-content: flex-start;
-    gap: 0.45rem;
-  }
-
   .vl-user-profile__tabs {
-    min-height: 58px;
+    min-height: 52px;
 
     button {
-      flex-direction: row;
-      gap: 0.25rem;
-      font-size: 0.78rem;
+      font-size: var(--text-body-sm);
 
       .material-symbols-outlined {
-        font-size: 1.05rem;
+        font-size: 1.15rem;
       }
     }
   }
 
-  .vl-user-profile__tab-content {
-    padding: 1rem 0.75rem 0;
-  }
-
   .vl-user-profile__event-list {
     grid-template-columns: 1fr;
-  }
-
-  .vl-user-profile__interests {
-    padding: 1.2rem 1rem 1.35rem;
-
-    h2 {
-      text-align: left;
-      font-size: 1.25rem;
-    }
-  }
-}
-
-@media (max-width: 440px) {
-  .vl-user-profile__panel {
-    border-radius: var(--radius-lg);
-  }
-
-  .vl-user-profile__tab-content {
-    padding: 0.8rem 0.55rem 0;
   }
 }

@@ -188,47 +188,42 @@
 }
 
 .vl-modal__btn--confirm.vl-modal__btn--confirm {
-  background: linear-gradient(135deg, var(--color-action-primary), var(--color-brand-accent));
-  box-shadow: var(--shadow-brand-primary);
+  background-color: var(--color-primary);
 
   &:hover {
-    box-shadow: var(--shadow-brand-glow);
+    background-color: var(--color-primary-hover);
   }
 }
 
 .vl-modal__btn--confirm.vl-modal__btn--warning {
-  background: linear-gradient(135deg, var(--color-warning), var(--color-warning-dim));
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-warning) 28%, transparent);
+  background-color: var(--color-warning);
 
   &:hover {
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-warning) 38%, transparent);
+    background-color: var(--color-warning-hover);
   }
 }
 
 .vl-modal__btn--confirm.vl-modal__btn--error {
-  background: linear-gradient(135deg, var(--error), #f87171);
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--error) 28%, transparent);
+  background-color: var(--color-error);
 
   &:hover {
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--error) 38%, transparent);
+    background-color: var(--color-error-hover);
   }
 }
 
 .vl-modal__btn--confirm.vl-modal__btn--success {
-  background: linear-gradient(135deg, var(--color-success), var(--color-success-dim));
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-success) 28%, transparent);
+  background-color: var(--color-success);
 
   &:hover {
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-success) 38%, transparent);
+    background-color: var(--color-success-hover);
   }
 }
 
 .vl-modal__btn--confirm.vl-modal__btn--info {
-  background: linear-gradient(135deg, var(--color-action-secondary), var(--color-action-primary));
-  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-action-secondary) 28%, transparent);
+  background-color: var(--color-info);
 
   &:hover {
-    box-shadow: 0 4px 16px color-mix(in srgb, var(--color-action-secondary) 38%, transparent);
+    background-color: var(--color-info-hover);
   }
 }
 

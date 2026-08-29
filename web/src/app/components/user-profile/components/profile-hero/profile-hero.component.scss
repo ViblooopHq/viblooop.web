@@ -4,20 +4,18 @@
   grid-template-columns: auto 1fr;
   gap: clamp(1.5rem, 4vw, 2.75rem);
   align-items: center;
-  min-height: 330px;
-  padding: clamp(1.5rem, 4vw, 3rem);
+  min-height: 280px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
   overflow: hidden;
-  border: 1px solid var(--color-border-ghost);
-  border-radius: var(--radius-2xl);
-  background:
-    linear-gradient(90deg, var(--color-overlay-scrim), var(--color-overlay-soft), var(--color-overlay-scrim)),
-    var(--profile-banner) center/cover;
-  box-shadow: var(--shadow-profile-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .vl-user-profile__avatar-wrap {
   position: relative;
-  width: clamp(150px, 24vw, 230px);
+  width: clamp(120px, 20vw, 180px);
   aspect-ratio: 1;
   flex: 0 0 auto;
 }
@@ -26,23 +24,27 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 3px solid var(--color-brand-primary);
-  border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-profile-avatar);
-  background: var(--on-background);
+  border: 3px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface-interactive);
 }
 
 .vl-user-profile__edit-avatar {
   position: absolute;
-  right: 0.55rem;
-  bottom: 0.55rem;
+  right: 0;
+  bottom: 0;
   display: grid;
   place-items: center;
-  width: 3.6rem;
-  height: 3.6rem;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-primary);
+  color: #ffffff;
+  border: 2px solid var(--color-surface);
+  cursor: pointer;
 
   .material-symbols-outlined {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -50,14 +52,16 @@
   min-width: 0;
 
   .vl-title-lg {
-    color: var(--on-primary);
+    color: var(--color-text-primary);
+    font-size: var(--text-h1);
+    font-weight: 800;
   }
 
   h1 {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 0.48rem;
+    gap: 0.5rem;
     margin: 0;
   }
 }
@@ -65,79 +69,65 @@
 .vl-user-profile__verified-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.22rem;
+  gap: 4px;
   color: var(--color-info);
-  font-size: clamp(0.8rem, 1.1vw, 1rem);
-  font-weight: 400;
-  line-height: 1;
-  text-shadow: 0 0 18px color-mix(in srgb, var(--color-info) 32%, transparent);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
 
   .material-symbols-outlined {
-    font-size: clamp(1.15rem, 1.55vw, 1.45rem);
-    font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24;
+    font-size: 1.25rem;
+    color: var(--color-info);
   }
 }
 
 .vl-user-profile__handle {
-  margin: 0.6rem 0 0;
-  font-size: clamp(0.98rem, 1.55vw, 1.16rem);
-  font-weight: 700;
-  color: color-mix(in srgb, var(--on-primary) 78%, transparent);
+  margin: 0.25rem 0 0;
+  font-size: var(--text-body);
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 .vl-user-profile__bio {
-  max-width: 620px;
-  margin: 1rem 0 0;
-  font-size: clamp(0.98rem, 1.55vw, 1.16rem);
-  line-height: 1.55;
-  color: color-mix(in srgb, var(--on-primary) 86%, transparent);
+  max-width: 600px;
+  margin: 0.75rem 0 0;
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+  color: var(--color-text-secondary);
 }
 
 .vl-user-profile__vibes {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.45rem;
+  gap: var(--space-2);
+  margin-top: 1rem;
 }
 
 .vl-user-profile__photo-strip {
   grid-column: 1 / -1;
   display: grid;
-  gap: 0.85rem;
-  margin: clamp(1rem, 2.4vw, 1.35rem) calc(clamp(1.5rem, 4vw, 3rem) * -1) calc(clamp(1.5rem, 4vw, 3rem) * -1);
-  padding: 0.95rem clamp(1rem, 2.4vw, 1.4rem) 1rem;
-  border-top: 1px solid var(--color-border-ghost);
-  background: var(--color-overlay-soft);
+  gap: var(--space-3);
+  margin: 1rem calc(clamp(1.5rem, 4vw, 2.5rem) * -1) calc(clamp(1.5rem, 4vw, 2.5rem) * -1);
+  padding: 1rem clamp(1rem, 2.4vw, 1.5rem);
+  border-top: 1px solid var(--color-border);
+  background-color: var(--color-surface-raised);
 }
 
 .vl-user-profile__photo-strip-header {
   h2 {
     display: inline-flex;
     align-items: center;
-    gap: 0.45rem;
+    gap: var(--space-2);
     margin: 0;
-
-    > .material-symbols-outlined {
-      display: grid;
-      place-items: center;
-      width: 1.75rem;
-      height: 1.75rem;
-      border-radius: var(--radius-sm);
-      background: color-mix(in srgb, var(--color-action-primary) 25%, var(--color-surface-raised));
-      color: var(--color-action-primary);
-      font-size: 1rem;
-    }
-
-    span:not(.material-symbols-outlined) {
-      color: var(--color-text-muted);
-    }
+    font-size: var(--text-body);
+    font-weight: 700;
+    color: var(--color-text-primary);
   }
 }
 
 .vl-user-profile__photo-preview-list {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 6.25rem));
-  gap: 0.65rem;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--space-2);
 }
 
 .vl-user-profile__photo-preview {
@@ -147,15 +137,10 @@
   overflow: hidden;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--color-border-strong);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface-canvas);
+  background-color: var(--color-surface-interactive);
   cursor: pointer;
-
-  &:focus-visible {
-    outline: 2px solid var(--color-brand-tint);
-    outline-offset: 3px;
-  }
 
   img {
     width: 100%;
@@ -163,120 +148,30 @@
     display: block;
     object-fit: cover;
   }
-
-  > span {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    background: var(--color-overlay-scrim);
-    color: var(--color-text-on-primary);
-    font-size: clamp(1.3rem, 2.4vw, 1.9rem);
-    font-weight: 900;
-    backdrop-filter: blur(5px);
-  }
 }
 
 @media (max-width: 768px) {
   .vl-user-profile__hero {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 0.9rem;
-    min-height: 212px;
-    padding: 1rem;
-    text-align: left;
-    border-radius: var(--radius-xl);
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    text-align: center;
   }
 
   .vl-user-profile__avatar-wrap {
-    width: 118px;
+    margin: 0 auto;
+    width: 100px;
   }
 
-  .vl-user-profile__edit-avatar {
-    right: -0.1rem;
-    bottom: 0.2rem;
-    width: 2.55rem;
-    height: 2.55rem;
-
-    .material-symbols-outlined {
-      font-size: 1.18rem;
-    }
-  }
-
-  .vl-user-profile__handle {
-    margin-top: 0.35rem;
-    font-size: 0.95rem;
-  }
-
-  .vl-user-profile__bio {
-    margin-top: 0.55rem;
-    font-size: 0.82rem;
-    line-height: 1.42;
+  .vl-user-profile__identity h1 {
+    justify-content: center;
   }
 
   .vl-user-profile__vibes {
-    justify-content: flex-start;
-    gap: 0.45rem;
-    margin-top: 0.75rem;
-  }
-
-  .vl-user-profile__photo-strip {
-    margin-top: 1rem;
-    margin-right: -1rem;
-    margin-bottom: -1rem;
-    margin-left: -1rem;
-    padding: 0.78rem 0.86rem 0.86rem;
+    justify-content: center;
   }
 
   .vl-user-profile__photo-preview-list {
-    display: flex;
-    gap: 0.55rem;
-    overflow-x: auto;
-    padding-bottom: 0.1rem;
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
-
-  .vl-user-profile__photo-preview {
-    flex: 0 0 4.9rem;
-    aspect-ratio: 1;
-  }
-}
-
-@media (max-width: 440px) {
-  .vl-user-profile__hero {
-    gap: 0.72rem;
-    min-height: 206px;
-    padding: 0.86rem;
-    border-radius: var(--radius-xl);
-  }
-
-  .vl-user-profile__avatar-wrap {
-    width: 104px;
-  }
-
-  .vl-user-profile__handle {
-    font-size: 0.82rem;
-  }
-
-  .vl-user-profile__bio {
-    font-size: 0.72rem;
-  }
-
-  .vl-user-profile__vibes {
-    gap: 0.35rem;
-  }
-
-  .vl-user-profile__photo-strip {
-    margin-right: -0.86rem;
-    margin-bottom: -0.86rem;
-    margin-left: -0.86rem;
-    padding-inline: 0.78rem;
-  }
-
-  .vl-user-profile__photo-preview {
-    flex-basis: 4.75rem;
+    grid-template-columns: repeat(3, 1fr);
   }
 }

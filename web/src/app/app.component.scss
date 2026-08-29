@@ -1,13 +1,14 @@
 :host {
   display: block;
   min-height: 100dvh;
-  background:
-    radial-gradient(circle at 8% 4%, color-mix(in srgb, var(--color-action-primary) 8%, transparent), transparent 28rem),
-    var(--color-surface-canvas);
+  background-color: var(--color-bg);
 }
 
 .vl-body-container {
   min-height: 100dvh;
-  overflow-y: auto;
   color: var(--color-text-primary);
+
+  @media (max-width: 768px) {
+    padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 1rem));
+  }
 }
