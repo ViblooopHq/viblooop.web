@@ -17,7 +17,7 @@ import { Title } from '@angular/platform-browser';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { SharedService } from '../../../shared/services/shared.service';
-import { EventCreatedOverlayComponent } from '../../../shared/components/event-created-overlay/event-created-overlay.component';
+import { EventCreatedOverlayComponent, CreationOverlayState } from '../../../shared/components/event-created-overlay/event-created-overlay.component';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 import { CREATE_EVENT_STEPS } from './create-event.config';
 import { CreateEventFormService } from './state/create-event-form.service';
@@ -61,7 +61,8 @@ export class CreateEventComponent implements OnInit {
   readonly totalSteps = CREATE_EVENT_STEPS;
   readonly currentStep = signal(0);
   readonly isSubmittingEvent = signal(false);
-  readonly isEventCreatedOverlayVisible = signal(false);
+  readonly creationState = signal<CreationOverlayState>('idle');
+  readonly creationErrorMessage = signal<string>('');
   private createdEventId: string | null = null;
 
   readonly currentStepTitle = computed(() => {
@@ -183,7 +184,7 @@ export class CreateEventComponent implements OnInit {
 
   // ── Form Submit ───────────────────────────────────────
   async submitForm(): Promise<void> {
-    if (this.isSubmittingEvent() || this.isEventCreatedOverlayVisible()) return;
+    if (this.isSubmittingEvent() || this.creationState() !== 'idle') return;
 
     if (this.formService.eventForm.invalid) {
       this.formService.eventForm.markAllAsTouched();
@@ -201,6 +202,11 @@ export class CreateEventComponent implements OnInit {
     }
 
     this.isSubmittingEvent.set(true);
+    this.creationState.set('loading');
+    this.creationErrorMessage.set('');
+
+    const startTime = Date.now();
+    const minLoaderTimeMs = 10000; // 10 seconds engaging animation for user preview
 
     const formData = this.formService.buildFormData();
 
@@ -215,6 +221,8 @@ export class CreateEventComponent implements OnInit {
           formData.append('image', coverImage);
         } catch (err) {
           this.isSubmittingEvent.set(false);
+          this.creationState.set('error');
+          this.creationErrorMessage.set('Failed to prepare event cover image. Please check your image and try again.');
           console.error('Error preparing cover image:', err);
           return;
         }
@@ -225,6 +233,8 @@ export class CreateEventComponent implements OnInit {
         formData.append('image', coverImage);
       } catch (err) {
         this.isSubmittingEvent.set(false);
+        this.creationState.set('error');
+        this.creationErrorMessage.set('Failed to prepare event cover image. Please check your image and try again.');
         console.error('Error preparing cover image:', err);
         return;
       }
@@ -238,30 +248,56 @@ export class CreateEventComponent implements OnInit {
 
     request$.subscribe({
       next: res => {
-        const eventId = res?.data?.event?._id;
+        const elapsed = Date.now() - startTime;
+        const delayRemaining = Math.max(0, minLoaderTimeMs - elapsed);
 
-        if (isEditMode && res?.success && res.statusCode === 200 && eventId) {
+        setTimeout(() => {
           this.isSubmittingEvent.set(false);
-          this.formService.eventForm.markAsPristine();
-          this.router.closeDrawerOrNavigate(`/events/${eventId}`);
-          return;
-        }
+          const eventId = res?.data?.event?._id;
 
-        if (!isEditMode && res?.success && res.statusCode === 201 && eventId) {
-          this.createdEventId = eventId;
-          this.isSubmittingEvent.set(false);
-          this.isEventCreatedOverlayVisible.set(true);
-          this.scrollPageToTop();
-          return;
-        }
+          if (isEditMode && res?.success && (res.statusCode === 200 || res.statusCode === 201) && eventId) {
+            this.formService.eventForm.markAsPristine();
+            this.router.closeDrawerOrNavigate(`/events/${eventId}`);
+            return;
+          }
 
-        this.isSubmittingEvent.set(false);
+          if (!isEditMode && res?.success && res.statusCode === 201 && eventId) {
+            this.createdEventId = eventId;
+            this.creationState.set('success');
+            return;
+          }
+
+          if (res?.success && eventId) {
+            this.createdEventId = eventId;
+            this.creationState.set('success');
+            return;
+          }
+
+          this.creationErrorMessage.set(res?.message || 'Event creation could not be completed.');
+          this.creationState.set('error');
+        }, delayRemaining);
       },
       error: err => {
-        this.isSubmittingEvent.set(false);
-        console.error(`Error ${isEditMode ? 'updating' : 'creating'} event:`, err);
+        const elapsed = Date.now() - startTime;
+        const delayRemaining = Math.max(0, 800 - elapsed);
+
+        setTimeout(() => {
+          this.isSubmittingEvent.set(false);
+          const errMsg = err?.error?.message || err?.message || 'Could not launch event. Please check your connection and try again.';
+          this.creationErrorMessage.set(errMsg);
+          this.creationState.set('error');
+          console.error(`Error ${isEditMode ? 'updating' : 'creating'} event:`, err);
+        }, delayRemaining);
       }
     });
+  }
+
+  handleRetry(): void {
+    this.submitForm();
+  }
+
+  handleBackToEdit(): void {
+    this.creationState.set('idle');
   }
 
   viewCreatedEvent(): void {

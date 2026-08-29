@@ -1,37 +1,44 @@
-<vl-form-drawer [ariaLabel]="formService.isEditMode() ? 'Edit event' : 'Create event'">
-@if (isEventCreatedOverlayVisible()) {
+@if (creationState() !== 'idle') {
   <vl-event-created-overlay
-    [animationPath]="formService.eventCreatedAnimationPath()"
+    [state]="creationState()"
+    [eventTitle]="formService.eventForm.get('title')?.value || 'Your New Event'"
+    [eventCategory]="formService.selectedCategory()"
+    [eventDate]="formService.eventForm.get('eventDate')?.value"
+    [eventTime]="formService.eventForm.get('eventTime')?.value"
+    [errorMessage]="creationErrorMessage()"
     (done)="finishEventCreation()"
-    (viewEvent)="viewCreatedEvent()">
+    (viewEvent)="viewCreatedEvent()"
+    (retry)="handleRetry()"
+    (backToEdit)="handleBackToEdit()">
   </vl-event-created-overlay>
 } @else {
-  <vl-create-event-header
-    [steps]="totalSteps"
-    [currentStep]="currentStep()"
-    [title]="currentStepTitle()"
-    [subtitle]="currentStepSubtitle()"
-    [showBack]="currentStep() > 0"
-    (back)="prevStep()" />
+  <vl-form-drawer [ariaLabel]="formService.isEditMode() ? 'Edit event' : 'Create event'">
+    <vl-create-event-header
+      [steps]="totalSteps"
+      [currentStep]="currentStep()"
+      [title]="currentStepTitle()"
+      [subtitle]="currentStepSubtitle()"
+      [showBack]="currentStep() > 0"
+      (back)="prevStep()" />
 
-  <form class="create-form">
-    @switch (currentStep()) {
-      @case (0) {
-        <vl-step-vibe (categorySelected)="onCategorySelected()" />
+    <form class="create-form">
+      @switch (currentStep()) {
+        @case (0) {
+          <vl-step-vibe (categorySelected)="onCategorySelected()" />
+        }
+        @case (1) {
+          <vl-step-essentials (next)="nextStep()" />
+        }
+        @case (2) {
+          <vl-step-scene (next)="nextStep()" />
+        }
+        @case (3) {
+          <vl-step-review
+            [isSubmittingEvent]="isSubmittingEvent()"
+            (editScene)="currentStep.set(2)"
+            (launch)="submitForm()" />
+        }
       }
-      @case (1) {
-        <vl-step-essentials (next)="nextStep()" />
-      }
-      @case (2) {
-        <vl-step-scene (next)="nextStep()" />
-      }
-      @case (3) {
-        <vl-step-review
-          [isSubmittingEvent]="isSubmittingEvent()"
-          (editScene)="currentStep.set(2)"
-          (launch)="submitForm()" />
-      }
-    }
-  </form>
+    </form>
+  </vl-form-drawer>
 }
-</vl-form-drawer>

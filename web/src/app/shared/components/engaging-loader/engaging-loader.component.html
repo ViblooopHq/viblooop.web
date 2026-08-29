@@ -1,0 +1,84 @@
+<div
+  class="vl-engaging-loader"
+  [class.vl-engaging-loader--fullscreen]="isFullscreen"
+  role="status"
+  aria-live="polite"
+  aria-label="Loading in progress"
+  (click)="onBackdropClick()">
+
+  <div class="vl-engaging-loader__card" (click)="$event.stopPropagation()">
+    @if (dismissible) {
+      <button
+        type="button"
+        class="vl-engaging-loader__close"
+        aria-label="Close"
+        (click)="dismiss.emit()">
+        <span class="material-symbols-outlined" translate="no">close</span>
+      </button>
+    }
+
+    <!-- Animation Stage -->
+    <div class="vl-engaging-stage">
+      <!-- Glow Pulse Rings -->
+      <div class="vl-engaging-ring vl-engaging-ring--inner" aria-hidden="true"></div>
+      <div class="vl-engaging-ring vl-engaging-ring--outer" aria-hidden="true"></div>
+
+      <!-- Orbit Track with Satellites -->
+      <div class="vl-engaging-orbit" aria-hidden="true">
+        @if (satelliteIcons && satelliteIcons.length > 0) {
+          <div class="vl-engaging-satellite vl-engaging-satellite--1">
+            <i [class]="satelliteIcons[0]"></i>
+          </div>
+        }
+        @if (satelliteIcons && satelliteIcons.length > 1) {
+          <div class="vl-engaging-satellite vl-engaging-satellite--2">
+            <i [class]="satelliteIcons[1]"></i>
+          </div>
+        }
+        @if (satelliteIcons && satelliteIcons.length > 2) {
+          <div class="vl-engaging-satellite vl-engaging-satellite--3">
+            <i [class]="satelliteIcons[2]"></i>
+          </div>
+        }
+        @if (satelliteIcons && satelliteIcons.length > 3) {
+          <div class="vl-engaging-satellite vl-engaging-satellite--4">
+            <i [class]="satelliteIcons[3]"></i>
+          </div>
+        }
+      </div>
+
+      <!-- Central Icon Orb -->
+      <div class="vl-engaging-center-orb">
+        <i [class]="primaryIcon"></i>
+      </div>
+    </div>
+
+    <!-- Status Tag -->
+    @if (tagLabel) {
+      <div class="vl-engaging-tag">
+        <span class="vl-engaging-tag__dot" aria-hidden="true"></span>
+        <span>{{ tagLabel }}</span>
+      </div>
+    }
+
+    <!-- Title -->
+    @if (title) {
+      <h2 class="vl-engaging-title">{{ title }}</h2>
+    }
+
+    <!-- Dynamic Cycling or Static Message -->
+    <div class="vl-engaging-message-wrap">
+      <p class="vl-engaging-message" [attr.data-step]="currentStepIndex()">
+        <i class="fa-solid fa-sparkles text-primary text-xs mr-1.5" aria-hidden="true"></i>
+        {{ activeMessage() }}
+      </p>
+    </div>
+
+    <!-- Progress Meter -->
+    @if (showProgressBar) {
+      <div class="vl-engaging-progress" role="progressbar" [attr.aria-valuenow]="progressPercent()" aria-valuemin="0" aria-valuemax="100">
+        <div class="vl-engaging-progress__fill" [style.width.%]="progressPercent()"></div>
+      </div>
+    }
+  </div>
+</div>

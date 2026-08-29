@@ -1,9 +1,7 @@
 @use "../../../../styles/index" as *;
 
 :host {
-  display: block;
-  min-height: 100vh;
-  background: var(--surface-dark-1);
+  display: contents;
   color: var(--color-text-primary);
   font-family: var(--font-heading);
 }
