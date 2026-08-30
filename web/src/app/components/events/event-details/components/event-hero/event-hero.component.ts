@@ -20,6 +20,7 @@ export class EventHeroComponent {
   isEventEnded = input(false);
   isUserAttendee = input(false);
   isCancelled = input(false);
+  isLoggedIn = input(false);
   isAuthInitialized = input(false);
   isJoinRequestPending = input(false);
   eventDate = input<string | undefined>(undefined);
@@ -43,4 +44,5 @@ export class EventHeroComponent {
   deleteEvent = output<void>();
   cancelEvent = output<void>();
   leaveEvent = output<void>();
+  cancelJoinRequest = output<void>();
 }

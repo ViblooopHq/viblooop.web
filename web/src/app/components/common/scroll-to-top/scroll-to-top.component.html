@@ -1,5 +1,10 @@
 @if (isVisible()) {
-  <button class="vl-scroll-top vl-icon-button" (click)="scrollToTop()" aria-label="Scroll to top" type="button">
+  <button
+    class="vl-scroll-top vl-icon-button"
+    [class.vl-scroll-top--above-sticky]="isAboveSticky()"
+    (click)="scrollToTop()"
+    aria-label="Scroll to top"
+    type="button">
     <span class="material-symbols-outlined" translate="no">north</span>
   </button>
 }

@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { ThemeService } from '../../../shared/services/theme/theme.service';
 import { Environment } from '../../../../environment';
 
 @Component({
@@ -9,6 +10,7 @@ import { Environment } from '../../../../environment';
   styleUrl: './footer.component.scss'
 })
 export class FooterComponent {
+  public themeService = inject(ThemeService);
   currentYear = new Date().getFullYear();
   currentAppVersion = Environment.version;
   copyRightInfo = `${this.currentYear} Viblooop. All rights reserved. Version ${this.currentAppVersion}`;

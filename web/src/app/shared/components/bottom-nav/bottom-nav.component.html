@@ -1,0 +1,96 @@
+@if (!isCreateRoute()) {
+<!-- Apple iOS 18 Floating Island Tab Bar -->
+<div class="vl-ios-dock-wrapper" role="navigation" aria-label="Mobile Bottom Navigation">
+  <nav class="vl-ios-dock">
+    <!-- Explore Tab -->
+    <a
+      routerLink="/explore"
+      routerLinkActive="vl-ios-dock__item--active"
+      [routerLinkActiveOptions]="{exact: true}"
+      class="vl-ios-dock__item"
+      #rlaExplore="routerLinkActive">
+      <div class="vl-ios-dock__icon-wrap">
+        <span
+          class="material-symbols-outlined vl-ios-dock__icon"
+          [style.font-variation-settings]="getActiveFill(rlaExplore)"
+          translate="no">explore</span>
+      </div>
+      <span class="vl-ios-dock__label">Explore</span>
+    </a>
+
+    <!-- Events Tab -->
+    <a
+      routerLink="/events"
+      routerLinkActive="vl-ios-dock__item--active"
+      class="vl-ios-dock__item"
+      #rlaEvents="routerLinkActive">
+      <div class="vl-ios-dock__icon-wrap">
+        <span
+          class="material-symbols-outlined vl-ios-dock__icon"
+          [style.font-variation-settings]="getActiveFill(rlaEvents)"
+          translate="no">event</span>
+      </div>
+      <span class="vl-ios-dock__label">Events</span>
+    </a>
+
+    <!-- Center Elevated Plus (+) Action -->
+    <button
+      type="button"
+      class="vl-ios-dock__fab"
+      aria-label="Create Vibe"
+      (click)="navigateToCreate()">
+      <span class="material-symbols-outlined" translate="no">add</span>
+    </button>
+
+    @if (isLoggedIn()) {
+      <!-- Chats Tab -->
+      <a
+        routerLink="/chats"
+        (click)="handleItemClick({path: '/chats', label: 'Chats', icon: 'chat'})"
+        routerLinkActive="vl-ios-dock__item--active"
+        class="vl-ios-dock__item"
+        #rlaChats="routerLinkActive">
+        <div class="vl-ios-dock__icon-wrap">
+          <span
+            class="material-symbols-outlined vl-ios-dock__icon"
+            [style.font-variation-settings]="getActiveFill(rlaChats)"
+            translate="no">chat</span>
+          @if (sharedService.notificationCount() > 0) {
+            <span class="vl-ios-dock__badge"></span>
+          }
+        </div>
+        <span class="vl-ios-dock__label">Chats</span>
+      </a>
+
+      <!-- Profile Tab -->
+      <a
+        routerLink="/profile"
+        routerLinkActive="vl-ios-dock__item--active"
+        class="vl-ios-dock__item"
+        #rlaProfile="routerLinkActive">
+        <div class="vl-ios-dock__icon-wrap">
+          <span class="vl-ios-dock__avatar" [class.vl-ios-dock__avatar--active]="rlaProfile.isActive">
+            <img [src]="profileImage()" alt="Profile" />
+          </span>
+        </div>
+        <span class="vl-ios-dock__label">Profile</span>
+      </a>
+    } @else {
+      <!-- Sign In Tab (Guest) -->
+      <a
+        routerLink="/login"
+        routerLinkActive="vl-ios-dock__item--active"
+        class="vl-ios-dock__item"
+        #rlaLogin="routerLinkActive">
+        <div class="vl-ios-dock__icon-wrap">
+          <span
+            class="material-symbols-outlined vl-ios-dock__icon"
+            [style.font-variation-settings]="getActiveFill(rlaLogin)"
+            translate="no">login</span>
+        </div>
+        <span class="vl-ios-dock__label">Sign In</span>
+      </a>
+    }
+  </nav>
+</div>
+}

@@ -1,126 +1,127 @@
 /* ──────────────────────────────────────────────────────────
- * Action Modal — all values driven from the global design
- * tokens declared in :root (styles.scss). No magic numbers
- * for colours, radii, shadows, spacing, or typography.
+ * Action Modal — Viblooop Design System
+ * Solid design tokens for seamless Light & Dark themes.
+ * Zero layout shift, high-contrast typography, accessible focus.
  * ────────────────────────────────────────────────────────── */
 
-/* Backdrop */
+/* Backdrop Overlay */
 .vl-modal-backdrop {
   position: fixed;
   inset: 0;
-  z-index: 10001; /* above CDK overlays (10 000) */
+  z-index: 10001; /* Above CDK overlays (10000) */
   display: grid;
   place-items: center;
-  padding: var(--space-4);
-  background: var(--color-overlay-scrim);
-  backdrop-filter: blur(6px);
-  animation: modalBackdropIn var(--transition-base) both;
+  padding: var(--space-4, 1rem);
+  background-color: var(--color-overlay-scrim, rgba(15, 23, 42, 0.6));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: modalBackdropIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Card */
+/* Modal Card Surface */
 .vl-modal {
   position: relative;
-  width: min(100%, 420px);
-  border: 1px solid var(--color-border-ghost);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface-raised);
-  box-shadow: var(--shadow-overlay);
-  padding: var(--space-8) var(--space-6) var(--space-6);
+  width: min(100%, 440px);
+  padding: var(--space-7, 1.75rem) var(--space-6, 1.5rem) var(--space-6, 1.5rem);
+  border: 1px solid var(--color-border, #E2E8F0);
+  border-radius: var(--radius-xl, 1.25rem);
+  background-color: var(--color-surface, #FFFFFF);
+  color: var(--color-text-primary, #0F172A);
+  box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.2), 0 10px 15px -5px rgba(0, 0, 0, 0.1);
   text-align: center;
-  animation: modalCardIn var(--transition-base) both;
+  animation: modalCardIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ── Icon ring ── */
+/* ── Icon Ring ── */
 .vl-modal__icon-ring {
   display: grid;
   place-items: center;
-  width: 3.75rem;
-  height: 3.75rem;
-  margin: 0 auto var(--space-4);
-  border-radius: var(--radius-full);
-  font-size: 1.65rem;
-  transition: box-shadow var(--transition-base);
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto var(--space-4, 1rem);
+  border-radius: var(--radius-pill, 9999px);
+  font-size: 1.5rem;
+  transition: transform 0.2s ease;
 }
 
-/* Per-variant icon colours — driven from semantic tokens */
-.vl-modal--confirm .vl-modal__icon-ring {
-  background: color-mix(in srgb, var(--color-action-primary) 14%, transparent);
-  color: var(--color-action-primary);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--color-action-primary) 22%, transparent);
+/* Per-variant Icon Badges */
+.vl-modal--confirm .vl-modal__icon-ring,
+.vl-modal--info .vl-modal__icon-ring {
+  background-color: var(--color-primary-soft, rgba(124, 58, 237, 0.12));
+  color: var(--color-primary, #7C3AED);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
 }
 
 .vl-modal--warning .vl-modal__icon-ring {
-  background: color-mix(in srgb, var(--color-warning) 16%, transparent);
-  color: var(--color-warning);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--color-warning) 22%, transparent);
+  background-color: var(--color-warning-soft, rgba(245, 158, 11, 0.14));
+  color: var(--color-warning, #D97706);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .vl-modal--error .vl-modal__icon-ring {
-  background: color-mix(in srgb, var(--error) 16%, transparent);
-  color: var(--error);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--error) 22%, transparent);
+  background-color: var(--color-error-soft, rgba(220, 38, 38, 0.14));
+  color: var(--color-error, #DC2626);
+  border: 1px solid color-mix(in srgb, var(--color-error) 30%, transparent);
 }
 
 .vl-modal--success .vl-modal__icon-ring {
-  background: color-mix(in srgb, var(--color-success) 16%, transparent);
-  color: var(--color-success);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--color-success) 22%, transparent);
-}
-
-.vl-modal--info .vl-modal__icon-ring {
-  background: color-mix(in srgb, var(--color-action-secondary) 14%, transparent);
-  color: var(--color-action-secondary);
-  box-shadow: 0 0 24px color-mix(in srgb, var(--color-action-secondary) 22%, transparent);
+  background-color: var(--color-success-soft, rgba(22, 163, 74, 0.14));
+  color: var(--color-success, #16A34A);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
 }
 
 /* ── Title ── */
 .vl-modal__title {
-  margin: 0 0 var(--space-2);
-  color: var(--color-text-primary);
-  font-size: var(--font-size-lg);
+  margin: 0 0 var(--space-2, 0.5rem);
+  color: var(--color-text-primary, #0F172A);
+  font-family: var(--font-family-primary, 'Inter', sans-serif);
+  font-size: 1.25rem;
   font-weight: 800;
-  line-height: var(--line-height-tight);
+  line-height: 1.3;
+  letter-spacing: -0.015em;
 }
 
 /* ── Message ── */
 .vl-modal__message {
-  margin: 0 0 var(--space-5);
-  color: var(--color-text-secondary);
-  font-size: var(--font-size-sm);
+  margin: 0 0 var(--space-5, 1.25rem);
+  color: var(--color-text-secondary, #475569);
+  font-family: var(--font-family-primary, 'Inter', sans-serif);
+  font-size: 0.875rem;
   font-weight: 500;
-  line-height: var(--line-height-relaxed);
+  line-height: 1.55;
 }
 
-/* ── Textarea input ── */
+/* ── Textarea Input ── */
 .vl-modal__input {
   display: block;
   width: 100%;
-  min-height: 5rem;
-  margin-bottom: var(--space-5);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border-ghost);
-  border-radius: var(--radius-md);
-  background: var(--color-surface-section);
-  color: var(--color-text-primary);
-  font-family: var(--font-ui);
-  font-size: var(--font-size-sm);
-  line-height: var(--line-height-normal);
+  min-height: 5.5rem;
+  margin-bottom: var(--space-5, 1.25rem);
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border, #CBD5E1);
+  border-radius: var(--radius-md, 0.75rem);
+  background-color: var(--color-bg, #F8FAFC);
+  color: var(--color-text-primary, #0F172A);
+  font-family: var(--font-family-primary, 'Inter', sans-serif);
+  font-size: 0.875rem;
+  line-height: 1.5;
   resize: vertical;
-  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 
   &::placeholder {
-    color: var(--color-text-muted);
+    color: var(--color-text-tertiary, #94A3B8);
     opacity: 1;
   }
 
   &:hover {
-    border-color: color-mix(in srgb, var(--color-action-primary) 45%, transparent);
+    border-color: var(--color-border-strong, #94A3B8);
   }
 
   &:focus {
-    border-color: var(--color-action-primary);
+    border-color: var(--color-primary, #7C3AED);
     outline: none;
-    box-shadow: var(--focus-ring);
+    box-shadow: var(--focus-ring, 0 0 0 3px rgba(124, 58, 237, 0.25));
+    background-color: var(--color-surface, #FFFFFF);
   }
 
   &:disabled {
@@ -129,125 +130,123 @@
   }
 }
 
-/* ── Action buttons row ── */
+/* ── Action Buttons Row ── */
 .vl-modal__actions {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-3);
+  gap: var(--space-3, 0.75rem);
+  margin-top: 0.25rem;
 }
 
-/* Shared button base */
+/* Shared Button Base */
 .vl-modal__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
+  gap: 0.5rem;
   min-height: 2.75rem;
-  padding: var(--space-2) var(--space-5);
+  padding: 0.5rem 1.35rem;
   border: 0;
-  border-radius: var(--radius-md);
-  font-family: var(--font-ui);
-  font-size: var(--font-size-sm);
+  border-radius: var(--radius-pill, 9999px);
+  font-family: var(--font-family-primary, 'Inter', sans-serif);
+  font-size: 0.875rem;
   font-weight: 700;
-  line-height: var(--line-height-normal);
+  line-height: 1.4;
   cursor: pointer;
-  transition:
-    background-color var(--transition-base),
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    color var(--transition-base),
-    transform var(--transition-fast);
+  white-space: nowrap;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease, box-shadow 0.15s ease;
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
 
   &:disabled {
     cursor: not-allowed;
-    opacity: 0.5;
+    opacity: 0.55;
     pointer-events: none;
   }
 }
 
-/* Cancel / secondary */
+/* Cancel / Secondary Button */
 .vl-modal__btn--cancel {
-  border: 1px solid var(--color-border-ghost);
-  background: var(--color-surface-section);
-  color: var(--color-text-primary);
+  border: 1px solid var(--color-border-strong, #CBD5E1);
+  background-color: var(--color-surface-raised, #F1F5F9);
+  color: var(--color-text-primary, #0F172A);
 
-  &:hover {
-    background: var(--color-surface-glass-strong);
-    border-color: color-mix(in srgb, var(--color-action-primary) 35%, transparent);
+  &:hover:not(:disabled) {
+    background-color: var(--color-surface-interactive, #E2E8F0);
+    border-color: var(--color-text-tertiary, #94A3B8);
   }
 }
 
-/* Confirm / primary — variant-coloured */
+/* Confirm / Primary Button (Semantic Variations) */
 .vl-modal__btn--confirm {
-  color: var(--on-primary);
+  color: #FFFFFF;
+  background-color: var(--color-primary, #7C3AED);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.25);
 
-  &:hover {
+  &:hover:not(:disabled) {
+    background-color: var(--color-primary-hover, #6D28D9);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.35);
     transform: translateY(-1px);
   }
 }
 
-.vl-modal__btn--confirm.vl-modal__btn--confirm {
-  background-color: var(--color-primary);
+.vl-modal__btn--warning {
+  background-color: var(--color-warning, #D97706);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
 
-  &:hover {
-    background-color: var(--color-primary-hover);
+  &:hover:not(:disabled) {
+    background-color: var(--color-warning-hover, #B45309);
+    box-shadow: 0 6px 16px rgba(217, 119, 6, 0.35);
   }
 }
 
-.vl-modal__btn--confirm.vl-modal__btn--warning {
-  background-color: var(--color-warning);
+.vl-modal__btn--error {
+  background-color: var(--color-error, #DC2626);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 
-  &:hover {
-    background-color: var(--color-warning-hover);
+  &:hover:not(:disabled) {
+    background-color: var(--color-error-hover, #B91C1C);
+    box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
   }
 }
 
-.vl-modal__btn--confirm.vl-modal__btn--error {
-  background-color: var(--color-error);
+.vl-modal__btn--success {
+  background-color: var(--color-success, #16A34A);
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
 
-  &:hover {
-    background-color: var(--color-error-hover);
+  &:hover:not(:disabled) {
+    background-color: var(--color-success-hover, #15803D);
+    box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
   }
 }
 
-.vl-modal__btn--confirm.vl-modal__btn--success {
-  background-color: var(--color-success);
+.vl-modal__btn--info {
+  background-color: var(--color-info, #0284C7);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
 
-  &:hover {
-    background-color: var(--color-success-hover);
+  &:hover:not(:disabled) {
+    background-color: var(--color-info-hover, #0369A1);
+    box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
   }
-}
-
-.vl-modal__btn--confirm.vl-modal__btn--info {
-  background-color: var(--color-info);
-
-  &:hover {
-    background-color: var(--color-info-hover);
-  }
-}
-
-/* ── Loading spinner ── */
-.vl-modal__spinner {
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  border: 2px solid color-mix(in srgb, var(--on-primary) 35%, transparent);
-  border-top-color: var(--on-primary);
-  border-radius: var(--radius-full);
-  animation: modalSpin 0.6s linear infinite;
 }
 
 /* ── Animations ── */
 @keyframes modalBackdropIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes modalCardIn {
   from {
     opacity: 0;
-    transform: scale(0.92) translateY(12px);
+    transform: scale(0.94) translateY(10px);
   }
   to {
     opacity: 1;
@@ -255,19 +254,15 @@
   }
 }
 
-@keyframes modalSpin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── Responsive ── */
+/* ── Mobile Responsive ── */
 @media (max-width: 480px) {
   .vl-modal {
-    padding: var(--space-6) var(--space-4) var(--space-4);
+    padding: var(--space-6, 1.5rem) var(--space-4, 1rem) var(--space-5, 1.25rem);
   }
 
   .vl-modal__actions {
     flex-direction: column-reverse;
-    gap: var(--space-2);
+    gap: var(--space-2, 0.5rem);
   }
 
   .vl-modal__btn {

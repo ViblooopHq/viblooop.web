@@ -13,6 +13,7 @@ import { SocketService } from '../../../shared/services/socket/socket.service';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { AsyncPipe } from '@angular/common';
 import { NotificationComponent } from '../../../shared/components/notification/notification.component';
+import { BottomNavComponent } from '../../../shared/components/bottom-nav/bottom-nav.component';
 
 export interface NavItem {
   path: string;
@@ -22,15 +23,15 @@ export interface NavItem {
 
 @Component({
   selector: 'vl-header',
-  imports: [RouterLink, RouterLinkActive, MatIconModule, MatSlideToggleModule, MatTooltip, OutsideClickDirective, AsyncPipe, NotificationComponent],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, MatSlideToggleModule, MatTooltip, OutsideClickDirective, AsyncPipe, NotificationComponent, BottomNavComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
 export class HeaderComponent implements OnInit {
-  private authService = inject(AuthService)
-  private themeService = inject(ThemeService)
-  public socketService = inject(SocketService)
-  sharedService = inject(SharedService)
+  private authService = inject(AuthService);
+  public themeService = inject(ThemeService);
+  public socketService = inject(SocketService);
+  sharedService = inject(SharedService);
   private toastService = inject(ToastService)
   private angularRouter = inject(Router)
   defaultProfileImage = 'assets/images/default-profile.png';

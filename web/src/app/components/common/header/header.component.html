@@ -4,12 +4,9 @@
 
   <!-- Logo -->
   <div
-    class="flex items-center gap-3 text-primary-fixed dark:text-primary cursor-pointer hover:scale-105 transition-transform"
+    class="flex items-center cursor-pointer hover:scale-105 transition-transform"
     routerLink="/">
-    <img src="logo.png" alt="Viblooop Logo" style="width: 80px;">
-    <h2
-      class="text-2xl font-extrabold tracking-tight text-on-surface">
-      Viblooop</h2>
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="header-logo">
   </div>
 
   <!-- Links -->
@@ -136,8 +133,8 @@
 <!-- Mobile Top Header (Logo & Actions) -->
 <header
   class="vl-app-header vl-app-header--mobile md:hidden fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4">
-  <div class="flex items-center gap-3 text-primary-fixed dark:text-primary cursor-pointer" routerLink="/">
-    <img src="logo.png" alt="Viblooop Logo" style="width: 40px;">
+  <div class="flex items-center cursor-pointer" routerLink="/">
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
   </div>
 
   <div class="flex items-center gap-3">
@@ -198,42 +195,4 @@
 }
 
 <!-- Mobile Bottom Sticky App-Like Navbar -->
-<div class="mobile-navigation-shell md:hidden">
-  @if (!isCreateRoute()) {
-  <button
-    class="mobile-create-event-fab fixed bottom-28 right-6 w-14 h-14 rounded-full flex items-center justify-center z-50 active:scale-90 duration-200 transition-transform"
-    aria-label="Create Event"
-    (click)="navigateToCreate()">
-    <span class="material-symbols-outlined text-white text-3xl">add</span>
-  </button>
-  }
-
-  <!-- Bottom Navigation Bar -->
-  <nav
-    class="vl-app-bottom-nav fixed bottom-0 left-0 w-full z-50 rounded-t-[32px] flex justify-around items-center px-4 pb-6 pt-4">
-
-    @for (item of getMobileMenu(); track $index) {
-    <a [routerLink]="item.path"
-      (click)="handleMobileNavClick(item)"
-      routerLinkActive="text-primary bg-primary/10 rounded-2xl px-4 py-1.5 active:scale-90"
-      [routerLinkActiveOptions]="{exact: true}"
-      class="flex flex-col items-center justify-center text-slate-500 hover:opacity-80 transition-opacity"
-      #rla="routerLinkActive">
-
-      @if (item.path === '/profile' && userDetails) {
-      <span class="mobile-nav-avatar" [class.mobile-nav-avatar--active]="rla.isActive">
-        <img [src]="getMobileProfileImage()" alt="Profile" />
-      </span>
-      } @else {
-      <span class="material-symbols-outlined mobile-nav-icon" [style.font-variation-settings]="getActiveFill(rla)">
-        {{ item.icon }}
-      </span>
-      }
-      <span class="vl-meta">
-        {{ item.label }}
-      </span>
-
-    </a>
-    }
-  </nav>
-</div>
+<vl-bottom-nav />

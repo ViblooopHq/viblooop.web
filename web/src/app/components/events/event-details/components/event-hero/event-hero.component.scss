@@ -278,6 +278,26 @@
     }
   }
 
+  .btn-cancel-hero {
+    height: 3rem;
+    padding: 0 var(--space-5);
+    font-size: var(--text-body);
+    font-weight: 700;
+    border-radius: var(--radius-pill);
+    border: 1.5px solid color-mix(in srgb, var(--color-error, #DC2626) 40%, transparent);
+    background-color: color-mix(in srgb, var(--color-error, #DC2626) 10%, transparent);
+    color: var(--color-error, #DC2626);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &:hover {
+      background-color: var(--color-error, #DC2626);
+      color: #ffffff;
+      border-color: var(--color-error, #DC2626);
+    }
+  }
+
   .btn-view-requests {
     height: 3rem;
     padding: 0 var(--space-5);

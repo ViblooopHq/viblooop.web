@@ -2,6 +2,7 @@ import { Component, inject, OnInit, ChangeDetectionStrategy, PLATFORM_ID, AfterV
 import { isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { AuthService } from '../../../shared/services/auth/auth.service';
+import { ThemeService } from '../../../shared/services/theme/theme.service';
 import { filter, finalize, single, take, tap } from 'rxjs/operators';
 import {
   FormControl,
@@ -9,6 +10,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 import type { ISourceOptions } from '@tsparticles/engine';
@@ -23,7 +25,9 @@ import type { ISourceOptions } from '@tsparticles/engine';
 })
 export class LoginComponent implements OnInit, AfterViewInit {
   router = inject(RouteService);
+  route = inject(ActivatedRoute);
   authService = inject(AuthService);
+  themeService = inject(ThemeService);
   titleService = inject(Title);
   metaService = inject(Meta);
   platformId = inject(PLATFORM_ID);
@@ -159,7 +163,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
       filter(user => !!user),
       take(1)
     ).subscribe(() => {
-      this.router.navigateByUrl('/');
+      const redirectUrl = this.route.snapshot.queryParams['redirect'] || this.route.snapshot.queryParams['returnUrl'] || '/';
+      this.router.navigateByUrl(redirectUrl);
     });
   }
 

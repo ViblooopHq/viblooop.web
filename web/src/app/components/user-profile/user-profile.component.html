@@ -12,6 +12,7 @@
       [photoPreviewItems]="photoPreviewItems"
       [hiddenPhotoCount]="hiddenPhotoCount"
       (editProfile)="editProfile()"
+      (logout)="openLogoutModal()"
       (photoSelected)="openProfilePhoto($event)"
       (imageError)="useDefaultProfileImage($event)">
     </vl-profile-hero>
@@ -63,6 +64,30 @@
     @if (visibleSocialLinks.length > 0) {
       <vl-profile-social-links [links]="visibleSocialLinks"></vl-profile-social-links>
     }
+
+    @if (isCurrentUser) {
+      <section class="vl-user-profile__account-card">
+        <div class="vl-user-profile__account-info">
+          <div class="vl-user-profile__account-icon-wrap">
+            <span class="material-symbols-outlined" translate="no">manage_accounts</span>
+          </div>
+          <div>
+            <h3 class="vl-title-sm">Account & Preferences</h3>
+            <p class="vl-meta">Manage your profile, account preferences, or sign out</p>
+          </div>
+        </div>
+        <div class="vl-user-profile__account-actions">
+          <button type="button" class="vl-button vl-button--secondary" (click)="editProfile()">
+            <span class="material-symbols-outlined" translate="no">edit</span>
+            <span>Edit Profile</span>
+          </button>
+          <button type="button" class="vl-button vl-button--danger" (click)="openLogoutModal()">
+            <span class="material-symbols-outlined" translate="no">logout</span>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </section>
+    }
   </section>
 
   <vl-selfie-verification
@@ -72,4 +97,15 @@
     (closed)="closeSelfieVerification()"
     (verified)="onSelfieVerified()">
   </vl-selfie-verification>
+
+  <vl-action-modal
+    [isOpen]="isLogoutModalOpen"
+    title="Log Out of Viblooop?"
+    message="Are you sure you want to log out? You will need to sign in again to join events and message attendees."
+    confirmText="Log Out"
+    cancelText="Cancel"
+    type="danger"
+    icon="logout"
+    (confirm)="confirmLogout()"
+    (cancel)="isLogoutModalOpen = false" />
 </main>

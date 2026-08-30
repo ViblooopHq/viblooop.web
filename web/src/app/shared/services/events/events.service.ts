@@ -169,6 +169,10 @@ export class EventsService {
     return this.httpService.http.post(`${this.baseUrl}/leaveEvent`, { eventId, reason });
   }
 
+  cancelJoinRequest(eventId: string, reason?: string): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/cancelJoinRequest`, { eventId, reason });
+  }
+
   getEventsCollection(collection: string, cursor?: string, limit: number = 20): Observable<any> {
     let url = `${this.baseUrl}/events/collection/${collection}?limit=${limit}`;
     if (cursor) {

@@ -6,23 +6,13 @@
   aria-label="App loading">
 
   <div class="vl-splash__content">
-    <!-- Concentric Pulse Rings & Brand Mark -->
-    <div class="vl-splash__emblem-stage">
-      <div class="vl-splash-ring vl-splash-ring--outer" aria-hidden="true"></div>
-      <div class="vl-splash-ring vl-splash-ring--inner" aria-hidden="true"></div>
-
-      <div class="vl-splash__logo-wrap">
-        <img
-          [src]="logoSrc"
-          [alt]="brandName + ' Logo'"
-          class="vl-splash__logo"
-          width="88"
-          height="88" />
-      </div>
+    <!-- Brand Logo -->
+    <div class="vl-splash__logo-wrap">
+      <img
+        [src]="effectiveLogoSrc"
+        [alt]="brandName + ' Logo'"
+        class="vl-splash__logo" />
     </div>
-
-    <!-- Brand Wordmark -->
-    <h1 class="vl-splash__brand-name">{{ brandName }}</h1>
 
     <!-- Dynamic Status Message -->
     @if (message) {
@@ -39,14 +29,10 @@
     }
   </div>
 
-  <!-- Bottom Brand Watermark (Consumer standard like Instagram/Flipkart) -->
-  @if (showBrandWatermark) {
+  <!-- Bottom Subtitle / Tagline -->
+  @if (showBrandWatermark && subtitle) {
     <div class="vl-splash__footer">
-      <span class="vl-splash__footer-tag">FROM</span>
-      <span class="vl-splash__footer-brand">{{ brandName }}</span>
-      @if (subtitle) {
-        <span class="vl-splash__footer-subtitle">{{ subtitle }}</span>
-      }
+      <span class="vl-splash__footer-subtitle">{{ subtitle }}</span>
     </div>
   }
 </div>

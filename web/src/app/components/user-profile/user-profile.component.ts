@@ -13,6 +13,7 @@ import { ProfileVerificationBannerComponent } from './components/profile-verific
 import { ProfileStatsComponent } from './components/profile-stats/profile-stats.component';
 import { ProfileContentPanelComponent } from './components/profile-content-panel/profile-content-panel.component';
 import { ProfileSocialLinksComponent, SocialLink } from './components/profile-social-links/profile-social-links.component';
+import { ActionModalComponent } from '../../shared/components/action-modal/action-modal.component';
 
 @Component({
   selector: 'vl-user-profile',
@@ -25,6 +26,7 @@ import { ProfileSocialLinksComponent, SocialLink } from './components/profile-so
     ProfileStatsComponent,
     ProfileContentPanelComponent,
     ProfileSocialLinksComponent,
+    ActionModalComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
@@ -51,8 +53,18 @@ export class UserProfileComponent implements OnInit {
   showAllHostedEvents = false;
   defaultProfileImage = 'assets/images/default-profile.png';
   isSelfieVerificationOpen = false;
+  isLogoutModalOpen = false;
 
   userGallery: any[] = [];
+
+  openLogoutModal(): void {
+    this.isLogoutModalOpen = true;
+  }
+
+  confirmLogout(): void {
+    this.isLogoutModalOpen = false;
+    this.authSerivice.logout();
+  }
 
   ngOnInit(): void {
     const state = this.platform.isBrowserPlatform() ? history.state : null;

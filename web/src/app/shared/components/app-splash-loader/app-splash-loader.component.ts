@@ -2,8 +2,10 @@ import {
   ChangeDetectionStrategy,
   Component,
   Input,
+  inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ThemeService } from '../../services/theme/theme.service';
 
 @Component({
   selector: 'vl-app-splash-loader',
@@ -14,11 +16,17 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppSplashLoaderComponent {
+  private readonly themeService = inject(ThemeService);
+
   @Input() isFadingOut: boolean = false;
   @Input() message: string = 'Finding your vibe...';
   @Input() subtitle: string = 'Discover • Connect • Experience';
   @Input() showBrandWatermark: boolean = true;
   @Input() showProgressDots: boolean = true;
-  @Input() logoSrc: string = 'logo.png';
+  @Input() logoSrc: string = '';
   @Input() brandName: string = 'Viblooop';
+
+  get effectiveLogoSrc(): string {
+    return this.logoSrc || this.themeService.logoSrc();
+  }
 }

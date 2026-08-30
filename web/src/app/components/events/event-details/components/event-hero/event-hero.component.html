@@ -99,8 +99,20 @@
             <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
             Leave Event
           </button>
+          } @else if (joinRequestStatus() === 'Requested') {
+          <button type="button" class="btn-cancel-hero vl-button vl-button--danger-subtle"
+            (click)="cancelJoinRequest.emit()"
+            matTooltip="Withdraw your request to join this event"
+            matTooltipPosition="above">
+            <span class="material-symbols-outlined" translate="no">undo</span>
+            <span>Cancel Request</span>
+          </button>
           } @else {
-          <button type="button" class="btn-join-hero vl-button vl-button--primary" (click)="requestJoin.emit()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
+          <button type="button" class="btn-join-hero vl-button vl-button--primary"
+            (click)="requestJoin.emit()"
+            [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+            [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
+            matTooltipPosition="above">
             @if (isJoinRequestPending()) {
               <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
             } @else {

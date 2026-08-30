@@ -69,47 +69,6 @@
   }
 }
 
-/* Mobile Bottom App Navigation */
-.vl-app-bottom-nav {
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-surface);
-  box-shadow: var(--shadow-floating);
-  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0.75rem));
-}
-
-.mobile-create-event-fab {
-  border: 0;
-  background-color: var(--color-primary);
-  box-shadow: var(--shadow-md);
-  color: #ffffff;
-  bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
-
-  &:hover,
-  &:active {
-    background-color: var(--color-primary-hover);
-  }
-}
-
-.mobile-nav-avatar {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: var(--radius-full);
-  overflow: hidden;
-  border: 1.5px solid var(--color-border);
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-}
-
-.active .mobile-nav-avatar {
-  border-color: var(--color-primary);
-}
-
 .header-dropdown-menu {
   position: absolute;
   top: calc(100% + 0.75rem);

@@ -1,0 +1,185 @@
+/* ──────────────────────────────────────────────────────────
+ * Apple iOS 18 Floating Island Tab Bar
+ * Ultra-smooth frosted glass capsule, native touch physics.
+ * ────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+}
+
+/* Hidden on Desktop */
+@media (min-width: 769px) {
+  :host {
+    display: none !important;
+  }
+}
+
+/* Floating Dock Container */
+.vl-ios-dock-wrapper {
+  position: fixed;
+  bottom: max(0.85rem, env(safe-area-inset-bottom, 0.85rem));
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.vl-ios-dock {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: min(100%, 410px);
+  height: 3.75rem;
+  padding: 0 0.5rem;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  background-color: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.15), 0 4px 12px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+
+  :host-context([data-theme='dark']) &,
+  [data-theme='dark'] & {
+    background-color: rgba(17, 22, 37, 0.90);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 18px 40px -4px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* ── Tab Item ── */
+.vl-ios-dock__item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 4px 0 2px;
+  text-decoration: none;
+  color: var(--color-text-tertiary, #64748B);
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease, transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:active {
+    transform: scale(0.90);
+  }
+
+  &--active {
+    color: var(--color-primary, #7C3AED);
+
+    .vl-ios-dock__label {
+      font-weight: 700;
+      color: var(--color-primary, #7C3AED);
+    }
+
+    .vl-ios-dock__icon {
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* ── Icon Wrap & Glyph ── */
+.vl-ios-dock__icon-wrap {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+.vl-ios-dock__icon {
+  font-size: 1.45rem;
+  line-height: 1;
+  transition: transform 0.15s ease;
+}
+
+/* ── Avatar in Profile Tab ── */
+.vl-ios-dock__avatar {
+  display: grid;
+  place-items: center;
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: var(--radius-pill, 9999px);
+  overflow: hidden;
+  border: 1.5px solid var(--color-border, #CBD5E1);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &--active {
+    border-color: var(--color-primary, #7C3AED);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary) 25%, transparent);
+  }
+}
+
+/* ── Unread Badge Dot ── */
+.vl-ios-dock__badge {
+  position: absolute;
+  top: 1px;
+  right: -2px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill, 9999px);
+  background-color: var(--color-error, #DC2626);
+  border: 1.5px solid var(--color-surface, #FFFFFF);
+}
+
+/* ── Micro Label ── */
+.vl-ios-dock__label {
+  font-family: var(--font-family-primary, 'Inter', sans-serif);
+  font-size: 0.65rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: 0.015em;
+  margin-top: 2px;
+  white-space: nowrap;
+  transition: color 0.15s ease;
+}
+
+/* ── Center Elevated Plus (+) Button ── */
+.vl-ios-dock__fab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  margin: 0 4px;
+  border: 0;
+  border-radius: var(--radius-pill, 9999px);
+  background-color: var(--color-primary, #7C3AED);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    background-color: var(--color-primary-hover, #6D28D9);
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.45);
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.90);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.65rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+}

@@ -26,6 +26,25 @@
     <div class="vl-user-profile__vibes">
       <vl-interest-pill-list [interests]="previewInterests()"></vl-interest-pill-list>
     </div>
+
+    @if (isCurrentUser()) {
+      <div class="vl-user-profile__hero-actions">
+        <button
+          class="vl-button vl-button--secondary vl-user-profile__action-btn"
+          type="button"
+          (click)="editProfile.emit()">
+          <span class="material-symbols-outlined" translate="no">edit</span>
+          <span>Edit Profile</span>
+        </button>
+        <button
+          class="vl-button vl-button--danger-subtle vl-user-profile__action-btn vl-user-profile__action-btn--logout"
+          type="button"
+          (click)="logout.emit()">
+          <span class="material-symbols-outlined" translate="no">logout</span>
+          <span>Log Out</span>
+        </button>
+      </div>
+    }
   </div>
 
   @if (photoPreviewItems().length > 0) {

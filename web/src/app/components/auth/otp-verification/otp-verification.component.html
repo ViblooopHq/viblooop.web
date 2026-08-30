@@ -10,10 +10,7 @@
 
         <div class="content-wrapper">
             <div class="logo-section">
-                <div class="logo-icon">
-                    <img src="logo.png" alt="Viblooop Logo" style="width: 40px;">
-                </div>
-                <h1 class="logo-text">Viblooop</h1>
+                <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="logo-icon">
             </div>
 
             @if (!isUserAlreadyExist) {

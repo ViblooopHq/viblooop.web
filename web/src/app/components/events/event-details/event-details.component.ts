@@ -18,6 +18,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { BrowserService } from '../../../shared/services/browser/browser.service';
+import { MatTooltip } from '@angular/material/tooltip';
 import { Environment } from '../../../../environment';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { EventJoinStatusStore } from '../../../shared/services/events/event-join-status.store';
@@ -58,7 +59,7 @@ export interface ActionModalState {
   inputPlaceholder: string;
   inputRequired: boolean;
   isLoading: boolean;
-  action: 'delete' | 'cancel' | 'leave' | null;
+  action: 'delete' | 'cancel' | 'leave' | 'cancelRequest' | 'login' | null;
 }
 
 const defaultModalState: ActionModalState = {
@@ -94,6 +95,7 @@ const defaultModalState: ActionModalState = {
     EngagingLoaderComponent,
     InlineLoaderComponent,
     EventRelatedComponent,
+    MatTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-details.component.html',
@@ -149,11 +151,17 @@ export class EventDetailsComponent {
   totalAttendeesCount = computed(() => this.attendees().length + 1); // +1 includes the creator
   attendeePreviewProfiles = computed(() => this.attendeeProfiles().slice(0, 5));
 
+  isLoggedIn = computed(() => {
+    const user = this.currentUser();
+    return !!(user?.id || user?._id || user?.username || user?.email);
+  });
+
   canAccessPrivateEventData = computed(() => {
     const details = this.eventDetails();
-    const userId = this.currentUser()?.id;
-    const isLoggedIn = this.authService.isLoggedIn() && !!userId;
-    const isMember = isLoggedIn && (this.attendees().includes(userId) || userId === details?.createdBy?._id);
+    const userId = this.currentUser()?.id || this.currentUser()?._id;
+    const creator = details?.createdBy as any;
+    const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
+    const isMember = this.isLoggedIn() && !!userId && (this.attendees().includes(userId) || userId === creatorId);
     const joinStatus = this.eventJoinStatusStore.statusFor(this.eventId());
 
     return isMember || joinStatus === 'accepted';
@@ -161,8 +169,11 @@ export class EventDetailsComponent {
   isUserAttendee = computed(() => this.canAccessPrivateEventData());
   isEventCreator = computed(() => {
     const user = this.currentUser();
+    const userId = user?.id || user?._id;
     const details = this.eventDetails();
-    return this.authService.isLoggedIn() && user?.id === details?.createdBy?._id;
+    const creator = details?.createdBy as any;
+    const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
+    return this.isLoggedIn() && !!userId && userId === creatorId;
   });
   isCancelled = computed(() => {
     const status = String(this.eventDetails()?.['status'] || '').toLowerCase();
@@ -515,11 +526,39 @@ export class EventDetailsComponent {
 
   requestJoinEvent(): void {
     const eventId = this.eventId();
-    const userId = this.currentUser()?.id;
-    if (!eventId || !userId || this.isJoinRequestPending()) return;
+    const user = this.currentUser();
+
+    // Guest user handling: prompt to login
+    if (!user || !user.id) {
+      const returnUrl = `/events/${eventId}`;
+      this.toastService.info('Please sign in to join this event.', 'Sign In Required', {
+        action: {
+          label: 'Sign In',
+          onClick: () => {
+            this.routeService.navigateByUrl(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+          }
+        }
+      });
+
+      this.actionModal.set({
+        ...defaultModalState,
+        isOpen: true,
+        variant: 'info',
+        title: 'Sign In to Join Event',
+        message: 'You need an account to request to join this vibe, connect with attendees, and stay updated.',
+        confirmLabel: 'Sign In / Register',
+        cancelLabel: 'Not Now',
+        showCancelButton: true,
+        showInput: false,
+        action: 'login',
+      });
+      return;
+    }
+
+    if (!eventId || this.isJoinRequestPending()) return;
 
     this.isJoinRequestPending.set(true);
-    this.eventsService.requestJoinEvent(eventId, userId).subscribe({
+    this.eventsService.requestJoinEvent(eventId, user.id).subscribe({
       next: (res: any) => {
         this.isJoinRequestPending.set(false);
         if (!res?.success || res.statusCode !== 200) {
@@ -754,6 +793,18 @@ export class EventDetailsComponent {
     });
   }
 
+  openCancelRequestConfirmation(): void {
+    this.actionModal.set({
+      ...defaultModalState,
+      isOpen: true,
+      variant: 'confirm',
+      title: 'Cancel Join Request?',
+      message: 'Are you sure you want to withdraw your request to join this event?',
+      confirmLabel: 'Withdraw Request',
+      action: 'cancelRequest',
+    });
+  }
+
   onModalConfirmed(inputValue: string): void {
     const action = this.actionModal().action;
     switch (action) {
@@ -765,6 +816,16 @@ export class EventDetailsComponent {
         break;
       case 'leave':
         this.performLeaveEvent(inputValue);
+        break;
+      case 'cancelRequest':
+        this.performCancelRequest();
+        break;
+      case 'login':
+        this.onModalCancelled();
+        this.routeService.navigateByUrl(`/login?redirect=${encodeURIComponent(`/events/${this.eventId()}`)}`);
+        break;
+      default:
+        this.onModalCancelled();
         break;
     }
   }
@@ -857,6 +918,28 @@ export class EventDetailsComponent {
       },
       error: (err: any) => {
         const message = err?.error?.message || err?.message || 'Failed to leave event';
+        this.showErrorModal(message);
+      },
+    });
+  }
+
+  private performCancelRequest(): void {
+    this.actionModal.update((state) => ({ ...state, isLoading: true }));
+    const eventId = this.eventId();
+
+    this.eventsService.cancelJoinRequest(eventId).subscribe({
+      next: (res: any) => {
+        if (!res?.success) {
+          this.showErrorModal(res?.message || 'Failed to cancel join request');
+          return;
+        }
+        this.toastService.info('Your join request has been cancelled.', 'Request Cancelled');
+        this.eventJoinStatusStore.setStatus(eventId, 'none');
+        this.actionModal.set({ ...defaultModalState });
+        this.fetchEventDetails(eventId, false);
+      },
+      error: (err: any) => {
+        const message = err?.error?.message || err?.message || 'Failed to cancel join request';
         this.showErrorModal(message);
       },
     });

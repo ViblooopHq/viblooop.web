@@ -1,22 +1,27 @@
-import { Injectable, signal, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable, signal, computed, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ThemeService {
-  private _isLightTheme = signal<boolean>(false);
-  isLightTheme = this._isLightTheme.asReadonly();
+  private _theme = signal<'dark' | 'light'>('dark');
+  theme = this._theme.asReadonly();
+  isLightTheme = computed(() => this._theme() === 'light');
+  isDarkTheme = computed(() => this._theme() === 'dark');
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+  // Dynamic logo SVG based on current theme
+  logoSrc = computed(() => (this._theme() === 'light' ? 'logo-light.svg' : 'logo-dark.svg'));
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 
   setTheme(theme: string) {
+    const activeTheme = theme === 'light' ? 'light' : 'dark';
     if (isPlatformBrowser(this.platformId)) {
-      document.documentElement.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
+      document.documentElement.setAttribute('data-theme', activeTheme);
+      localStorage.setItem('theme', activeTheme);
     }
-    // Update the signal state
-    this._isLightTheme.set(theme === 'dark');
+    this._theme.set(activeTheme);
   }
 
   loadTheme() {

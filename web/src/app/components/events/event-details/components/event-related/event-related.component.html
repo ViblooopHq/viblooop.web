@@ -4,9 +4,9 @@
     <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
     Related Nearby Events
   </h2>
-  <div class="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory hide-scrollbar w-full">
+  <div class="related-scroll-container hide-scrollbar">
     @for (event of events(); track event._id) {
-    <div class="min-w-[280px] max-w-[300px] shrink-0 snap-start">
+    <div class="related-card-item">
       <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
     </div>
     }

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output, ViewChildren, QueryList, ElementRef, inject, signal, OnInit, OnDestroy } from '@angular/core';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../../shared/services/notification/notification.service';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -10,6 +10,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppSplashService } from '../../../shared/services/app-splash/app-splash.service';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { ThemeService } from '../../../shared/services/theme/theme.service';
 
 @Component({
   selector: 'vl-otp-verification',
@@ -27,10 +28,12 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   otp: string[] = ['', '', '', ''];
 
   authService = inject(AuthService);
+  themeService = inject(ThemeService);
   sharedService = inject(SharedService);
   socketService = inject(SocketService);
   notificationService = inject(NotificationService);
   router = inject(Router);
+  route = inject(ActivatedRoute);
   snackBar = inject(MatSnackBar);
   appSplashService = inject(AppSplashService);
   toastService = inject(ToastService);
@@ -149,9 +152,11 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     const msg = isNewUser ? 'Account created successfully! Welcome to Viblooop.' : 'Verified successfully! Welcome back.';
     this.toastService.success(msg, 'Welcome');
 
-    // Navigate to homepage and smoothly hide splash after 3s
+    const redirectUrl = this.route.snapshot.queryParams['redirect'] || this.route.snapshot.queryParams['returnUrl'] || '/';
+
+    // Navigate to redirectUrl (or homepage) and smoothly hide splash after 3s
     setTimeout(() => {
-      this.router.navigateByUrl('/').then(() => {
+      this.router.navigateByUrl(redirectUrl).then(() => {
         this.appSplashService.hide(3000);
       });
     }, 600);
