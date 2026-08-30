@@ -7,6 +7,7 @@ import { SocketService } from '../../../shared/services/socket/socket.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { finalize } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { AppSplashService } from '../../../shared/services/app-splash/app-splash.service';
 
 @Component({
   selector: 'vl-otp-verification',
@@ -24,11 +25,12 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   otp: string[] = ['', '', '', ''];
 
   authService = inject(AuthService);
-  sharedService = inject(SharedService)
+  sharedService = inject(SharedService);
   socketService = inject(SocketService);
-  notificationService = inject(NotificationService)
-  router = inject(Router)
+  notificationService = inject(NotificationService);
+  router = inject(Router);
   snackBar = inject(MatSnackBar);
+  appSplashService = inject(AppSplashService);
 
   isUserAlreadyExist: boolean = true;
   isLoading = signal(false);
@@ -136,16 +138,20 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   }
 
   saveLoginData(data: any, isNewUser: boolean = false) {
+    this.appSplashService.showLoginSplash(isNewUser);
+
     this.authService.initAuth();
 
     // Show success toast then navigate
     const msg = isNewUser ? 'Account created successfully! Welcome.' : 'Verified successfully! Welcome back.';
     this.snackBar.open(msg, 'Close', { duration: 2500 });
 
-    // Slight delay before navigation so user sees the toast
+    // Navigate to homepage and smoothly hide splash after 3s
     setTimeout(() => {
-      this.router.navigateByUrl('/');
-    }, 1000);
+      this.router.navigateByUrl('/').then(() => {
+        this.appSplashService.hide(3000);
+      });
+    }, 600);
   }
 
   onInput(index: number, event: Event) {

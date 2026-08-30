@@ -24,10 +24,23 @@ import { ScrollToTopComponent } from './components/common/scroll-to-top/scroll-t
 import { AppDrawerService } from './shared/services/drawer/app-drawer.service';
 import { CreateEventComponent } from './components/events/create-event/create-event.component';
 import { MessageService } from './shared/services/message/message.service';
+import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
+import { AppSplashService } from './shared/services/app-splash/app-splash.service';
 
 @Component({
   selector: 'vl-app-root',
-  imports: [RouterOutlet, MatSlideToggleModule, HeaderComponent, FooterComponent, GlobalLoaderComponent, CompleteProfileComponent, CommonModule, ScrollToTopComponent, CreateEventComponent],
+  imports: [
+    RouterOutlet,
+    MatSlideToggleModule,
+    HeaderComponent,
+    FooterComponent,
+    GlobalLoaderComponent,
+    CompleteProfileComponent,
+    CommonModule,
+    ScrollToTopComponent,
+    CreateEventComponent,
+    AppSplashLoaderComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
@@ -37,13 +50,14 @@ export class AppComponent implements OnInit {
   hideFooter = false;
   themeService = inject(ThemeService);
   browserService = inject(BrowserService);
-  router = inject(RouteService)
+  router = inject(RouteService);
   angularRouter = inject(Router);
   authService = inject(AuthService);
   socketService = inject(SocketService);
   completeProfileService = inject(CompleteProfileService);
   appDrawerService = inject(AppDrawerService);
   messageService = inject(MessageService);
+  appSplashService = inject(AppSplashService);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
@@ -58,7 +72,18 @@ export class AppComponent implements OnInit {
         this.scrollToTopOnNavigation(event.urlAfterRedirects);
       });
 
+    this.appSplashService.showBootSplash();
     this.authService.initAuth();
+
+    this.authService.isAuthInitialized$
+      .pipe(
+        filter(initialized => initialized),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(() => {
+        // Once auth resolution is complete, smoothly fade out splash loader after 3s
+        this.appSplashService.hide(3000);
+      });
 
     this.authService.userDetails$
       .pipe(takeUntilDestroyed(this.destroyRef))

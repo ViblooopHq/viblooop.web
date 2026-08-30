@@ -4,6 +4,7 @@ import { Inject, inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, forkJoin } from 'rxjs';
 import { Environment } from '../../../../environment';
+import { AppSplashService } from '../app-splash/app-splash.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthService {
   imageBaseUrl = Environment.imageBaseUrl;
   http = inject(HttpClient);
   router = inject(Router);
+  appSplashService = inject(AppSplashService);
 
   userDetails: any;
   userDetails$ = new BehaviorSubject<any>(undefined);
@@ -22,6 +24,10 @@ export class AuthService {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   googleLogin() {
+    this.appSplashService.show({
+      message: 'Connecting to Google...',
+      subtitle: 'Redirecting to secure login',
+    });
     const url = this.logInbaseUrl + "/auth/google";
     window.location.href = url;
   }
@@ -87,20 +93,36 @@ export class AuthService {
     return this.http.post(`${this.logInbaseUrl}/refresh-access-token`, { withCredentials: true });
   }
 
-  logout(redirect: boolean = true) {
+  logout(redirect: boolean = true, isUserInitiated: boolean = true) {
+    if (isUserInitiated) {
+      this.appSplashService.showLogoutSplash();
+    }
+
     this.http.delete(`${this.logInbaseUrl}/logout`, { withCredentials: true }).subscribe({
-      next: (res: any) => {
+      next: () => {
         this.userDetails = null;
         this.userDetails$.next(null);
         if (redirect) {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/').then(() => {
+            if (isUserInitiated) {
+              this.appSplashService.hide(3000);
+            }
+          });
+        } else if (isUserInitiated) {
+          this.appSplashService.hide(3000);
         }
       },
-      error: (err) => {
+      error: () => {
         this.userDetails = null;
         this.userDetails$.next(null);
         if (redirect) {
-          this.router.navigateByUrl('/');
+          this.router.navigateByUrl('/').then(() => {
+            if (isUserInitiated) {
+              this.appSplashService.hide(3000);
+            }
+          });
+        } else if (isUserInitiated) {
+          this.appSplashService.hide(3000);
         }
       }
     });

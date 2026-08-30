@@ -23,10 +23,15 @@ export const authInterceptorWithRefresh: HttpInterceptorFn = (req, next) => {
   return next(clonedReq).pipe(
     catchError((error) => {
       if (error.status === 401) {
-
-        // If refresh or logout fails with 401, don't loop
-        if (req.url.includes('/refresh-access-token') || req.url.includes('/logout')) {
-          authService.logout(false);
+        // Auth check endpoints, OTP, refresh or logout: do not attempt token refresh or trigger logout splash
+        if (
+          req.url.includes('/me') ||
+          req.url.includes('/refresh-access-token') ||
+          req.url.includes('/logout') ||
+          req.url.includes('/login') ||
+          req.url.includes('/send-otp') ||
+          req.url.includes('/verify-otp')
+        ) {
           return throwError(() => error);
         }
 
@@ -46,7 +51,7 @@ export const authInterceptorWithRefresh: HttpInterceptorFn = (req, next) => {
               isRefreshing = false;
               loaderService.hide();
               refreshTokenSubject.next(false);
-              authService.logout(false);
+              authService.logout(false, false);
               return throwError(() => err);
             })
           );

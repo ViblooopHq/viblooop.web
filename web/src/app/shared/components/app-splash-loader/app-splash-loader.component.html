@@ -1,0 +1,52 @@
+<div
+  class="vl-splash"
+  [class.vl-splash--fade-out]="isFadingOut"
+  role="status"
+  aria-live="polite"
+  aria-label="App loading">
+
+  <div class="vl-splash__content">
+    <!-- Concentric Pulse Rings & Brand Mark -->
+    <div class="vl-splash__emblem-stage">
+      <div class="vl-splash-ring vl-splash-ring--outer" aria-hidden="true"></div>
+      <div class="vl-splash-ring vl-splash-ring--inner" aria-hidden="true"></div>
+
+      <div class="vl-splash__logo-wrap">
+        <img
+          [src]="logoSrc"
+          [alt]="brandName + ' Logo'"
+          class="vl-splash__logo"
+          width="88"
+          height="88" />
+      </div>
+    </div>
+
+    <!-- Brand Wordmark -->
+    <h1 class="vl-splash__brand-name">{{ brandName }}</h1>
+
+    <!-- Dynamic Status Message -->
+    @if (message) {
+      <p class="vl-splash__message">{{ message }}</p>
+    }
+
+    <!-- Minimal Modern Progress Dots -->
+    @if (showProgressDots) {
+      <div class="vl-splash__dots" aria-hidden="true">
+        <span class="vl-splash__dot vl-splash__dot--1"></span>
+        <span class="vl-splash__dot vl-splash__dot--2"></span>
+        <span class="vl-splash__dot vl-splash__dot--3"></span>
+      </div>
+    }
+  </div>
+
+  <!-- Bottom Brand Watermark (Consumer standard like Instagram/Flipkart) -->
+  @if (showBrandWatermark) {
+    <div class="vl-splash__footer">
+      <span class="vl-splash__footer-tag">FROM</span>
+      <span class="vl-splash__footer-brand">{{ brandName }}</span>
+      @if (subtitle) {
+        <span class="vl-splash__footer-subtitle">{{ subtitle }}</span>
+      }
+    </div>
+  }
+</div>

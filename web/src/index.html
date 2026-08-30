@@ -69,6 +69,21 @@
 </head>
 
 <body class="mat-typography selection:bg-primary selection:text-on-primary">
+  <!-- Instant Pre-Boot Splash: Visible from Frame 0 before JS chunks execute -->
+  <div id="vl-initial-splash" style="position:fixed;inset:0;z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;background-color:#0b0f19;color:#ffffff;font-family:'Inter',system-ui,-apple-system,sans-serif;pointer-events:all;">
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center;">
+      <div style="width:5.5rem;height:5.5rem;border-radius:1.25rem;background:#131a29;border:1.5px solid #232f48;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 25px rgba(0,0,0,0.3);margin-bottom:1.25rem;">
+        <img src="logo.png" alt="Viblooop" width="60" height="60" style="object-fit:contain;" />
+      </div>
+      <div style="font-size:1.75rem;font-weight:900;letter-spacing:0.08em;margin-bottom:0.5rem;text-transform:uppercase;">VIBLOOOP</div>
+      <div style="font-size:0.95rem;font-weight:600;color:#94a3b8;">Syncing your vibes...</div>
+    </div>
+    <div style="position:absolute;bottom:2rem;display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <span style="font-size:0.65rem;font-weight:700;letter-spacing:0.16em;color:#64748b;">FROM</span>
+      <span style="font-size:0.875rem;font-weight:800;letter-spacing:0.04em;color:#7c3aed;">VIBLOOOP</span>
+    </div>
+  </div>
+
   <vl-app-root></vl-app-root>
 
   <!-- Google Tag Manager (noscript) -->

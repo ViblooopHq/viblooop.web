@@ -1,39 +1,157 @@
-<div class="vl-ed">
-  <div class="vl-ed__layout">
-    <main class="vl-ed__main">
-      <vl-event-hero
-        [event]="eventDetails()"
-        [isEventCreator]="isEventCreator()"
-        [isEventMenuOpen]="isEventMenuOpen()"
-        [isEscapeEvent]="isEscapeEvent()"
-        [isEventEnded]="isEventEnded()"
-        [isUserAttendee]="isUserAttendee()"
-        [isCancelled]="isCancelled()"
-        [isAuthInitialized]="isAuthInitialized()"
-        [isJoinRequestPending]="isJoinRequestPending()"
-        [eventDate]="eventDetails()?.eventDate"
-        [timeLeftLabel]="timeLeftLabel()"
-        [locationLabel]="locationLabel()"
-        [attendeePreviewProfiles]="attendeePreviewProfiles()"
-        [totalAttendeesCount]="totalAttendeesCount()"
-        [attendanceSummaryLabel]="attendanceSummaryLabel()"
-        [joinRequestStatus]="joinRequestStatus()"
-        [canRequestJoin]="canRequestJoin()"
-        [eventPriceLabel]="eventPriceLabel()"
-        [pendingJoinRequestCount]="pendingJoinRequestCount()"
-        (goBack)="goBack()"
-        (toggleMenu)="toggleEventMenu()"
-        (editEvent)="openEditEvent()"
-        (closeMenu)="closeEventMenu()"
-        (requestJoin)="requestJoinEvent()"
-        (openAttendees)="openAttendeesDrawer()"
-        (openRequests)="openRequestsDrawer()"
-        (deleteEvent)="openDeleteConfirmation()"
-        (cancelEvent)="openCancelConfirmation()"
-        (leaveEvent)="openLeaveConfirmation()" />
+@if (isLoadingEvent()) {
+  <div class="vl-ed-loading-view" role="status" aria-live="polite">
+    <vl-engaging-loader
+      [title]="eventDetails()?.title || 'Loading Event Details'"
+      [tagLabel]="'Event Details'"
+      [primaryIcon]="'fa-solid fa-calendar-check'"
+      [satelliteIcons]="[
+        'fa-solid fa-location-dot',
+        'fa-solid fa-users',
+        'fa-solid fa-ticket',
+        'fa-solid fa-comments'
+      ]"
+      [enableCyclingText]="true"
+      [cyclingTexts]="[
+        'Fetching event details & vibes...',
+        'Loading venue & map coordinates...',
+        'Syncing attendees & chat room...',
+        'Polishing your event experience...'
+      ]"
+      [cycleIntervalMs]="1100"
+      [showProgressBar]="true"
+      [isFullscreen]="false">
+    </vl-engaging-loader>
+  </div>
+} @else if (hasLoadingError()) {
+  <div class="vl-ed-error-view">
+    <div class="vl-ed-error-card">
+      <div class="vl-ed-error-badge">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+      </div>
+      <h2 class="vl-ed-error-title">Couldn't Load Event</h2>
+      <p class="vl-ed-error-subtitle">{{ loadingErrorMessage() }}</p>
+      <div class="vl-ed-error-actions">
+        <button type="button" class="vl-btn vl-btn--secondary" (click)="goBack()">
+          Go Back
+        </button>
+        <button type="button" class="vl-btn vl-btn--primary" (click)="retryLoadEvent()">
+          <i class="fa-solid fa-rotate-right mr-1.5 text-xs"></i>
+          <span>Retry</span>
+        </button>
+      </div>
+    </div>
+  </div>
+} @else {
+  <div class="vl-ed">
+    <div class="vl-ed__layout">
+      <main class="vl-ed__main">
+        <vl-event-hero
+          [event]="eventDetails()"
+          [isEventCreator]="isEventCreator()"
+          [isEventMenuOpen]="isEventMenuOpen()"
+          [isEscapeEvent]="isEscapeEvent()"
+          [isEventEnded]="isEventEnded()"
+          [isUserAttendee]="isUserAttendee()"
+          [isCancelled]="isCancelled()"
+          [isAuthInitialized]="isAuthInitialized()"
+          [isJoinRequestPending]="isJoinRequestPending()"
+          [eventDate]="eventDetails()?.eventDate"
+          [timeLeftLabel]="timeLeftLabel()"
+          [locationLabel]="locationLabel()"
+          [attendeePreviewProfiles]="attendeePreviewProfiles()"
+          [totalAttendeesCount]="totalAttendeesCount()"
+          [attendanceSummaryLabel]="attendanceSummaryLabel()"
+          [joinRequestStatus]="joinRequestStatus()"
+          [canRequestJoin]="canRequestJoin()"
+          [eventPriceLabel]="eventPriceLabel()"
+          [pendingJoinRequestCount]="pendingJoinRequestCount()"
+          (goBack)="goBack()"
+          (toggleMenu)="toggleEventMenu()"
+          (editEvent)="openEditEvent()"
+          (closeMenu)="closeEventMenu()"
+          (requestJoin)="requestJoinEvent()"
+          (openAttendees)="openAttendeesDrawer()"
+          (openRequests)="openRequestsDrawer()"
+          (deleteEvent)="openDeleteConfirmation()"
+          (cancelEvent)="openCancelConfirmation()"
+          (leaveEvent)="openLeaveConfirmation()" />
 
-      <div class="mobile-event-overview">
-        <vl-event-host-card class="host-panel--mobile"
+        <div class="mobile-event-overview">
+          <vl-event-host-card class="host-panel--mobile"
+            [host]="eventDetails()?.createdBy"
+            [hostEventCount]="hostEventCount()"
+            [isNewHost]="isNewHost()"
+            [shouldShowRating]="shouldShowHostRating()"
+            [hostRating]="hostRating()"
+            (viewProfile)="redirectToHostProfile()" />
+
+          <vl-event-facts class="event-facts--mobile"
+            [isEscapeEvent]="isEscapeEvent()"
+            [tripDateRangeLabel]="tripDateRangeLabel()"
+            [eventDate]="eventDetails()?.eventDate"
+            [eventTime]="eventDetails()?.eventTime"
+            [eventPriceLabel]="eventPriceLabel()"
+            [audiencePreferenceIcon]="audiencePreferenceIcon()"
+            [audiencePreferenceLabel]="audiencePreferenceLabel()"
+            [totalAttendeesCount]="totalAttendeesCount()"
+            [remainingSpotsLabel]="remainingSpotsLabel()" />
+        </div>
+
+        <vl-event-about
+          [description]="eventDetails()?.description ?? ''"
+          [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
+          [attendeeLimit]="eventDetails()?.attendeeLimit" />
+
+        @if (eventGalleryImages().length > 0) {
+        @defer (on viewport) {
+          <vl-event-gallery-section
+            [images]="eventGalleryImages()"
+            [isEventCreator]="isEventCreator()"
+            [canDownload]="canDownloadGalleryImage()"
+            [deletingImagePath]="deletingGalleryImagePath()"
+            (uploadPhotos)="onUploadPhotos($event)"
+            (deleteImage)="onDeleteGalleryImage($event)" />
+        } @placeholder {
+          <div class="ed-section-placeholder" aria-hidden="true"></div>
+        } @loading (minimum 100ms) {
+          <div class="ed-section-placeholder" aria-hidden="true"></div>
+        }
+        }
+
+        <vl-event-map-panel class="map-panel--mobile"
+          [locationLabel]="locationLabel()"
+          [locationSubtitle]="locationSubtitle()"
+          [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+          [isMapVisible]="isMapVisible()"
+          [mapOptions]="mapOptions()"
+          [mapPosition]="mapPosition()"
+          (openInMaps)="openInGoogleMaps()" />
+
+        @if (isUserAttendee()) {
+          <vl-event-chat-card class="chat-card--mobile"
+            [totalAttendeesCount]="totalAttendeesCount()"
+            [isChatOpen]="isChatOpen()"
+            (toggleChat)="toggleChat()" />
+        }
+
+        @defer (on viewport) {
+          <vl-event-comments
+            [eventId]="eventId()"
+            [eventAverageRating]="eventDetails()?.averageRating ?? 0"
+            [canLeaveReview]="canLeaveReview()" />
+        } @placeholder {
+          <div class="ed-section-placeholder" aria-hidden="true"></div>
+        } @loading (minimum 100ms) {
+          <div class="ed-section-placeholder" aria-hidden="true"></div>
+        }
+
+        @if (relatedEvents().length > 0) {
+          <vl-event-related [events]="relatedEvents()" />
+        }
+      </main>
+
+      <aside class="vl-ed__sidebar">
+        <vl-event-host-card class="host-panel--desktop"
           [host]="eventDetails()?.createdBy"
           [hostEventCount]="hostEventCount()"
           [isNewHost]="isNewHost()"
@@ -41,7 +159,7 @@
           [hostRating]="hostRating()"
           (viewProfile)="redirectToHostProfile()" />
 
-        <vl-event-facts class="event-facts--mobile"
+        <vl-event-facts class="event-facts--desktop"
           [isEscapeEvent]="isEscapeEvent()"
           [tripDateRangeLabel]="tripDateRangeLabel()"
           [eventDate]="eventDetails()?.eventDate"
@@ -51,152 +169,77 @@
           [audiencePreferenceLabel]="audiencePreferenceLabel()"
           [totalAttendeesCount]="totalAttendeesCount()"
           [remainingSpotsLabel]="remainingSpotsLabel()" />
+
+        <vl-event-map-panel class="map-panel--desktop"
+          [locationLabel]="locationLabel()"
+          [locationSubtitle]="locationSubtitle()"
+          [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+          [isMapVisible]="isMapVisible()"
+          [mapOptions]="mapOptions()"
+          [mapPosition]="mapPosition()"
+          (openInMaps)="openInGoogleMaps()" />
+
+        @if (isUserAttendee()) {
+          <vl-event-chat-card class="chat-card--desktop"
+            [totalAttendeesCount]="totalAttendeesCount()"
+            [isChatOpen]="isChatOpen()"
+            (toggleChat)="toggleChat()" />
+        }
+      </aside>
+    </div>
+
+    @if (!isCancelled() && !isEventEnded() && !isEventCreator()) {
+      <div class="mobile-sticky-join-bar">
+        <div class="mobile-sticky-join-bar__info">
+          <span class="mobile-sticky-join-bar__price">{{ eventPriceLabel() }}</span>
+          <span class="mobile-sticky-join-bar__spots">{{ remainingSpotsLabel() }}</span>
+        </div>
+        <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
+          (click)="requestJoinEvent()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
+          @if (isJoinRequestPending()) {
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+          } @else {
+            <i class="fa-solid fa-bolt"></i>
+          }
+          {{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}
+        </button>
       </div>
-
-      <vl-event-about
-        [description]="eventDetails()?.description ?? ''"
-        [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
-        [attendeeLimit]="eventDetails()?.attendeeLimit" />
-
-      @if (eventGalleryImages().length > 0) {
-      @defer (on viewport) {
-        <vl-event-gallery-section
-          [images]="eventGalleryImages()"
-          [isEventCreator]="isEventCreator()"
-          [canDownload]="canDownloadGalleryImage()"
-          [deletingImagePath]="deletingGalleryImagePath()"
-          (uploadPhotos)="onUploadPhotos($event)"
-          (deleteImage)="onDeleteGalleryImage($event)" />
-      } @placeholder {
-        <div class="ed-section-placeholder" aria-hidden="true"></div>
-      } @loading (minimum 100ms) {
-        <div class="ed-section-placeholder" aria-hidden="true"></div>
-      }
-      }
-
-      <vl-event-map-panel class="map-panel--mobile"
-        [locationLabel]="locationLabel()"
-        [locationSubtitle]="locationSubtitle()"
-        [showLocationSubtitle]="showHostLocationVisibilityCopy()"
-        [isMapVisible]="isMapVisible()"
-        [mapOptions]="mapOptions()"
-        [mapPosition]="mapPosition()"
-        (openInMaps)="openInGoogleMaps()" />
-
-      @if (isUserAttendee()) {
-        <vl-event-chat-card class="chat-card--mobile"
-          [totalAttendeesCount]="totalAttendeesCount()"
-          [isChatOpen]="isChatOpen()"
-          (toggleChat)="toggleChat()" />
-      }
-
-      @defer (on viewport) {
-        <vl-event-comments
-          [eventId]="eventId()"
-          [eventAverageRating]="eventDetails()?.averageRating ?? 0"
-          [canLeaveReview]="canLeaveReview()" />
-      } @placeholder {
-        <div class="ed-section-placeholder" aria-hidden="true"></div>
-      } @loading (minimum 100ms) {
-        <div class="ed-section-placeholder" aria-hidden="true"></div>
-      }
-
-      <!-- @defer (on viewport) {
-        <vl-event-related [events]="relatedEvents()" />
-      } @placeholder {
-        <div class="ed-section-placeholder" aria-hidden="true"></div>
-      } -->
-    </main>
-
-    <aside class="vl-ed__sidebar">
-      <vl-event-host-card class="host-panel--desktop"
-        [host]="eventDetails()?.createdBy"
-        [hostEventCount]="hostEventCount()"
-        [isNewHost]="isNewHost()"
-        [shouldShowRating]="shouldShowHostRating()"
-        [hostRating]="hostRating()"
-        (viewProfile)="redirectToHostProfile()" />
-
-      <vl-event-facts class="event-facts--desktop"
-        [isEscapeEvent]="isEscapeEvent()"
-        [tripDateRangeLabel]="tripDateRangeLabel()"
-        [eventDate]="eventDetails()?.eventDate"
-        [eventTime]="eventDetails()?.eventTime"
-        [eventPriceLabel]="eventPriceLabel()"
-        [audiencePreferenceIcon]="audiencePreferenceIcon()"
-        [audiencePreferenceLabel]="audiencePreferenceLabel()"
-        [totalAttendeesCount]="totalAttendeesCount()"
-        [remainingSpotsLabel]="remainingSpotsLabel()" />
-
-      <vl-event-map-panel class="map-panel--desktop"
-        [locationLabel]="locationLabel()"
-        [locationSubtitle]="locationSubtitle()"
-        [showLocationSubtitle]="showHostLocationVisibilityCopy()"
-        [isMapVisible]="isMapVisible()"
-        [mapOptions]="mapOptions()"
-        [mapPosition]="mapPosition()"
-        (openInMaps)="openInGoogleMaps()" />
-
-      @if (isUserAttendee()) {
-        <vl-event-chat-card class="chat-card--desktop"
-          [totalAttendeesCount]="totalAttendeesCount()"
-          [isChatOpen]="isChatOpen()"
-          (toggleChat)="toggleChat()" />
-      }
-    </aside>
+    }
   </div>
 
-  @if (!isEventEnded() && !isCancelled() && !isEventCreator() && !isUserAttendee() && isAuthInitialized()) {
-    <div class="mobile-sticky-join-bar">
-      <div class="mobile-sticky-join-bar__info">
-        <span class="mobile-sticky-join-bar__price">{{ eventPriceLabel() }}</span>
-        <span class="mobile-sticky-join-bar__spots">{{ remainingSpotsLabel() }}</span>
-      </div>
-      <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
-        (click)="requestJoinEvent()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
-        @if (isJoinRequestPending()) {
-          <i class="fa-solid fa-circle-notch fa-spin"></i>
-        } @else {
-          <i class="fa-solid fa-bolt"></i>
-        }
-        {{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}
-      </button>
-    </div>
+  <vl-event-profile-modal
+    [isOpen]="profileModal().open"
+    [userId]="profileModal().userId"
+    (close)="closeProfileModal()" />
+
+  @if (isChatOpen()) {
+    <vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>
   }
-</div>
 
-<vl-event-profile-modal
-  [isOpen]="profileModal().open"
-  [userId]="profileModal().userId"
-  (close)="closeProfileModal()" />
+  <vl-event-people-drawer
+    [mode]="activeDrawer()"
+    [eventTitle]="eventDetails()?.title ?? 'Event'"
+    [title]="eventDrawerTitle()"
+    [subtitle]="eventDrawerSubtitle()"
+    [pendingRequests]="pendingJoinRequestsView()"
+    [attendees]="eventDrawerAttendees()"
+    (close)="closeEventDrawer()"
+    (accept)="acceptJoinRequest($event)"
+    (reject)="rejectJoinRequest($event)"
+    (viewPerson)="openPersonProfile($event)" />
 
-@if (isChatOpen()) {
-  <vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>
+  <vl-action-modal
+    [isOpen]="actionModal().isOpen"
+    [variant]="actionModal().variant"
+    [title]="actionModal().title"
+    [message]="actionModal().message"
+    [confirmLabel]="actionModal().confirmLabel"
+    [cancelLabel]="actionModal().cancelLabel"
+    [showCancelButton]="actionModal().showCancelButton"
+    [showInput]="actionModal().showInput"
+    [inputPlaceholder]="actionModal().inputPlaceholder"
+    [inputRequired]="actionModal().inputRequired"
+    [isLoading]="actionModal().isLoading"
+    (confirmed)="actionModal().action ? onModalConfirmed($event) : onResultModalDismissed()"
+    (cancelled)="onModalCancelled()" />
 }
-
-<vl-event-people-drawer
-  [mode]="activeDrawer()"
-  [eventTitle]="eventDetails()?.title ?? 'Event'"
-  [title]="eventDrawerTitle()"
-  [subtitle]="eventDrawerSubtitle()"
-  [pendingRequests]="pendingJoinRequestsView()"
-  [attendees]="eventDrawerAttendees()"
-  (close)="closeEventDrawer()"
-  (accept)="acceptJoinRequest($event)"
-  (reject)="rejectJoinRequest($event)"
-  (viewPerson)="openPersonProfile($event)" />
-
-<vl-action-modal
-  [isOpen]="actionModal().isOpen"
-  [variant]="actionModal().variant"
-  [title]="actionModal().title"
-  [message]="actionModal().message"
-  [confirmLabel]="actionModal().confirmLabel"
-  [cancelLabel]="actionModal().cancelLabel"
-  [showCancelButton]="actionModal().showCancelButton"
-  [showInput]="actionModal().showInput"
-  [inputPlaceholder]="actionModal().inputPlaceholder"
-  [inputRequired]="actionModal().inputRequired"
-  [isLoading]="actionModal().isLoading"
-  (confirmed)="actionModal().action ? onModalConfirmed($event) : onResultModalDismissed()"
-  (cancelled)="onModalCancelled()" />

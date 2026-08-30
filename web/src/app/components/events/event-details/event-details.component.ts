@@ -12,7 +12,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-import { map } from 'rxjs';
+import { catchError, forkJoin, map, of } from 'rxjs';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -24,6 +24,7 @@ import { EventJoinStatusStore } from '../../../shared/services/events/event-join
 import { GalleryImage } from '../../../shared/components/gallery/gallery.component';
 import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
+import { EngagingLoaderComponent } from '../../../shared/components/engaging-loader/engaging-loader.component';
 import {
   AttendeeProfile,
   EventDetails,
@@ -88,6 +89,8 @@ const defaultModalState: ActionModalState = {
     ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
+    EngagingLoaderComponent,
+    EventRelatedComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-details.component.html',
@@ -111,7 +114,11 @@ export class EventDetailsComponent {
   private readonly openCapacityLimit = 999999;
   private fetchedJoinStatusKey = '';
 
-  // ── Route & core state ──
+  // ── Unified loading & core state ──
+  readonly isLoadingEvent = signal<boolean>(true);
+  readonly hasLoadingError = signal<boolean>(false);
+  readonly loadingErrorMessage = signal<string>('');
+
   eventId = toSignal(this.route.params.pipe(map((params) => params['eventId'] ?? '')), { initialValue: '' });
   eventDetails = signal<EventDetails | null>(null);
   attendeeProfiles = signal<AttendeeProfile[]>([]);
@@ -351,12 +358,12 @@ export class EventDetailsComponent {
   constructor() {
     effect(() => {
       const eventId = this.eventId();
-      if (eventId) this.fetchEventDetails(eventId);
+      if (eventId) this.fetchEventDetails(eventId, true);
     });
 
     effect(() => {
       const userId = this.currentUser()?.id;
-      if (userId) this.syncJoinStatusForCurrentUser();
+      if (userId && !this.isLoadingEvent()) this.syncJoinStatusForCurrentUser();
       if (!this.canAccessPrivateEventData()) this.isChatOpen.set(false);
     });
 
@@ -379,27 +386,111 @@ export class EventDetailsComponent {
     });
   }
 
-  private fetchEventDetails(eventId: string): void {
-    this.eventsService.getEventDetails(eventId).subscribe((res: any) => {
-      if (!res?.success || res.statusCode !== 200) {
-        console.warn('Unexpected response format or status code:', res);
-        return;
+  retryLoadEvent(): void {
+    const id = this.eventId();
+    if (id) {
+      this.fetchEventDetails(id, true);
+    }
+  }
+
+  private fetchEventDetails(eventId: string, showLoader: boolean = true): void {
+    if (!eventId) return;
+
+    if (showLoader) {
+      this.isLoadingEvent.set(true);
+      this.hasLoadingError.set(false);
+      this.loadingErrorMessage.set('');
+    }
+
+    const startTime = Date.now();
+    const minLoaderTimeMs = 600;
+
+    this.eventsService.getEventDetails(eventId).subscribe({
+      next: (res: any) => {
+        if (!res?.success || res.statusCode !== 200 || !res.data) {
+          console.warn('Unexpected response format or status code:', res);
+          if (showLoader) {
+            this.hasLoadingError.set(true);
+            this.loadingErrorMessage.set('The requested event could not be found or has been removed.');
+            this.isLoadingEvent.set(false);
+          }
+          return;
+        }
+
+        const details: EventDetails = res.data ?? {};
+        details.image = this.sharedService.getImageUrl(details.image);
+
+        const galleryImages: GalleryImage[] = Array.isArray(details.gallery)
+          ? details.gallery.map((image: string) => ({ path: image, url: this.sharedService.getImageUrl(image) }))
+          : [];
+        details.gallery = galleryImages.map((image) => image.url);
+
+        this.eventDetails.set(details);
+        this.eventGalleryImages.set(galleryImages);
+
+        // Coordinate secondary calls in parallel to eliminate change detection layout shift
+        const userId = this.currentUser()?.id;
+        const attendees = Array.isArray(details.attendees) ? details.attendees : [];
+
+        const attendees$ = attendees.length > 0
+          ? this.eventsService.getAttendeeDetails(attendees).pipe(catchError(() => of({ success: false, data: [] })))
+          : of({ success: true, data: [] });
+
+        const joinStatus$ = (userId && this.authService.isLoggedIn())
+          ? this.eventsService.getJoinStatus(eventId, userId).pipe(catchError(() => of(null)))
+          : of(null);
+
+        const related$ = this.eventsService.getRelatedNearbyEvents(eventId).pipe(
+          catchError(() => of({ success: false, data: [] }))
+        );
+
+        forkJoin({
+          attendees: attendees$,
+          joinStatus: joinStatus$,
+          related: related$,
+        }).subscribe({
+          next: ({ attendees: attRes, joinStatus: joinRes, related: relRes }: { attendees: any; joinStatus: any; related: any }) => {
+            if (attRes?.success && Array.isArray(attRes.data)) {
+              this.attendeeProfiles.set(attRes.data);
+            } else {
+              this.attendeeProfiles.set([]);
+            }
+
+            if (joinRes?.success && joinRes.data?.status) {
+              this.eventJoinStatusStore.setApiStatus(eventId, joinRes.data.status);
+            }
+
+            if (relRes?.success && Array.isArray(relRes.data)) {
+              this.relatedEvents.set(relRes.data);
+            }
+
+            if (showLoader) {
+              const elapsed = Date.now() - startTime;
+              const remaining = Math.max(0, minLoaderTimeMs - elapsed);
+              setTimeout(() => {
+                this.isLoadingEvent.set(false);
+              }, remaining);
+            }
+          },
+          error: () => {
+            if (showLoader) {
+              const elapsed = Date.now() - startTime;
+              const remaining = Math.max(0, minLoaderTimeMs - elapsed);
+              setTimeout(() => {
+                this.isLoadingEvent.set(false);
+              }, remaining);
+            }
+          }
+        });
+      },
+      error: (err) => {
+        console.error('Error fetching event details:', err);
+        if (showLoader) {
+          this.hasLoadingError.set(true);
+          this.loadingErrorMessage.set('Unable to load event details. Please check your internet connection and try again.');
+          this.isLoadingEvent.set(false);
+        }
       }
-
-      const details: EventDetails = res.data ?? {};
-      details.image = this.sharedService.getImageUrl(details.image);
-
-      const galleryImages: GalleryImage[] = Array.isArray(details.gallery)
-        ? details.gallery.map((image: string) => ({ path: image, url: this.sharedService.getImageUrl(image) }))
-        : [];
-      details.gallery = galleryImages.map((image) => image.url);
-
-      this.eventDetails.set(details);
-      this.eventGalleryImages.set(galleryImages);
-
-      this.getAttendeesDetails();
-      this.syncJoinStatusForCurrentUser();
-      this.fetchRelatedNearbyEvents(eventId);
     });
   }
 
@@ -414,28 +505,6 @@ export class EventDetailsComponent {
     this.fetchedJoinStatusKey = fetchKey;
     this.eventsService.getJoinStatus(eventId, userId).subscribe((res: any) => {
       if (res?.success) this.eventJoinStatusStore.setApiStatus(eventId, res.data?.status);
-    });
-  }
-
-  private fetchRelatedNearbyEvents(eventId: string): void {
-    this.eventsService.getRelatedNearbyEvents(eventId).subscribe((res: any) => {
-      if (res?.success && res.data) this.relatedEvents.set(res.data);
-    });
-  }
-
-  private getAttendeesDetails(): void {
-    const attendees = this.attendees();
-    if (!attendees.length) {
-      this.attendeeProfiles.set([]);
-      return;
-    }
-
-    this.eventsService.getAttendeeDetails(attendees).subscribe((res: any) => {
-      if (!res?.success || res.statusCode !== 200) {
-        console.warn('Unexpected response format or status code:', res);
-        return;
-      }
-      this.attendeeProfiles.set(res.data);
     });
   }
 

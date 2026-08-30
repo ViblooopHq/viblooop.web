@@ -18,6 +18,15 @@
   }
 }
 
+@if (appSplashService.isVisible()) {
+  <vl-app-splash-loader
+    [isFadingOut]="appSplashService.isFadingOut()"
+    [message]="appSplashService.message()"
+    [subtitle]="appSplashService.subtitle()"
+    [showBrandWatermark]="appSplashService.showBrandWatermark()"
+    [showProgressDots]="appSplashService.showProgressDots()" />
+}
+
 <vl-global-loader />
 
 @if ((completeProfileService.showPopup$ | async)) {
