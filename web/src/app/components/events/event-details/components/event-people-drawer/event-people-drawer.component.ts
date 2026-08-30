@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { A11yModule } from '@angular/cdk/a11y';
 import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
 import { EventDrawerPerson, RequestActionState } from '../../../../../shared/interfaces/event.interface';
+import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
 
 export interface JoinRequestView {
   id: string;
@@ -13,7 +14,7 @@ export interface JoinRequestView {
 
 @Component({
   selector: 'vl-event-people-drawer',
-  imports: [ImageUrlPipe, A11yModule],
+  imports: [ImageUrlPipe, A11yModule, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-people-drawer.component.html',
   styleUrl: './event-people-drawer.component.scss',

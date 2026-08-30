@@ -6,12 +6,13 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
 
 export type ActionModalVariant = 'confirm' | 'warning' | 'error' | 'success' | 'info';
 
 @Component({
   selector: 'vl-action-modal',
-  imports: [FormsModule],
+  imports: [FormsModule, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './action-modal.component.html',
   styleUrl: './action-modal.component.scss',

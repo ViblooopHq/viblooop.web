@@ -3,10 +3,11 @@ import { DatePipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
 import { AttendeeProfile, EventDetails } from '../../../../../shared/interfaces/event.interface';
+import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
 
 @Component({
   selector: 'vl-event-hero',
-  imports: [MatTooltip, ImageUrlPipe, DatePipe],
+  imports: [MatTooltip, ImageUrlPipe, DatePipe, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-hero.component.html',
   styleUrl: './event-hero.component.scss',

@@ -33,13 +33,12 @@
               <div class="event-request-actions">
                 @if (request.state === 'processing') {
                   <span class="event-request-status">
-                    <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
-                    Wait
+                    <vl-inline-loader size="sm" color="primary" text="Updating..."></vl-inline-loader>
                   </span>
                 } @else {
                   <button type="button" class="event-request-action event-request-action--primary vl-button vl-button--primary"
                     (click)="accept.emit(request)">
-                    Confirm
+                    Accept
                   </button>
                   <button type="button" class="event-request-action event-request-action--secondary vl-button vl-button--secondary"
                     (click)="reject.emit(request)">

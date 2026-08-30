@@ -92,10 +92,9 @@
               [disabled]="deletingImagePath() === selectedImageKey"
               (click)="requestDelete()">
               @if (deletingImagePath() === selectedImageKey) {
-                <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i>
-                Deleting...
+                <vl-inline-loader size="sm" color="white" text="Deleting..."></vl-inline-loader>
               } @else {
-                Delete
+                <span>Delete</span>
               }
             </button>
           </div>

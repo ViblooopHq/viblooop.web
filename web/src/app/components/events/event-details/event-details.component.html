@@ -109,6 +109,7 @@
             [isEventCreator]="isEventCreator()"
             [canDownload]="canDownloadGalleryImage()"
             [deletingImagePath]="deletingGalleryImagePath()"
+            [isUploading]="isUploadingGallery()"
             (uploadPhotos)="onUploadPhotos($event)"
             (deleteImage)="onDeleteGalleryImage($event)" />
         } @placeholder {
@@ -197,11 +198,11 @@
         <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
           (click)="requestJoinEvent()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
           @if (isJoinRequestPending()) {
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
+            <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
           } @else {
             <i class="fa-solid fa-bolt"></i>
+            <span>{{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}</span>
           }
-          {{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}
         </button>
       </div>
     }

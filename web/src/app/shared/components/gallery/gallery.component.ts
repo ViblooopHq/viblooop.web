@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, HostListener, input, output, signal } from '@angular/core';
+import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
 
 export interface GalleryImage {
   url: string;
@@ -9,7 +10,7 @@ export interface GalleryImage {
 
 @Component({
   selector: 'vl-gallery',
-  imports: [],
+  imports: [InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss'

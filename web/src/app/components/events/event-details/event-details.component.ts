@@ -25,6 +25,8 @@ import { GalleryImage } from '../../../shared/components/gallery/gallery.compone
 import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { EngagingLoaderComponent } from '../../../shared/components/engaging-loader/engaging-loader.component';
+import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
   AttendeeProfile,
   EventDetails,
@@ -90,6 +92,7 @@ const defaultModalState: ActionModalState = {
     EventCommentsComponent,
     ActionModalComponent,
     EngagingLoaderComponent,
+    InlineLoaderComponent,
     EventRelatedComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -107,6 +110,7 @@ export class EventDetailsComponent {
   private readonly platform = inject(BrowserService);
   private readonly socketService = inject(SocketService);
   private readonly eventJoinStatusStore = inject(EventJoinStatusStore);
+  private readonly toastService = inject(ToastService);
   private readonly titleService = inject(Title);
   private readonly meta = inject(Meta);
   private readonly destroyRef = inject(DestroyRef);
@@ -130,6 +134,7 @@ export class EventDetailsComponent {
   // ── UI state ──
   isAuthInitialized = toSignal(this.authService.isAuthInitialized$, { initialValue: false });
   isJoinRequestPending = signal(false);
+  isUploadingGallery = signal(false);
   isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
@@ -518,13 +523,17 @@ export class EventDetailsComponent {
       next: (res: any) => {
         this.isJoinRequestPending.set(false);
         if (!res?.success || res.statusCode !== 200) {
-          console.warn('Unexpected response format or status code:', res);
+          const message = res?.message || 'Could not send join request. Please try again.';
+          this.toastService.error(message, 'Request Failed');
           return;
         }
         this.eventJoinStatusStore.setStatus(eventId, 'pending');
+        this.toastService.success('Your join request was sent to the host!', 'Request Sent');
       },
-      error: () => {
+      error: (err: any) => {
         this.isJoinRequestPending.set(false);
+        const message = err?.error?.message || err?.message || 'Failed to send request. Please check connection.';
+        this.toastService.error(message, 'Request Error');
       }
     });
   }
@@ -536,14 +545,17 @@ export class EventDetailsComponent {
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) {
           this.requestActionStates.update((states) => ({ ...states, [request.id]: 'pending' }));
+          this.toastService.error(res?.message || 'Could not accept request.', 'Error');
           return;
         }
 
         this.requestActionStates.update((states) => ({ ...states, [request.id]: 'accepted' }));
-        this.fetchEventDetails(this.eventId());
+        this.toastService.success(`${request.senderName || 'Member'} has been added to attendees!`, 'Request Accepted');
+        this.fetchEventDetails(this.eventId(), false);
       },
       error: (err) => {
         this.requestActionStates.update((states) => ({ ...states, [request.id]: 'pending' }));
+        this.toastService.error('Failed to accept join request.', 'Error');
         console.error('Accept join request failed:', err);
       },
     });
@@ -556,12 +568,15 @@ export class EventDetailsComponent {
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) {
           this.requestActionStates.update((states) => ({ ...states, [request.id]: 'pending' }));
+          this.toastService.error(res?.message || 'Could not decline request.', 'Error');
           return;
         }
         this.requestActionStates.update((states) => ({ ...states, [request.id]: 'rejected' }));
+        this.toastService.info('Join request declined.', 'Request Declined');
       },
       error: (err) => {
         this.requestActionStates.update((states) => ({ ...states, [request.id]: 'pending' }));
+        this.toastService.error('Failed to decline request.', 'Error');
         console.error('Reject join request failed:', err);
       },
     });
@@ -601,8 +616,9 @@ export class EventDetailsComponent {
   }
 
   async onUploadPhotos(files: File[]): Promise<void> {
-    if (!this.isEventCreator()) return;
+    if (!this.isEventCreator() || this.isUploadingGallery()) return;
 
+    this.isUploadingGallery.set(true);
     const eventId = this.eventId();
     const formData = new FormData();
     formData.append('eventId', eventId);
@@ -613,15 +629,22 @@ export class EventDetailsComponent {
 
     this.eventsService.updateEvent(formData).subscribe({
       next: (res: any) => {
+        this.isUploadingGallery.set(false);
         if (!res?.success || res.statusCode !== 200) {
           console.warn('Unexpected response format or status code:', res);
+          this.toastService.error(res?.message || 'Failed to upload photos.', 'Upload Error');
           return;
         }
 
         const gallery = Array.isArray(res.data?.event?.gallery) ? res.data.event.gallery : [];
         this.eventGalleryImages.set(gallery.map((image: string) => ({ path: image, url: this.sharedService.getImageUrl(image) })));
+        this.toastService.success('Photos added to event gallery!', 'Photos Uploaded');
       },
-      error: (err: any) => console.error('Error uploading gallery photos:', err),
+      error: (err: any) => {
+        this.isUploadingGallery.set(false);
+        console.error('Error uploading gallery photos:', err);
+        this.toastService.error('Failed to upload photos. Please try again.', 'Upload Error');
+      },
     });
   }
 
@@ -634,13 +657,18 @@ export class EventDetailsComponent {
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) {
           console.warn('Unexpected response format or status code:', res);
+          this.toastService.error(res?.message || 'Failed to delete photo.', 'Error');
           return;
         }
 
         this.eventGalleryImages.update((images) => images.filter((image) => image.path !== imagePath));
         this.gallerySection?.closeGalleryPreview();
+        this.toastService.info('Photo removed from gallery.', 'Photo Removed');
       },
-      error: (err: any) => console.error('Error removing gallery image:', err),
+      error: (err: any) => {
+        console.error('Error removing gallery image:', err);
+        this.toastService.error('Could not remove photo.', 'Error');
+      },
       complete: () => this.deletingGalleryImagePath.set(''),
     });
   }
@@ -755,6 +783,7 @@ export class EventDetailsComponent {
           this.showErrorModal(res?.message || 'Failed to delete event');
           return;
         }
+        this.toastService.info('Event permanently deleted.', 'Event Deleted');
         this.actionModal.set({
           ...defaultModalState,
           isOpen: true,
@@ -783,6 +812,7 @@ export class EventDetailsComponent {
           this.showErrorModal(res?.message || 'Failed to cancel event');
           return;
         }
+        this.toastService.warning('Event has been cancelled. Attendees notified.', 'Event Cancelled');
         this.actionModal.set({
           ...defaultModalState,
           isOpen: true,
@@ -793,7 +823,7 @@ export class EventDetailsComponent {
           showCancelButton: false,
           action: null,
         });
-        this.fetchEventDetails(eventId);
+        this.fetchEventDetails(eventId, false);
       },
       error: (err: any) => {
         const message = err?.error?.message || err?.message || 'Failed to cancel event';
@@ -812,6 +842,7 @@ export class EventDetailsComponent {
           this.showErrorModal(res?.message || 'Failed to leave event');
           return;
         }
+        this.toastService.success('You have left the event.', 'Event Left');
         this.actionModal.set({
           ...defaultModalState,
           isOpen: true,
@@ -822,7 +853,7 @@ export class EventDetailsComponent {
           showCancelButton: false,
           action: null,
         });
-        this.fetchEventDetails(eventId);
+        this.fetchEventDetails(eventId, false);
       },
       error: (err: any) => {
         const message = err?.error?.message || err?.message || 'Failed to leave event';

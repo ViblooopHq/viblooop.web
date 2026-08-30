@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, ElementRef, input, output, ViewChild } from '@angular/core';
 import { GalleryComponent, GalleryImage } from '../../../../../shared/components/gallery/gallery.component';
+import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
 
 @Component({
   selector: 'vl-event-gallery-section',
-  imports: [GalleryComponent],
+  imports: [GalleryComponent, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-gallery-section.component.html',
   styleUrl: './event-gallery-section.component.scss',
@@ -16,6 +17,7 @@ export class EventGallerySectionComponent {
   isEventCreator = input(false);
   canDownload = input(false);
   deletingImagePath = input('');
+  isUploading = input(false);
 
   uploadPhotos = output<File[]>();
   deleteImage = output<string>();

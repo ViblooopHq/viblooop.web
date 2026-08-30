@@ -10,7 +10,7 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
 import { SocketService } from '../../../shared/services/socket/socket.service';
-import { ToastComponent } from '../../../shared/components/toast/toast.component';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 import { AsyncPipe } from '@angular/common';
 import { NotificationComponent } from '../../../shared/components/notification/notification.component';
 
@@ -22,7 +22,7 @@ export interface NavItem {
 
 @Component({
   selector: 'vl-header',
-  imports: [RouterLink, RouterLinkActive, MatIconModule, MatSlideToggleModule, MatTooltip, OutsideClickDirective, ToastComponent, AsyncPipe, NotificationComponent],
+  imports: [RouterLink, RouterLinkActive, MatIconModule, MatSlideToggleModule, MatTooltip, OutsideClickDirective, AsyncPipe, NotificationComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -31,6 +31,7 @@ export class HeaderComponent implements OnInit {
   private themeService = inject(ThemeService)
   public socketService = inject(SocketService)
   sharedService = inject(SharedService)
+  private toastService = inject(ToastService)
   private angularRouter = inject(Router)
   defaultProfileImage = 'assets/images/default-profile.png';
 
@@ -48,13 +49,16 @@ export class HeaderComponent implements OnInit {
 
   mobileMenu = [
     { path: '/explore', label: 'Explore', icon: 'explore' },
-    { path: '/chats', label: 'Chats', icon: 'forum' },
-    { path: '/profile', label: 'Profile', icon: 'person' }
+    { path: '/events', label: 'Events', icon: 'event' },
+    { path: '/my-events', label: 'My Vibes', icon: 'celebration' },
+    { path: '/chats', label: 'Chats', icon: 'chat' },
+    { path: '/profile', label: 'Profile', icon: 'person' },
   ];
 
   guestMobileMenu = [
     { path: '/explore', label: 'Explore', icon: 'explore' },
-    { path: '/login', label: 'Sign In', icon: 'login' }
+    { path: '/events', label: 'Events', icon: 'event' },
+    { path: '/login', label: 'Sign In', icon: 'login' },
   ];
 
   desktopMenu = [
@@ -66,17 +70,14 @@ export class HeaderComponent implements OnInit {
   ]
 
   isActiveLink: boolean = false
-  userDetails: any;
+  userDetails: any = null;
   isNotificationVisible: boolean = false;
-  showToast: boolean = false;
-  latestNotification: any = null;
-  private lastNotificationId: string | null = null;
-  private toastTimer: any;
+  lastNotificationId: string | null = null;
 
-  ngOnInit() {
-    this.authService.userDetails$.subscribe((data) => {
-      if (data) {
-        this.userDetails = data;
+  ngOnInit(): void {
+    this.authService.userDetails$.subscribe((user) => {
+      if (user) {
+        this.userDetails = user;
         const nameStr = this.userDetails.userName || this.userDetails.username || '';
         this.userName = nameStr ? nameStr.charAt(0).toUpperCase() : '';
       } else {
@@ -91,7 +92,7 @@ export class HeaderComponent implements OnInit {
 
         // If this is a truly new notification (not just a refresh)
         if (this.lastNotificationId && this.lastNotificationId !== newNotif._id) {
-          this.triggerToast(newNotif);
+          this.toastService.info(newNotif.message || 'You received a new update.', 'Notification');
         }
 
         this.lastNotificationId = newNotif._id;
@@ -111,17 +112,6 @@ export class HeaderComponent implements OnInit {
     if (item.path === '/chats') {
       this.sharedService.requestChatConversations();
     }
-  }
-
-  triggerToast(notification: any) {
-    if (this.toastTimer) clearTimeout(this.toastTimer);
-
-    this.latestNotification = notification;
-    this.showToast = true;
-
-    this.toastTimer = setTimeout(() => {
-      this.showToast = false;
-    }, 10000);
   }
 
   toggleNotification() {

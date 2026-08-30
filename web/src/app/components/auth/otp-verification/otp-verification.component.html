@@ -33,9 +33,9 @@
 
                 <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isLoading()">
                     @if (isLoading()) {
-                        <span class="spinner"></span> Creating...
+                        <vl-inline-loader size="sm" color="white" text="Creating..."></vl-inline-loader>
                     } @else {
-                        Create Username
+                        <span>Create Username</span>
                     }
                 </button>
             </form>
@@ -62,9 +62,9 @@
             <!-- Main Verify Button -->
             <button class="vl-button vl-button--primary vl-button--block" (click)="verifyOtp()" [disabled]="isLoading() || otp.join('').length < 4">
                 @if (isLoading()) {
-                    <span class="spinner"></span> Verifying...
+                    <vl-inline-loader size="sm" color="white" text="Verifying..."></vl-inline-loader>
                 } @else {
-                    Verify & Continue
+                    <span>Verify & Continue</span>
                 }
             </button>
 
@@ -73,13 +73,13 @@
                 (click)="resendOtp()" 
                 [disabled]="resendTimer() > 0 || isResending()">
                 @if (isResending()) {
-                    <span class="spinner"></span> Sending...
+                    <vl-inline-loader size="sm" color="primary" text="Sending..."></vl-inline-loader>
                 } @else if (resendTimer() > 0) {
                     <span class="material-symbols-outlined">schedule</span>
-                    Resend code in {{ formatTime(resendTimer()) }}
+                    <span>Resend code in {{ formatTime(resendTimer()) }}</span>
                 } @else {
                     <span class="material-symbols-outlined">refresh</span>
-                    Resend code
+                    <span>Resend code</span>
                 }
             </button>
 

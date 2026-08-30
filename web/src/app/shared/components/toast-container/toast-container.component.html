@@ -1,0 +1,55 @@
+<div class="vl-toast-container" aria-live="polite" aria-atomic="true">
+  @for (toast of toastService.toasts(); track trackById($index, toast)) {
+    <div
+      class="vl-toast-card"
+      [class.vl-toast-card--success]="toast.type === 'success'"
+      [class.vl-toast-card--error]="toast.type === 'error'"
+      [class.vl-toast-card--warning]="toast.type === 'warning'"
+      [class.vl-toast-card--info]="toast.type === 'info'"
+      [class.vl-toast-card--leaving]="toast.isLeaving"
+      role="alert">
+      
+      <!-- Icon Indicator Badge -->
+      <div class="vl-toast-card__icon-wrap">
+        <i [class]="toast.icon" aria-hidden="true"></i>
+      </div>
+
+      <!-- Toast Content -->
+      <div class="vl-toast-card__content">
+        @if (toast.title) {
+          <div class="vl-toast-card__title">{{ toast.title }}</div>
+        }
+        <div class="vl-toast-card__message">{{ toast.message }}</div>
+
+        @if (toast.action) {
+          <button
+            type="button"
+            class="vl-toast-card__action-btn"
+            (click)="toast.action.onClick()">
+            {{ toast.action.label }}
+          </button>
+        }
+      </div>
+
+      <!-- Close Button -->
+      @if (toast.dismissible) {
+        <button
+          type="button"
+          class="vl-toast-card__close-btn"
+          aria-label="Dismiss notification"
+          (click)="onDismiss(toast.id)">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+      }
+
+      <!-- Progress Line Timer -->
+      @if (toast.duration > 0) {
+        <div
+          class="vl-toast-card__progress"
+          [style.animation-duration.ms]="toast.duration"
+          aria-hidden="true">
+        </div>
+      }
+    </div>
+  }
+</div>

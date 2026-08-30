@@ -49,9 +49,10 @@
         (click)="onConfirm()"
         [disabled]="isConfirmDisabled">
         @if (isLoading()) {
-          <span class="vl-modal__spinner" aria-hidden="true"></span>
+          <vl-inline-loader size="sm" color="white" [text]="confirmLabel() + '...'"></vl-inline-loader>
+        } @else {
+          <span>{{ confirmLabel() }}</span>
         }
-        {{ confirmLabel() }}
       </button>
     </div>
   </div>

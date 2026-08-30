@@ -8,11 +8,13 @@ import { SharedService } from '../../../shared/services/shared.service';
 import { finalize } from 'rxjs/operators';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppSplashService } from '../../../shared/services/app-splash/app-splash.service';
+import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'vl-otp-verification',
   standalone: true,
-  imports: [ReactiveFormsModule, MatSnackBarModule],
+  imports: [ReactiveFormsModule, MatSnackBarModule, InlineLoaderComponent],
   templateUrl: './otp-verification.component.html',
   styleUrl: './otp-verification.component.scss',
 })
@@ -31,6 +33,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   router = inject(Router);
   snackBar = inject(MatSnackBar);
   appSplashService = inject(AppSplashService);
+  toastService = inject(ToastService);
 
   isUserAlreadyExist: boolean = true;
   isLoading = signal(false);
@@ -85,11 +88,11 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.startResendTimer();
-          this.snackBar.open('OTP sent successfully', 'Close', { duration: 3000 });
+          this.toastService.success('A new 4-digit code was sent to your email.', 'Code Sent');
         },
         error: (err) => {
           console.error('Error resending OTP', err);
-          this.snackBar.open('Failed to resend OTP', 'Close', { duration: 3000 });
+          this.toastService.error('Failed to resend code. Please try again.', 'Error');
         }
       });
   }
@@ -110,7 +113,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.log('Error: ', err);
-          this.snackBar.open('Invalid OTP. Please try again.', 'Close', { duration: 3000 });
+          this.toastService.error('Invalid verification code. Please try again.', 'Verification Failed');
         }
       });
   }
@@ -129,7 +132,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
           },
           error: (err) => {
             console.log(err);
-            this.snackBar.open('Username creation failed', 'Close', { duration: 3000 });
+            this.toastService.error('Username creation failed. Please try another username.', 'Error');
           }
         });
     } else {
@@ -143,8 +146,8 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
     this.authService.initAuth();
 
     // Show success toast then navigate
-    const msg = isNewUser ? 'Account created successfully! Welcome.' : 'Verified successfully! Welcome back.';
-    this.snackBar.open(msg, 'Close', { duration: 2500 });
+    const msg = isNewUser ? 'Account created successfully! Welcome to Viblooop.' : 'Verified successfully! Welcome back.';
+    this.toastService.success(msg, 'Welcome');
 
     // Navigate to homepage and smoothly hide splash after 3s
     setTimeout(() => {

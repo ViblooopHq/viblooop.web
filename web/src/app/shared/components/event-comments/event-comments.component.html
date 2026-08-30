@@ -40,9 +40,12 @@
         </div>
 
         <button type="submit" class="btn-post vl-button vl-button--primary vl-button--block" [disabled]="reviewForm.invalid || isSubmitting()">
-          @if (isSubmitting()) { <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> }
-          @else { <i class="fa-regular fa-paper-plane" aria-hidden="true"></i> }
-          {{ reviewSubmitLabel }}
+          @if (isSubmitting()) {
+            <vl-inline-loader size="sm" color="white" [text]="isEditingReview ? 'Updating Review...' : 'Posting Review...'"></vl-inline-loader>
+          } @else {
+            <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+            <span>{{ reviewSubmitLabel }}</span>
+          }
         </button>
 
         @if (isEditingReview) {
@@ -89,46 +92,49 @@
     </div>
 
     @if (reviewCount === 0) {
-      <div class="empty-comments">
-        <div class="empty-icon"><i class="fa-regular fa-comments" aria-hidden="true"></i></div>
-        <p class="empty-title">No reviews yet</p>
-        <p class="empty-subtitle">Be the first to review this vibe</p>
+      <div class="reviews-empty">
+        <span class="reviews-empty__icon"><i class="fa-regular fa-comments" aria-hidden="true"></i></span>
+        <h3 class="vl-title-sm">No reviews yet</h3>
+        <p class="vl-body-sm">Be the first to share your thoughts about this event!</p>
       </div>
     } @else {
-      <div class="comment-list">
-      @for (review of visibleReviews; track $index) {
-        <div class="comment-item" [class.comment-item--has-actions]="isOwnReview(review)">
-          <img class="comment-avatar"
-               alt="{{ review.raterUserId?.username || 'Guest' }}'s profile photo"
-               [src]="review.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
-               (error)="$any($event.target).src = 'assets/images/default-profile.png'">
-
-          <div class="comment-body">
-            <div class="comment-header">
-              <div class="comment-author">
-                <span class="username">{{ review.raterUserId?.username || 'Guest' }}</span>
-                <i class="fa-solid fa-circle-check reviewer-check" aria-hidden="true"></i>
-                <span class="attended-badge">
-                  <i class="fa-solid fa-certificate" aria-hidden="true"></i>
-                  Attended
+      <div class="review-list">
+      @for (review of visibleReviews; track review._id) {
+        <div class="review-card" [class.review-card--highlight]="isOwnReview(review)">
+          <div class="review-card__header">
+            <div class="review-author">
+              <img
+                [src]="review?.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                class="review-avatar"
+                alt="{{ review?.raterUserId?.username || 'Attendee' }}">
+              <div class="review-author__info">
+                <span class="review-author__name">
+                  {{ review?.raterUserId?.username || 'Attendee' }}
+                  @if (isOwnReview(review)) { <span class="review-author__badge">You</span> }
+                </span>
+                <span class="review-author__meta">
+                  {{ getTimeAgo(review.createdAt) }}
                 </span>
               </div>
-              <span class="timestamp">
-                <i class="fa-regular fa-clock" aria-hidden="true"></i>
-                {{ getTimeAgo(review.updatedAt || review.createdAt) }}
-              </span>
             </div>
-            <div class="comment-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
-              @for (i of [1, 2, 3, 4, 5]; track $index) {
-                <i [class]="i <= review.score ? 'fa-solid fa-star' : 'fa-regular fa-star'" aria-hidden="true"></i>
+            <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
+              @for (star of stars; track star) {
+                <i [class]="star <= (review.score || 0) ? 'fa-solid fa-star filled' : 'fa-regular fa-star'" aria-hidden="true"></i>
               }
             </div>
-            <p class="comment-text">{{ review.comment }}</p>
           </div>
 
+          <p class="review-card__body">{{ review.comment }}</p>
+
           @if (isOwnReview(review)) {
-            <div class="comment-actions">
-              <button type="button" class="comment-more" aria-haspopup="menu" [attr.aria-expanded]="isReviewMenuOpen(review)" aria-label="More options" (click)="toggleReviewMenu(review)">
+            <div class="review-card__actions">
+              <button
+                type="button"
+                class="review-menu-trigger"
+                aria-label="Review options"
+                [attr.aria-expanded]="isReviewMenuOpen(review)"
+                (click)="toggleReviewMenu(review)">
                 <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
               </button>
 
@@ -139,9 +145,12 @@
                     Edit Review
                   </button>
                   <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
-                    @if (deletingReviewId() === review._id) { <i class="fa-solid fa-spinner fa-spin" aria-hidden="true"></i> }
-                    @else { <i class="fa-regular fa-trash-can" aria-hidden="true"></i> }
-                    Delete Review
+                    @if (deletingReviewId() === review._id) {
+                      <vl-inline-loader size="xs" color="light" text="Deleting..."></vl-inline-loader>
+                    } @else {
+                      <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                      <span>Delete Review</span>
+                    }
                   </button>
                 </div>
               }

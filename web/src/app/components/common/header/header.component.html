@@ -54,9 +54,6 @@
         </span>
         }
       </button>
-      @if (showToast && latestNotification) {
-      <vl-toast [message]="latestNotification.message"></vl-toast>
-      }
       @if (isNotificationVisible) {
       <vl-notification presentation="popover" (panelClosed)="closeNotification()"></vl-notification>
       }

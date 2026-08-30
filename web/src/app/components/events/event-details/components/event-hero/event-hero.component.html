@@ -102,12 +102,12 @@
           } @else {
           <button type="button" class="btn-join-hero vl-button vl-button--primary" (click)="requestJoin.emit()" [disabled]="!canRequestJoin() || isJoinRequestPending()">
             @if (isJoinRequestPending()) {
-              <i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i>
+              <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
             } @else {
               <i class="fa-solid fa-fire" aria-hidden="true"></i>
+              <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
+              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
             }
-            {{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}
-            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
           </button>
           }
         } @else {

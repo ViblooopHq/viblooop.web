@@ -5,10 +5,12 @@ import { AuthService } from '../../services/auth/auth.service';
 import { EventsService } from '../../services/events/events.service';
 import { SharedService } from '../../services/shared.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
+import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
+import { ToastService } from '../../services/toast/toast.service';
 
 @Component({
   selector: 'vl-event-comments',
-  imports: [CommonModule, ReactiveFormsModule, ImageUrlPipe],
+  imports: [CommonModule, ReactiveFormsModule, ImageUrlPipe, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-comments.component.html',
   styleUrl: './event-comments.component.scss'
@@ -22,6 +24,7 @@ export class EventCommentsComponent {
   private readonly authService = inject(AuthService);
   private readonly eventsService = inject(EventsService);
   private readonly sharedService = inject(SharedService);
+  private readonly toastService = inject(ToastService);
 
   eventReviews = signal<any[]>([]);
   isSubmitting = signal(false);
@@ -142,14 +145,21 @@ export class EventCommentsComponent {
       comment: this.reviewForm.value.comment,
     };
 
+    const isEditing = this.isEditingReview;
     this.eventsService.addReview(review).subscribe({
       next: (res: any) => {
         this.isSubmitting.set(false);
 
         if (!res?.success || res.statusCode !== 200) {
-          console.warn('Unexpected response format or status code:', res);
+          const msg = res?.message || 'Could not post review. Please try again.';
+          this.toastService.error(msg, 'Review Failed');
           return;
         }
+
+        this.toastService.success(
+          isEditing ? 'Your review has been updated!' : 'Thank you! Your review was posted.',
+          isEditing ? 'Review Updated' : 'Review Added'
+        );
 
         this.resetReviewForm();
         this.editingReview.set(null);
@@ -163,6 +173,8 @@ export class EventCommentsComponent {
       error: (error: any) => {
         this.isSubmitting.set(false);
         console.error('Error adding review:', error);
+        const msg = error?.error?.message || error?.message || 'Failed to submit review. Please try again.';
+        this.toastService.error(msg, 'Review Error');
       }
     });
   }
@@ -195,9 +207,12 @@ export class EventCommentsComponent {
     this.eventsService.deleteReview(review._id).subscribe({
       next: (res: any) => {
         if (!res?.success || res.statusCode !== 200) {
-          console.warn('Unexpected response format or status code:', res);
+          const msg = res?.message || 'Could not delete review.';
+          this.toastService.error(msg, 'Error');
           return;
         }
+
+        this.toastService.info('Your review has been removed.', 'Review Deleted');
 
         if (this.editingReview()?._id === review._id) {
           this.cancelReviewEdit();
@@ -208,6 +223,7 @@ export class EventCommentsComponent {
       },
       error: (error: any) => {
         console.error('Error deleting review:', error);
+        this.toastService.error('Failed to delete review.', 'Error');
       },
       complete: () => {
         this.deletingReviewId.set('');

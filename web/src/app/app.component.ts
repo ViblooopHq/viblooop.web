@@ -26,6 +26,7 @@ import { CreateEventComponent } from './components/events/create-event/create-ev
 import { MessageService } from './shared/services/message/message.service';
 import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
 import { AppSplashService } from './shared/services/app-splash/app-splash.service';
+import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
 
 @Component({
   selector: 'vl-app-root',
@@ -40,6 +41,7 @@ import { AppSplashService } from './shared/services/app-splash/app-splash.servic
     ScrollToTopComponent,
     CreateEventComponent,
     AppSplashLoaderComponent,
+    ToastContainerComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
