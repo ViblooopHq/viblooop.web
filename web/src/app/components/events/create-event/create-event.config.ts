@@ -223,7 +223,7 @@ Day 2: Main activities and return journey 🌄`,
 
 export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
   {
-    matches: ['party', 'house party', 'social'],
+    matches: ['party', 'house party', 'social', 'meetup'],
     title: 'Social',
     description: 'Parties, meetups, rooftop & more',
     materialIcon: 'celebration',
@@ -232,7 +232,7 @@ export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
     kind: 'event'
   },
   {
-    matches: ['travel', 'trip', 'escape', 'travel companion', 'escapes'],
+    matches: ['travel companion', 'travel', 'trip', 'escape', 'escapes', 'trek', 'getaway'],
     title: 'Escapes',
     description: 'Trips, treks, road trips & getaways',
     materialIcon: 'travel_explore',
@@ -241,7 +241,7 @@ export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
     kind: 'escape'
   },
   {
-    matches: ['sports', 'play', 'game', 'sports activities'],
+    matches: ['sports activities', 'sports', 'play', 'gaming', 'fitness'],
     title: 'Play',
     description: 'Games, sports, fitness & more',
     materialIcon: 'sports_soccer',
@@ -250,21 +250,21 @@ export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
     kind: 'play'
   },
   {
-    matches: ['shopping', 'buddy', 'buddies', 'shopping buddy'],
-    title: 'Shopping Buddy',
-    description: 'Shop together, explore & more',
-    materialIcon: 'shopping_bag',
-    accent: 'pink',
-    tags: ['Store Hopping', 'Style Advice', 'Best Deals', 'New Finds', 'Coffee Break', 'Fashion'],
-    soon: true
-  },
-  {
-    matches: ['local events', 'events', 'quick', 'quickies'],
+    matches: ['local events', 'events', 'quick', 'quickies', 'local'],
     title: 'Quickies',
     description: 'Coffee, chai, quick hangouts & more',
     materialIcon: 'local_cafe',
     accent: 'orange',
     tags: ['Coffee', 'Chai', 'Conversation', 'Board Games', 'Walk & Talk', 'Work Friendly'],
+    soon: true
+  },
+  {
+    matches: ['shopping buddies', 'shopping buddy', 'shopping', 'buddies', 'malls'],
+    title: 'Shopping Buddy',
+    description: 'Shop together, explore & more',
+    materialIcon: 'shopping_bag',
+    accent: 'pink',
+    tags: ['Store Hopping', 'Style Advice', 'Best Deals', 'New Finds', 'Coffee Break', 'Fashion'],
     soon: true
   }
 ];

@@ -333,7 +333,17 @@ export class CreateEventFormService {
   init(): void {
     this.eventsService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
-        this.categories.set(res.data.categories.map((category: any) => this.categoryPresentation.withDisplayTags(category)));
+        const enriched = res.data.categories.map((category: any) => this.categoryPresentation.withDisplayTags(category));
+        const seenTitles = new Set<string>();
+        const uniqueCategories = enriched.filter((cat: any) => {
+          const displayTitle = this.categoryPresentation.getDisplayTitle(cat);
+          if (!displayTitle) return true;
+          if (seenTitles.has(displayTitle)) return false;
+          seenTitles.add(displayTitle);
+          return true;
+        });
+
+        this.categories.set(uniqueCategories);
         this.updateDateValidatorsForCreationKind();
       }
     });

@@ -11,10 +11,22 @@ import {
 })
 export class EventCategoryPresentationService {
   getDisplayConfig(category: any): CategoryDisplayConfig | undefined {
+    if (!category) return undefined;
+    if (category._displayConfig) {
+      return category._displayConfig;
+    }
+
     const searchable = this.getSearchableText(category);
+    if (!searchable) return undefined;
 
     return CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS.find(config =>
-      config.matches.some(match => searchable.includes(match))
+      config.matches.some(match => {
+        const lowerMatch = match.toLowerCase();
+        // Check for whole word match or phrase match
+        if (searchable === lowerMatch) return true;
+        const wordRegex = new RegExp(`(^|\\b|\\s)${lowerMatch.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(\\b|\\s|$)`, 'i');
+        return wordRegex.test(searchable) || searchable.includes(lowerMatch);
+      })
     );
   }
 
@@ -47,8 +59,15 @@ export class EventCategoryPresentationService {
   }
 
   withDisplayTags(category: any): any {
-    const tags = this.getExpectationTags(category);
-    return tags.length ? { ...category, tags } : category;
+    if (!category) return category;
+    const config = this.getDisplayConfig(category);
+    const expectationTags = config?.tags ?? [];
+    return {
+      ...category,
+      rawTags: category.rawTags || (Array.isArray(category.tags) ? [...category.tags] : []),
+      tags: expectationTags.length ? expectationTags : category.tags,
+      _displayConfig: config,
+    };
   }
 
   private getFallbackIcon(category: any): string {
@@ -63,9 +82,10 @@ export class EventCategoryPresentationService {
   }
 
   private getSearchableText(category: any): string {
-    const title = (category?.title || '').toLowerCase();
-    const description = (category?.description || '').toLowerCase();
-    const tags = Array.isArray(category?.tags) ? category.tags.join(' ').toLowerCase() : '';
-    return `${title} ${description} ${tags}`;
+    const title = (category?.title || '').toLowerCase().trim();
+    const description = (category?.description || '').toLowerCase().trim();
+    const rawTags = category?.rawTags || (category?._displayConfig ? [] : category?.tags);
+    const tags = Array.isArray(rawTags) ? rawTags.join(' ').toLowerCase().trim() : '';
+    return `${title} ${description} ${tags}`.trim();
   }
 }
