@@ -1,78 +1,21 @@
 .vl-user-profile-container {
   width: 100%;
   min-height: 100dvh;
-  padding: var(--header-clearance-desktop, 7.75rem) clamp(1rem, 4vw, 3rem) 5rem;
+  padding-bottom: 5rem;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
 
   @media (max-width: 768px) {
-    padding-top: var(--header-clearance-mobile, 5.25rem);
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
   }
 }
 
 .vl-user-profile {
-  width: min(100%, 1120px);
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
 
   &__profile-photo-gallery {
     display: contents;
-  }
-
-  &__account-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-4, 1rem);
-    margin-top: 2.5rem;
-    padding: 1.5rem 1.75rem;
-    border-radius: var(--radius-xl, 20px);
-    border: 1px solid var(--color-border);
-    background-color: var(--color-surface);
-    box-shadow: var(--shadow-sm);
-  }
-
-  &__account-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-
-  &__account-icon-wrap {
-    display: grid;
-    place-items: center;
-    width: 3rem;
-    height: 3rem;
-    border-radius: var(--radius-pill, 9999px);
-    background-color: var(--color-surface-raised);
-    border: 1px solid var(--color-border);
-    color: var(--color-primary);
-    flex-shrink: 0;
-
-    .material-symbols-outlined {
-      font-size: 1.6rem;
-    }
-  }
-
-  &__account-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-
-    .vl-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      height: 2.65rem;
-      padding: 0 1.25rem;
-      border-radius: var(--radius-pill, 9999px);
-      font-weight: 600;
-      font-size: 0.875rem;
-
-      .material-symbols-outlined {
-        font-size: 1.2rem;
-      }
-    }
   }
 }
 
@@ -80,32 +23,3 @@
   margin-top: 0;
 }
 
-@media (max-width: 768px) {
-  .vl-user-profile-container {
-    padding: 4.5rem 0.75rem calc(6rem + env(safe-area-inset-bottom, 0px));
-  }
-
-  .vl-user-profile {
-    &__account-card {
-      flex-direction: column;
-      align-items: stretch;
-      padding: 1.25rem;
-      text-align: center;
-    }
-
-    &__account-info {
-      flex-direction: column;
-      text-align: center;
-    }
-
-    &__account-actions {
-      justify-content: center;
-      margin-top: 0.5rem;
-
-      .vl-button {
-        flex: 1;
-        justify-content: center;
-      }
-    }
-  }
-}

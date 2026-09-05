@@ -1,0 +1,15 @@
+<mat-form-field appearance="outline" class="vl-datepicker-field" [class.vl-datepicker-field--disabled]="disabled">
+  <input
+    matInput
+    [matDatepicker]="picker"
+    [value]="selectedDate()"
+    [min]="min"
+    [max]="max"
+    [placeholder]="placeholder"
+    [disabled]="disabled"
+    [readonly]="readonly"
+    (dateChange)="onDateChange($event)"
+    (click)="!disabled && picker.open()" />
+  <mat-datepicker-toggle matSuffix [for]="picker" [disabled]="disabled"></mat-datepicker-toggle>
+  <mat-datepicker #picker [startAt]="selectedDate() || min || max"></mat-datepicker>
+</mat-form-field>

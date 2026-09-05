@@ -27,10 +27,11 @@
 
   <!-- Right Actions -->
   <div class="flex items-center gap-4">
-    <button type="button" [matTooltip]="'Create Event'" (click)="openCreateDrawer()"
-      class="vl-icon-button vl-app-header__create-action group">
-      <span class="material-symbols-outlined group-hover:rotate-90 transition-transform duration-300"
+    <button type="button" (click)="openCreateDrawer()"
+      class="vl-app-header__create-pill group" aria-label="Create Event">
+      <span class="material-symbols-outlined create-icon group-hover:rotate-90 transition-transform duration-300"
         translate="no">add</span>
+      <span class="create-text" i18n>Create Event</span>
     </button>
 
     <button

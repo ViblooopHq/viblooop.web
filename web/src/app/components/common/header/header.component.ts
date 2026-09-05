@@ -137,7 +137,16 @@ export class HeaderComponent implements OnInit {
 
   navigateTo(url: string) {
     this.isNotificationVisible = false;
-    this.router.navigateByUrl(url)
+    this.isUserProfileVisible = false;
+    if (url === '/my-wishlist') {
+      this.router.navigateToDrawer('my-wishlist', '/my-wishlist');
+      return;
+    }
+    if (url === '/notifications') {
+      this.router.navigateToDrawer('notifications', '/notifications');
+      return;
+    }
+    this.router.navigateByUrl(url);
   }
 
   navigateToCreate() {

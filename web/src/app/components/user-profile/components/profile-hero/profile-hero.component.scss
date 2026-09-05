@@ -119,25 +119,40 @@
   border-radius: var(--radius-pill, 9999px);
   font-size: 0.875rem;
   font-weight: 600;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   .material-symbols-outlined {
     font-size: 1.15rem;
   }
 
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-surface-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-xs);
+  }
+
+  &:active {
+    transform: scale(0.97);
+  }
+
   &--logout {
-    border: 1px solid color-mix(in srgb, var(--color-error, #DC2626) 30%, transparent);
-    color: var(--color-error, #DC2626);
-    background-color: color-mix(in srgb, var(--color-error, #DC2626) 8%, transparent);
+    background-color: var(--color-surface-raised);
+    color: var(--color-text-secondary);
 
     &:hover {
-      background-color: var(--color-error, #DC2626);
-      color: #ffffff;
-      border-color: var(--color-error, #DC2626);
+      background-color: var(--color-surface-hover);
+      color: var(--color-danger, #ef4444);
+      border-color: var(--color-danger, #ef4444);
     }
   }
 }
+
 
 .vl-user-profile__photo-strip {
   grid-column: 1 / -1;

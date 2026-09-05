@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectionStrategy, PLATFORM_ID, AfterViewInit, ChangeDetectorRef, signal } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectionStrategy, PLATFORM_ID, AfterViewInit, ChangeDetectorRef, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { Title, Meta } from '@angular/platform-browser';
 import { AuthService } from '../../../shared/services/auth/auth.service';
@@ -23,7 +23,7 @@ import type { ISourceOptions } from '@tsparticles/engine';
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit, AfterViewInit {
+export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   router = inject(RouteService);
   route = inject(ActivatedRoute);
   authService = inject(AuthService);
@@ -142,15 +142,48 @@ export class LoginComponent implements OnInit, AfterViewInit {
     };
   }
 
+  private isDestroyed = false;
+  private particleContainer: any = null;
+
   async ngAfterViewInit(): Promise<void> {
     if (isPlatformBrowser(this.platformId)) {
       try {
         const { tsParticles } = await import("@tsparticles/engine");
         const { loadSlim } = await import("@tsparticles/slim");
         await loadSlim(tsParticles);
-        await tsParticles.load({ id: this.id, options: this.particlesOptions });
+        if (this.isDestroyed) {
+          return;
+        }
+        this.particleContainer = await tsParticles.load({ id: this.id, options: this.particlesOptions });
+        if (this.isDestroyed && this.particleContainer) {
+          this.particleContainer.destroy();
+          this.particleContainer = null;
+        }
       } catch (err) {
         console.error("Failed to load particles", err);
+      }
+    }
+  }
+
+  async ngOnDestroy(): Promise<void> {
+    this.isDestroyed = true;
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        if (this.particleContainer) {
+          this.particleContainer.destroy();
+          this.particleContainer = null;
+        }
+        const { tsParticles } = await import("@tsparticles/engine");
+        const container = tsParticles.dom().find(c => (c as any).id === this.id);
+        if (container) {
+          container.destroy();
+        }
+        const elem = document.getElementById(this.id);
+        if (elem) {
+          elem.innerHTML = '';
+        }
+      } catch (err) {
+        // ignore cleanup error
       }
     }
   }

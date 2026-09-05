@@ -27,21 +27,21 @@
       </div>
       <div class="date-time-row">
         <div class="date-field">
-          <mat-form-field appearance="outline" class="material-input-custom">
-            <input matInput [matDatepicker]="picker" formControlName="eventDate" [min]="formService.datePickerMinDate()"
-              [placeholder]="formService.isEscapeCreation() ? 'From' : 'Select Date'" readonly (click)="picker.open()">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-          </mat-form-field>
+          <vl-datepicker
+            formControlName="eventDate"
+            [min]="formService.datePickerMinDate()"
+            [placeholder]="formService.isEscapeCreation() ? 'From' : 'Select Date'"
+            outputType="date">
+          </vl-datepicker>
         </div>
         @if (formService.isEscapeCreation()) {
           <div class="date-field">
-            <mat-form-field appearance="outline" class="material-input-custom">
-              <input matInput [matDatepicker]="endPicker" formControlName="endDate" [min]="formService.minEndDate()"
-                placeholder="To" readonly (click)="endPicker.open()">
-              <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
-              <mat-datepicker #endPicker></mat-datepicker>
-            </mat-form-field>
+            <vl-datepicker
+              formControlName="endDate"
+              [min]="formService.minEndDate()"
+              placeholder="To"
+              outputType="date">
+            </vl-datepicker>
           </div>
         } @else {
           <vl-time-picker-dropdown [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />

@@ -4,8 +4,13 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { UserService } from '../../../shared/services/user/user.service';
+import { RouteService } from '../../../shared/services/route/route.service';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 import { SelfieVerificationComponent } from '../selfie-verification/selfie-verification.component';
+
+import { CommonModule } from '@angular/common';
+import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
+import { PillComponent } from '../../../shared/components/pill/pill.component';
 
 type SocialPlatform = {
   key: string;
@@ -32,13 +37,22 @@ type ProfilePhotoItem = {
   selector: 'vl-edit-profile',
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.scss'],
-  imports: [ReactiveFormsModule, FormsModule, SelfieVerificationComponent, FormDrawerComponent]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    SelfieVerificationComponent,
+    FormDrawerComponent,
+    DatepickerComponent,
+    PillComponent,
+  ]
 })
 export class EditProfileComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private sharedService = inject(SharedService);
   private userService = inject(UserService);
+  private routeService = inject(RouteService);
   private router = inject(Router);
 
   profileForm!: FormGroup;
@@ -58,17 +72,18 @@ export class EditProfileComponent implements OnInit {
   socialLinks: SocialLink[] = [];
   readonly maxInterests = 8;
   readonly maxProfilePhotos = 12;
+  readonly maxDob = new Date();
   readonly socialPlatforms: SocialPlatform[] = [
-    { key: 'instagram', label: 'Instagram', icon: 'fa-brands fa-instagram', placeholder: '@username or profile link', baseUrl: 'https://instagram.com/', usernamePattern: /^[a-zA-Z0-9._]{1,30}$/ },
-    { key: 'twitter', label: 'Twitter', icon: 'fa-brands fa-twitter', placeholder: '@username or profile link', baseUrl: 'https://x.com/', usernamePattern: /^[a-zA-Z0-9_]{1,15}$/ },
-    { key: 'linkedin', label: 'LinkedIn', icon: 'fa-brands fa-linkedin-in', placeholder: 'username or profile link', baseUrl: 'https://linkedin.com/in/', usernamePattern: /^[a-zA-Z0-9-]{3,100}$/ },
-    { key: 'youtube', label: 'YouTube', icon: 'fa-brands fa-youtube', placeholder: '@channel or channel link', baseUrl: 'https://youtube.com/', usernamePattern: /^@?[a-zA-Z0-9._-]{2,100}$/ },
+    { key: 'instagram', label: 'Instagram', icon: 'instagram', placeholder: '@username or profile link', baseUrl: 'https://instagram.com/', usernamePattern: /^[a-zA-Z0-9._]{1,30}$/ },
+    { key: 'twitter', label: 'Twitter', icon: 'twitter', placeholder: '@username or profile link', baseUrl: 'https://x.com/', usernamePattern: /^[a-zA-Z0-9_]{1,15}$/ },
+    { key: 'linkedin', label: 'LinkedIn', icon: 'linkedin', placeholder: 'username or profile link', baseUrl: 'https://linkedin.com/in/', usernamePattern: /^[a-zA-Z0-9-]{3,100}$/ },
+    { key: 'youtube', label: 'YouTube', icon: 'youtube', placeholder: '@channel or channel link', baseUrl: 'https://youtube.com/', usernamePattern: /^@?[a-zA-Z0-9._-]{2,100}$/ },
   ];
   readonly genderOptions = [
-    { value: 'Woman', label: 'Woman', icon: 'fa-solid fa-venus' },
-    { value: 'Man', label: 'Man', icon: 'fa-solid fa-mars' },
-    { value: 'Non-binary', label: 'Non-binary', icon: 'fa-solid fa-genderless' },
-    { value: 'Prefer not to say', label: 'Prefer not to say', icon: 'fa-regular fa-circle-question' },
+    { value: 'Woman', label: 'Woman', icon: 'female' },
+    { value: 'Man', label: 'Man', icon: 'male' },
+    { value: 'Non-binary', label: 'Non-binary', icon: 'transgender' },
+    { value: 'Prefer not to say', label: 'Prefer not to say', icon: 'person' },
   ];
   private interestCategories: any[] = [];
   private interestOptions: any[] = [];
@@ -94,6 +109,10 @@ export class EditProfileComponent implements OnInit {
 
   get displayInterests(): any[] {
     return this.interestOptions;
+  }
+
+  getInterestLabel(interest: any): string {
+    return typeof interest === 'string' ? interest : interest?.displayLabel || interest?.label || '';
   }
 
   get canSaveProfile(): boolean {
@@ -138,7 +157,7 @@ export class EditProfileComponent implements OnInit {
         }
 
         this.profileForm.markAsPristine();
-        this.router.navigateByUrl('/profile');
+        this.routeService.closeDrawerAndNavigateByUrl('/profile');
       },
       error: (err) => {
         this.saveError = err?.error?.message || err?.message || 'Unable to update profile.';
@@ -158,7 +177,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   goBack(): void {
-    window.history.back();
+    this.routeService.closeDrawerOrNavigate('/profile');
   }
 
   logout(): void {
@@ -276,7 +295,7 @@ export class EditProfileComponent implements OnInit {
   onSelfieVerified(): void {
     this.isVerified = true;
     this.profileForm.markAsPristine();
-    this.router.navigateByUrl('/profile');
+    this.routeService.closeDrawerAndNavigateByUrl('/profile');
   }
 
   toggleInterest(interest: any): void {
@@ -339,17 +358,7 @@ export class EditProfileComponent implements OnInit {
   onSocialLinkDraftChanged(value: string): void {
     this.socialLinkDraft = value;
     this.profileForm.markAsDirty();
-  }
-
-  openDatePicker(input: HTMLInputElement): void {
-    input.focus();
-
-    try {
-      const dateInput = input as HTMLInputElement & { showPicker?: () => void };
-      dateInput.showPicker?.();
-    } catch {
-      // Some browsers only allow the native picker from direct user input.
-    }
+    this.commitSocialLinkDraft(true);
   }
 
   private loadProfileData(): void {

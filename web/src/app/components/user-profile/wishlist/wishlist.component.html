@@ -1,33 +1,40 @@
-<div class="vl-wishlist-page vl-section-wrapper vl-section-top-padding">
-  <div class="vl-page-header-nav">
-    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-      <span class="material-symbols-outlined" translate="no">arrow_back</span>
-    </button>
-    <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
-  </div>
+<vl-form-drawer ariaLabel="My Wishlist">
+  <main class="vl-wishlist-drawer">
+    <header class="vl-wishlist-drawer__header">
+      <button type="button" class="vl-wishlist-drawer__icon-button" (click)="goBack()" aria-label="Go back" title="Back">
+        <span class="material-symbols-outlined" translate="no">chevron_left</span>
+      </button>
 
-  <div class="wishlist-header">
-    <h1 class="page-title" i18n>My Wishlist</h1>
-    <p class="subtitle" i18n>Events you have saved and bookmarked for later.</p>
-  </div>
+      <div class="vl-wishlist-drawer__title-wrap">
+        <h1 id="wishlist-title" class="vl-title-md">My Wishlist</h1>
+        @if (wishlistedEvents.length > 0) {
+          <span class="vl-wishlist-drawer__badge">{{ wishlistedEvents.length }}</span>
+        }
+      </div>
 
-  @if (wishlistedEvents.length > 0) {
-    <div class="responsive-grid">
-      @for (event of wishlistedEvents; track event._id) {
-        <vl-event-card [config]="event"></vl-event-card>
+      <div class="vl-wishlist-drawer__header-spacer"></div>
+    </header>
+
+    <div class="vl-wishlist-drawer__content">
+      @if (wishlistedEvents.length > 0) {
+        <div class="vl-wishlist-drawer__grid">
+          @for (event of wishlistedEvents; track event._id) {
+            <vl-event-card [config]="event"></vl-event-card>
+          }
+        </div>
+      } @else if (!isLoading) {
+        <div class="empty-wishlist-card">
+          <div class="empty-icon-wrap">
+            <span class="material-symbols-outlined" translate="no">favorite</span>
+          </div>
+          <h2 class="card-title" i18n>Your wishlist is empty</h2>
+          <p class="empty-desc" i18n>You haven't saved any events yet. Explore vibes and tap the heart icon on any event to bookmark it for later!</p>
+          <button type="button" class="vl-button vl-button--primary" (click)="exploreEvents()" i18n>
+            <span class="material-symbols-outlined" translate="no">explore</span>
+            Explore Events
+          </button>
+        </div>
       }
     </div>
-  } @else {
-    <div class="empty-wishlist-card">
-      <div class="empty-icon-wrap">
-        <span class="material-symbols-outlined">favorite</span>
-      </div>
-      <h2 class="card-title" i18n>Your wishlist is empty</h2>
-      <p class="empty-desc" i18n>You haven't saved any events yet. Explore events and tap the heart icon to save your favorite vibes!</p>
-      <a routerLink="/" class="vl-button vl-button--primary" i18n>
-        <span class="material-symbols-outlined">explore</span>
-        Explore Events
-      </a>
-    </div>
-  }
-</div>
+  </main>
+</vl-form-drawer>

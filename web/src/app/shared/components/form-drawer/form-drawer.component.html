@@ -2,10 +2,14 @@
   <span class="material-symbols-outlined" translate="no">close</span>
 </button>
 
+<div class="vl-form-drawer__backdrop" (click)="closeDrawer()" aria-hidden="true"></div>
+
 <section
   class="vl-form-drawer"
   [class.vl-form-drawer--closing]="isClosing"
   [attr.aria-label]="ariaLabel">
-  <div class="vl-form-drawer__handle" aria-hidden="true"></div>
+  <div class="vl-form-drawer__handle-bar" aria-hidden="true" (click)="closeDrawer()">
+    <div class="vl-form-drawer__handle"></div>
+  </div>
   <ng-content></ng-content>
 </section>

@@ -1,102 +1,197 @@
-<section class="notification-panel" [class.notification-panel-popover]="presentation === 'popover'"
-  [attr.role]="presentation === 'popover' ? 'dialog' : null"
-  [attr.aria-modal]="presentation === 'popover' ? 'false' : null" aria-labelledby="notification-title" vibOutsideClick
-  (onOutsideClick)="handleOutsideClick()">
-  <header class="notification-header">
-    <div class="notification-heading flex items-center gap-3">
-      @if (presentation === 'page') {
-      <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-        <span class="material-symbols-outlined" translate="no">arrow_back</span>
-      </button>
+@if (presentation === 'page') {
+  <vl-form-drawer ariaLabel="Notifications">
+    <main class="vl-notification-drawer">
+      <header class="vl-notification-drawer__header">
+        <button type="button" class="vl-notification-drawer__icon-button" (click)="goBack()" aria-label="Go back" title="Back">
+          <span class="material-symbols-outlined" translate="no">chevron_left</span>
+        </button>
+        <h1 id="notification-title" class="vl-title-md">Notifications</h1>
+        <div class="vl-notification-drawer__header-spacer"></div>
+      </header>
+
+      @if (notifications && notifications.length > 0) {
+        <div class="vl-notification-drawer__list">
+          @for (n of notifications; track n._id || $index) {
+            <article class="notification-card" [class.notification-card-unread]="!n.read">
+              <button
+                type="button"
+                class="notification-avatar"
+                [disabled]="!getNotificationSenderId(n)"
+                aria-label="Open sender profile"
+                (click)="redirectToNotificationSender(n)">
+                <img
+                  [src]="notificationSenderImage(n)"
+                  alt=""
+                  (error)="handleSenderImageError($event)" />
+                <div [attr.class]="'notification-avatar-badge ' + notificationTone(n)">
+                  <span class="material-symbols-outlined" translate="no">{{ notificationIcon(n) }}</span>
+                </div>
+              </button>
+
+              <div class="notification-content">
+                <div class="notification-copy-row">
+                  <p class="notification-message">{{ n.message }}</p>
+
+                  <div class="notification-meta">
+                    <span>{{ calculateShortTimeAgo(n.createdAt) }}</span>
+                    @if (!n.read) {
+                      <span class="notification-dot" aria-label="Unread notification"></span>
+                    }
+                  </div>
+                </div>
+
+                @if (notificationSubtitle(n)) {
+                  <p class="notification-subtitle">
+                    <button
+                      type="button"
+                      class="notification-event-link"
+                      [disabled]="!getNotificationEventId(n)"
+                      (click)="redirectToNotificationEvent(n)">
+                      {{ notificationSubtitle(n) }}
+                    </button>
+                    @switch (notificationState(n)) {
+                      @case ('accepted') {
+                        <span class="notification-inline-status notification-inline-status-confirmed">Confirmed</span>
+                      }
+                      @case ('rejected') {
+                        <span class="notification-inline-status notification-inline-status-rejected">Rejected</span>
+                      }
+                    }
+                  </p>
+                }
+
+                @switch (notificationState(n)) {
+                  @case ('processing') {
+                    <div class="notification-status processing-spinner">
+                      <i class="fa-solid fa-circle-notch fa-spin"></i>
+                      <span>Wait...</span>
+                    </div>
+                  }
+                  @case ('pending') {
+                    @if (n.type === notificationType.JOIN_REQUEST) {
+                      <div class="notification-actions">
+                        <button type="button" class="notification-action notification-action-primary"
+                          (click)="acceptJoinRequest(n)">
+                          Confirm
+                        </button>
+                        <button type="button" class="notification-action notification-action-secondary"
+                          (click)="rejectJoinRequest(n)">
+                          Decline
+                        </button>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="notification-empty">
+          <span class="material-symbols-outlined" translate="no">notifications_off</span>
+          <h2 class="vl-title-md">No new notifications</h2>
+          <p class="vl-body-sm">You're all caught up.</p>
+        </div>
       }
-      <h1 id="notification-title" class="vl-title-md">Notifications</h1>
-    </div>
+    </main>
+  </vl-form-drawer>
+} @else {
+  <!-- Popover for desktop navbar dropdown -->
+  <section class="notification-panel notification-panel-popover"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="notification-title-popover"
+    vibOutsideClick
+    (onOutsideClick)="handleOutsideClick()">
+    <header class="notification-header">
+      <div class="notification-heading flex items-center gap-3">
+        <h2 id="notification-title-popover" class="vl-title-md">Notifications</h2>
+      </div>
+    </header>
 
-  </header>
+    @if (notifications && notifications.length > 0) {
+      <div class="notification-list">
+        @for (n of notifications; track n._id || $index) {
+          <article class="notification-card" [class.notification-card-unread]="!n.read">
+            <button
+              type="button"
+              class="notification-avatar"
+              [disabled]="!getNotificationSenderId(n)"
+              aria-label="Open sender profile"
+              (click)="redirectToNotificationSender(n)">
+              <img
+                [src]="notificationSenderImage(n)"
+                alt=""
+                (error)="handleSenderImageError($event)" />
+              <div [attr.class]="'notification-avatar-badge ' + notificationTone(n)">
+                <span class="material-symbols-outlined" translate="no">{{ notificationIcon(n) }}</span>
+              </div>
+            </button>
 
-  @if (notifications && notifications.length > 0) {
-  <div class="notification-list">
-    @for (n of notifications; track n._id || $index) {
-    <article class="notification-card" [class.notification-card-unread]="!n.read">
-      <button
-        type="button"
-        class="notification-avatar"
-        [disabled]="!getNotificationSenderId(n)"
-        aria-label="Open sender profile"
-        (click)="redirectToNotificationSender(n)">
-        <img
-          [src]="notificationSenderImage(n)"
-          alt=""
-          (error)="handleSenderImageError($event)" />
-        <div [attr.class]="'notification-avatar-badge ' + notificationTone(n)">
-          <span class="material-symbols-outlined" translate="no">{{ notificationIcon(n) }}</span>
-        </div>
-      </button>
+            <div class="notification-content">
+              <div class="notification-copy-row">
+                <p class="notification-message">{{ n.message }}</p>
 
-      <div class="notification-content">
-        <div class="notification-copy-row">
-          <p class="notification-message">{{ n.message }}</p>
+                <div class="notification-meta">
+                  <span>{{ calculateShortTimeAgo(n.createdAt) }}</span>
+                  @if (!n.read) {
+                    <span class="notification-dot" aria-label="Unread notification"></span>
+                  }
+                </div>
+              </div>
 
-          <div class="notification-meta">
-            <span>{{ calculateShortTimeAgo(n.createdAt) }}</span>
-            @if (!n.read) {
-            <span class="notification-dot" aria-label="Unread notification"></span>
-            }
-          </div>
-        </div>
+              @if (notificationSubtitle(n)) {
+                <p class="notification-subtitle">
+                  <button
+                    type="button"
+                    class="notification-event-link"
+                    [disabled]="!getNotificationEventId(n)"
+                    (click)="redirectToNotificationEvent(n)">
+                    {{ notificationSubtitle(n) }}
+                  </button>
+                  @switch (notificationState(n)) {
+                    @case ('accepted') {
+                      <span class="notification-inline-status notification-inline-status-confirmed">Confirmed</span>
+                    }
+                    @case ('rejected') {
+                      <span class="notification-inline-status notification-inline-status-rejected">Rejected</span>
+                    }
+                  }
+                </p>
+              }
 
-        @if (notificationSubtitle(n)) {
-        <p class="notification-subtitle">
-          <button
-            type="button"
-            class="notification-event-link"
-            [disabled]="!getNotificationEventId(n)"
-            (click)="redirectToNotificationEvent(n)">
-            {{ notificationSubtitle(n) }}
-          </button>
-          @switch (notificationState(n)) {
-            @case ('accepted') {
-              <span class="notification-inline-status notification-inline-status-confirmed">Confirmed</span>
-            }
-            @case ('rejected') {
-              <span class="notification-inline-status notification-inline-status-rejected">Rejected</span>
-            }
-          }
-        </p>
-        }
-
-        @switch (notificationState(n)) {
-          @case ('processing') {
-          <div class="notification-status processing-spinner">
-            <i class="fa-solid fa-circle-notch fa-spin"></i>
-            <span>Wait...</span>
-          </div>
-          }
-          @case ('pending') {
-            @if (n.type === notificationType.JOIN_REQUEST) {
-            <div class="notification-actions">
-              <button type="button" class="notification-action notification-action-primary"
-                (click)="acceptJoinRequest(n)">
-                Confirm
-              </button>
-              <button type="button" class="notification-action notification-action-secondary"
-                (click)="rejectJoinRequest(n)">
-                Decline
-              </button>
+              @switch (notificationState(n)) {
+                @case ('processing') {
+                  <div class="notification-status processing-spinner">
+                    <i class="fa-solid fa-circle-notch fa-spin"></i>
+                    <span>Wait...</span>
+                  </div>
+                }
+                @case ('pending') {
+                  @if (n.type === notificationType.JOIN_REQUEST) {
+                    <div class="notification-actions">
+                      <button type="button" class="notification-action notification-action-primary"
+                        (click)="acceptJoinRequest(n)">
+                        Confirm
+                      </button>
+                      <button type="button" class="notification-action notification-action-secondary"
+                        (click)="rejectJoinRequest(n)">
+                        Decline
+                      </button>
+                    </div>
+                  }
+                }
+              }
             </div>
-            }
-          }
+          </article>
         }
       </div>
-    </article>
+    } @else {
+      <div class="notification-empty">
+        <span class="material-symbols-outlined" translate="no">notifications_off</span>
+        <h2 class="vl-title-md">No new notifications</h2>
+        <p class="vl-body-sm">You're all caught up.</p>
+      </div>
     }
-  </div>
-  } @else {
-  <div class="notification-empty">
-    <span class="material-symbols-outlined" translate="no">notifications_off</span>
-    <h2 class="vl-title-md">No new notifications</h2>
-    <p class="vl-body-sm">You're all caught up.</p>
-  </div>
-  }
-
-</section>
+  </section>
+}

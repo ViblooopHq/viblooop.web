@@ -18,19 +18,20 @@
       <span class="vl-ios-dock__label">Explore</span>
     </a>
 
-    <!-- Events Tab -->
+    <!-- Wishlist Tab -->
     <a
-      routerLink="/events"
+      (click)="$event.preventDefault(); navigateToWishlist()"
+      [routerLink]="['/my-wishlist']"
       routerLinkActive="vl-ios-dock__item--active"
       class="vl-ios-dock__item"
-      #rlaEvents="routerLinkActive">
+      #rlaWishlist="routerLinkActive">
       <div class="vl-ios-dock__icon-wrap">
         <span
           class="material-symbols-outlined vl-ios-dock__icon"
-          [style.font-variation-settings]="getActiveFill(rlaEvents)"
-          translate="no">event</span>
+          [style.font-variation-settings]="getActiveFill(rlaWishlist)"
+          translate="no">favorite</span>
       </div>
-      <span class="vl-ios-dock__label">Events</span>
+      <span class="vl-ios-dock__label">Wishlist</span>
     </a>
 
     <!-- Center Elevated Plus (+) Action -->

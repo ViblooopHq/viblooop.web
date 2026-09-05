@@ -1,23 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { CreateEventFormService } from '../../state/create-event-form.service';
 import { TimePickerDropdownComponent } from '../../ui/time-picker-dropdown/time-picker-dropdown.component';
 import { CapacitySelectorComponent } from '../../ui/capacity-selector/capacity-selector.component';
 import { AudiencePreferenceSelectorComponent } from '../../ui/audience-preference-selector/audience-preference-selector.component';
+import { DatepickerComponent } from '../../../../../shared/components/datepicker/datepicker.component';
 
 @Component({
   selector: 'vl-step-essentials',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
-    MatInputModule,
+    DatepickerComponent,
     TimePickerDropdownComponent,
     CapacitySelectorComponent,
     AudiencePreferenceSelectorComponent,

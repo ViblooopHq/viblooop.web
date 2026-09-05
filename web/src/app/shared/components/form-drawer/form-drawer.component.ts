@@ -1,4 +1,5 @@
-import { Component, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { RouteService } from '../../services/route/route.service';
 
 @Component({
@@ -9,6 +10,7 @@ import { RouteService } from '../../services/route/route.service';
 })
 export class FormDrawerComponent implements OnInit, OnDestroy {
   private routeService = inject(RouteService);
+  private platformId = inject(PLATFORM_ID);
 
   @Input() ariaLabel = 'Form drawer';
   isClosing = false;
@@ -17,24 +19,36 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
   private pageContainer: HTMLElement | null = null;
 
   ngOnInit(): void {
-    if (!this.isDesktopDrawer()) return;
+    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') return;
 
-    this.bodyPreviousOverflow = document.body.style.overflow;
-    this.pageContainer = document.querySelector('.vl-body-container');
-    this.pagePreviousOverflow = this.pageContainer?.style.overflow || '';
+    try {
+      this.bodyPreviousOverflow = document.body?.style?.overflow || '';
+      this.pageContainer = document.querySelector('.vl-body-container');
+      this.pagePreviousOverflow = this.pageContainer?.style?.overflow || '';
 
-    document.body.style.overflow = 'hidden';
-    if (this.pageContainer) {
-      this.pageContainer.style.overflow = 'hidden';
+      if (document.body) {
+        document.body.style.overflow = 'hidden';
+      }
+      if (this.pageContainer) {
+        this.pageContainer.style.overflow = 'hidden';
+      }
+    } catch {
+      // Ignore DOM access issues in non-standard environments
     }
   }
 
   ngOnDestroy(): void {
-    if (typeof document === 'undefined') return;
+    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') return;
 
-    document.body.style.overflow = this.bodyPreviousOverflow;
-    if (this.pageContainer) {
-      this.pageContainer.style.overflow = this.pagePreviousOverflow;
+    try {
+      if (document.body) {
+        document.body.style.overflow = this.bodyPreviousOverflow;
+      }
+      if (this.pageContainer) {
+        this.pageContainer.style.overflow = this.pagePreviousOverflow;
+      }
+    } catch {
+      // Ignore cleanup error
     }
   }
 
@@ -42,13 +56,8 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
     if (this.isClosing) return;
 
     this.isClosing = true;
-    setTimeout(() => this.routeService.closeDrawer(), 320);
-  }
-
-  private isDesktopDrawer(): boolean {
-    return typeof window !== 'undefined'
-      && typeof document !== 'undefined'
-      && typeof window.matchMedia === 'function'
-      && window.matchMedia('(min-width: 768px)').matches;
+    setTimeout(() => {
+      this.routeService.closeDrawerOrNavigate('/profile');
+    }, 280);
   }
 }

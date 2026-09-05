@@ -5,7 +5,9 @@ import { HttpService } from '../../services/http/http.service';
 import { Environment } from '../../../../environment';
 import { BrowserService } from '../../services/browser/browser.service';
 import { Router } from '@angular/router';
+import { RouteService } from '../../services/route/route.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
+import { FormDrawerComponent } from '../form-drawer/form-drawer.component';
 
 export enum NotificationType {
   JOIN_REQUEST = "JOIN_REQUEST",
@@ -20,7 +22,7 @@ export enum NotificationType {
 
 @Component({
   selector: 'vl-notification',
-  imports: [OutsideClickDirective],
+  imports: [OutsideClickDirective, FormDrawerComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss'
 })
@@ -36,6 +38,7 @@ export class NotificationComponent {
   httpService = inject(HttpService)
   platform = inject(BrowserService)
   private router = inject(Router)
+  private routeService = inject(RouteService)
   private readonly pendingSeenNotificationIds = new Set<string>();
 
   // Track state of actions for each notification
@@ -45,11 +48,7 @@ export class NotificationComponent {
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
     } else {
-      if (window.history.length > 1) {
-        window.history.back();
-      } else {
-        this.router.navigateByUrl('/');
-      }
+      this.routeService.closeDrawerOrNavigate('/');
     }
   }
 
@@ -78,8 +77,8 @@ export class NotificationComponent {
   closePanel() {
     this.panelClosed.emit();
 
-    if (this.presentation === 'page' && this.router.url.startsWith('/notifications')) {
-      this.router.navigateByUrl('/');
+    if (this.presentation === 'page') {
+      this.routeService.closeDrawerOrNavigate('/');
     }
   }
 
@@ -94,6 +93,7 @@ export class NotificationComponent {
       this.presentation === 'page' &&
       this.platform.isBrowserPlatform() &&
       window.matchMedia('(min-width: 768px)').matches &&
+      !this.router.url.includes('(drawer:notifications)') &&
       this.router.url.startsWith('/notifications')
     ) {
       this.router.navigateByUrl('/', { replaceUrl: true });
@@ -254,10 +254,12 @@ export class NotificationComponent {
     const eventId = this.getNotificationEventId(notification);
     if (!eventId) return;
 
-    this.redirectToEvent(eventId);
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
+    } else {
+      this.routeService.closeDrawer();
     }
+    this.redirectToEvent(eventId);
   }
 
   redirectToUserProfile(userId: string) {
@@ -277,10 +279,12 @@ export class NotificationComponent {
     const senderId = this.getNotificationSenderId(notification);
     if (!senderId) return;
 
-    this.redirectToUserProfile(senderId);
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
+    } else {
+      this.routeService.closeDrawer();
     }
+    this.redirectToUserProfile(senderId);
   }
 
   acceptJoinRequest(notification: any) {

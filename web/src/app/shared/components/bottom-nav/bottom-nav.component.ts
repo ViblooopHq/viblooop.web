@@ -49,14 +49,14 @@ export class BottomNavComponent {
 
   readonly mobileMenu: BottomNavItem[] = [
     { path: '/', label: 'Explore', icon: 'explore' },
-    { path: '/events', label: 'Events', icon: 'event' },
+    { path: '/my-wishlist', label: 'Wishlist', icon: 'favorite' },
     { path: '/chats', label: 'Chats', icon: 'chat' },
     { path: '/profile', label: 'Profile', icon: 'person' },
   ];
 
   readonly guestMobileMenu: BottomNavItem[] = [
     { path: '/', label: 'Explore', icon: 'explore' },
-    { path: '/events', label: 'Events', icon: 'event' },
+    { path: '/my-wishlist', label: 'Wishlist', icon: 'favorite' },
     { path: '/login', label: 'Sign In', icon: 'login' },
   ];
 
@@ -84,6 +84,14 @@ export class BottomNavComponent {
 
   navigateToCreate(): void {
     this.routeService.navigateToDrawer('create-event', '/create-event');
+  }
+
+  navigateToWishlist(): void {
+    if (!this.isLoggedIn()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+    this.routeService.navigateToDrawer('my-wishlist', '/my-wishlist');
   }
 
   getActiveFill(rla: RouterLinkActive): string {

@@ -1,0 +1,126 @@
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.vl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 38px;
+  padding: 0 0.95rem;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: default;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+
+  &__icon {
+    font-size: 1.125rem;
+    color: var(--color-primary);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  &__label {
+    line-height: 1;
+  }
+
+  &__check {
+    font-size: 1.05rem;
+    color: var(--color-primary);
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    font-weight: 700;
+  }
+
+  &__remove {
+    font-size: 0.95rem;
+    color: var(--color-text-muted);
+    line-height: 1;
+    margin-left: 0.15rem;
+    cursor: pointer;
+    border-radius: var(--radius-pill, 9999px);
+    transition: color 0.15s ease, background-color 0.15s ease;
+
+    &:hover {
+      color: var(--color-danger, #ef4444);
+    }
+  }
+
+  /* Size variants */
+  &--sm {
+    height: 32px;
+    padding: 0 0.75rem;
+    font-size: 0.75rem;
+    gap: 0.35rem;
+
+    .vl-pill__icon,
+    .vl-pill__check {
+      font-size: 1rem;
+    }
+  }
+
+  &--lg {
+    height: 44px;
+    padding: 0 1.2rem;
+    font-size: 0.875rem;
+    gap: 0.55rem;
+
+    .vl-pill__icon,
+    .vl-pill__check {
+      font-size: 1.25rem;
+    }
+  }
+
+  /* Selectable / Interactive state */
+  &--selectable,
+  &--interactive {
+    cursor: pointer;
+
+    &:hover:not(.vl-pill--disabled) {
+      border-color: var(--color-border-hover, var(--color-primary));
+      background-color: var(--color-surface-hover, rgba(124, 58, 237, 0.04));
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-xs);
+    }
+
+    &:active:not(.vl-pill--disabled) {
+      transform: scale(0.97);
+    }
+  }
+
+  /* Selected state */
+  &--selected {
+    border-color: var(--color-primary);
+    background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+    color: var(--color-primary);
+    font-weight: 700;
+    box-shadow: 0 0 0 1px var(--color-primary);
+
+    .vl-pill__icon {
+      color: var(--color-primary);
+    }
+
+    &:hover:not(.vl-pill--disabled) {
+      background-color: color-mix(in srgb, var(--color-primary) 18%, var(--color-surface));
+      border-color: var(--color-primary);
+    }
+  }
+
+  /* Disabled state */
+  &--disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}

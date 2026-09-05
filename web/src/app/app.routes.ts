@@ -76,6 +76,18 @@ export const routes: Routes = [
     component: EditProfileComponent,
   },
   {
+    path: 'my-wishlist',
+    outlet: 'drawer',
+    canActivate: [authGuard],
+    loadComponent: () => import('./components/user-profile/wishlist/wishlist.component').then(c => c.WishlistComponent)
+  },
+  {
+    path: 'notifications',
+    outlet: 'drawer',
+    canActivate: [authGuard],
+    component: NotificationComponent
+  },
+  {
     path: 'login',
     component: LoginComponent,
   },
