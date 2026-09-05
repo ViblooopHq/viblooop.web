@@ -310,7 +310,7 @@ export class CreateEventComponent implements OnInit {
 
   finishEventCreation(): void {
     this.ngZone.run(() => {
-      this.router.closeDrawerAndNavigateByUrl('/explore');
+      this.router.closeDrawerAndNavigateByUrl('/');
     });
   }
 }

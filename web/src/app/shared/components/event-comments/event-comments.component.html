@@ -34,12 +34,12 @@
         <div class="review-text-panel">
           <div class="review-textarea-wrap">
             <label for="review-comment" class="sr-only">Your review comment</label>
-            <textarea id="review-comment" class="vl-field" formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
+            <textarea id="review-comment" class="review-textarea" formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
             <span class="review-char-count">{{ reviewCommentLength }}/250</span>
           </div>
         </div>
 
-        <button type="submit" class="btn-post vl-button vl-button--primary vl-button--block" [disabled]="reviewForm.invalid || isSubmitting()">
+        <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting()">
           @if (isSubmitting()) {
             <vl-inline-loader size="sm" color="white" [text]="isEditingReview ? 'Updating Review...' : 'Posting Review...'"></vl-inline-loader>
           } @else {
@@ -49,7 +49,7 @@
         </button>
 
         @if (isEditingReview) {
-          <button type="button" class="btn-cancel-review vl-button vl-button--tertiary" (click)="cancelReviewEdit()" [disabled]="isSubmitting()">
+          <button type="button" class="btn-cancel-review" (click)="cancelReviewEdit()" [disabled]="isSubmitting()">
             Cancel Edit
           </button>
         }
@@ -100,8 +100,8 @@
     } @else {
       <div class="review-list">
       @for (review of visibleReviews; track review._id) {
-        <div class="review-card" [class.review-card--highlight]="isOwnReview(review)">
-          <div class="review-card__header">
+        <article class="review-item" [class.review-item--highlight]="isOwnReview(review)">
+          <div class="review-item__header">
             <div class="review-author">
               <img
                 [src]="review?.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
@@ -109,54 +109,61 @@
                 class="review-avatar"
                 alt="{{ review?.raterUserId?.username || 'Attendee' }}">
               <div class="review-author__info">
-                <span class="review-author__name">
-                  {{ review?.raterUserId?.username || 'Attendee' }}
-                  @if (isOwnReview(review)) { <span class="review-author__badge">You</span> }
-                </span>
+                <div class="review-author__name-row">
+                  <span class="review-author__name">
+                    {{ review?.raterUserId?.username || 'Attendee' }}
+                  </span>
+                  @if (isOwnReview(review)) {
+                    <span class="review-author__badge">You</span>
+                  }
+                </div>
                 <span class="review-author__meta">
                   {{ getTimeAgo(review.createdAt) }}
                 </span>
               </div>
             </div>
-            <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
-              @for (star of stars; track star) {
-                <i [class]="star <= (review.score || 0) ? 'fa-solid fa-star filled' : 'fa-regular fa-star'" aria-hidden="true"></i>
+
+            <div class="review-item__header-right">
+              <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
+                @for (star of stars; track star) {
+                  <i [class]="star <= (review.score || 0) ? 'fa-solid fa-star filled' : 'fa-regular fa-star'" aria-hidden="true"></i>
+                }
+              </div>
+
+              @if (isOwnReview(review)) {
+                <div class="review-item__actions">
+                  <button
+                    type="button"
+                    class="review-menu-trigger"
+                    aria-label="Review options"
+                    [attr.aria-expanded]="isReviewMenuOpen(review)"
+                    (click)="toggleReviewMenu(review)">
+                    <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+                  </button>
+
+                  @if (isReviewMenuOpen(review)) {
+                    <div class="comment-menu" role="menu">
+                      <button type="button" role="menuitem" (click)="editReview(review)">
+                        <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                        <span>Edit Review</span>
+                      </button>
+                      <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
+                        @if (deletingReviewId() === review._id) {
+                          <vl-inline-loader size="xs" color="light" text="Deleting..."></vl-inline-loader>
+                        } @else {
+                          <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                          <span>Delete Review</span>
+                        }
+                      </button>
+                    </div>
+                  }
+                </div>
               }
             </div>
           </div>
 
-          <p class="review-card__body">{{ review.comment }}</p>
-
-          @if (isOwnReview(review)) {
-            <div class="review-card__actions">
-              <button
-                type="button"
-                class="review-menu-trigger"
-                aria-label="Review options"
-                [attr.aria-expanded]="isReviewMenuOpen(review)"
-                (click)="toggleReviewMenu(review)">
-                <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
-              </button>
-
-              @if (isReviewMenuOpen(review)) {
-                <div class="comment-menu" role="menu">
-                  <button type="button" role="menuitem" (click)="editReview(review)">
-                    <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-                    Edit Review
-                  </button>
-                  <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
-                    @if (deletingReviewId() === review._id) {
-                      <vl-inline-loader size="xs" color="light" text="Deleting..."></vl-inline-loader>
-                    } @else {
-                      <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
-                      <span>Delete Review</span>
-                    }
-                  </button>
-                </div>
-              }
-            </div>
-          }
-        </div>
+          <p class="review-item__body">{{ review.comment }}</p>
+        </article>
       }
       </div>
 

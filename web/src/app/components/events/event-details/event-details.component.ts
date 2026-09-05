@@ -984,7 +984,7 @@ export class EventDetailsComponent {
     // If this was a successful delete, navigate away
     if (modal.variant === 'success' && modal.title === 'Event Deleted') {
       this.actionModal.set({ ...defaultModalState });
-      this.routeService.navigateByUrl('/explore');
+      this.routeService.navigateByUrl('/');
       return;
     }
     this.actionModal.set({ ...defaultModalState });

@@ -2,7 +2,7 @@
 @use '../../../../styles/components/primitives' as primitives;
 
 :host {
-  --notification-page-top-offset: 6.5rem;
+  --notification-page-top-offset: var(--header-clearance-desktop, 7.75rem);
   --notification-page-bottom-offset: 1.5rem;
   --notification-panel: var(--color-surface);
   --notification-panel-soft: var(--color-surface-raised);
@@ -21,6 +21,10 @@
   padding: var(--notification-page-top-offset) 0 var(--notification-page-bottom-offset);
   background-color: var(--color-bg);
   color: var(--notification-text);
+
+  @media (max-width: 768px) {
+    --notification-page-top-offset: var(--header-clearance-mobile, 5.25rem);
+  }
 }
 
 :host-context(.notification-anchor) {

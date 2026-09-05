@@ -1,11 +1,16 @@
-<section class="vl-events-list">
-  <nav class="vl-breadcrumb" aria-label="Breadcrumb" style="padding-top: 8rem;">
-    @for (crumb of breadcrumbs; track crumb.label) {
-    <a class="vl-breadcrumb__link" [href]="crumb.url">{{ crumb.label }}</a>
-    <span class="material-symbols-outlined vl-breadcrumb__separator" translate="no">chevron_right</span>
-    }
-    <span class="vl-breadcrumb__current" aria-current="page">{{ activeEventCategory?.title }}</span>
-  </nav>
+<section class="vl-events-list vl-section-wrapper vl-section-top-padding">
+  <div class="vl-page-header-nav">
+    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+      <span class="material-symbols-outlined" translate="no">arrow_back</span>
+    </button>
+    <nav class="vl-breadcrumb" aria-label="Breadcrumb">
+      @for (crumb of breadcrumbs; track crumb.label) {
+      <a class="vl-breadcrumb__link" [href]="crumb.url">{{ crumb.label }}</a>
+      <span class="material-symbols-outlined vl-breadcrumb__separator" translate="no">chevron_right</span>
+      }
+      <span class="vl-breadcrumb__current" aria-current="page">{{ activeEventCategory?.title }}</span>
+    </nav>
+  </div>
 
   <main class="vl-main-layout">
     <header class="vl-banner vl-surface vl-surface--glass">

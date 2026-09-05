@@ -49,7 +49,7 @@ export class HeaderComponent implements OnInit {
   userName = ''
 
   mobileMenu = [
-    { path: '/explore', label: 'Explore', icon: 'explore' },
+    { path: '/', label: 'Explore', icon: 'explore' },
     { path: '/events', label: 'Events', icon: 'event' },
     { path: '/my-events', label: 'My Vibes', icon: 'celebration' },
     { path: '/chats', label: 'Chats', icon: 'chat' },
@@ -57,18 +57,12 @@ export class HeaderComponent implements OnInit {
   ];
 
   guestMobileMenu = [
-    { path: '/explore', label: 'Explore', icon: 'explore' },
+    { path: '/', label: 'Explore', icon: 'explore' },
     { path: '/events', label: 'Events', icon: 'event' },
     { path: '/login', label: 'Sign In', icon: 'login' },
   ];
 
-  desktopMenu = [
-    {
-      title: 'Explore',
-      icon: 'search',
-      url: 'explore'
-    }
-  ]
+  desktopMenu: any[] = [];
 
   isActiveLink: boolean = false
   userDetails: any = null;

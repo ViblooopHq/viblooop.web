@@ -1,7 +1,7 @@
 @use '../../../../styles/index' as *;
 
 :host {
-  --chat-page-top-offset: 6.5rem;
+  --chat-page-top-offset: var(--header-clearance-desktop, 7.75rem);
   --chat-page-bottom-offset: 1.5rem;
 
   box-sizing: border-box;
@@ -11,12 +11,16 @@
   background-color: var(--color-bg);
   color: var(--color-text-primary);
   font-family: var(--font-family-primary);
+
+  @media (max-width: 768px) {
+    --chat-page-top-offset: var(--header-clearance-mobile, 5.25rem);
+  }
 }
 
 .inbox-container {
   display: grid;
   grid-template-columns: minmax(19rem, 24rem) minmax(0, 1fr);
-  width: min(90%, 1280px);
+  width: min(95%, 1280px);
   height: calc(100dvh - var(--chat-page-top-offset) - var(--chat-page-bottom-offset));
   min-height: 36rem;
   margin: 0 auto;

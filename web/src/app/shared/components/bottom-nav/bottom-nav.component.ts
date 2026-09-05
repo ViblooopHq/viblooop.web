@@ -48,14 +48,14 @@ export class BottomNavComponent {
   });
 
   readonly mobileMenu: BottomNavItem[] = [
-    { path: '/explore', label: 'Explore', icon: 'explore' },
+    { path: '/', label: 'Explore', icon: 'explore' },
     { path: '/events', label: 'Events', icon: 'event' },
     { path: '/chats', label: 'Chats', icon: 'chat' },
     { path: '/profile', label: 'Profile', icon: 'person' },
   ];
 
   readonly guestMobileMenu: BottomNavItem[] = [
-    { path: '/explore', label: 'Explore', icon: 'explore' },
+    { path: '/', label: 'Explore', icon: 'explore' },
     { path: '/events', label: 'Events', icon: 'event' },
     { path: '/login', label: 'Sign In', icon: 'login' },
   ];

@@ -1,5 +1,5 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
@@ -18,6 +18,7 @@ export class ViewAllEventsComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private eventsService = inject(EventsService);
   private routeService = inject(RouteService);
+  private location = inject(Location);
 
   collectionType = signal<string>('all');
   events = signal<any[]>([]);
@@ -29,6 +30,14 @@ export class ViewAllEventsComponent implements OnInit {
   bannerTitle = signal<string>('All Events');
   bannerDescription = signal<string>('Discover amazing events around you');
   bannerImage = signal<string>('assets/images/default-banner.jpg');
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.routeService.navigateByUrl('/');
+    }
+  }
 
   ngOnInit(): void {
     this.route.paramMap.subscribe(params => {

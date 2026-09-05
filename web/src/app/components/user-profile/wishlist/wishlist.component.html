@@ -1,4 +1,11 @@
 <div class="vl-wishlist-page vl-section-wrapper vl-section-top-padding">
+  <div class="vl-page-header-nav">
+    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+      <span class="material-symbols-outlined" translate="no">arrow_back</span>
+    </button>
+    <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
+  </div>
+
   <div class="wishlist-header">
     <h1 class="page-title" i18n>My Wishlist</h1>
     <p class="subtitle" i18n>Events you have saved and bookmarked for later.</p>
@@ -17,7 +24,7 @@
       </div>
       <h2 class="card-title" i18n>Your wishlist is empty</h2>
       <p class="empty-desc" i18n>You haven't saved any events yet. Explore events and tap the heart icon to save your favorite vibes!</p>
-      <a routerLink="/explore" class="vl-button vl-button--primary" i18n>
+      <a routerLink="/" class="vl-button vl-button--primary" i18n>
         <span class="material-symbols-outlined">explore</span>
         Explore Events
       </a>

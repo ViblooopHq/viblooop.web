@@ -1,9 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from "../../../shared/components/event-card/event-card.component";
 import { SharedService } from '../../../shared/services/shared.service';
-import { NgClass } from '@angular/common';
+import { Location, NgClass } from '@angular/common';
 
 @Component({
   selector: 'vl-events-list',
@@ -14,11 +14,20 @@ import { NgClass } from '@angular/common';
 export class EventsListComponent implements OnInit {
   breadcrumbs = [
     { label: 'Home', url: '/' },
-    { label: 'Discover', url: '/discover' }
   ];
-  route: ActivatedRoute = inject(ActivatedRoute)
-  eventService = inject(EventsService)
+  route: ActivatedRoute = inject(ActivatedRoute);
+  eventService = inject(EventsService);
   mainService = inject(SharedService);
+  private location = inject(Location);
+  private router = inject(Router);
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
 
   activeEventCategory: any = {};
   activeCategoryEvents: any = [];

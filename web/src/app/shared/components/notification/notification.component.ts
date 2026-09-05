@@ -41,6 +41,18 @@ export class NotificationComponent {
   // Track state of actions for each notification
   actionStates: { [key: string]: 'pending' | 'processing' | 'accepted' | 'rejected' } = {};
 
+  goBack(): void {
+    if (this.presentation === 'popover') {
+      this.panelClosed.emit();
+    } else {
+      if (window.history.length > 1) {
+        window.history.back();
+      } else {
+        this.router.navigateByUrl('/');
+      }
+    }
+  }
+
   ngOnInit() {
     this.initSocketSubscriptions();
     this.redirectDesktopPageToHome();

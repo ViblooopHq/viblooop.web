@@ -10,11 +10,11 @@
   min-height: 100vh;
   color: var(--color-text-primary);
   position: relative;
-  padding-top: 6.5rem;
+  padding-top: var(--header-clearance-desktop, 7.75rem);
   padding-bottom: var(--section-gap);
 
   @media (max-width: 768px) {
-    padding-top: 5rem;
+    padding-top: var(--header-clearance-mobile, 5.25rem);
   }
 }
 

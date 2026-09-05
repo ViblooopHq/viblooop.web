@@ -1,9 +1,13 @@
 .vl-user-profile-container {
   width: 100%;
   min-height: 100dvh;
-  padding: 6.5rem clamp(1rem, 4vw, 3rem) 5rem;
+  padding: var(--header-clearance-desktop, 7.75rem) clamp(1rem, 4vw, 3rem) 5rem;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
+
+  @media (max-width: 768px) {
+    padding-top: var(--header-clearance-mobile, 5.25rem);
+  }
 }
 
 .vl-user-profile {

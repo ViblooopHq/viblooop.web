@@ -3,7 +3,12 @@
   [attr.aria-modal]="presentation === 'popover' ? 'false' : null" aria-labelledby="notification-title" vibOutsideClick
   (onOutsideClick)="handleOutsideClick()">
   <header class="notification-header">
-    <div class="notification-heading">
+    <div class="notification-heading flex items-center gap-3">
+      @if (presentation === 'page') {
+      <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+        <span class="material-symbols-outlined" translate="no">arrow_back</span>
+      </button>
+      }
       <h1 id="notification-title" class="vl-title-md">Notifications</h1>
     </div>
 

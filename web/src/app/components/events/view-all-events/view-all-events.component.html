@@ -1,5 +1,11 @@
 <div class="view-all-container">
   <header class="view-all-header vl-section-wrapper">
+    <div class="vl-page-header-nav">
+      <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+        <span class="material-symbols-outlined" translate="no">arrow_back</span>
+      </button>
+      <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
+    </div>
     <div class="header-card">
       <div class="header-content">
         <h1 class="header-title">{{ bannerTitle() }}</h1>

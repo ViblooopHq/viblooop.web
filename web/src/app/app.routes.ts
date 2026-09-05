@@ -17,7 +17,12 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'explore',
+    component: ExploreEventsComponent,
+  },
+  {
+    path: 'explore',
+    redirectTo: '',
+    pathMatch: 'full',
   },
   {
     path: 'events/:eventId',
@@ -52,10 +57,6 @@ export const routes: Routes = [
   {
     path: 'eventCategories/:categoryId',
     component: EventsListComponent,
-  },
-  {
-    path: 'explore',
-    component: ExploreEventsComponent,
   },
   {
     path: 'events/view-all/:collection',

@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Location } from '@angular/common';
 import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
 import { SharedService } from '../../shared/services/shared.service';
@@ -39,6 +40,16 @@ export class UserProfileComponent implements OnInit {
   mainService = inject(SharedService);
   authSerivice = inject(AuthService);
   platform = inject(BrowserService);
+  private location = inject(Location);
+
+  goBack(): void {
+    if (window.history.length > 1) {
+      this.location.back();
+    } else {
+      this.router.navigateByUrl('/');
+    }
+  }
+
   activeTab: string = 'Joined';
   userProfile: any;
   tabs: string[] = ['Joined', 'Hosted', 'Gallery'];

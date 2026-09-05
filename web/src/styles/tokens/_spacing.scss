@@ -18,6 +18,8 @@
   --space-24: 96px;
 
   /* Layout Spacing */
+  --header-clearance-desktop: 7.75rem; /* 124px: 84px floating navbar + 40px comfortable breathing space */
+  --header-clearance-mobile: 5.25rem;  /* 84px: 56px mobile bar + 28px breathing space */
   --page-padding-x: 2rem;       /* 32px desktop */
   --page-padding-y: 2.5rem;     /* 40px */
   --card-padding: 1rem;         /* 16px */
