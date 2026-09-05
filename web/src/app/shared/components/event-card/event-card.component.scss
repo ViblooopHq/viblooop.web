@@ -6,6 +6,10 @@
 :host {
   display: block;
   height: 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .vl-event-card {
@@ -13,7 +17,10 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
+  min-width: 0;
+  max-width: 100%;
   overflow: hidden;
+  box-sizing: border-box;
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);

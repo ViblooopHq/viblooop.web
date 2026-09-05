@@ -1,5 +1,5 @@
 <article
-  class="vl-event-card vl-surface vl-surface--interactive flex-shrink-0 relative group cursor-pointer w-full h-full flex flex-col"
+  class="vl-event-card vl-surface vl-surface--interactive min-w-0 relative group cursor-pointer w-full h-full flex flex-col"
   [ngClass]="{'vl-event-card--profile-default': presentation() === 'profile'}"
   (click)="onViewEventClick()">
   <!-- Image Header -->
@@ -24,15 +24,15 @@
       <span class="material-symbols-outlined !text-[18px] transition-all duration-300" aria-hidden="true"
         [ngClass]="isWishlisted ? 'text-rose-500 scale-110' : 'text-slate-400'"
         [style.font-variation-settings]="isWishlisted ? '&quot;FILL&quot; 1' : '&quot;FILL&quot; 0'">
-        favorite
+      favorite
       </span>
     </button>
     }
   </div>
 
   <!-- Card Body -->
-  <div class="p-3.5 sm:p-4 flex-1 flex flex-col justify-between">
-    <div>
+  <div class="p-3.5 sm:p-4 flex-1 flex flex-col justify-between min-w-0">
+    <div class="min-w-0">
       <!-- Title -->
       <h3
         class="!text-[16px] sm:!text-[18px] font-bold text-on-surface mb-1.5 sm:mb-2 leading-tight group-hover:text-primary transition-colors duration-200 line-clamp-2">
@@ -40,20 +40,20 @@
       </h3>
 
       <!-- Location & Time Row -->
-      <div class="flex items-center gap-2 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5">
-        <div class="flex items-center gap-1 min-w-0">
+      <div class="flex items-center gap-2 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5 min-w-0">
+        <div class="flex items-center gap-1 min-w-0 flex-1">
           <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">location_on</span>
-          <span class="truncate max-w-[120px] sm:max-w-[150px] font-medium">{{ location }}</span>
+          <span class="truncate font-medium">{{ location }}</span>
         </div>
-        <span class="text-slate-400 font-normal" aria-hidden="true">•</span>
-        <div class="flex items-center gap-1 flex-shrink-0">
+        <span class="text-slate-400 font-normal flex-shrink-0" aria-hidden="true">•</span>
+        <div class="flex items-center gap-1 min-w-0 flex-1">
           <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">
             {{ isEscapeEvent ? 'date_range' : 'schedule' }}
           </span>
           @if (isEscapeEvent) {
-            <span class="whitespace-nowrap font-medium">{{ tripDateRangeLabel }}</span>
+            <span class="truncate font-medium">{{ tripDateRangeLabel }}</span>
           } @else {
-            <span class="whitespace-nowrap font-medium">{{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}</span>
+            <span class="truncate font-medium">{{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}</span>
           }
         </div>
       </div>
