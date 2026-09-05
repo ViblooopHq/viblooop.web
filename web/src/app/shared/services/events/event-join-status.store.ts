@@ -64,10 +64,15 @@ export const EventJoinStatusStore = signalStore(
         : 'rejected';
 
       patchState(store, (state) => ({
-        statuses: {
-          ...state.statuses,
-          [eventId]: status,
-        },
+        // Socket payloads contain recent notification history, not only new events.
+        // An accepted/rejected notification is valid only while the local request
+        // is pending; otherwise an old notification could resurrect cleared state.
+        statuses: getStatusForEvent(state.statuses, eventId) === 'pending'
+          ? {
+              ...state.statuses,
+              [eventId]: status,
+            }
+          : state.statuses,
         handledNotificationIds: notificationId
           ? {
               ...state.handledNotificationIds,

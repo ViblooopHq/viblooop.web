@@ -119,6 +119,7 @@ export class EventDetailsComponent {
 
   private readonly openCapacityLimit = 999999;
   private fetchedJoinStatusKey = '';
+  private refreshedAcceptedMembershipKey = '';
 
   // ── Unified loading & core state ──
   readonly isLoadingEvent = signal<boolean>(true);
@@ -162,9 +163,8 @@ export class EventDetailsComponent {
     const creator = details?.createdBy as any;
     const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
     const isMember = this.isLoggedIn() && !!userId && (this.attendees().includes(userId) || userId === creatorId);
-    const joinStatus = this.eventJoinStatusStore.statusFor(this.eventId());
 
-    return isMember || joinStatus === 'accepted';
+    return isMember;
   });
   isUserAttendee = computed(() => this.canAccessPrivateEventData());
   isEventCreator = computed(() => {
@@ -384,6 +384,25 @@ export class EventDetailsComponent {
     });
 
     effect(() => {
+      const eventId = this.eventId();
+      const userId = this.currentUser()?.id || this.currentUser()?._id;
+      const joinStatus = this.eventJoinStatusStore.statusFor(eventId);
+
+      if (joinStatus !== 'accepted') {
+        this.refreshedAcceptedMembershipKey = '';
+        return;
+      }
+
+      if (!eventId || !userId || !this.eventDetails() || this.canAccessPrivateEventData()) return;
+
+      const refreshKey = `${eventId}:${userId}`;
+      if (this.refreshedAcceptedMembershipKey === refreshKey) return;
+
+      this.refreshedAcceptedMembershipKey = refreshKey;
+      this.fetchEventDetails(eventId, false);
+    });
+
+    effect(() => {
       const details = this.eventDetails();
       if (!details) return;
 
@@ -472,8 +491,8 @@ export class EventDetailsComponent {
               this.attendeeProfiles.set([]);
             }
 
-            if (joinRes?.success && joinRes.data?.status) {
-              this.eventJoinStatusStore.setApiStatus(eventId, joinRes.data.status);
+            if (joinRes?.success) {
+              this.eventJoinStatusStore.setApiStatus(eventId, joinRes.data?.status);
             }
 
             if (relRes?.success && Array.isArray(relRes.data)) {
@@ -904,6 +923,7 @@ export class EventDetailsComponent {
           return;
         }
         this.toastService.success('You have left the event.', 'Event Left');
+        this.eventJoinStatusStore.setStatus(eventId, 'none');
         this.actionModal.set({
           ...defaultModalState,
           isOpen: true,
