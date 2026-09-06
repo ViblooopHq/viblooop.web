@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
-export type AppDrawerState = {
-  type: 'create-event';
-  mode: 'create' | 'edit';
-  eventId?: string | null;
-};
+export type AppDrawerState =
+  | { type: 'edit-profile' }
+  | { type: 'wishlist' }
+  | { type: 'notifications' }
+  | { type: 'create-event'; mode: 'create' | 'edit'; eventId?: string | null };
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +16,22 @@ export class AppDrawerService {
 
   get hasOpenDrawer(): boolean {
     return this.drawerSubject.value !== null;
+  }
+
+  get currentDrawerState(): AppDrawerState | null {
+    return this.drawerSubject.value;
+  }
+
+  openEditProfile(): void {
+    this.drawerSubject.next({ type: 'edit-profile' });
+  }
+
+  openWishlist(): void {
+    this.drawerSubject.next({ type: 'wishlist' });
+  }
+
+  openNotifications(): void {
+    this.drawerSubject.next({ type: 'notifications' });
   }
 
   openCreateEvent(): void {
@@ -30,3 +46,4 @@ export class AppDrawerService {
     this.drawerSubject.next(null);
   }
 }
+

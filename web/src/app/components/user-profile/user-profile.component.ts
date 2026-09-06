@@ -2,6 +2,7 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
+import { AppDrawerService } from '../../shared/services/drawer/app-drawer.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { ReviewsComponent } from './reviews/reviews.component';
@@ -36,6 +37,7 @@ export class UserProfileComponent implements OnInit {
   @ViewChild('profilePhotoViewer') profilePhotoViewer?: GalleryComponent;
 
   router = inject(RouteService);
+  private appDrawerService = inject(AppDrawerService);
   route = inject(ActivatedRoute);
   mainService = inject(SharedService);
   authSerivice = inject(AuthService);
@@ -100,6 +102,12 @@ export class UserProfileComponent implements OnInit {
 
         this.initProfile(currentUserId);
       });
+
+    this.appDrawerService.drawer$.subscribe((drawerState) => {
+      if (!drawerState && this.userId) {
+        this.loadProfile();
+      }
+    });
   }
 
   setActiveTab(tab: string) {
@@ -285,7 +293,7 @@ export class UserProfileComponent implements OnInit {
   }
 
   editProfile() {
-    this.router.navigateToDrawer('edit-profile', '/profile/edit');
+    this.appDrawerService.openEditProfile();
   }
 
   verifyGovernmentID() {

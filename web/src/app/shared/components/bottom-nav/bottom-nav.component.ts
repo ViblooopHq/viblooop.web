@@ -11,6 +11,8 @@ import { filter, map, startWith } from 'rxjs/operators';
 import { AuthService } from '../../services/auth/auth.service';
 import { SharedService } from '../../services/shared.service';
 import { RouteService } from '../../services/route/route.service';
+import { AppDrawerService } from '../../services/drawer/app-drawer.service';
+import { CompleteProfileService } from '../../services/popup/complete-profile.service';
 import { CommonModule } from '@angular/common';
 
 export interface BottomNavItem {
@@ -32,6 +34,8 @@ export class BottomNavComponent {
   readonly sharedService = inject(SharedService);
   private readonly router = inject(Router);
   private readonly routeService = inject(RouteService);
+  private readonly appDrawerService = inject(AppDrawerService);
+  private readonly completeProfileService = inject(CompleteProfileService);
 
   readonly defaultProfileImage = 'assets/images/default-profile.png';
 
@@ -45,6 +49,10 @@ export class BottomNavComponent {
   readonly profileImage = computed(() => {
     const user = this.currentUser();
     return user?.profileImage || user?.avatar || this.defaultProfileImage;
+  });
+
+  readonly isWishlistOpen = computed(() => {
+    return this.appDrawerService.currentDrawerState?.type === 'wishlist';
   });
 
   readonly mobileMenu: BottomNavItem[] = [
@@ -83,7 +91,14 @@ export class BottomNavComponent {
   }
 
   navigateToCreate(): void {
-    this.routeService.navigateToDrawer('create-event', '/create-event');
+    if (!this.isLoggedIn()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+    this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
+      if (!isComplete) return;
+      this.appDrawerService.openCreateEvent();
+    });
   }
 
   navigateToWishlist(): void {
@@ -91,7 +106,7 @@ export class BottomNavComponent {
       this.router.navigateByUrl('/login');
       return;
     }
-    this.routeService.navigateToDrawer('my-wishlist', '/my-wishlist');
+    this.appDrawerService.openWishlist();
   }
 
   getActiveFill(rla: RouterLinkActive): string {

@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
 import { catchError, forkJoin, map, of } from 'rxjs';
@@ -17,6 +17,7 @@ import { EventsService } from '../../../shared/services/events/events.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
 import { BrowserService } from '../../../shared/services/browser/browser.service';
 import { MatTooltip } from '@angular/material/tooltip';
 import { Environment } from '../../../../environment';
@@ -109,6 +110,7 @@ export class EventDetailsComponent {
   private readonly authService = inject(AuthService);
   private readonly sharedService = inject(SharedService);
   private readonly routeService = inject(RouteService);
+  private readonly appDrawerService = inject(AppDrawerService);
   private readonly platform = inject(BrowserService);
   private readonly socketService = inject(SocketService);
   private readonly eventJoinStatusStore = inject(EventJoinStatusStore);
@@ -372,6 +374,14 @@ export class EventDetailsComponent {
   });
 
   constructor() {
+    this.appDrawerService.drawer$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((drawerState) => {
+        if (!drawerState && this.eventId()) {
+          this.fetchEventDetails(this.eventId(), false);
+        }
+      });
+
     effect(() => {
       const eventId = this.eventId();
       if (eventId) this.fetchEventDetails(eventId, true);
@@ -668,9 +678,7 @@ export class EventDetailsComponent {
     if (!this.isEventCreator()) return;
 
     this.isEventMenuOpen.set(false);
-    const eventId = this.eventId();
-    const editQueryParams = { mode: 'edit', eventId };
-    this.routeService.navigateToDrawer('create-event', `/create-event?mode=edit&eventId=${encodeURIComponent(eventId)}`, editQueryParams);
+    this.appDrawerService.openEditEvent(this.eventId());
   }
 
   async onUploadPhotos(files: File[]): Promise<void> {

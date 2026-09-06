@@ -1,6 +1,6 @@
-import { Component, inject, Input, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { RouteService } from '../../services/route/route.service';
+import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 
 @Component({
   selector: 'vl-form-drawer',
@@ -9,10 +9,12 @@ import { RouteService } from '../../services/route/route.service';
   styleUrl: './form-drawer.component.scss',
 })
 export class FormDrawerComponent implements OnInit, OnDestroy {
-  private routeService = inject(RouteService);
+  private appDrawerService = inject(AppDrawerService);
   private platformId = inject(PLATFORM_ID);
 
   @Input() ariaLabel = 'Form drawer';
+  @Output() closed = new EventEmitter<void>();
+
   isClosing = false;
   private bodyPreviousOverflow = '';
   private pagePreviousOverflow = '';
@@ -57,7 +59,9 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
 
     this.isClosing = true;
     setTimeout(() => {
-      this.routeService.closeDrawerOrNavigate('/profile');
+      this.closed.emit();
+      this.appDrawerService.close();
     }, 280);
   }
 }
+

@@ -36,11 +36,6 @@ export class RouteService {
   }
 
   navigateToDrawer(drawerPath: string, mobileFallbackPath: string, queryParams?: Record<string, string>) {
-    if (!this.isDesktopDrawerAvailable()) {
-      this.navigateByUrl(mobileFallbackPath);
-      return;
-    }
-
     if (drawerPath === 'create-event') {
       this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
         if (!isComplete) return;
@@ -54,21 +49,31 @@ export class RouteService {
       return;
     }
 
-    this.router.navigate([{ outlets: { drawer: [drawerPath] } }], { queryParams });
-  }
-
-  closeDrawer() {
-    if (this.appDrawerService.hasOpenDrawer) {
-      this.appDrawerService.close();
+    if (drawerPath === 'edit-profile') {
+      this.appDrawerService.openEditProfile();
       return;
     }
 
-    this.router.navigate([{ outlets: { drawer: null } }], { replaceUrl: true });
+    if (drawerPath === 'my-wishlist') {
+      this.appDrawerService.openWishlist();
+      return;
+    }
+
+    if (drawerPath === 'notifications') {
+      this.appDrawerService.openNotifications();
+      return;
+    }
+
+    this.navigateByUrl(mobileFallbackPath);
+  }
+
+  closeDrawer() {
+    this.appDrawerService.close();
   }
 
   closeDrawerOrNavigate(fallbackPath: string) {
-    if (this.appDrawerService.hasOpenDrawer || this.router.url.includes('(drawer:')) {
-      this.closeDrawer();
+    if (this.appDrawerService.hasOpenDrawer) {
+      this.appDrawerService.close();
       return;
     }
 
@@ -76,10 +81,7 @@ export class RouteService {
   }
 
   closeDrawerAndNavigateByUrl(path: string) {
-    if (this.appDrawerService.hasOpenDrawer) {
-      this.appDrawerService.close();
-    }
-
+    this.appDrawerService.close();
     this.navigateByUrl(path);
   }
 

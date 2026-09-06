@@ -6,6 +6,7 @@ import { Environment } from '../../../../environment';
 import { BrowserService } from '../../services/browser/browser.service';
 import { Router } from '@angular/router';
 import { RouteService } from '../../services/route/route.service';
+import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
 import { FormDrawerComponent } from '../form-drawer/form-drawer.component';
 
@@ -29,6 +30,7 @@ export enum NotificationType {
 export class NotificationComponent {
   @Input() presentation: 'page' | 'popover' = 'page';
   @Output() panelClosed = new EventEmitter<void>();
+  @Output() drawerClosed = new EventEmitter<void>();
 
   notifications: any[] = [];
   notificationType = NotificationType;
@@ -39,6 +41,7 @@ export class NotificationComponent {
   platform = inject(BrowserService)
   private router = inject(Router)
   private routeService = inject(RouteService)
+  private appDrawerService = inject(AppDrawerService)
   private readonly pendingSeenNotificationIds = new Set<string>();
 
   // Track state of actions for each notification
@@ -48,18 +51,13 @@ export class NotificationComponent {
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
     } else {
-      this.routeService.closeDrawerOrNavigate('/');
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
     }
   }
 
   ngOnInit() {
     this.initSocketSubscriptions();
-    this.redirectDesktopPageToHome();
-  }
-
-  @HostListener('window:resize')
-  onWindowResize() {
-    this.redirectDesktopPageToHome();
   }
 
   initSocketSubscriptions() {
@@ -78,25 +76,14 @@ export class NotificationComponent {
     this.panelClosed.emit();
 
     if (this.presentation === 'page') {
-      this.routeService.closeDrawerOrNavigate('/');
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
     }
   }
 
   handleOutsideClick() {
     if (this.presentation === 'popover') {
       this.closePanel();
-    }
-  }
-
-  private redirectDesktopPageToHome() {
-    if (
-      this.presentation === 'page' &&
-      this.platform.isBrowserPlatform() &&
-      window.matchMedia('(min-width: 768px)').matches &&
-      !this.router.url.includes('(drawer:notifications)') &&
-      this.router.url.startsWith('/notifications')
-    ) {
-      this.router.navigateByUrl('/', { replaceUrl: true });
     }
   }
 
@@ -257,7 +244,8 @@ export class NotificationComponent {
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
     } else {
-      this.routeService.closeDrawer();
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
     }
     this.redirectToEvent(eventId);
   }
@@ -282,7 +270,8 @@ export class NotificationComponent {
     if (this.presentation === 'popover') {
       this.panelClosed.emit();
     } else {
-      this.routeService.closeDrawer();
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
     }
     this.redirectToUserProfile(senderId);
   }

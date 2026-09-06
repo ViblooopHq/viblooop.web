@@ -1,8 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 
@@ -14,18 +15,24 @@ import { FormDrawerComponent } from '../../../shared/components/form-drawer/form
   styleUrl: './wishlist.component.scss'
 })
 export class WishlistComponent implements OnInit {
+  @Output() drawerClosed = new EventEmitter<void>();
+
   authService = inject(AuthService);
+  private appDrawerService = inject(AppDrawerService);
   private routeService = inject(RouteService);
   private router = inject(Router);
   wishlistedEvents: any[] = [];
   isLoading = true;
 
   goBack(): void {
-    this.routeService.closeDrawerOrNavigate('/');
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
   }
 
   exploreEvents(): void {
-    this.routeService.closeDrawerAndNavigateByUrl('/');
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
+    this.router.navigateByUrl('/');
   }
 
   ngOnInit() {

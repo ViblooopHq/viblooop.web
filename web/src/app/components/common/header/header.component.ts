@@ -6,6 +6,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
+import { CompleteProfileService } from '../../../shared/services/popup/complete-profile.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
@@ -34,6 +36,8 @@ export class HeaderComponent implements OnInit {
   sharedService = inject(SharedService);
   private toastService = inject(ToastService)
   private angularRouter = inject(Router)
+  private appDrawerService = inject(AppDrawerService);
+  private completeProfileService = inject(CompleteProfileService);
   defaultProfileImage = 'assets/images/default-profile.png';
 
   // Computed: hide FAB when user is in create-event flow
@@ -139,23 +143,22 @@ export class HeaderComponent implements OnInit {
     this.isNotificationVisible = false;
     this.isUserProfileVisible = false;
     if (url === '/my-wishlist') {
-      this.router.navigateToDrawer('my-wishlist', '/my-wishlist');
+      if (!this.userDetails) {
+        this.redirectToLogin();
+        return;
+      }
+      this.appDrawerService.openWishlist();
       return;
     }
     if (url === '/notifications') {
-      this.router.navigateToDrawer('notifications', '/notifications');
+      this.appDrawerService.openNotifications();
       return;
     }
     this.router.navigateByUrl(url);
   }
 
   navigateToCreate() {
-    if (!this.userDetails) {
-      this.redirectToLogin();
-      return;
-    }
-
-    this.router.navigateByUrl('/create-event');
+    this.openCreateDrawer();
   }
 
   openCreateDrawer() {
@@ -164,7 +167,10 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.router.navigateToDrawer('create-event', '/create-event');
+    this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
+      if (!isComplete) return;
+      this.appDrawerService.openCreateEvent();
+    });
   }
 
   toggleTheme() {

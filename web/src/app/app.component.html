@@ -6,14 +6,25 @@
   <router-outlet />
 </div>
 
-<router-outlet name="drawer" />
-
 @if ((appDrawerService.drawer$ | async); as activeDrawer) {
   @switch (activeDrawer.type) {
+    @case ('edit-profile') {
+      <vl-edit-profile (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('wishlist') {
+      <vl-wishlist (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('notifications') {
+      <vl-notification
+        presentation="page"
+        (panelClosed)="appDrawerService.close()"
+        (drawerClosed)="appDrawerService.close()" />
+    }
     @case ('create-event') {
       <vl-create-event
         [drawerMode]="activeDrawer.mode"
-        [drawerEventId]="activeDrawer.eventId ?? null" />
+        [drawerEventId]="activeDrawer.eventId ?? null"
+        (drawerClosed)="appDrawerService.close()" />
     }
   }
 }

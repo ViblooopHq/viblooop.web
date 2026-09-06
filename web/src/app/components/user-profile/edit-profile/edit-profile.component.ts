@@ -1,10 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { UserService } from '../../../shared/services/user/user.service';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 import { SelfieVerificationComponent } from '../selfie-verification/selfie-verification.component';
 
@@ -48,11 +49,14 @@ type ProfilePhotoItem = {
   ]
 })
 export class EditProfileComponent implements OnInit {
+  @Output() drawerClosed = new EventEmitter<void>();
+
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private sharedService = inject(SharedService);
   private userService = inject(UserService);
   private routeService = inject(RouteService);
+  private appDrawerService = inject(AppDrawerService);
   private router = inject(Router);
 
   profileForm!: FormGroup;
@@ -157,7 +161,8 @@ export class EditProfileComponent implements OnInit {
         }
 
         this.profileForm.markAsPristine();
-        this.routeService.closeDrawerAndNavigateByUrl('/profile');
+        this.appDrawerService.close();
+        this.drawerClosed.emit();
       },
       error: (err) => {
         this.saveError = err?.error?.message || err?.message || 'Unable to update profile.';
@@ -177,7 +182,8 @@ export class EditProfileComponent implements OnInit {
   }
 
   goBack(): void {
-    this.routeService.closeDrawerOrNavigate('/profile');
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
   }
 
   logout(): void {

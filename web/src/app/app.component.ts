@@ -23,6 +23,9 @@ import { CompleteProfileComponent } from './shared/components/pop-ups/complete-p
 import { ScrollToTopComponent } from './components/common/scroll-to-top/scroll-to-top.component';
 import { AppDrawerService } from './shared/services/drawer/app-drawer.service';
 import { CreateEventComponent } from './components/events/create-event/create-event.component';
+import { EditProfileComponent } from './components/user-profile/edit-profile/edit-profile.component';
+import { WishlistComponent } from './components/user-profile/wishlist/wishlist.component';
+import { NotificationComponent } from './shared/components/notification/notification.component';
 import { MessageService } from './shared/services/message/message.service';
 import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
 import { AppSplashService } from './shared/services/app-splash/app-splash.service';
@@ -40,6 +43,9 @@ import { ToastContainerComponent } from './shared/components/toast-container/toa
     CommonModule,
     ScrollToTopComponent,
     CreateEventComponent,
+    EditProfileComponent,
+    WishlistComponent,
+    NotificationComponent,
     AppSplashLoaderComponent,
     ToastContainerComponent,
   ],

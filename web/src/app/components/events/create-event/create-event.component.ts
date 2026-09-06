@@ -2,10 +2,12 @@ import { isPlatformBrowser } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  EventEmitter,
   Inject,
   Input,
   NgZone,
   OnInit,
+  Output,
   PLATFORM_ID,
   computed,
   effect,
@@ -16,6 +18,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { EventCreatedOverlayComponent, CreationOverlayState } from '../../../shared/components/event-created-overlay/event-created-overlay.component';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
@@ -48,12 +51,14 @@ import { StepReviewComponent } from './steps/step-review/step-review.component';
 export class CreateEventComponent implements OnInit {
   @Input() drawerMode: 'create' | 'edit' | null = null;
   @Input() drawerEventId: string | null = null;
+  @Output() drawerClosed = new EventEmitter<void>();
 
   protected readonly formService = inject(CreateEventFormService);
   protected readonly imageUpload = inject(CreateEventImageUploadService);
   private readonly eventsService = inject(EventsService);
   private readonly sharedService = inject(SharedService);
   private readonly router = inject(RouteService);
+  private readonly appDrawerService = inject(AppDrawerService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly ngZone = inject(NgZone);
   private readonly titleService = inject(Title);
@@ -166,7 +171,12 @@ export class CreateEventComponent implements OnInit {
   }
 
   prevStep(): void {
-    if (this.currentStep() > 0) this.currentStep.update(s => s - 1);
+    if (this.currentStep() > 0) {
+      this.currentStep.update(s => s - 1);
+    } else {
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
+    }
   }
 
   onCategorySelected(): void {
@@ -257,7 +267,9 @@ export class CreateEventComponent implements OnInit {
 
           if (isEditMode && res?.success && (res.statusCode === 200 || res.statusCode === 201) && eventId) {
             this.formService.eventForm.markAsPristine();
-            this.router.closeDrawerOrNavigate(`/events/${eventId}`);
+            this.appDrawerService.close();
+            this.drawerClosed.emit();
+            this.router.navigateByUrl(`/events/${eventId}`);
             return;
           }
 
@@ -302,15 +314,22 @@ export class CreateEventComponent implements OnInit {
 
   viewCreatedEvent(): void {
     if (!this.createdEventId) return;
-
+    const eventId = this.createdEventId;
     this.ngZone.run(() => {
-      this.router.closeDrawerAndNavigateByUrl(`/events/${this.createdEventId}`);
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
+      this.router.navigateByUrl(`/events/${eventId}`);
     });
   }
 
   finishEventCreation(): void {
     this.ngZone.run(() => {
-      this.router.closeDrawerAndNavigateByUrl('/');
+      this.formService.eventForm.reset();
+      this.formService.setEditMode(false, null);
+      this.creationState.set('idle');
+      this.currentStep.set(0);
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
     });
   }
 }
