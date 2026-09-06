@@ -19,9 +19,6 @@ export class SocketService {
   unreadCount$ = new BehaviorSubject<number>(0);
   activeEventId: string | null = null;
 
-  // Flag to toggle socket connection. Kept disabled for now to stop disturbing polling/network errors.
-  private readonly ENABLE_SOCKET = false;
-
   constructor(
     private userService: AuthService,
     private sharedService: SharedService
@@ -29,16 +26,9 @@ export class SocketService {
   }
 
   connect(): void {
-    if (!this.ENABLE_SOCKET) return;
     if (this.socket?.connected || this.socket?.active) return;
 
-    // Force websocket transport only - eliminates HTTP long-polling completely
-    this.socket = io(this.SERVER_URL, {
-      withCredentials: true,
-      transports: ['websocket'],
-      upgrade: false,
-      reconnection: false,
-    });
+    this.socket = io(this.SERVER_URL, { withCredentials: true });
 
     // Automatically re-register on connect or reconnect
     this.socket.on('connect', () => {
@@ -49,7 +39,7 @@ export class SocketService {
     });
 
     this.socket.on('connect_error', (error) => {
-      console.warn('Socket connection failed:', error.message);
+      console.error('Socket connection failed:', error.message);
     });
 
     this.getNotifications();
@@ -64,7 +54,6 @@ export class SocketService {
   }
 
   getNotifications() {
-    if (!this.socket) return;
     this.socket.on('notifications', (notifications) => {
       this.notifications$.next(notifications);
     });
@@ -75,27 +64,26 @@ export class SocketService {
   }
 
   markAllRead() {
-    this.socket?.emit('mark_all_read');
+    this.socket.emit('mark_all_read');
   }
 
   markNotificationAsRead(notificationId: string) {
     // Send as an array for backend consistency
-    this.socket?.emit('mark_as_read', [notificationId]);
+    this.socket.emit('mark_as_read', [notificationId]);
   }
 
   markNotificationsAsRead(notificationIds: string[]) {
-    if (!notificationIds?.length) return;
-    this.socket?.emit('mark_as_read', notificationIds);
+    if (!notificationIds.length) return;
+    this.socket.emit('mark_as_read', notificationIds);
   }
 
   registerUser() {
-    this.socket?.emit('register');
+    this.socket.emit('register');
   }
 
   // ─── Chat Methods ─────────────────────────────────────
 
   private listenToChatEvents(): void {
-    if (!this.socket) return;
     this.socket.on('chat:history', (payload: any) => {
       if (Array.isArray(payload)) {
         this.chatHistory$.next({
@@ -160,24 +148,24 @@ export class SocketService {
 
   joinChatRoom(eventId: string): void {
     if (!eventId) return;
-    this.socket?.emit('chat:join', { eventId });
+    this.socket.emit('chat:join', { eventId });
   }
 
   leaveChatRoom(eventId: string): void {
     if (!eventId) return;
-    this.socket?.emit('chat:leave', { eventId });
+    this.socket.emit('chat:leave', { eventId });
   }
 
   markChatAsRead(eventId: string): void {
     if (!eventId) return;
-    this.socket?.emit('chat:mark_read', { eventId });
+    this.socket.emit('chat:mark_read', { eventId });
   }
 
   sendChatMessage(eventId: string, text: string): void {
     const user = this.userService.userDetails;
     if (!user || !eventId || !text?.trim()) return;
 
-    this.socket?.emit('chat:message', {
+    this.socket.emit('chat:message', {
       eventId,
       text: text.trim(),
     });
@@ -185,6 +173,6 @@ export class SocketService {
 
   getInbox(): void {
     if (!this.userService.userDetails?.id) return;
-    this.socket?.emit('chat:get_inbox');
+    this.socket.emit('chat:get_inbox');
   }
 }
