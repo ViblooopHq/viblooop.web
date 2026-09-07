@@ -3,12 +3,24 @@
   <aside class="event-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="event-people-drawer-heading"
     cdkTrapFocus cdkTrapFocusAutoCapture (click)="$event.stopPropagation()" (keydown.escape)="close.emit()">
     <header class="event-detail-drawer__header">
-      <div>
-        <p class="event-detail-drawer__eyebrow">{{ eventTitle() }}</p>
-        <h2 id="event-people-drawer-heading">{{ title() }}</h2>
-        <p>{{ subtitle() }}</p>
+      <div class="event-detail-drawer__header-main">
+        <div class="event-detail-drawer__title-row">
+          <h2 id="event-people-drawer-heading" class="event-detail-drawer__title">{{ title() }}</h2>
+          @if (mode() === 'requests' && pendingRequests().length > 0) {
+            <span class="event-detail-drawer__badge">{{ pendingRequests().length }}</span>
+          } @else if (mode() === 'attendees' && attendees().length > 0) {
+            <span class="event-detail-drawer__badge">{{ attendees().length }}</span>
+          }
+        </div>
+        <div class="event-detail-drawer__meta-row">
+          <span class="event-detail-drawer__event-chip">
+            <span class="material-symbols-outlined" translate="no">event</span>
+            <span>{{ eventTitle() }}</span>
+          </span>
+          <span class="event-detail-drawer__subtitle">{{ subtitle() }}</span>
+        </div>
       </div>
-      <button type="button" class="event-detail-drawer__close vl-icon-button" aria-label="Close drawer" (click)="close.emit()">
+      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="close.emit()">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
       </button>
     </header>
@@ -51,7 +63,9 @@
         </div>
       } @else {
         <div class="event-detail-drawer__empty">
-          <i class="fa-regular fa-bell" aria-hidden="true"></i>
+          <span class="event-detail-drawer__empty-icon">
+            <span class="material-symbols-outlined" translate="no">notifications_none</span>
+          </span>
           <h3>No pending requests</h3>
           <p>New join requests will show up here.</p>
         </div>
@@ -76,7 +90,9 @@
         </div>
       } @else {
         <div class="event-detail-drawer__empty">
-          <i class="fa-regular fa-user" aria-hidden="true"></i>
+          <span class="event-detail-drawer__empty-icon">
+            <span class="material-symbols-outlined" translate="no">group</span>
+          </span>
           <h3>No attendees yet</h3>
           <p>People who join this event will show up here.</p>
         </div>

@@ -261,11 +261,16 @@
   }
 
   .vl-modal__actions {
-    flex-direction: column-reverse;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
     gap: var(--space-2, 0.5rem);
+    width: 100%;
   }
 
   .vl-modal__btn {
     width: 100%;
+    min-width: 0;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8125rem;
   }
 }

@@ -1,26 +1,76 @@
 <section class="ed-section about-description">
-  <h2 class="ed-section-title">
-    <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
-    About this Vibe
-  </h2>
-  <p>{{ description() }}</p>
-
-  <div class="features-grid">
-    <div class="feature-item">
-      <span class="emoji" aria-hidden="true">🎵</span>
-      <span>Live {{ categoryTitle() }} music</span>
-    </div>
-    <div class="feature-item">
-      <span class="emoji" aria-hidden="true">🍸</span>
-      <span>Drinks &amp; cocktails available</span>
-    </div>
-    <div class="feature-item">
-      <span class="emoji" aria-hidden="true">🎉</span>
-      <span>Gorgeous rooftop views</span>
-    </div>
-    <div class="feature-item">
-      <span class="emoji" aria-hidden="true">🧑‍🤝‍🧑</span>
-      <span>Meet <strong>{{ attendeeLimit() || '20' }}</strong> new people</span>
-    </div>
+  <div class="about-header">
+    <span class="about-icon-badge">
+      <span class="material-symbols-outlined" translate="no">description</span>
+    </span>
+    <h2 class="ed-section-title">About this Vibe</h2>
   </div>
+
+  @if (description()) {
+    <p class="about-body">{{ description() }}</p>
+  } @else {
+    <p class="about-body about-body--empty">No description provided for this event.</p>
+  }
+
+  <!-- Vibe Highlights Row -->
+  <div class="about-highlights">
+    @if (categoryTitle()) {
+      <div class="about-pill">
+        <span class="material-symbols-outlined" translate="no">celebration</span>
+        <span>{{ categoryTitle() }}</span>
+      </div>
+    }
+    @if (audiencePreferenceLabel()) {
+      <div class="about-pill">
+        <span class="material-symbols-outlined" translate="no">group</span>
+        <span>{{ audiencePreferenceLabel() }}</span>
+      </div>
+    }
+    @if (attendeeLimit()) {
+      <div class="about-pill">
+        <span class="material-symbols-outlined" translate="no">people_outline</span>
+        <span>Up to {{ attendeeLimit() }} people</span>
+      </div>
+    }
+    @if (eventPriceLabel()) {
+      <div class="about-pill about-pill--accent">
+        <span class="material-symbols-outlined" translate="no">payments</span>
+        <span>{{ eventPriceLabel() }}</span>
+      </div>
+    }
+  </div>
+
+  <!-- Real Event Expectations (if any) -->
+  @if (parsedExpectations().length > 0) {
+    <div class="about-expectations">
+      <h3 class="about-subheading">
+        <span class="material-symbols-outlined" translate="no">task_alt</span>
+        What to Expect & Guidelines
+      </h3>
+      <ul class="about-expectations-list">
+        @for (item of parsedExpectations(); track item) {
+          <li>
+            <span class="material-symbols-outlined" translate="no">check_circle</span>
+            <span>{{ item }}</span>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+
+  <!-- Real Event Tags (if any) -->
+  @if (parsedTags().length > 0) {
+    <div class="about-tags">
+      <h3 class="about-subheading">
+        <span class="material-symbols-outlined" translate="no">label</span>
+        Tags
+      </h3>
+      <div class="about-tags-list">
+        @for (tag of parsedTags(); track tag) {
+          <span class="tag-chip">#{{ tag }}</span>
+        }
+      </div>
+    </div>
+  }
 </section>
+

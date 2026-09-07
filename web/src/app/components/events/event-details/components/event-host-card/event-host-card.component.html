@@ -4,7 +4,7 @@
     <h2 id="host-card-heading" class="host-heading">
       Hosted by <strong>{{ host()?.username || 'Host' }}</strong>
     </h2>
-    <i class="fa-solid fa-circle-check verified-check" aria-hidden="true"></i>
+    <span class="material-symbols-outlined verified-check" [style.font-variation-settings]="'\'FILL\' 1'" translate="no">verified</span>
   </button>
 
   <div class="host-summary">
@@ -18,17 +18,17 @@
       <div class="host-trust-row">
         @if (isNewHost()) {
         <span class="host-trust-pill host-trust-pill--new">
-          <i class="fa-regular fa-star" aria-hidden="true"></i>
+          <span class="material-symbols-outlined" translate="no">star</span>
           New Host
         </span>
         } @else if (shouldShowRating()) {
         <span class="host-trust-pill host-trust-pill--rating">
-          <i class="fa-solid fa-star" aria-hidden="true"></i>
+          <span class="material-symbols-outlined" [style.font-variation-settings]="'\'FILL\' 1'" translate="no">star</span>
           {{ hostRating() | number:'1.1-1' }} rating
         </span>
         }
         <span class="host-trust-pill host-trust-pill--verified">
-          <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
+          <span class="material-symbols-outlined" translate="no">verified_user</span>
           Verified Host
         </span>
       </div>
@@ -36,7 +36,7 @@
       <div class="host-proof-list">
         <div class="host-proof-item">
           <span class="host-proof-icon">
-            <i class="fa-regular fa-calendar-days" aria-hidden="true"></i>
+            <span class="material-symbols-outlined" translate="no">calendar_month</span>
           </span>
           <span>Hosted {{ hostEventCount() }} {{ hostEventCount() === 1 ? 'event' : 'events' }}</span>
         </div>

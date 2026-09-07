@@ -74,8 +74,9 @@
     font-size: var(--text-caption);
     font-weight: 700;
 
-    i {
-      font-size: 0.75rem;
+    .material-symbols-outlined {
+      font-size: 0.95rem;
+      line-height: 1;
     }
 
     &--new {
@@ -118,11 +119,13 @@
     align-items: center;
     justify-content: center;
     border-radius: var(--radius-sm);
-    background-color: var(--color-primary-soft);
-    color: var(--color-primary);
+    background-color: var(--color-surface-interactive);
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
 
-    i {
-      font-size: 0.75rem;
+    .material-symbols-outlined {
+      font-size: 0.95rem;
+      line-height: 1;
     }
   }
 }

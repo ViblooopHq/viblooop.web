@@ -1,18 +1,21 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
 import { AttendeeProfile, EventDetails } from '../../../../../shared/interfaces/event.interface';
 import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
+import { OutsideClickDirective } from '../../../../../directives/outside-click.directive';
 
 @Component({
   selector: 'vl-event-hero',
-  imports: [MatTooltip, ImageUrlPipe, DatePipe, InlineLoaderComponent],
+  imports: [MatTooltip, ImageUrlPipe, DatePipe, InlineLoaderComponent, OutsideClickDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-hero.component.html',
   styleUrl: './event-hero.component.scss',
 })
 export class EventHeroComponent {
+  @ViewChild('heroCtaBtn', { read: ElementRef }) heroCtaBtn?: ElementRef<HTMLElement>;
+  @ViewChild('heroActionContainer', { read: ElementRef }) heroActionContainer?: ElementRef<HTMLElement>;
   event = input<EventDetails | null>(null);
   isEventCreator = input(false);
   isEventMenuOpen = input(false);

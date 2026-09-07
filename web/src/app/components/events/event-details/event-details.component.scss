@@ -167,9 +167,12 @@
   }
 
   .mobile-event-overview {
-    display: grid;
-    gap: var(--space-3);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
     margin: 0 var(--space-4);
+    width: calc(100% - var(--space-8));
+    box-sizing: border-box;
   }
 
   .host-panel--desktop,
@@ -196,11 +199,11 @@
   .vl-ed__main > vl-event-chat-card,
   .vl-ed__main > vl-event-comments,
   .vl-ed__main > vl-event-related,
-  .vl-ed__main > .ed-section-placeholder,
-  .vl-ed__main > .mobile-event-overview {
+  .vl-ed__main > .ed-section-placeholder {
     display: block;
     min-width: 0;
     max-width: calc(100% - var(--space-8));
+    width: calc(100% - var(--space-8));
     margin: 0 var(--space-4);
     box-sizing: border-box;
   }
@@ -208,12 +211,12 @@
   /* Persistent Mobile Join Bar — Floating Apple iOS Capsule Stacked Cleanly Above Bottom Tab Bar */
   .mobile-sticky-join-bar {
     position: fixed;
-    bottom: calc(4.45rem + max(0.85rem, env(safe-area-inset-bottom, 0.85rem)));
+    bottom: calc(4.75rem + max(0.5rem, env(safe-area-inset-bottom, 0.5rem)));
     left: 1rem;
     right: 1rem;
-    max-width: 410px;
+    max-width: 420px;
     margin: 0 auto;
-    z-index: 85;
+    z-index: 950;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -221,12 +224,21 @@
     padding: 0.45rem 0.625rem 0.45rem 1.25rem;
     height: 3.75rem;
     border-radius: var(--radius-pill, 9999px);
-    background-color: rgba(255, 255, 255, 0.94);
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(15, 23, 42, 0.08);
+    background-color: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    box-shadow: 0 14px 34px -4px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(15, 23, 42, 0.08);
     backdrop-filter: blur(28px) saturate(190%);
     -webkit-backdrop-filter: blur(28px) saturate(190%);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+    transform: translateY(160%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.22s ease, box-shadow 0.2s ease;
+
+    &--visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
 
     :host-context([data-theme='dark']) &,
     [data-theme='dark'] & {

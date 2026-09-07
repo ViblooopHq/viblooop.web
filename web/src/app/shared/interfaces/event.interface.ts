@@ -48,6 +48,8 @@ export interface EventDetails {
   location?: EventLocationCoordinates;
   createdBy?: EventCreator;
   averageRating?: number;
+  tags?: string[];
+  expectations?: string[];
   [key: string]: any;
 }
 

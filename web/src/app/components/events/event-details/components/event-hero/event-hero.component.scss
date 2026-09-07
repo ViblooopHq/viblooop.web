@@ -20,7 +20,14 @@
   .hero-gradient {
     position: absolute;
     inset: 0;
-    background-color: rgba(10, 13, 24, 0.65);
+    background: linear-gradient(
+      to top,
+      rgba(10, 13, 24, 0.95) 0%,
+      rgba(10, 13, 24, 0.65) 42%,
+      rgba(10, 13, 24, 0.35) 75%,
+      rgba(10, 13, 24, 0.2) 100%
+    );
+    pointer-events: none;
   }
 
   .hero-back {
@@ -28,24 +35,36 @@
     top: 1rem;
     left: 1rem;
     z-index: 3;
-    width: 2.75rem;
-    height: 2.75rem;
-    background-color: rgba(10, 13, 24, 0.8);
-    border: 1px solid var(--color-border);
+    width: 2.65rem;
+    height: 2.65rem;
+    padding: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     color: #ffffff;
     border-radius: var(--radius-full);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: grid;
+    place-items: center;
     cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
+    .material-symbols-outlined,
     i {
       color: #ffffff;
+      font-size: 1.25rem;
     }
 
     &:hover {
-      background-color: var(--color-primary);
-      border-color: var(--color-primary);
+      background: rgba(124, 58, 237, 0.85);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.96);
     }
   }
 
@@ -57,49 +76,125 @@
   }
 
   .hero-menu-trigger {
-    width: 2.75rem;
-    height: 2.75rem;
-    background-color: rgba(10, 13, 24, 0.8);
-    border: 1px solid var(--color-border);
+    width: 2.65rem;
+    height: 2.65rem;
+    padding: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     color: #ffffff;
     border-radius: var(--radius-full);
-    box-shadow: var(--shadow-sm);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .material-symbols-outlined,
+    i {
+      color: #ffffff;
+      font-size: 1.25rem;
+    }
+
+    &:hover {
+      background: rgba(124, 58, 237, 0.85);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+    }
+
+    &:active {
+      transform: scale(0.96);
+    }
   }
 
   .hero-menu-popover {
     position: absolute;
-    top: calc(100% + 0.5rem);
+    top: calc(100% + 0.6rem);
     right: 0;
-    display: grid;
-    min-width: 10rem;
+    display: flex;
+    flex-direction: column;
+    min-width: 11.5rem;
+    padding: 0.35rem;
     overflow: hidden;
     border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
+    border-radius: var(--radius-lg);
     background-color: var(--color-surface);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.3), 0 6px 12px -2px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(20px);
+    animation: heroMenuPop 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 
-    .vl-menu-item--warning {
-      color: var(--color-warning);
+    .vl-menu-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      width: 100%;
+      padding: 0.6rem 0.85rem;
+      border: 0;
+      border-radius: var(--radius-md);
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
 
+      .material-symbols-outlined,
       i {
-        color: var(--color-warning);
+        font-size: 1.15rem;
+        color: var(--color-text-secondary);
       }
 
       &:hover {
-        background-color: var(--color-warning-soft);
+        background-color: var(--color-surface-interactive);
+        color: var(--color-primary);
+
+        .material-symbols-outlined,
+        i {
+          color: var(--color-primary);
+        }
+      }
+
+      &--warning {
+        color: var(--color-warning);
+
+        .material-symbols-outlined,
+        i {
+          color: var(--color-warning);
+        }
+
+        &:hover {
+          background-color: var(--color-warning-soft);
+          color: var(--color-warning);
+        }
+      }
+
+      &--danger {
+        color: var(--color-error);
+
+        .material-symbols-outlined,
+        i {
+          color: var(--color-error);
+        }
+
+        &:hover {
+          background-color: var(--color-error-soft);
+          color: var(--color-error);
+        }
       }
     }
+  }
 
-    .vl-menu-item--danger {
-      color: var(--color-error);
-
-      i {
-        color: var(--color-error);
-      }
-
-      &:hover {
-        background-color: var(--color-error-soft);
-      }
+  @keyframes heroMenuPop {
+    from {
+      opacity: 0;
+      transform: translateY(-6px) scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
     }
   }
 
@@ -129,16 +224,17 @@
     flex-wrap: wrap;
 
     .meta-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 6px;
-      color: #E2E8F0;
+      color: rgba(255, 255, 255, 0.9);
       font-size: var(--text-body-sm);
       font-weight: 600;
 
+      .material-symbols-outlined,
       i {
-        color: var(--color-primary);
-        font-size: 1rem;
+        color: rgba(255, 255, 255, 0.78);
+        font-size: 1.125rem;
       }
     }
   }
@@ -256,12 +352,14 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: #E2E8F0;
+    color: rgba(255, 255, 255, 0.9);
     font-size: var(--text-body-sm);
     font-weight: 600;
 
+    .material-symbols-outlined,
     i {
-      color: var(--color-primary);
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 1.125rem;
     }
   }
 
@@ -305,6 +403,14 @@
     color: var(--color-text-primary);
     border: 1px solid var(--color-border);
     font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .material-symbols-outlined {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+    }
 
     &:hover {
       background-color: var(--color-surface-interactive);

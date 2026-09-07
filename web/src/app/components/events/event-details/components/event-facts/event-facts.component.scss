@@ -2,29 +2,39 @@
 
 .event-facts {
   @include ed-panel;
-  padding: 1.2rem 1.45rem;
+  padding: var(--space-4);
 
   .info-rows {
-    display: grid;
-    gap: 0.72rem;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
   }
 
   .info-row {
-    display: grid;
-    grid-template-columns: 1.35rem minmax(0, 1fr);
+    display: flex;
     align-items: center;
-    column-gap: 0.65rem;
+    gap: var(--space-3);
     color: var(--color-text-secondary);
-    font-size: 0.92rem;
-    line-height: 1.35;
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
 
-    i {
-      display: inline-grid;
-      width: 1.35rem;
-      place-items: center;
-      color: var(--color-brand-accent);
-      font-size: 1rem;
-      line-height: 1;
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      min-width: 2rem;
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface-interactive);
+      border: 1px solid var(--color-border);
+      color: var(--color-primary);
+      flex-shrink: 0;
+
+      .material-symbols-outlined {
+        font-size: 1.125rem;
+        line-height: 1;
+      }
     }
 
     span {
@@ -33,11 +43,12 @@
 
     strong {
       color: var(--color-text-primary);
+      font-weight: 700;
     }
 
     .dot {
-      color: var(--color-text-muted);
-      margin: 0 0.25rem;
+      color: var(--color-text-tertiary);
+      margin: 0 var(--space-1);
     }
   }
 }

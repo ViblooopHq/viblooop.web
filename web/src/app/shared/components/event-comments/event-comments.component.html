@@ -2,9 +2,11 @@
   @if (shouldShowReviewForm()) {
     <section class="ed-section review-card review-card--compose" id="add-comment">
       <div class="review-card__header">
-        <span class="review-card__icon"><i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i></span>
+        <span class="review-card__icon">
+          <span class="material-symbols-outlined" translate="no">rate_review</span>
+        </span>
         <div>
-          <h2 class="vl-title-md">{{ reviewFormTitle }} <span aria-hidden="true">✨</span></h2>
+          <h2 class="vl-title-md">{{ reviewFormTitle }}</h2>
           <p class="vl-body-sm">{{ isEditingReview ? 'Update your rating and comment for this vibe.' : 'Share your vibe! Attendees can rate and review after the event.' }}</p>
         </div>
       </div>
@@ -19,7 +21,9 @@
                 (mouseenter)="hoverRating.set(starValue)"
                 (mouseleave)="hoverRating.set(0)"
                 [class.is-active]="hoverRating() >= starValue || selectedRating >= starValue">
-                <i [class]="(hoverRating() >= starValue || selectedRating >= starValue) ? 'fa-solid fa-star' : 'fa-regular fa-star'" aria-hidden="true"></i>
+                <span class="material-symbols-outlined"
+                  [style.font-variation-settings]="(hoverRating() >= starValue || selectedRating >= starValue) ? '\'FILL\' 1' : '\'FILL\' 0'"
+                  translate="no">star</span>
                 <span class="sr-only">{{ starValue }} star{{ starValue === 1 ? '' : 's' }}</span>
               </label>
             }
@@ -43,7 +47,7 @@
           @if (isSubmitting()) {
             <vl-inline-loader size="sm" color="white" [text]="isEditingReview ? 'Updating Review...' : 'Posting Review...'"></vl-inline-loader>
           } @else {
-            <i class="fa-regular fa-paper-plane" aria-hidden="true"></i>
+            <span class="material-symbols-outlined" translate="no">send</span>
             <span>{{ reviewSubmitLabel }}</span>
           }
         </button>
@@ -55,7 +59,7 @@
         }
 
         <p class="review-privacy">
-          <i class="fa-solid fa-lock" aria-hidden="true"></i>
+          <span class="material-symbols-outlined" translate="no">lock</span>
           Your review is public and will help others.
         </p>
       </form>
@@ -66,7 +70,9 @@
   <section class="ed-section reviews-panel" id="reviews-comments">
     <div class="reviews-panel__header">
       <div class="reviews-panel__title">
-        <span class="review-card__icon"><i class="fa-regular fa-comment" aria-hidden="true"></i></span>
+        <span class="review-card__icon">
+          <span class="material-symbols-outlined" translate="no">forum</span>
+        </span>
         <div>
           <h2 class="vl-title-md">Reviews &amp; Comments</h2>
           <p class="vl-body-sm">See what other attendees thought about this event.</p>
@@ -76,14 +82,18 @@
 
     <div class="reviews-panel__stats">
       <div class="review-stat">
-        <span class="review-stat__icon review-stat__icon--rating"><i class="fa-solid fa-star" aria-hidden="true"></i></span>
+        <span class="review-stat__icon review-stat__icon--rating">
+          <span class="material-symbols-outlined" [style.font-variation-settings]="'\'FILL\' 1'" translate="no">star</span>
+        </span>
         <span class="review-stat__copy">
           <strong>{{ displayAverageRating | number:'1.1-1' }}</strong>
           <small>Average rating</small>
         </span>
       </div>
       <div class="review-stat">
-        <span class="review-stat__icon"><i class="fa-regular fa-comment-dots" aria-hidden="true"></i></span>
+        <span class="review-stat__icon">
+          <span class="material-symbols-outlined" translate="no">chat_bubble</span>
+        </span>
         <span class="review-stat__copy">
           <strong>{{ reviewCount }}</strong>
           <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
@@ -93,7 +103,9 @@
 
     @if (reviewCount === 0) {
       <div class="reviews-empty">
-        <span class="reviews-empty__icon"><i class="fa-regular fa-comments" aria-hidden="true"></i></span>
+        <span class="reviews-empty__icon">
+          <span class="material-symbols-outlined" translate="no">chat</span>
+        </span>
         <h3 class="vl-title-sm">No reviews yet</h3>
         <p class="vl-body-sm">Be the first to share your thoughts about this event!</p>
       </div>
@@ -126,7 +138,10 @@
             <div class="review-item__header-right">
               <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
                 @for (star of stars; track star) {
-                  <i [class]="star <= (review.score || 0) ? 'fa-solid fa-star filled' : 'fa-regular fa-star'" aria-hidden="true"></i>
+                  <span class="material-symbols-outlined star-icon"
+                    [class.filled]="star <= (review.score || 0)"
+                    [style.font-variation-settings]="star <= (review.score || 0) ? '\'FILL\' 1' : '\'FILL\' 0'"
+                    translate="no">star</span>
                 }
               </div>
 
@@ -138,20 +153,20 @@
                     aria-label="Review options"
                     [attr.aria-expanded]="isReviewMenuOpen(review)"
                     (click)="toggleReviewMenu(review)">
-                    <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+                    <span class="material-symbols-outlined" translate="no">more_vert</span>
                   </button>
 
                   @if (isReviewMenuOpen(review)) {
                     <div class="comment-menu" role="menu">
                       <button type="button" role="menuitem" (click)="editReview(review)">
-                        <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
+                        <span class="material-symbols-outlined" translate="no">edit</span>
                         <span>Edit Review</span>
                       </button>
                       <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
                         @if (deletingReviewId() === review._id) {
                           <vl-inline-loader size="xs" color="light" text="Deleting..."></vl-inline-loader>
                         } @else {
-                          <i class="fa-regular fa-trash-can" aria-hidden="true"></i>
+                          <span class="material-symbols-outlined" translate="no">delete</span>
                           <span>Delete Review</span>
                         }
                       </button>

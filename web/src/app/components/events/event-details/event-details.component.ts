@@ -104,6 +104,9 @@ const defaultModalState: ActionModalState = {
 })
 export class EventDetailsComponent {
   @ViewChild(EventGallerySectionComponent) private gallerySection?: EventGallerySectionComponent;
+  @ViewChild(EventHeroComponent) private heroComponent?: EventHeroComponent;
+
+  readonly isHeroCtaVisible = signal<boolean>(true);
 
   private readonly route = inject(ActivatedRoute);
   private readonly eventsService = inject(EventsService);
@@ -288,9 +291,9 @@ export class EventDetailsComponent {
   });
   audiencePreferenceIcon = computed(() => {
     switch (this.audiencePreferenceType()) {
-      case 'women': return 'fa-solid fa-venus';
-      case 'men': return 'fa-solid fa-mars';
-      default: return 'fa-solid fa-earth-asia';
+      case 'women': return 'female';
+      case 'men': return 'male';
+      default: return 'public';
     }
   });
 
@@ -428,6 +431,40 @@ export class EventDetailsComponent {
     afterNextRender(() => {
       const clockId = setInterval(() => this.now.set(Date.now()), 60_000);
       this.destroyRef.onDestroy(() => clearInterval(clockId));
+
+      if (this.platform.isBrowserPlatform()) {
+        const checkVisibility = () => {
+          const target = this.heroComponent?.heroActionContainer?.nativeElement
+            || this.heroComponent?.heroCtaBtn?.nativeElement
+            || document.querySelector('.hero-actions-container')
+            || document.querySelector('.hero-action-row');
+
+          if (target) {
+            const rect = target.getBoundingClientRect();
+            // When hero CTA is above 75px from top (scrolled out of view), show bottom sticky bar
+            const isVisible = rect.bottom > 75 && rect.top < (window.innerHeight || 800);
+            this.isHeroCtaVisible.set(isVisible);
+          } else {
+            this.isHeroCtaVisible.set(window.scrollY < 240);
+          }
+        };
+
+        window.addEventListener('scroll', checkVisibility, { passive: true });
+        window.addEventListener('resize', checkVisibility, { passive: true });
+        checkVisibility();
+
+        const t1 = setTimeout(checkVisibility, 250);
+        const t2 = setTimeout(checkVisibility, 750);
+        const t3 = setTimeout(checkVisibility, 1500);
+
+        this.destroyRef.onDestroy(() => {
+          window.removeEventListener('scroll', checkVisibility);
+          window.removeEventListener('resize', checkVisibility);
+          clearTimeout(t1);
+          clearTimeout(t2);
+          clearTimeout(t3);
+        });
+      }
     });
   }
 

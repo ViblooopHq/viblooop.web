@@ -3,35 +3,31 @@
   <div class="hero-gradient" aria-hidden="true"></div>
 
   <button type="button" class="hero-back vl-icon-button" aria-label="Go back" (click)="goBack.emit()">
-    <i class="fa-solid fa-arrow-left" aria-hidden="true"></i>
+    <span class="material-symbols-outlined" translate="no">arrow_back</span>
   </button>
 
   @if (isEventCreator()) {
-  <div class="hero-owner-menu">
+  <div class="hero-owner-menu" vibOutsideClick (onOutsideClick)="isEventMenuOpen() ? closeMenu.emit() : null">
     <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="menu" [attr.aria-expanded]="isEventMenuOpen()"
       aria-label="Event options" (click)="toggleMenu.emit()">
-      <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+      <span class="material-symbols-outlined" translate="no">more_horiz</span>
     </button>
 
     @if (isEventMenuOpen()) {
     <div class="hero-menu-popover" role="menu">
       <button type="button" role="menuitem" class="vl-menu-item" (click)="editEvent.emit()">
-        <i class="fa-regular fa-pen-to-square" aria-hidden="true"></i>
-        Edit
+        <span class="material-symbols-outlined" translate="no">edit</span>
+        <span>Edit Event</span>
       </button>
       @if (!isEventEnded() && !isCancelled()) {
       <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--warning" (click)="cancelEvent.emit()">
-        <i class="fa-solid fa-ban" aria-hidden="true"></i>
-        Cancel Event
+        <span class="material-symbols-outlined" translate="no">block</span>
+        <span>Cancel Event</span>
       </button>
       }
       <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--danger" (click)="deleteEvent.emit()">
-        <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
-        Delete Event
-      </button>
-      <button type="button" role="menuitem" class="vl-menu-item" (click)="closeMenu.emit()">
-        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-        Close
+        <span class="material-symbols-outlined" translate="no">delete</span>
+        <span>Delete Event</span>
       </button>
     </div>
     }
@@ -43,12 +39,12 @@
 
     <div class="hero-meta">
       <span class="meta-badge">
-        <i [class]="isEscapeEvent() ? 'fa-regular fa-calendar' : 'fa-regular fa-clock'" aria-hidden="true"></i>
-        {{ isEventEnded() ? (eventDate() | date:'EEEE, d MMMM y') : timeLeftLabel() }}
+        <span class="material-symbols-outlined" translate="no">{{ isEscapeEvent() ? 'calendar_today' : 'schedule' }}</span>
+        <span>{{ isEventEnded() ? (eventDate() | date:'EEEE, d MMMM y') : timeLeftLabel() }}</span>
       </span>
       <span class="meta-badge">
-        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-        {{ locationLabel() }}
+        <span class="material-symbols-outlined" translate="no">location_on</span>
+        <span>{{ locationLabel() }}</span>
       </span>
     </div>
 
@@ -71,67 +67,69 @@
             }
           </div>
           <span class="hero-attendance-label">
-            <i class="fa-solid fa-users" aria-hidden="true"></i>
-            {{ attendanceSummaryLabel() }}
+            <span class="material-symbols-outlined" translate="no">group</span>
+            <span>{{ attendanceSummaryLabel() }}</span>
           </span>
         </button>
 
         @if (isCancelled()) {
         <span class="event-status-pill event-status-pill--cancelled">
-          <i class="fa-solid fa-ban event-status-pill__icon" aria-hidden="true"></i>
-          Event cancelled
+          <span class="material-symbols-outlined event-status-pill__icon" translate="no">block</span>
+          <span>Event cancelled</span>
         </span>
         } @else if (isEventEnded()) {
         <span class="event-status-pill event-status-pill--ended">
-          <i class="fa-solid fa-circle-check event-status-pill__icon" aria-hidden="true"></i>
-          Event ended
+          <span class="material-symbols-outlined event-status-pill__icon" translate="no">check_circle</span>
+          <span>Event ended</span>
         </span>
         }
       </div>
 
       @if (!isEventEnded() && !isCancelled()) {
-      @if (!isAuthInitialized()) {
-        <div class="hero-action-skeleton"></div>
-      } @else {
-        @if (!isEventCreator()) {
-          @if (isUserAttendee()) {
-          <button type="button" class="btn-leave-hero vl-button vl-button--secondary" (click)="leaveEvent.emit()">
-            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
-            Leave Event
-          </button>
-          } @else if (joinRequestStatus() === 'Requested') {
-          <button type="button" class="btn-cancel-hero vl-button vl-button--danger-subtle"
-            (click)="cancelJoinRequest.emit()"
-            matTooltip="Withdraw your request to join this event"
-            matTooltipPosition="above">
-            <span class="material-symbols-outlined" translate="no">undo</span>
-            <span>Cancel Request</span>
-          </button>
-          } @else {
-          <button type="button" class="btn-join-hero vl-button vl-button--primary"
-            (click)="requestJoin.emit()"
-            [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
-            [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
-            matTooltipPosition="above">
-            @if (isJoinRequestPending()) {
-              <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+      <div #heroActionContainer class="hero-actions-container">
+        @if (!isAuthInitialized()) {
+          <div class="hero-action-skeleton"></div>
+        } @else {
+          @if (!isEventCreator()) {
+            @if (isUserAttendee()) {
+            <button type="button" class="btn-leave-hero vl-button vl-button--secondary" (click)="leaveEvent.emit()">
+              <span class="material-symbols-outlined" translate="no">logout</span>
+              <span>Leave Event</span>
+            </button>
+            } @else if (joinRequestStatus() === 'Requested') {
+            <button type="button" class="btn-cancel-hero vl-button vl-button--danger-subtle"
+              (click)="cancelJoinRequest.emit()"
+              matTooltip="Withdraw your request to join this event"
+              matTooltipPosition="above">
+              <span class="material-symbols-outlined" translate="no">undo</span>
+              <span>Cancel Request</span>
+            </button>
             } @else {
-              <i class="fa-solid fa-fire" aria-hidden="true"></i>
-              <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
-              <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+            <button #heroCtaBtn type="button" class="btn-join-hero vl-button vl-button--primary"
+              (click)="requestJoin.emit()"
+              [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+              [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
+              matTooltipPosition="above">
+              @if (isJoinRequestPending()) {
+                <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+              } @else {
+                <span class="material-symbols-outlined" translate="no">local_fire_department</span>
+                <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
+                <span class="material-symbols-outlined" translate="no">arrow_forward</span>
+              }
+            </button>
+            }
+          } @else {
+          <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
+            <span class="material-symbols-outlined" translate="no">group</span>
+            <span>View Requests</span>
+            @if (pendingJoinRequestCount() > 0) {
+            <span class="btn-view-requests__count">{{ pendingJoinRequestCount() }}</span>
             }
           </button>
           }
-        } @else {
-        <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
-          <i class="fa-solid fa-user-group" aria-hidden="true"></i>
-          View Requests
-          @if (pendingJoinRequestCount() > 0) {
-          <span class="btn-view-requests__count">{{ pendingJoinRequestCount() }}</span>
-          }
-        </button>
         }
-      }
+      </div>
       }
     </div>
   </div>

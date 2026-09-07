@@ -1,24 +1,55 @@
 <section class="ed-section map-panel">
-  <div class="map-card">
-    <div class="map-copy">
-      <h2 class="ed-section-title">
-        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-        Location
-      </h2>
-      <p class="map-title">{{ locationLabel() }}</p>
-      @if (showLocationSubtitle()) {
-      <p class="map-subtitle">{{ locationSubtitle() }}</p>
+  <div class="map-panel__header">
+    <span class="map-panel__icon">
+      <span class="material-symbols-outlined" translate="no">location_on</span>
+    </span>
+    <div>
+      <h2 class="vl-title-md">Location</h2>
+      <p class="vl-body-sm">{{ showLocationSubtitle() && locationSubtitle() ? locationSubtitle() : (isMapVisible() ? 'Venue & interactive map' : 'Exact address shared after joining') }}</p>
+    </div>
+  </div>
+
+  <div class="map-panel__body">
+    <div class="location-card">
+      <div class="location-card__info">
+        <span class="location-card__pin">
+          <span class="material-symbols-outlined" translate="no">pin_drop</span>
+        </span>
+        <div class="location-card__text">
+          <strong class="location-card__address">{{ locationLabel() }}</strong>
+          @if (isMapVisible()) {
+            <small class="location-card__hint">Venue coordinates verified</small>
+          } @else {
+            <small class="location-card__hint">Full landmark and directions will be unlocked</small>
+          }
+        </div>
+      </div>
+
+      @if (isMapVisible()) {
+        <button type="button" class="btn-open-maps vl-button vl-button--secondary" (click)="openInMaps.emit()">
+          <span class="material-symbols-outlined" translate="no">directions</span>
+          <span>Directions</span>
+        </button>
       }
     </div>
 
     @if (isMapVisible()) {
-    <div class="map-preview" role="button" tabindex="0" aria-label="Open location in Google Maps"
-      (click)="openInMaps.emit()"
-      (keydown.enter)="openInMaps.emit()" (keydown.space)="$event.preventDefault(); openInMaps.emit()">
-      <google-map [options]="mapOptions()" [height]="'160px'" [width]="'100%'" (mapClick)="openInMaps.emit()">
-        <map-marker [position]="mapPosition()" />
-      </google-map>
-    </div>
+      <div class="map-preview-wrap" role="button" tabindex="0" aria-label="Open location in Google Maps"
+        (click)="openInMaps.emit()"
+        (keydown.enter)="openInMaps.emit()" (keydown.space)="$event.preventDefault(); openInMaps.emit()">
+        <google-map [options]="mapOptions()" [height]="'180px'" [width]="'100%'" (mapClick)="openInMaps.emit()">
+          <map-marker [position]="mapPosition()" />
+        </google-map>
+        <div class="map-overlay-badge">
+          <span class="material-symbols-outlined" translate="no">open_in_new</span>
+          <span>View on Google Maps</span>
+        </div>
+      </div>
+    } @else {
+      <div class="location-privacy-banner">
+        <span class="material-symbols-outlined" translate="no">lock</span>
+        <span>Exact directions and interactive map are shared once you join this vibe.</span>
+      </div>
     }
   </div>
 </section>
