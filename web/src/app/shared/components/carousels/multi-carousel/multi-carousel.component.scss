@@ -49,6 +49,24 @@
     margin: 0;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-action {
+    color: var(--color-primary);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .custom-nav {
     display: flex;
     gap: 12px;

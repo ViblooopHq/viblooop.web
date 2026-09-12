@@ -37,6 +37,8 @@ export class ExploreEventsComponent implements OnInit {
   trendingEvents = signal<any[]>([]);
   justForYouEvents = signal<any[]>([]);
   pastEvents = signal<any[]>([]);
+  hasMorePastEvents = signal(false);
+  showPastEventsSeeMore = signal(false);
   allEvents = signal<any[]>([]);
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
@@ -249,9 +251,7 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   setActiveCategory(id: string) {
-    this.activeCategoryId = this.activeCategoryId === id ? 'all' : id;
-    this.activeFeaturedVibeId = null;
-    this.refreshEvents();
+    this.router.navigate('/eventCategories', id);
   }
 
   setFeaturedVibe(vibe: FeaturedVibe) {
@@ -398,12 +398,17 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   private loadPastEvents() {
-    this.eventsService.getPastEvents().subscribe({
+    this.eventsService.getPastEvents(undefined, 5).subscribe({
       next: (events: any) => {
-        this.pastEvents.set(Array.isArray(events?.data) ? events.data : []);
+        const data = events?.data;
+        this.pastEvents.set(Array.isArray(data?.events) ? data.events : []);
+        this.hasMorePastEvents.set(Boolean(data?.nextCursor));
+        this.showPastEventsSeeMore.set(false);
       },
       error: () => {
         this.pastEvents.set([]);
+        this.hasMorePastEvents.set(false);
+        this.showPastEventsSeeMore.set(false);
         this.messageStore.addMessage('Failed to load past events.', 'error');
       }
     });

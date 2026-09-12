@@ -75,8 +75,11 @@ export class ViewAllEventsComponent implements OnInit {
 
     this.isLoading.set(true);
     const cursor = this.nextCursor();
-    
-    this.eventsService.getEventsCollection(this.collectionType(), cursor || undefined, 20).subscribe({
+    const eventsRequest = this.isPastCollection()
+      ? this.eventsService.getPastEvents(cursor || undefined, 20)
+      : this.eventsService.getEventsCollection(this.collectionType(), cursor || undefined, 20);
+
+    eventsRequest.subscribe({
       next: (res: any) => {
         if (res?.success && res?.data) {
           this.events.update(current => [...current, ...res.data.events]);

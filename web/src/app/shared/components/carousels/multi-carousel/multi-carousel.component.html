@@ -13,6 +13,12 @@
           <p class="description">{{ description() }}</p>
         }
       </div>
+      <div class="header-actions">
+        @if (showHeaderAction() && headerActionLabel() && headerActionLink()) {
+          <a class="header-action" [routerLink]="headerActionLink()">
+            {{ headerActionLabel() }} <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        }
       @if (showNavigation()) {
         <div class="custom-nav">
           <button class="nav-btn prev-btn" (click)="slidePrev()">
@@ -23,6 +29,7 @@
           </button>
         </div>
       }
+      </div>
     </div>
   }
 
