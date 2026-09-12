@@ -2,12 +2,10 @@
 
 :host {
   display: block;
-  min-height: 100vh;
   background-color: var(--color-bg);
 }
 
 .view-all-container {
-  min-height: 100vh;
   color: var(--color-text-primary);
   position: relative;
   padding-top: var(--header-clearance-desktop, 7.75rem);

@@ -27,7 +27,7 @@ export class ProfileHeroComponent {
   hiddenPhotoCount = input(0);
 
   editProfile = output<void>();
-  logout = output<void>();
+  editAvatar = output<void>();
   photoSelected = output<number>();
   imageError = output<Event>();
 }

@@ -15,7 +15,9 @@ import { ProfileVerificationBannerComponent } from './components/profile-verific
 import { ProfileStatsComponent } from './components/profile-stats/profile-stats.component';
 import { ProfileContentPanelComponent } from './components/profile-content-panel/profile-content-panel.component';
 import { ProfileSocialLinksComponent, SocialLink } from './components/profile-social-links/profile-social-links.component';
+import { ProfileAccountPreferencesComponent } from './components/profile-account-preferences/profile-account-preferences.component';
 import { ActionModalComponent } from '../../shared/components/action-modal/action-modal.component';
+import { UpdateAvatarModalComponent } from './components/update-avatar-modal/update-avatar-modal.component';
 
 @Component({
   selector: 'vl-user-profile',
@@ -28,7 +30,9 @@ import { ActionModalComponent } from '../../shared/components/action-modal/actio
     ProfileStatsComponent,
     ProfileContentPanelComponent,
     ProfileSocialLinksComponent,
+    ProfileAccountPreferencesComponent,
     ActionModalComponent,
+    UpdateAvatarModalComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
@@ -67,8 +71,28 @@ export class UserProfileComponent implements OnInit {
   defaultProfileImage = 'assets/images/default-profile.png';
   isSelfieVerificationOpen = false;
   isLogoutModalOpen = false;
+  isUpdateAvatarModalOpen = false;
 
   userGallery: any[] = [];
+
+  openUpdateAvatarModal(): void {
+    this.isUpdateAvatarModalOpen = true;
+  }
+
+  closeUpdateAvatarModal(): void {
+    this.isUpdateAvatarModalOpen = false;
+  }
+
+  onAvatarUpdated(newImageUrl: string): void {
+    if (this.userProfile) {
+      this.userProfile = {
+        ...this.userProfile,
+        profileImage: newImageUrl,
+      };
+    }
+    // Refresh full profile in background
+    this.loadProfile();
+  }
 
   openLogoutModal(): void {
     this.isLogoutModalOpen = true;
@@ -294,6 +318,15 @@ export class UserProfileComponent implements OnInit {
 
   editProfile() {
     this.appDrawerService.openEditProfile();
+  }
+
+  onSocialLinksUpdated(links: SocialLink[]) {
+    if (this.userProfile) {
+      this.userProfile = {
+        ...this.userProfile,
+        socialLinks: links,
+      };
+    }
   }
 
   verifyGovernmentID() {

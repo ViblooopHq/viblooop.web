@@ -39,6 +39,38 @@
     color: var(--color-text-primary);
   }
 
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-pill, 9999px);
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
+    background-color: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+    color: var(--color-primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    .material-symbols-outlined {
+      font-size: 1rem;
+    }
+
+    &:hover {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+    }
+  }
+
   &__edit-btn {
     display: inline-flex;
     align-items: center;

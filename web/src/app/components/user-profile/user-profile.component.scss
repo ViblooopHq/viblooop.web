@@ -1,12 +1,11 @@
 .vl-user-profile-container {
   width: 100%;
-  min-height: 100dvh;
-  padding-bottom: 5rem;
+  padding-bottom: 2rem;
   background-color: var(--color-bg);
   color: var(--color-text-primary);
 
   @media (max-width: 768px) {
-    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: 1rem;
   }
 }
 

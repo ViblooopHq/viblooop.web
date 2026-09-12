@@ -1,0 +1,143 @@
+@if (isOpen()) {
+  <div
+    class="vl-avatar-modal-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="update-avatar-title"
+    (click)="onBackdropClick($event)"
+    (keydown.escape)="closeModal()">
+
+    <div class="vl-avatar-sheet">
+      <!-- Mobile Drawer Handle -->
+      <div class="vl-avatar-sheet__handle-bar" aria-hidden="true" (click)="closeModal()">
+        <div class="vl-avatar-sheet__handle"></div>
+      </div>
+
+      <!-- Header -->
+      <header class="vl-avatar-sheet__header">
+        <div class="vl-avatar-sheet__header-left">
+          <div class="vl-avatar-sheet__icon-badge">
+            <span class="material-symbols-outlined" translate="no">photo_camera</span>
+          </div>
+          <div>
+            <h2 id="update-avatar-title" class="vl-avatar-sheet__title">Update Profile Picture</h2>
+            <p class="vl-avatar-sheet__subtitle">Choose a clear photo that represents your vibe</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="vl-avatar-sheet__close-btn"
+          aria-label="Close"
+          (click)="closeModal()">
+          <span class="material-symbols-outlined" translate="no">close</span>
+        </button>
+      </header>
+
+      <!-- Body -->
+      <div class="vl-avatar-sheet__body">
+        <!-- Preview Section -->
+        <div class="vl-avatar-preview-wrap">
+          <div class="vl-avatar-ring" [class.vl-avatar-ring--active]="hasSelectedNewPhoto">
+            <img
+              class="vl-avatar-preview-img"
+              [src]="displayImage"
+              alt="Profile preview" />
+
+            @if (hasSelectedNewPhoto) {
+              <span class="vl-avatar-badge-check" title="New photo selected">
+                <span class="material-symbols-outlined" translate="no">check</span>
+              </span>
+            }
+          </div>
+
+          <div class="vl-avatar-status-pill" [class.vl-avatar-status-pill--new]="hasSelectedNewPhoto">
+            <span class="material-symbols-outlined" translate="no">
+              {{ hasSelectedNewPhoto ? 'auto_awesome' : 'account_circle' }}
+            </span>
+            <span>{{ hasSelectedNewPhoto ? 'New photo preview' : 'Current profile photo' }}</span>
+          </div>
+        </div>
+
+        <!-- Upload & Drop Zone -->
+        <div
+          class="vl-avatar-dropzone"
+          [class.vl-avatar-dropzone--dragging]="isDragging()"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)">
+
+          <label class="vl-avatar-dropzone__label" for="avatar-file-input">
+            <div class="vl-avatar-dropzone__icon">
+              <span class="material-symbols-outlined" translate="no">cloud_upload</span>
+            </div>
+            <p class="vl-avatar-dropzone__title">
+              <strong>Click to upload</strong> or drag and drop
+            </p>
+            <p class="vl-avatar-dropzone__hint">JPG, PNG, WebP or HEIC (max 10MB)</p>
+          </label>
+
+          <input
+            id="avatar-file-input"
+            type="file"
+            class="vl-avatar-dropzone__input"
+            accept="image/*,.heic,.heif"
+            (change)="onFileSelected($event)"
+            [disabled]="isUploading()" />
+        </div>
+
+        <!-- Selected File Actions -->
+        @if (hasSelectedNewPhoto) {
+          <div class="vl-avatar-actions-row">
+            <div class="vl-avatar-file-info">
+              <span class="material-symbols-outlined" translate="no">image</span>
+              <span class="vl-avatar-file-name">{{ selectedFile()?.name }}</span>
+            </div>
+            <button
+              type="button"
+              class="vl-avatar-remove-btn"
+              (click)="removeSelectedPhoto()"
+              [disabled]="isUploading()"
+              aria-label="Revert selected photo">
+              <span class="material-symbols-outlined" translate="no">undo</span>
+              <span>Revert</span>
+            </button>
+          </div>
+        }
+
+        <!-- Error Message -->
+        @if (errorMessage()) {
+          <div class="vl-avatar-error" role="alert">
+            <span class="material-symbols-outlined" translate="no">error</span>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Footer Actions -->
+      <footer class="vl-avatar-sheet__footer">
+        <button
+          type="button"
+          class="vl-btn vl-btn--secondary"
+          (click)="closeModal()"
+          [disabled]="isUploading()">
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          class="vl-btn vl-btn--primary"
+          (click)="saveAvatar()"
+          [disabled]="isUploading() || !hasSelectedNewPhoto">
+          @if (isUploading()) {
+            <span class="vl-spinner" aria-hidden="true"></span>
+            <span>Updating...</span>
+          } @else {
+            <span class="material-symbols-outlined" translate="no">check</span>
+            <span>Save Picture</span>
+          }
+        </button>
+      </footer>
+    </div>
+  </div>
+}

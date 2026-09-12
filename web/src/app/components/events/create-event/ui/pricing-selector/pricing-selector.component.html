@@ -19,11 +19,6 @@
           <div class="pricing-badge-pill free">No payment required</div>
         </div>
       </div>
-
-      @if (cost() === 'Free') {
-        <span class="material-symbols-outlined deco-top-right" aria-hidden="true">auto_awesome</span>
-        <span class="material-symbols-outlined deco-bottom-left" aria-hidden="true">north_west</span>
-      }
     </button>
 
     <button type="button" class="pricing-card-new" [class.pricing-card-new--selected]="cost() === 'Paid'" [attr.aria-pressed]="cost() === 'Paid'" (click)="costChange.emit('Paid')">

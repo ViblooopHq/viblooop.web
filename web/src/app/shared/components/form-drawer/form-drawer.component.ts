@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
+import { Component, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 
@@ -15,7 +15,7 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
   @Input() ariaLabel = 'Form drawer';
   @Output() closed = new EventEmitter<void>();
 
-  isClosing = false;
+  @HostBinding('class.vl-form-drawer-host--closing') isClosing = false;
   private bodyPreviousOverflow = '';
   private pagePreviousOverflow = '';
   private pageContainer: HTMLElement | null = null;

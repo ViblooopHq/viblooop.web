@@ -5,13 +5,13 @@
   border: 1px solid color-mix(in srgb, var(--color-action-primary) 10%, transparent);
   border-radius: var(--radius-lg);
   padding: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 0;
 }
 
 .agreement-header {
   display: flex;
   gap: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 
   .main-shield {
     color: var(--color-brand-primary);
@@ -48,7 +48,7 @@
   border: 1px solid var(--color-border-ghost);
   border-radius: var(--radius-lg);
   padding: 4px 0;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   overflow: hidden;
 }
 

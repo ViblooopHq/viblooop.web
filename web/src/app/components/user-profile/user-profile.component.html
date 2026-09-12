@@ -19,7 +19,7 @@
         [photoPreviewItems]="photoPreviewItems"
         [hiddenPhotoCount]="hiddenPhotoCount"
         (editProfile)="editProfile()"
-        (logout)="openLogoutModal()"
+        (editAvatar)="openUpdateAvatarModal()"
         (photoSelected)="openProfilePhoto($event)"
         (imageError)="useDefaultProfileImage($event)">
       </vl-profile-hero>
@@ -72,8 +72,15 @@
         <vl-profile-social-links
           [links]="visibleSocialLinks"
           [isCurrentUser]="isCurrentUser"
-          (addSocial)="editProfile()">
+          (linksUpdated)="onSocialLinksUpdated($event)">
         </vl-profile-social-links>
+      }
+
+      @if (isCurrentUser) {
+        <vl-profile-account-preferences
+          (editProfile)="editProfile()"
+          (logout)="openLogoutModal()">
+        </vl-profile-account-preferences>
       }
     </section>
   </div>
@@ -85,6 +92,14 @@
     (closed)="closeSelfieVerification()"
     (verified)="onSelfieVerified()">
   </vl-selfie-verification>
+
+  <vl-update-avatar-modal
+    [isOpen]="isUpdateAvatarModalOpen"
+    [currentImage]="userProfile?.profileImage || defaultProfileImage"
+    [defaultImage]="defaultProfileImage"
+    (close)="closeUpdateAvatarModal()"
+    (imageUpdated)="onAvatarUpdated($event)">
+  </vl-update-avatar-modal>
 
   <vl-action-modal
     [isOpen]="isLogoutModalOpen"

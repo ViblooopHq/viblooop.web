@@ -6,10 +6,19 @@
     </div>
 
     @if (isCurrentUser()) {
-      <button type="button" class="vl-social-card__edit-btn" (click)="addSocial.emit()">
-        <span class="material-symbols-outlined" translate="no">edit</span>
-        <span>Manage</span>
-      </button>
+      <div class="vl-social-card__header-actions">
+        @if (links().length > 0 && links().length < 4) {
+          <button type="button" class="vl-social-card__add-btn" (click)="openAddModal()" aria-label="Add social profile">
+            <span class="material-symbols-outlined" translate="no">add</span>
+            <span>Add</span>
+          </button>
+        }
+
+        <button type="button" class="vl-social-card__edit-btn" (click)="openManageDrawer()" aria-label="Manage social profiles">
+          <span class="material-symbols-outlined" translate="no">tune</span>
+          <span>Manage</span>
+        </button>
+      </div>
     }
   </div>
 
@@ -73,7 +82,7 @@
         </p>
       </div>
       @if (isCurrentUser()) {
-        <button type="button" class="vl-button vl-button--secondary vl-social-card__empty-action" (click)="addSocial.emit()">
+        <button type="button" class="vl-button vl-button--secondary vl-social-card__empty-action" (click)="openAddModal()">
           <span class="material-symbols-outlined" translate="no">add</span>
           <span>Add Social Links</span>
         </button>
@@ -81,3 +90,19 @@
     </div>
   }
 </section>
+
+<!-- Add Social Link Modal (Popup on desktop, Bottom drawer on mobile) -->
+<vl-add-social-modal
+  [isOpen]="isAddModalOpen()"
+  [existingLinks]="links()"
+  (close)="closeAddModal()"
+  (linksUpdated)="onLinksUpdated($event)">
+</vl-add-social-modal>
+
+<!-- Manage Social Links Sidebar (Side sheet on desktop, Bottom drawer on mobile) -->
+<vl-manage-social-drawer
+  [isOpen]="isManageDrawerOpen()"
+  [links]="links()"
+  (close)="closeManageDrawer()"
+  (linksUpdated)="onLinksUpdated($event)">
+</vl-manage-social-drawer>
