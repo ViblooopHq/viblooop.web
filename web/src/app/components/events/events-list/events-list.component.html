@@ -40,26 +40,74 @@
       </div>
     </header>
 
-    <div class="vl-section-controls">
-      <h3 class="vl-section-controls__title">Upcoming Events</h3>
-
-      <div class="vl-section-controls__actions">
-        <button class="vl-icon-btn vl-icon-button" aria-label="Filter events">
-          <span class="material-symbols-outlined" translate="no">filter_list</span>
+    <section class="explore-controls category-event-controls" aria-label="Search and filter category events">
+      <div class="search-bar vl-surface vl-surface--glass">
+        <i class="fa-solid fa-magnifying-glass search-icon text-on-surface" aria-hidden="true"></i>
+        <input
+          type="search"
+          class="search-input vl-field"
+          [value]="searchTerm"
+          (input)="onSearchInput($event)"
+          placeholder="Search events, vibes, or locations..."
+          aria-label="Search category events">
+        @if (searchTerm) {
+        <button class="search-clear" type="button" (click)="clearSearch()" aria-label="Clear search">
+          <span class="material-symbols-outlined" translate="no">close</span>
         </button>
-        <button class="vl-icon-btn vl-icon-button" aria-label="Sort events">
-          <span class="material-symbols-outlined" translate="no">sort</span>
+        }
+        <button
+          type="button"
+          class="location-pill vl-chip"
+          [class.active]="activeTimeFilter === 'nearby'"
+          [attr.aria-pressed]="activeTimeFilter === 'nearby'"
+          (click)="setTimeFilter('nearby')">
+          <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+          <span>Near You</span>
         </button>
       </div>
+
+      <div class="filter-tags-scroll">
+        <div class="filter-tags" aria-label="Time filters">
+          @for (filter of timeFilters; track filter.id) {
+          <button
+            type="button"
+            class="filter-tag vl-chip"
+            [class.active]="activeTimeFilter === filter.id"
+            [attr.aria-pressed]="activeTimeFilter === filter.id"
+            (click)="setTimeFilter(filter.id)">
+            {{ filter.label }}
+          </button>
+          }
+        </div>
+      </div>
+    </section>
+
+    <div class="vl-section-controls">
+      <h3 class="vl-section-controls__title">Upcoming Events</h3>
+      @if (!isLoading && hasLoaded) {
+      <span class="vl-section-controls__count">{{ activeCategoryEvents.length }} found</span>
+      }
     </div>
   </main>
 
 
   <div class="vl-events-list__cards">
-    @for (event of activeCategoryEvents; track $index) {
+    @if (isLoading && !hasLoaded) {
+    <div class="vl-events-list__status">
+      <i class="fa-solid fa-spinner fa-spin"></i> Loading events...
+    </div>
+    } @else {
+    @for (event of activeCategoryEvents; track event._id || $index) {
     <vl-event-card [config]="event"></vl-event-card>
     } @empty {
-    <p>Keep patient data is loading</p>
+    <div class="vl-events-list__status">
+      <vl-empty-state
+        subject="events"
+        [context]="searchTerm ? 'matching your search' : 'for this filter'"
+        contextPrefix="">
+      </vl-empty-state>
+    </div>
+    }
     }
   </div>
 </section>

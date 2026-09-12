@@ -23,11 +23,15 @@ function getSsrFallbackBody(url: string) {
     };
   }
 
-  if (
-    url.endsWith('/getAllEvents')
-    || url.endsWith('/getPastEvents')
-    || url.endsWith('/getAllInterests')
-  ) {
+  if (url.endsWith('/getPastEvents')) {
+    return {
+      success: true,
+      statusCode: 200,
+      data: { events: [], nextCursor: null },
+    };
+  }
+
+  if (url.endsWith('/getAllEvents') || url.endsWith('/getAllInterests')) {
     return {
       success: true,
       statusCode: 200,

@@ -1,5 +1,6 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, ElementRef, viewChild, afterNextRender, inject, ContentChild, TemplateRef } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, ElementRef, viewChild, afterNextRender, inject, ContentChild, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { SwiperConfigService } from '../swiper-registry.service';
 import { isPlatformServer } from '@angular/common';
 import { PLATFORM_ID } from '@angular/core';
@@ -7,7 +8,7 @@ import { PLATFORM_ID } from '@angular/core';
 @Component({
   selector: 'vl-multi-carousel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './multi-carousel.component.html',
   styleUrl: './multi-carousel.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -20,10 +21,14 @@ export class MultiCarouselComponent {
   showPagination = input<boolean>(true);
   autoplay = input<boolean | { delay: number, disableOnInteraction: boolean }>(false);
   loop = input<boolean>(false);
+  endVisibilityChange = output<boolean>();
   
   preTitle = input<string>();
   title = input<string>();
   description = input<string>();
+  headerActionLabel = input<string>();
+  headerActionLink = input<string>();
+  showHeaderAction = input<boolean>(false);
   
   breakpoints = input<any>({
     320: { slidesPerView: 1.2, spaceBetween: 12 },
@@ -63,7 +68,14 @@ export class MultiCarouselComponent {
           grabCursor: true,
           observer: true,
           observeParents: true,
-          observeSlideChildren: true
+          observeSlideChildren: true,
+          on: {
+            init: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
+            slideChange: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
+            resize: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
+            reachEnd: () => this.endVisibilityChange.emit(true),
+            fromEdge: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd))
+          }
         };
         
         Object.assign(swiperEl, swiperParams);

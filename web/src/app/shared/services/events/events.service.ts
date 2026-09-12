@@ -92,15 +92,19 @@ export class EventsService {
     return this.categoriesCache$;
   }
 
-  getAllEvents(filter: string = 'all', category?: string): Observable<any> {
+  getAllEvents(filter: string = 'all', category?: string, search?: string): Observable<any> {
     const params: Record<string, string> = { filter };
     if (category) params['category'] = category;
+    if (search) params['search'] = search;
 
     return this.httpService.http.get(`${this.baseUrl}/getAllEvents`, { params });
   }
 
-  getPastEvents(): Observable<any> {
-    return this.httpService.http.get(`${this.baseUrl}/getPastEvents`);
+  getPastEvents(cursor?: string, limit: number = 20): Observable<any> {
+    const params: Record<string, string> = { limit: String(limit) };
+    if (cursor) params['cursor'] = cursor;
+
+    return this.httpService.http.get(`${this.baseUrl}/getPastEvents`, { params });
   }
 
   getEventsByCategory(category: string): Observable<any> {

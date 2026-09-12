@@ -210,7 +210,10 @@
     <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
       @if (pastEvents().length > 0) {
       <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
-        preTitle="Memories" title="Past Vibes" description="Relive the best moments from our past events.">
+        preTitle="Memories" title="Past Vibes" description="Relive the best moments from our past events."
+        headerActionLabel="See More" headerActionLink="/events/view-all/past-vibes"
+        [showHeaderAction]="hasMorePastEvents() && showPastEventsSeeMore()"
+        (endVisibilityChange)="showPastEventsSeeMore.set($event)">
         <ng-template let-event>
           <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewPastEvent(event)">
           </vl-past-event-card>
