@@ -22,7 +22,7 @@ export class UserService {
   }
 
   updateUserProfile(data: any) {
-    return this.httpService.http.post(this.baseUrl + `/updateProfile`, data);
+    return this.httpService.http.patch(this.baseUrl + `/updateProfile`, data);
   }
 
   verifySelfieProfile(data: FormData) {

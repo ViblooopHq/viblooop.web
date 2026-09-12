@@ -92,8 +92,15 @@ export class EventsService {
     return this.categoriesCache$;
   }
 
-  getAllEvents(): Observable<any> {
-    return this.httpService.http.get(`${this.baseUrl}/getAllEvents`);
+  getAllEvents(filter: string = 'all', category?: string): Observable<any> {
+    const params: Record<string, string> = { filter };
+    if (category) params['category'] = category;
+
+    return this.httpService.http.get(`${this.baseUrl}/getAllEvents`, { params });
+  }
+
+  getPastEvents(): Observable<any> {
+    return this.httpService.http.get(`${this.baseUrl}/getPastEvents`);
   }
 
   getEventsByCategory(category: string): Observable<any> {
@@ -137,8 +144,15 @@ export class EventsService {
     return this.httpService.http.post(`${this.baseUrl}/getJoinStatus`, body);
   }
 
-  getNearbyEvents(lat: number, lng: number, radius: number = 50000): Observable<any> {
-    return this.httpService.http.get(`${this.baseUrl}/events/nearby?lat=${lat}&lng=${lng}&radius=${radius}`);
+  getNearbyEvents(lat: number, lng: number, radius: number = 50000, category?: string): Observable<any> {
+    const params: Record<string, string> = {
+      lat: String(lat),
+      lng: String(lng),
+      radius: String(radius),
+    };
+    if (category) params['category'] = category;
+
+    return this.httpService.http.get(`${this.baseUrl}/events/nearby`, { params });
   }
 
   getRelatedNearbyEvents(eventId: string): Observable<any> {

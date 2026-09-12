@@ -1,6 +1,5 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { EventData } from '../../../../../data';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
@@ -42,6 +41,7 @@ export class ExploreEventsComponent implements OnInit {
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
   private messageStore = inject(MessageStore);
+  private eventsRequestId = 0;
 
   featuredVibes: FeaturedVibe[] = [
     {
@@ -178,17 +178,9 @@ export class ExploreEventsComponent implements OnInit {
   ];
 
   ngOnInit() {
-
     this.loadCategories();
     this.loadEvents();
-
-    // Flatten some events for random distribution
-    const allEvents = EventData.reduce((acc, cat) => {
-      return [...acc, ...cat.events];
-    }, [] as any[]);
-
-    this.allEvents.set(allEvents);
-    this.applyFilters();
+    this.loadPastEvents();
   }
 
   activeFilterId: string = 'all'; // Default active filter
@@ -200,21 +192,30 @@ export class ExploreEventsComponent implements OnInit {
     if (id === 'nearby') {
       this.requestBrowserLocation();
     } else {
-      this.applyFilters();
+      this.loadEvents();
     }
   }
 
   requestBrowserLocation() {
+    const requestId = ++this.eventsRequestId;
+
     if (!navigator.geolocation) {
       this.messageStore.addMessage('Geolocation is not supported by your browser.', 'error');
+      this.activeFilterId = 'all';
+      this.loadEvents();
       return;
     }
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        if (requestId !== this.eventsRequestId) return;
+
         const { latitude, longitude } = position.coords;
-        this.eventsService.getNearbyEvents(latitude, longitude, 50000).subscribe({
+        const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
+        this.eventsService.getNearbyEvents(latitude, longitude, 50000, category).subscribe({
           next: (res: any) => {
+            if (requestId !== this.eventsRequestId) return;
+
             if (res?.success && res?.data) {
               this.trendingEvents.set(res.data);
               if (this.trendingEvents().length === 0) {
@@ -225,11 +226,14 @@ export class ExploreEventsComponent implements OnInit {
             }
           },
           error: () => {
+            if (requestId !== this.eventsRequestId) return;
             this.messageStore.addMessage('Failed to load nearby events.', 'error');
           }
         });
       },
       (error) => {
+        if (requestId !== this.eventsRequestId) return;
+
         let msg = 'Unable to determine current location.';
         if (error.code === error.PERMISSION_DENIED) {
           msg = 'Location permission denied. Please enable it to see nearby events.';
@@ -237,9 +241,8 @@ export class ExploreEventsComponent implements OnInit {
           msg = 'Location request timed out.';
         }
         this.messageStore.addMessage(msg, 'error');
-        // Revert filter if failed
         this.activeFilterId = 'all';
-        this.applyFilters();
+        this.loadEvents();
       },
       { timeout: 10000 }
     );
@@ -248,14 +251,14 @@ export class ExploreEventsComponent implements OnInit {
   setActiveCategory(id: string) {
     this.activeCategoryId = this.activeCategoryId === id ? 'all' : id;
     this.activeFeaturedVibeId = null;
-    this.applyFilters();
+    this.refreshEvents();
   }
 
   setFeaturedVibe(vibe: FeaturedVibe) {
     const isAlreadyActive = this.activeFeaturedVibeId === vibe.id;
     this.activeFeaturedVibeId = isAlreadyActive ? null : vibe.id;
     this.activeCategoryId = isAlreadyActive ? 'all' : (this.findCategoryForVibe(vibe)?.id || 'all');
-    this.applyFilters();
+    this.refreshEvents();
   }
 
   isFeaturedVibeActive(vibe: FeaturedVibe): boolean {
@@ -270,14 +273,12 @@ export class ExploreEventsComponent implements OnInit {
     this.activeFilterId = 'all';
     this.activeCategoryId = 'all';
     this.activeFeaturedVibeId = null;
-    this.applyFilters();
+    this.loadEvents();
   }
 
   getFeaturedVibeEventCount(vibe: FeaturedVibe): number {
     return this.allEvents()
       .filter((event) => this.matchesFeaturedVibe(event, vibe))
-      .filter((event) => this.matchesQuickFilter(event, this.activeFilterId))
-      .filter((event) => !this.isPastEvent(event))
       .length;
   }
 
@@ -357,7 +358,6 @@ export class ExploreEventsComponent implements OnInit {
             tags: category.tags || []
           };
         }));
-        this.applyFilters();
       }
     }, (error: any) => {
       console.log(error);
@@ -365,62 +365,48 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   private loadEvents() {
-    this.eventsService.getAllEvents().subscribe((events: any) => {
-      this.allEvents.set(Array.isArray(events.data) ? events.data : []);
-      this.applyFilters();
+    const requestId = ++this.eventsRequestId;
+    const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
+
+    this.eventsService.getAllEvents(this.activeFilterId, category).subscribe({
+      next: (events: any) => {
+        if (requestId !== this.eventsRequestId) return;
+
+        const filteredEvents = Array.isArray(events?.data) ? events.data : [];
+        this.trendingEvents.set(filteredEvents);
+
+        if (this.activeFilterId === 'all' && !category) {
+          this.allEvents.set(filteredEvents);
+          this.justForYouEvents.set(filteredEvents);
+        }
+      },
+      error: () => {
+        if (requestId !== this.eventsRequestId) return;
+        this.trendingEvents.set([]);
+        this.messageStore.addMessage('Failed to load events.', 'error');
+      }
     });
   }
 
-  private applyFilters() {
-    let filteredUpcomingEvents = this.allEvents().filter((event) => !this.isPastEvent(event));
-    const activeVibe = this.getActiveFeaturedVibe();
-
-    if (activeVibe) {
-      filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesFeaturedVibe(event, activeVibe));
-    } else if (this.activeCategoryId !== 'all') {
-      filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesCategory(event, this.activeCategoryId));
-    }
-
+  private refreshEvents() {
     if (this.activeFilterId === 'nearby') {
-      // Nearby already handled via API, do nothing to override it here if we want to keep API results.
-      // Actually we should just let trendingEvents remain as the API response if it's nearby.
+      this.requestBrowserLocation();
       return;
     }
 
-    filteredUpcomingEvents = filteredUpcomingEvents.filter((event) => this.matchesQuickFilter(event, this.activeFilterId));
-
-    this.trendingEvents.set(filteredUpcomingEvents);
-    this.justForYouEvents.set(this.allEvents().filter((event) => !this.isPastEvent(event)));
-
-    const past = this.allEvents().filter((event) => this.isPastEvent(event));
-    if (past.length === 0 && this.allEvents().length > 0) {
-      this.pastEvents.set(this.allEvents().slice(0, 5));
-    } else {
-      this.pastEvents.set(past);
-    }
+    this.loadEvents();
   }
 
-  private matchesQuickFilter(event: any, filterId: string): boolean {
-    switch (filterId) {
-      case 'tonight':
-        return this.isTonight(event);
-      case 'this_weekend':
-        return this.isThisWeekend(event);
-      case 'free':
-        return this.isFreeEvent(event);
-      default:
-        return true;
-    }
-  }
-
-  private matchesCategory(event: any, categoryId: string): boolean {
-    const category = event?.category;
-    const selectedCategory = this.categories().find((cat) => cat.id === categoryId);
-
-    return category?._id === categoryId
-      || category === categoryId
-      || this.normalizeForMatch(category?.title) === this.normalizeForMatch(selectedCategory?.label)
-      || this.normalizeForMatch(category?.name) === this.normalizeForMatch(selectedCategory?.label);
+  private loadPastEvents() {
+    this.eventsService.getPastEvents().subscribe({
+      next: (events: any) => {
+        this.pastEvents.set(Array.isArray(events?.data) ? events.data : []);
+      },
+      error: () => {
+        this.pastEvents.set([]);
+        this.messageStore.addMessage('Failed to load past events.', 'error');
+      }
+    });
   }
 
   private getActiveFeaturedVibe(): FeaturedVibe | null {
@@ -473,90 +459,6 @@ export class ExploreEventsComponent implements OnInit {
       category?.name,
       ...(Array.isArray(category?.tags) ? category.tags : []),
     ].filter(Boolean).join(' ');
-  }
-
-  private isTonight(event: any): boolean {
-    const eventDateTime = this.getEventDateTime(event);
-    if (!eventDateTime) return false;
-
-    const now = new Date();
-    return this.isSameDay(eventDateTime, now) && eventDateTime >= now;
-  }
-
-  private isThisWeekend(event: any): boolean {
-    const eventDateTime = this.getEventDateTime(event);
-    if (!eventDateTime) return false;
-
-    const today = this.startOfDay(new Date());
-    const eventDay = this.startOfDay(eventDateTime);
-    if (eventDay < today) return false;
-
-    const start = new Date(today);
-    const end = new Date(today);
-    const todayDay = today.getDay();
-
-    if (todayDay === 0) {
-      end.setDate(today.getDate());
-    } else if (todayDay === 6) {
-      end.setDate(today.getDate() + 1);
-    } else {
-      const daysUntilSaturday = 6 - todayDay;
-      start.setDate(today.getDate() + daysUntilSaturday);
-      end.setTime(start.getTime());
-      end.setDate(start.getDate() + 1);
-    }
-
-    return eventDay >= start && eventDay <= end;
-  }
-
-  private isFreeEvent(event: any): boolean {
-    const cost = this.normalize(event?.cost);
-    const price = Number(event?.price || 0);
-
-    return cost === 'free' || price === 0;
-  }
-
-  private isPastEvent(event: any): boolean {
-    const eventDateTime = this.getEventDateTime(event);
-    return !!eventDateTime && eventDateTime < new Date();
-  }
-
-  private getEventDateTime(event: any): Date | null {
-    if (!event?.eventDate) return null;
-
-    const eventDateTime = new Date(event.eventDate);
-    if (Number.isNaN(eventDateTime.getTime())) return null;
-
-    if (event.eventTime) {
-      const parsedTime = this.parseEventTime(event.eventTime);
-      eventDateTime.setHours(parsedTime.hours, parsedTime.minutes, 0, 0);
-    }
-
-    return eventDateTime;
-  }
-
-  private parseEventTime(value: string): { hours: number; minutes: number } {
-    const [time, modifier] = value.trim().split(/\s+/);
-    let [hours, minutes] = time.split(':').map(Number);
-
-    if (Number.isNaN(hours)) hours = 0;
-    if (Number.isNaN(minutes)) minutes = 0;
-    if (modifier?.toUpperCase() === 'PM' && hours < 12) hours += 12;
-    if (modifier?.toUpperCase() === 'AM' && hours === 12) hours = 0;
-
-    return { hours, minutes };
-  }
-
-  private isSameDay(first: Date, second: Date): boolean {
-    return first.getFullYear() === second.getFullYear()
-      && first.getMonth() === second.getMonth()
-      && first.getDate() === second.getDate();
-  }
-
-  private startOfDay(date: Date): Date {
-    const result = new Date(date);
-    result.setHours(0, 0, 0, 0);
-    return result;
   }
 
   private normalize(value: any): string {
