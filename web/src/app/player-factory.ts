@@ -35,9 +35,5 @@ export function playerFactory(): Promise<typeof import('lottie-web')> {
     return Promise.resolve({ default: player } as unknown as typeof import('lottie-web'));
   }
 
-  const browserImport = new Function('moduleName', 'return import(moduleName)') as (
-    moduleName: string
-  ) => Promise<typeof import('lottie-web')>;
-
-  return browserImport('lottie-web');
+  return import('lottie-web');
 }

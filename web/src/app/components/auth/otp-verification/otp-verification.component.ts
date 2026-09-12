@@ -115,10 +115,22 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
           }
         },
         error: (err) => {
-          console.log('Error: ', err);
-          this.toastService.error('Invalid verification code. Please try again.', 'Verification Failed');
+          if (this.isNewUserError(err)) {
+            this.isUserAlreadyExist = false;
+            return;
+          }
+
+          const message = err?.error?.message || 'Invalid verification code. Please try again.';
+          this.toastService.error(message, 'Verification Failed');
         }
       });
+  }
+
+  private isNewUserError(error: any): boolean {
+    const status = error?.status ?? error?.error?.statusCode;
+    const message = String(error?.error?.message || '').trim().toLowerCase();
+
+    return status === 404 && message === 'user not found';
   }
 
   createUsername() {
