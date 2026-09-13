@@ -1,7 +1,7 @@
 <article
   class="vl-compact-card"
   (click)="onViewEventClick()">
-  <!-- Image Header -->
+  <!-- Image Header with Title Overlay & Badges -->
   <div class="vl-compact-card__media">
     <img
       [src]="config()?.image | imageUrl"
@@ -9,15 +9,25 @@
       class="vl-compact-card__img"
       loading="lazy" />
 
-    <!-- Top Left Status Badge -->
-    @if (getEventBadge(); as badge) {
-      <div
-        class="vl-compact-card__badge"
-        [class.vl-compact-card__badge--ended]="isEventEnded">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
-        <span>{{ badge.text }}</span>
-      </div>
-    }
+    <div class="vl-compact-card__overlay" aria-hidden="true"></div>
+
+    <!-- Top Left Badges Row -->
+    <div class="vl-compact-card__badges">
+      @if (isEventEnded) {
+        <div class="vl-compact-card__badge vl-compact-card__badge--ended">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">event_busy</span>
+          <span>Ended</span>
+        </div>
+      } @else {
+        <!-- Small Audience / Mix Badge -->
+        <div
+          class="vl-compact-card__badge vl-compact-card__badge--aud"
+          [attr.data-type]="audiencePreferenceType">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+          <span>{{ audiencePreferenceLabel }}</span>
+        </div>
+      }
+    </div>
 
     <!-- Top Right Wishlist Button -->
     @if (showWishlist() && !isEventEnded) {
@@ -36,27 +46,43 @@
         </span>
       </button>
     }
+
+    <!-- Event Title On Top of Image (Bottom Overlay) -->
+    <div class="vl-compact-card__title-overlay">
+      <h3 class="vl-compact-card__title" [title]="config()?.title || ''">
+        {{ config()?.title || 'Event Title' }}
+      </h3>
+    </div>
   </div>
 
   <!-- Card Body -->
   <div class="vl-compact-card__body">
     <div class="vl-compact-card__top">
-      <!-- Date & Time -->
+      <!-- Date & Time Row -->
       @if (formattedDateTime) {
         <div class="vl-compact-card__datetime">
-          {{ formattedDateTime }}
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
+          <span>{{ formattedDateTime }}</span>
         </div>
       }
 
-      <!-- Title (2-line clamp) -->
-      <h3 class="vl-compact-card__title" [title]="config()?.title || ''">
-        {{ config()?.title || 'Event Title' }}
-      </h3>
-
-      <!-- Location -->
-      <div class="vl-compact-card__location">
+      <!-- Location Row -->
+      <div class="vl-compact-card__location" [title]="location">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">location_on</span>
-        <span class="vl-compact-card__location-text">{{ location }}</span>
+        <span class="vl-compact-card__location-text">{{ location | truncate:20 }}</span>
+      </div>
+
+      <!-- Hosted By Row -->
+      <div class="vl-compact-card__host" [title]="'Hosted by ' + hostName">
+        <div class="vl-compact-card__host-avatar-wrap">
+          <img
+            class="vl-compact-card__host-avatar"
+            [src]="hostAvatar || 'assets/images/default-profile.png'"
+            alt="" />
+        </div>
+        <span class="vl-compact-card__host-text">
+          Hosted by <strong class="vl-compact-card__host-name">{{ hostName | truncate:16 }}</strong>
+        </span>
       </div>
     </div>
 
@@ -74,7 +100,7 @@
       } @else if (getRemainingSpots() > 0 && !isEventEnded) {
         <div class="vl-compact-card__spots">
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
-          <span>{{ getRemainingSpots() }} left</span>
+          <span>{{ getRemainingSpots() }} spots</span>
         </div>
       }
     </div>

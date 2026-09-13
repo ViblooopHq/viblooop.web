@@ -36,24 +36,101 @@
   }
 }
 
+.vl-event-card__top-badges {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 5;
+  max-width: calc(100% - 3.8rem);
+}
+
+.vl-event-card__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  min-height: 26px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+
+  .material-symbols-outlined {
+    font-size: 0.82rem;
+  }
+
+  &--cat {
+    background: rgba(15, 23, 42, 0.78);
+    border-color: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+
+    .material-symbols-outlined {
+      color: #a5b4fc;
+    }
+  }
+
+  &--aud {
+    &[data-type="women"] {
+      background: rgba(219, 39, 119, 0.88);
+      border-color: rgba(251, 207, 232, 0.45);
+      color: #ffffff;
+
+      .material-symbols-outlined {
+        color: #fbcfe8;
+      }
+    }
+
+    &[data-type="men"] {
+      background: rgba(2, 132, 199, 0.88);
+      border-color: rgba(186, 230, 253, 0.45);
+      color: #ffffff;
+
+      .material-symbols-outlined {
+        color: #bae6fd;
+      }
+    }
+
+    &[data-type="open"] {
+      background: rgba(15, 23, 42, 0.78);
+      border-color: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+
+      .material-symbols-outlined {
+        color: #c084fc;
+      }
+    }
+  }
+}
+
 .event-status-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-height: 28px;
-  padding: 2px 10px;
+  min-height: 26px;
+  padding: 2px 8px;
   border-radius: var(--radius-pill);
   background-color: var(--color-surface-glass-strong);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   color: var(--color-text-primary);
-  font-size: var(--text-caption);
-  font-weight: 600;
+  font-size: 0.7rem;
+  font-weight: 650;
   line-height: 1;
 
   .event-status-pill__icon {
-    font-size: 1rem;
+    font-size: 0.85rem;
     color: var(--color-primary);
   }
 

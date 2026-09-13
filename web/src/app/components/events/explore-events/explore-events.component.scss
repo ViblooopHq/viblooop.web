@@ -186,29 +186,42 @@
   flex: 1 1 auto;
   min-width: 0;
   height: 3.25rem;
-  padding: 0 var(--space-3);
+  padding: 0 0.65rem 0 1rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--color-border);
+  border: 1.5px solid var(--color-border);
   background-color: var(--color-surface);
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   .search-icon {
     font-size: 1.25rem;
     color: var(--color-text-tertiary);
-    margin-right: var(--space-2);
+    margin-right: 0.6rem;
+    flex-shrink: 0;
+    transition: color 0.2s ease;
   }
 
   .search-input {
     flex: 1;
-    border: none;
-    background: transparent;
+    min-width: 0;
+    height: 100%;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
     padding: 0;
-    font-size: var(--text-body);
+    font-family: inherit;
+    font-size: var(--text-body, 0.9375rem);
+    font-weight: 500;
     color: var(--color-text-primary);
-    outline: none;
 
     &::placeholder {
       color: var(--color-text-tertiary);
+      font-weight: 400;
+    }
+
+    &::-webkit-search-cancel-button {
+      display: none;
     }
   }
 
@@ -216,7 +229,8 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 6px 12px;
+    height: 2.25rem;
+    padding: 0 0.85rem;
     border-radius: var(--radius-pill);
     background-color: var(--color-surface-interactive);
     color: var(--color-text-secondary);
@@ -225,6 +239,8 @@
     cursor: pointer;
     white-space: nowrap;
     border: 1px solid var(--color-border);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
 
     i {
       color: var(--color-primary);
@@ -232,9 +248,22 @@
 
     &:hover,
     &.active {
-      background-color: var(--color-primary-soft);
+      background-color: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
       color: var(--color-primary);
       border-color: var(--color-primary);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.18);
+    }
+  }
+
+  /* Focus ring is applied cleanly to the OUTSIDE container pill */
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3.5px color-mix(in srgb, var(--color-primary) 18%, transparent);
+    background-color: var(--color-surface);
+    transform: translateY(-1px);
+
+    .search-icon {
+      color: var(--color-primary);
     }
   }
 }

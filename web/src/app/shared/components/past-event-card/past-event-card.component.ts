@@ -1,6 +1,7 @@
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 export interface PastEventCardConfig {
   title?: string;
@@ -22,7 +23,7 @@ export interface PastEventCardConfig {
 @Component({
   selector: 'vl-past-event-card',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, ImageUrlPipe],
+  imports: [DecimalPipe, ImageUrlPipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './past-event-card.component.html',
   styleUrl: './past-event-card.component.scss',
@@ -44,6 +45,20 @@ export class PastEventCardComponent {
       if (formatted) return formatted;
     }
     return [this.config.city, this.config.state].filter(Boolean).join(', ') || 'Location';
+  }
+
+  get shortDate(): string {
+    if (!this.config.eventDate) return 'Date TBA';
+    const date = new Date(this.config.eventDate);
+    if (Number.isNaN(date.getTime())) return 'Date TBA';
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+  }
+
+  get fullDate(): string {
+    if (!this.config.eventDate) return 'Date TBA';
+    const date = new Date(this.config.eventDate);
+    if (Number.isNaN(date.getTime())) return 'Date TBA';
+    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
   }
 
   get statusLabel(): string {

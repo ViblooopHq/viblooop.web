@@ -7,14 +7,35 @@
     <img [src]="config()?.image | imageUrl" [alt]="config()?.title || 'Event image'"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
 
-    <!-- Top Left Priority Badge -->
-    @if (getEventBadge(); as badge) {
-    <div class="event-status-pill absolute top-3 left-3"
-      [class.event-status-pill--ended]="isEventEnded">
-      <span class="material-symbols-outlined event-status-pill__icon" translate="no" aria-hidden="true">{{ badge.icon }}</span>
-      {{ badge.text }}
+    <!-- Top Left Badges Row (Status, Category, Gender Allowed) -->
+    <div class="vl-event-card__top-badges">
+      @if (getEventBadge(); as badge) {
+        <div class="event-status-pill"
+          [class.event-status-pill--ended]="isEventEnded">
+          <span class="material-symbols-outlined event-status-pill__icon" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          {{ badge.text }}
+        </div>
+      }
+
+      <!-- Category Badge -->
+      @if (categoryTitle) {
+        <div class="vl-event-card__pill vl-event-card__pill--cat" [title]="categoryTitle">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">category</span>
+          <span>{{ categoryTitle | truncate:18 }}</span>
+        </div>
+      }
+
+      <!-- Gender Allowed Badge -->
+      @if (!isEventEnded) {
+        <div
+          class="vl-event-card__pill vl-event-card__pill--aud"
+          [attr.data-type]="audiencePreferenceType"
+          [title]="audiencePreferenceLabel + ' Allowed'">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+          <span>{{ audiencePreferenceLabel }}</span>
+        </div>
+      }
     </div>
-    }
 
     <!-- Top Right Wishlist Button -->
     @if (showWishlist() && !isEventEnded) {
@@ -40,15 +61,16 @@
     <div class="min-w-0">
       <!-- Title -->
       <h3
-        class="!text-[15px] sm:!text-[16px] font-bold text-on-surface mb-1.5 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2">
+        class="!text-[15px] sm:!text-[16px] font-bold text-on-surface mb-1.5 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2"
+        [title]="config()?.title || ''">
         {{ config()?.title || 'Event Title' }}
       </h3>
 
       <!-- Location & Time Row -->
       <div class="flex items-center gap-2 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5 min-w-0">
-        <div class="flex items-center gap-1 min-w-0 flex-1">
+        <div class="flex items-center gap-1 min-w-0 flex-1" [title]="location">
           <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">location_on</span>
-          <span class="truncate font-medium">{{ location }}</span>
+          <span class="truncate font-medium">{{ location | truncate:24 }}</span>
         </div>
         <span class="text-slate-400 font-normal flex-shrink-0" aria-hidden="true">•</span>
         <div class="flex items-center gap-1 min-w-0 flex-1">
@@ -64,14 +86,14 @@
       </div>
 
       <!-- Host Row -->
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-2 min-w-0" [title]="'Hosted by ' + hostName">
         <div
           class="w-6 h-6 sm:w-6.5 sm:h-6.5 aspect-square rounded-full flex-shrink-0 overflow-hidden border border-border">
           <img class="w-full h-full object-cover"
             [src]="(config()?.createdBy?.profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="{{ hostName }}'s profile photo" />
         </div>
-        <span class="text-[12px] sm:text-[13px] text-on-surface-variant font-medium truncate">
-          Hosted by <span class="text-on-surface font-semibold ml-0.5">{{ hostName }}</span>
+        <span class="text-[12px] sm:text-[13px] text-on-surface-variant font-medium truncate min-w-0">
+          Hosted by <span class="text-on-surface font-semibold ml-0.5">{{ hostName | truncate:22 }}</span>
         </span>
       </div>
     </div>

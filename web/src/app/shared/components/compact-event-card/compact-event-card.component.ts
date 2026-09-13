@@ -4,11 +4,12 @@ import { RouteService } from '../../services/route/route.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 @Component({
   selector: 'vl-compact-event-card',
   standalone: true,
-  imports: [ImageUrlPipe, CurrencyPipe],
+  imports: [ImageUrlPipe, CurrencyPipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compact-event-card.component.html',
   styleUrl: './compact-event-card.component.scss'
@@ -119,6 +120,50 @@ export class CompactEventCardComponent {
   get location(): string {
     const address = this.config()?.address;
     return address?.area || address?.city || this.config()?.location || this.config()?.city || 'Location';
+  }
+
+  get hostName(): string {
+    const createdBy = this.config()?.createdBy;
+    return createdBy?.username || createdBy?.userName || createdBy?.name || createdBy?.fullName || 'Host';
+  }
+
+  get hostAvatar(): string {
+    return (this.config()?.createdBy?.profileImage as string) || '';
+  }
+
+  get audiencePreferenceType(): 'women' | 'men' | 'open' {
+    const preference = String(this.config()?.audiencePreference || '').toLowerCase();
+    if (preference === 'women' || preference === 'men' || preference === 'open') return preference;
+
+    const attendeeMix = Number(this.config()?.attendeeMix);
+    if (Number.isFinite(attendeeMix)) {
+      if (attendeeMix <= 20) return 'women';
+      if (attendeeMix >= 80) return 'men';
+    }
+
+    return 'open';
+  }
+
+  get audiencePreferenceLabel(): string {
+    switch (this.audiencePreferenceType) {
+      case 'women':
+        return 'Women';
+      case 'men':
+        return 'Men';
+      default:
+        return 'Mix';
+    }
+  }
+
+  get audiencePreferenceIcon(): string {
+    switch (this.audiencePreferenceType) {
+      case 'women':
+        return 'female';
+      case 'men':
+        return 'male';
+      default:
+        return 'groups';
+    }
   }
 
   get attendees(): any[] {

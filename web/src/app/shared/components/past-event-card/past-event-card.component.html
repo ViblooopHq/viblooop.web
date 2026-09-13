@@ -12,33 +12,41 @@
     <!-- Top Left Status Badge -->
     <div class="vl-past-card__badge vl-past-card__badge--completed">
       <span class="material-symbols-outlined" translate="no" aria-hidden="true">check_circle</span>
-      <span>{{ statusLabel }}</span>
+      <span class="vl-past-card__badge-text">{{ statusLabel }}</span>
     </div>
 
     <!-- Top Right Date Badge -->
     <div class="vl-past-card__date-pill">
-      <span>{{ config.eventDate ? (config.eventDate | date:'MMM d, y') : 'Date TBA' }}</span>
+      <span class="vl-past-card__date-desktop">{{ fullDate }}</span>
+      <span class="vl-past-card__date-mobile">{{ shortDate }}</span>
+    </div>
+
+    <!-- Event Title On Top of Image -->
+    <div class="vl-past-card__title-overlay">
+      <h3 class="vl-past-card__title" [title]="config.title || ''">
+        {{ config.title || 'Past Event' }}
+      </h3>
     </div>
   </div>
 
   <!-- Card Body -->
   <div class="vl-past-card__body">
     <div class="vl-past-card__top">
-      <!-- Title -->
-      <h3 class="vl-past-card__title" [title]="config.title || ''">
-        {{ config.title || 'Past Event' }}
-      </h3>
-
       <!-- Location & Host Meta Row -->
       <div class="vl-past-card__meta">
-        <span class="material-symbols-outlined vl-past-card__meta-icon" translate="no" aria-hidden="true">location_on</span>
-        <span class="vl-past-card__meta-text">{{ locationLabel }}</span>
+        <div class="vl-past-card__meta-loc" [title]="locationLabel">
+          <span class="material-symbols-outlined vl-past-card__meta-icon" translate="no" aria-hidden="true">location_on</span>
+          <span class="vl-past-card__meta-text">{{ locationLabel | truncate:20 }}</span>
+        </div>
         @if (config.hostName) {
           <span class="vl-past-card__meta-dot" aria-hidden="true">•</span>
-          <span class="vl-past-card__meta-host">Hosted by {{ config.hostName }}</span>
-          @if (config.hostVerified) {
-            <span class="material-symbols-outlined vl-past-card__verified" translate="no" aria-label="Verified host">verified</span>
-          }
+          <div class="vl-past-card__meta-host-wrap" [title]="'Hosted by ' + config.hostName">
+            <span class="material-symbols-outlined vl-past-card__meta-icon" translate="no" aria-hidden="true">person</span>
+            <span class="vl-past-card__meta-host">Hosted by {{ config.hostName | truncate:18 }}</span>
+            @if (config.hostVerified) {
+              <span class="material-symbols-outlined vl-past-card__verified" translate="no" aria-label="Verified host">verified</span>
+            }
+          </div>
         }
       </div>
 

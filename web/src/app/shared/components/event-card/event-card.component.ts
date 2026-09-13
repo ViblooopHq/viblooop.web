@@ -6,10 +6,11 @@ import { EventsService } from '../../services/events/events.service';
 import { SharedService } from '../../services/shared.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
+import { TruncatePipe } from '../../pipes/truncate.pipe';
 
 @Component({
   selector: 'vl-event-card',
-  imports: [DatePipe, SlicePipe, ImageUrlPipe, CurrencyPipe, NgClass, TimePipe],
+  imports: [DatePipe, SlicePipe, ImageUrlPipe, CurrencyPipe, NgClass, TimePipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-card.component.html',
   styleUrl: './event-card.component.scss'
@@ -166,7 +167,14 @@ export class EventCardComponent {
   }
 
   get categoryTitle(): string {
-    return this.config()?.category?.title || this.config()?.category || this.config()?.tags?.[0] || 'Event';
+    const cat = this.config()?.category;
+    if (typeof cat === 'object' && cat !== null) {
+      return cat.title || cat.name || '';
+    }
+    if (typeof cat === 'string') {
+      return cat;
+    }
+    return this.config()?.tags?.[0] || '';
   }
 
   get displayTags(): string[] {
@@ -201,7 +209,7 @@ export class EventCardComponent {
       case 'men':
         return 'Men';
       default:
-        return 'Open';
+        return 'Mix';
     }
   }
 
@@ -216,7 +224,7 @@ export class EventCardComponent {
       case 'men':
         return 'male';
       default:
-        return 'public';
+        return 'groups';
     }
   }
 

@@ -43,9 +43,9 @@
     </div>
 
     <div class="explore-controls">
-      <div class="search-bar vl-surface vl-surface--glass">
+      <div class="search-bar">
         <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
-        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input vl-field">
+        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
         <div class="location-pill vl-chip" [class.active]="activeFilterId === 'nearby'"
           (click)="setActiveFilter('nearby')" role="button" tabindex="0">
           <i class="fa-solid fa-location-dot"></i>
