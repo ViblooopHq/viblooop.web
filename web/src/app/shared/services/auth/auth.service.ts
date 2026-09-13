@@ -85,6 +85,35 @@ export class AuthService {
     return this.http.get(`${this.baseUrl}/getWishlistedEvents`);
   }
 
+  isEventWishlisted(eventId: string): boolean {
+    return (this.userDetails?.wishlist || []).some((item: any) => {
+      const wishlistEventId = item?._id || item?.id || item;
+      return String(wishlistEventId) === String(eventId);
+    });
+  }
+
+  setEventWishlistState(eventId: string, isWishlisted: boolean): void {
+    const wishlist = (this.userDetails?.wishlist || [])
+      .map((item: any) => item?._id || item?.id || item)
+      .filter(Boolean);
+    const nextWishlist = isWishlisted
+      ? Array.from(new Set([...wishlist.map(String), String(eventId)]))
+      : wishlist.filter((id: any) => String(id) !== String(eventId));
+
+    this.replaceWishlist(nextWishlist);
+  }
+
+  replaceWishlist(wishlist: any[]): void {
+    const currentUser = this.userDetails$.value;
+    if (!currentUser) return;
+
+    this.userDetails = {
+      ...currentUser,
+      wishlist: [...wishlist],
+    };
+    this.userDetails$.next(this.userDetails);
+  }
+
   isLoggedIn(): boolean {
     return !!this.userDetails$.value;
   }

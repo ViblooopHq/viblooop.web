@@ -1,5 +1,6 @@
 import { DatePipe, SlicePipe, CurrencyPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouteService } from '../../services/route/route.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { EventsService } from '../../services/events/events.service';
@@ -20,11 +21,16 @@ export class EventCardComponent {
   profileStatus = input<'attended' | 'hosted'>('attended');
   showWishlist = input<boolean>(true);
   cardClick = output<any>();
+  wishlistChange = output<boolean>();
 
   router = inject(RouteService)
   authService = inject(AuthService);
   eventsService = inject(EventsService);
   _shared = inject(SharedService);
+  private readonly currentUser = toSignal(this.authService.userDetails$, {
+    initialValue: this.authService.userDetails,
+  });
+  readonly isLoggedIn = computed(() => !!this.currentUser());
 
   onViewEventClick() {
     const eventData = this.config();
@@ -33,9 +39,10 @@ export class EventCardComponent {
   }
 
   get isWishlisted(): boolean {
-    if (!this.authService.isLoggedIn() || !this.authService.userDetails) return false;
+    this.currentUser();
+    if (!this.authService.isLoggedIn()) return false;
     const eventId = this.config()?._id || this.config()?.id;
-    return Boolean(eventId && this.authService.userDetails?.wishlist?.includes(eventId));
+    return Boolean(eventId && this.authService.isEventWishlisted(eventId));
   }
 
   onWishlistToggle(event: Event) {
@@ -48,20 +55,21 @@ export class EventCardComponent {
     const eventId = this.config()?._id || this.config()?.id;
     if (!eventId) return;
 
-    // Optimistic Update
-    if (this.isWishlisted) {
-      this.authService.userDetails.wishlist = (this.authService.userDetails.wishlist || []).filter((id: string) => id !== eventId);
-    } else {
-      if (!this.authService.userDetails.wishlist) this.authService.userDetails.wishlist = [];
-      this.authService.userDetails.wishlist.push(eventId);
-    }
-
-    // We no longer save to local storage
-    this.authService.userDetails$.next(this.authService.userDetails);
+    const wasWishlisted = this.isWishlisted;
+    this.authService.setEventWishlistState(eventId, !wasWishlisted);
 
     // Backend Request
     this.authService.toggleSavedEvent(eventId).subscribe({
-      error: (err) => console.error('Failed to toggle wishlist', err)
+      next: (res: any) => {
+        if (Array.isArray(res?.data)) {
+          this.authService.replaceWishlist(res.data);
+        }
+        this.wishlistChange.emit(this.authService.isEventWishlisted(eventId));
+      },
+      error: (err) => {
+        this.authService.setEventWishlistState(eventId, wasWishlisted);
+        console.error('Failed to toggle wishlist', err);
+      }
     });
   }
 
@@ -89,7 +97,7 @@ export class EventCardComponent {
     const now = new Date();
     const eventDate = new Date(config.eventDate);
 
-    if (eventDateTime < now) {
+    if (this.isEventEnded) {
       return { text: 'Event Over', icon: 'event_busy' };
     }
 
@@ -140,6 +148,14 @@ export class EventCardComponent {
   }
 
   get isEventEnded(): boolean {
+    const endDate = this.config()?.endDate;
+    if (endDate) {
+      const eventEndDate = new Date(endDate);
+      if (Number.isNaN(eventEndDate.getTime())) return false;
+      eventEndDate.setHours(23, 59, 59, 999);
+      return eventEndDate < new Date();
+    }
+
     const eventDateTime = this.getEventDateTime();
     return eventDateTime ? eventDateTime < new Date() : false;
   }

@@ -15,16 +15,6 @@ export interface EventFilter {
   label: string;
   icon: string;
 }
-interface FeaturedVibe {
-  id: string;
-  label: string;
-  description: string;
-  icon: string;
-  cover: string;
-  matchTerms: string[];
-  tone: 'party' | 'games' | 'travel';
-}
-
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
@@ -40,41 +30,10 @@ export class ExploreEventsComponent implements OnInit {
   pastEvents = signal<any[]>([]);
   hasMorePastEvents = signal(false);
   showPastEventsSeeMore = signal(false);
-  allEvents = signal<any[]>([]);
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
   private messageStore = inject(MessageStore);
   private eventsRequestId = 0;
-
-  featuredVibes: FeaturedVibe[] = [
-    {
-      id: 'social',
-      label: 'Social & Parties',
-      description: 'Host, chill & make memories',
-      icon: 'fa-solid fa-champagne-glasses',
-      cover: 'assets/vibe-previews/event_drinks_vibe_1778313033072.png',
-      matchTerms: ['house', 'party', 'nightlife', 'drinks', 'music', 'social'],
-      tone: 'party',
-    },
-    {
-      id: 'games',
-      label: 'Games & Entertainment',
-      description: 'Play, compete & connect',
-      icon: 'fa-solid fa-gamepad',
-      cover: 'assets/vibe-previews/event_concert_vibe_1778313011332.png',
-      matchTerms: ['game', 'games', 'gaming', 'play', 'sports', 'compete'],
-      tone: 'games',
-    },
-    {
-      id: 'travel',
-      label: 'Travel & Outdoor',
-      description: 'Explore, escape & create stories',
-      icon: 'fa-solid fa-mountain-sun',
-      cover: 'assets/vibe-previews/event_outdoor_vibe_1778313054968.png',
-      matchTerms: ['travel', 'escape', 'outdoor', 'adventure', 'trek', 'trip', 'hike'],
-      tone: 'travel',
-    },
-  ];
 
   filters: EventFilter[] = [
     { id: 'all', label: 'All', icon: 'celebration' },
@@ -188,7 +147,6 @@ export class ExploreEventsComponent implements OnInit {
 
   activeFilterId: string = 'all'; // Default active filter
   activeCategoryId: string = 'all';
-  activeFeaturedVibeId: string | null = null;
 
   setActiveFilter(id: string) {
     this.activeFilterId = id;
@@ -255,32 +213,10 @@ export class ExploreEventsComponent implements OnInit {
     this.router.navigate('/eventCategories', id);
   }
 
-  setFeaturedVibe(vibe: FeaturedVibe) {
-    const isAlreadyActive = this.activeFeaturedVibeId === vibe.id;
-    this.activeFeaturedVibeId = isAlreadyActive ? null : vibe.id;
-    this.activeCategoryId = isAlreadyActive ? 'all' : (this.findCategoryForVibe(vibe)?.id || 'all');
-    this.refreshEvents();
-  }
-
-  isFeaturedVibeActive(vibe: FeaturedVibe): boolean {
-    if (this.activeFeaturedVibeId === vibe.id) return true;
-    if (this.activeFeaturedVibeId) return false;
-
-    const selectedCategory = this.categories().find((category) => category.id === this.activeCategoryId);
-    return !!selectedCategory && this.matchesVibeTerms(this.categorySearchText(selectedCategory), vibe);
-  }
-
   resetFilters() {
     this.activeFilterId = 'all';
     this.activeCategoryId = 'all';
-    this.activeFeaturedVibeId = null;
     this.loadEvents();
-  }
-
-  getFeaturedVibeEventCount(vibe: FeaturedVibe): number {
-    return this.allEvents()
-      .filter((event) => this.matchesFeaturedVibe(event, vibe))
-      .length;
   }
 
   getPastEventCardConfig(event: any): PastEventCardConfig {
@@ -326,8 +262,6 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   get emptyStateSubject(): string {
-    const activeVibe = this.getActiveFeaturedVibe();
-    if (activeVibe) return activeVibe.label;
     if (this.activeCategoryId === 'all') return 'events';
 
     const selectedCategory = this.categories().find((category) => category.id === this.activeCategoryId);
@@ -381,7 +315,6 @@ export class ExploreEventsComponent implements OnInit {
         this.trendingEvents.set(filteredEvents);
 
         if (this.activeFilterId === 'all' && !category) {
-          this.allEvents.set(filteredEvents);
           this.justForYouEvents.set(filteredEvents);
         }
       },
@@ -391,15 +324,6 @@ export class ExploreEventsComponent implements OnInit {
         this.messageStore.addMessage('Failed to load events.', 'error');
       }
     });
-  }
-
-  private refreshEvents() {
-    if (this.activeFilterId === 'nearby') {
-      this.requestBrowserLocation();
-      return;
-    }
-
-    this.loadEvents();
   }
 
   private loadPastEvents() {
@@ -419,64 +343,8 @@ export class ExploreEventsComponent implements OnInit {
     });
   }
 
-  private getActiveFeaturedVibe(): FeaturedVibe | null {
-    if (!this.activeFeaturedVibeId) return null;
-    return this.featuredVibes.find((vibe) => vibe.id === this.activeFeaturedVibeId) || null;
-  }
-
-  private findCategoryForVibe(vibe: FeaturedVibe): any | null {
-    return this.categories().find((category) => this.matchesVibeTerms(this.categorySearchText(category), vibe)) || null;
-  }
-
-  private matchesFeaturedVibe(event: any, vibe: FeaturedVibe): boolean {
-    return this.matchesVibeTerms(this.eventSearchText(event), vibe);
-  }
-
-  private matchesVibeTerms(searchText: string, vibe: FeaturedVibe): boolean {
-    const text = this.normalizeForMatch(searchText);
-    return vibe.matchTerms.some((term) => text.includes(this.normalizeForMatch(term)));
-  }
-
-  private eventSearchText(event: any): string {
-    const category = event?.category;
-    const categoryId = typeof category === 'string' ? category : category?._id;
-    const selectedCategory = this.categories().find((cat) => cat.id === categoryId);
-
-    return [
-      event?.title,
-      event?.description,
-      event?.location,
-      event?.city,
-      event?.type,
-      event?.eventType,
-      event?.vibe,
-      event?.categoryTitle,
-      category,
-      category?.title,
-      category?.name,
-      selectedCategory?.label,
-      ...(Array.isArray(event?.tags) ? event.tags : []),
-      ...(Array.isArray(event?.vibes) ? event.vibes : []),
-      ...(Array.isArray(event?.interests) ? event.interests : []),
-      ...(Array.isArray(selectedCategory?.tags) ? selectedCategory.tags : []),
-    ].filter(Boolean).join(' ');
-  }
-
-  private categorySearchText(category: any): string {
-    return [
-      category?.label,
-      category?.title,
-      category?.name,
-      ...(Array.isArray(category?.tags) ? category.tags : []),
-    ].filter(Boolean).join(' ');
-  }
-
   private normalize(value: any): string {
     return String(value || '').trim().toLowerCase();
-  }
-
-  private normalizeForMatch(value: any): string {
-    return String(value || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ');
   }
 
 }

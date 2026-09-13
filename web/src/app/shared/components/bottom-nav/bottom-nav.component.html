@@ -18,21 +18,23 @@
       <span class="vl-ios-dock__label">Explore</span>
     </a>
 
-    <!-- Wishlist Tab -->
-    <button
-      type="button"
-      (click)="navigateToWishlist()"
-      [class.vl-ios-dock__item--active]="isWishlistOpen()"
-      class="vl-ios-dock__item"
-      aria-label="Wishlist">
-      <div class="vl-ios-dock__icon-wrap">
-        <span
-          class="material-symbols-outlined vl-ios-dock__icon"
-          [style.font-variation-settings]="isWishlistOpen() ? '\'FILL\' 1, \'wght\' 600' : '\'FILL\' 0, \'wght\' 400'"
-          translate="no">favorite</span>
-      </div>
-      <span class="vl-ios-dock__label">Wishlist</span>
-    </button>
+    @if (isLoggedIn()) {
+      <!-- Wishlist Tab -->
+      <button
+        type="button"
+        (click)="navigateToWishlist()"
+        [class.vl-ios-dock__item--active]="isWishlistOpen()"
+        class="vl-ios-dock__item"
+        aria-label="Wishlist">
+        <div class="vl-ios-dock__icon-wrap">
+          <span
+            class="material-symbols-outlined vl-ios-dock__icon"
+            [style.font-variation-settings]="isWishlistOpen() ? '\'FILL\' 1, \'wght\' 600' : '\'FILL\' 0, \'wght\' 400'"
+            translate="no">favorite</span>
+        </div>
+        <span class="vl-ios-dock__label">Wishlist</span>
+      </button>
+    }
 
     <!-- Center Elevated Plus (+) Action -->
     <button

@@ -43,6 +43,16 @@ export class WishlistComponent implements OnInit {
     this.drawerClosed.emit();
   }
 
+  onWishlistChange(event: any, isWishlisted: boolean): void {
+    if (isWishlisted) return;
+
+    const eventId = event?._id || event?.id;
+    this.wishlistedEvents = this.wishlistedEvents.filter((item) => {
+      const itemId = item?._id || item?.id;
+      return String(itemId) !== String(eventId);
+    });
+  }
+
   ngOnInit() {
     this.fetchWishlist();
   }
@@ -57,6 +67,9 @@ export class WishlistComponent implements OnInit {
       next: (res: any) => {
         if (res?.success && Array.isArray(res.data)) {
           this.wishlistedEvents = res.data.filter((e: any) => !!e);
+          this.authService.replaceWishlist(
+            this.wishlistedEvents.map((event) => event?._id || event?.id).filter(Boolean),
+          );
         }
         this.isLoading = false;
       },
