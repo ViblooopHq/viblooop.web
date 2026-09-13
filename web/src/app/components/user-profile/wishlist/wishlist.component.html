@@ -16,13 +16,22 @@
     </header>
 
     <div class="vl-wishlist-drawer__content">
-      @if (wishlistedEvents.length > 0) {
+      @if (isLoading) {
+        <div class="vl-wishlist-drawer__grid" aria-busy="true" aria-label="Loading wishlist events">
+          <vl-event-card-skeleton [count]="6"></vl-event-card-skeleton>
+        </div>
+      } @else if (wishlistedEvents.length > 0) {
         <div class="vl-wishlist-drawer__grid">
           @for (event of wishlistedEvents; track event._id) {
-            <vl-event-card [config]="event"></vl-event-card>
+            <div class="vl-card-desktop">
+              <vl-event-card [config]="event" [showWishlist]="false" (cardClick)="onEventCardClick()"></vl-event-card>
+            </div>
+            <div class="vl-card-mobile">
+              <vl-compact-event-card [config]="event" [showWishlist]="false" (cardClick)="onEventCardClick()"></vl-compact-event-card>
+            </div>
           }
         </div>
-      } @else if (!isLoading) {
+      } @else {
         <div class="empty-wishlist-card">
           <div class="empty-icon-wrap">
             <span class="material-symbols-outlined" translate="no">favorite</span>

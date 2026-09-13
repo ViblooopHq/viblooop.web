@@ -173,7 +173,12 @@
       [class.empty-result]="trendingEvents().length === 0">
       @for (event of trendingEvents(); track event._id || $index) {
       <div class="trending-card">
-        <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        </div>
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+        </div>
       </div>
       }
       @if (trendingEvents().length === 0) {
@@ -196,7 +201,12 @@
       [class.empty-result]="justForYouEvents().length === 0">
       @for (event of justForYouEvents(); track event._id || $index) {
       <div class="trending-card">
-        <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        </div>
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+        </div>
       </div>
       }
       @if (justForYouEvents().length === 0) {

@@ -1,0 +1,82 @@
+<article
+  class="vl-compact-card"
+  (click)="onViewEventClick()">
+  <!-- Image Header -->
+  <div class="vl-compact-card__media">
+    <img
+      [src]="config()?.image | imageUrl"
+      [alt]="config()?.title || 'Event image'"
+      class="vl-compact-card__img"
+      loading="lazy" />
+
+    <!-- Top Left Status Badge -->
+    @if (getEventBadge(); as badge) {
+      <div
+        class="vl-compact-card__badge"
+        [class.vl-compact-card__badge--ended]="isEventEnded">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+        <span>{{ badge.text }}</span>
+      </div>
+    }
+
+    <!-- Top Right Wishlist Button -->
+    @if (showWishlist() && !isEventEnded) {
+      <button
+        (click)="onWishlistToggle($event)"
+        type="button"
+        [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+        [attr.aria-pressed]="isWishlisted"
+        class="vl-compact-card__wishlist-btn">
+        <span
+          class="material-symbols-outlined"
+          aria-hidden="true"
+          [class.active]="isWishlisted"
+          [style.font-variation-settings]="isWishlisted ? '\'FILL\' 1' : '\'FILL\' 0'">
+          favorite
+        </span>
+      </button>
+    }
+  </div>
+
+  <!-- Card Body -->
+  <div class="vl-compact-card__body">
+    <div class="vl-compact-card__top">
+      <!-- Date & Time -->
+      @if (formattedDateTime) {
+        <div class="vl-compact-card__datetime">
+          {{ formattedDateTime }}
+        </div>
+      }
+
+      <!-- Title (2-line clamp) -->
+      <h3 class="vl-compact-card__title" [title]="config()?.title || ''">
+        {{ config()?.title || 'Event Title' }}
+      </h3>
+
+      <!-- Location -->
+      <div class="vl-compact-card__location">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">location_on</span>
+        <span class="vl-compact-card__location-text">{{ location }}</span>
+      </div>
+    </div>
+
+    <!-- Bottom Meta (Price & Spots/Attendees) -->
+    <div class="vl-compact-card__footer">
+      <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
+        {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+      </div>
+
+      @if (attendees.length > 0) {
+        <div class="vl-compact-card__attendees">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+          <span>{{ attendees.length }} {{ isEventEnded ? 'went' : 'going' }}</span>
+        </div>
+      } @else if (getRemainingSpots() > 0 && !isEventEnded) {
+        <div class="vl-compact-card__spots">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
+          <span>{{ getRemainingSpots() }} left</span>
+        </div>
+      }
+    </div>
+  </div>
+</article>

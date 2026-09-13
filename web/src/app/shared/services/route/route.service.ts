@@ -22,14 +22,16 @@ export class RouteService {
    * @param params
    */
   navigate(path: string, params: any) {
-    this.router.navigate([path, params])
+    this.appDrawerService.close();
+    this.router.navigate([path, params]);
     if (this.browserService.isBrowserPlatform()) {
       window.scrollTo(0, 0);
     }
   }
 
   navigateByUrl(path: string) {
-    this.router.navigateByUrl(path)
+    this.appDrawerService.close();
+    this.router.navigateByUrl(path);
     if (this.browserService.isBrowserPlatform()) {
       window.scrollTo(0, 0);
     }

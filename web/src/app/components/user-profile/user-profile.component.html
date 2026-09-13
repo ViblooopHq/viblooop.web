@@ -103,12 +103,11 @@
 
   <vl-action-modal
     [isOpen]="isLogoutModalOpen"
+    variant="error"
     title="Log Out of Viblooop?"
     message="Are you sure you want to log out? You will need to sign in again to join events and message attendees."
-    confirmText="Log Out"
-    cancelText="Cancel"
-    type="danger"
-    icon="logout"
-    (confirm)="confirmLogout()"
-    (cancel)="isLogoutModalOpen = false" />
+    confirmLabel="Log Out"
+    cancelLabel="Cancel"
+    (confirmed)="confirmLogout()"
+    (cancelled)="isLogoutModalOpen = false" />
 </main>

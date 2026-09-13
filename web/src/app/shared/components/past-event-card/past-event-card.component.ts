@@ -1,5 +1,5 @@
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 export interface PastEventCardConfig {
@@ -23,6 +23,7 @@ export interface PastEventCardConfig {
   selector: 'vl-past-event-card',
   standalone: true,
   imports: [DatePipe, DecimalPipe, ImageUrlPipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './past-event-card.component.html',
   styleUrl: './past-event-card.component.scss',
 })
@@ -31,7 +32,18 @@ export class PastEventCardComponent {
   @Output() viewMemories = new EventEmitter<PastEventCardConfig>();
 
   get locationLabel(): string {
-    return this.config.location || [this.config.city, this.config.state].filter(Boolean).join(', ') || 'Location';
+    const loc = this.config.location;
+    if (typeof loc === 'string' && loc && !loc.includes('[object')) {
+      return loc;
+    }
+    const address = (typeof loc === 'object' && loc !== null ? loc : null) || (this.config as any)?.address;
+    if (address) {
+      const area = address.area || address.city || address.name;
+      const state = address.state || address.pinCode;
+      const formatted = [area, state].filter(Boolean).join(', ');
+      if (formatted) return formatted;
+    }
+    return [this.config.city, this.config.state].filter(Boolean).join(', ') || 'Location';
   }
 
   get statusLabel(): string {

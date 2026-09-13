@@ -3,7 +3,7 @@
   [ngClass]="{'vl-event-card--profile-default': presentation() === 'profile'}"
   (click)="onViewEventClick()">
   <!-- Image Header -->
-  <div class="h-44 sm:h-52 relative w-full overflow-hidden">
+  <div class="h-44 sm:h-48 relative w-full overflow-hidden">
     <img [src]="config()?.image | imageUrl" [alt]="config()?.title || 'Event image'"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
 
@@ -17,14 +17,19 @@
     }
 
     <!-- Top Right Wishlist Button -->
-    @if (!isEventEnded) {
-    <button (click)="onWishlistToggle($event)" type="button"
-      [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'" [attr.aria-pressed]="isWishlisted"
-      class="vl-icon-button absolute top-3 right-3 w-9 min-w-9 h-9 z-10">
-      <span class="material-symbols-outlined !text-[18px] transition-all duration-300" aria-hidden="true"
-        [ngClass]="isWishlisted ? 'text-rose-500 scale-110' : 'text-slate-400'"
-        [style.font-variation-settings]="isWishlisted ? '&quot;FILL&quot; 1' : '&quot;FILL&quot; 0'">
-      favorite
+    @if (showWishlist() && !isEventEnded) {
+    <button
+      (click)="onWishlistToggle($event)"
+      type="button"
+      [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+      [attr.aria-pressed]="isWishlisted"
+      class="vl-event-card__wishlist-btn">
+      <span
+        class="material-symbols-outlined"
+        aria-hidden="true"
+        [class.active]="isWishlisted"
+        [style.font-variation-settings]="isWishlisted ? '\'FILL\' 1' : '\'FILL\' 0'">
+        favorite
       </span>
     </button>
     }
@@ -35,7 +40,7 @@
     <div class="min-w-0">
       <!-- Title -->
       <h3
-        class="!text-[16px] sm:!text-[18px] font-bold text-on-surface mb-1.5 sm:mb-2 leading-tight group-hover:text-primary transition-colors duration-200 line-clamp-2">
+        class="!text-[15px] sm:!text-[16px] font-bold text-on-surface mb-1.5 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2">
         {{ config()?.title || 'Event Title' }}
       </h3>
 
@@ -59,53 +64,27 @@
       </div>
 
       <!-- Host Row -->
-      <div class="flex items-center gap-2 mb-2.5 sm:mb-3">
+      <div class="flex items-center gap-2">
         <div
-          class="w-6 h-6 sm:w-7 sm:h-7 aspect-square rounded-full flex-shrink-0 overflow-hidden border border-border">
+          class="w-6 h-6 sm:w-6.5 sm:h-6.5 aspect-square rounded-full flex-shrink-0 overflow-hidden border border-border">
           <img class="w-full h-full object-cover"
             [src]="(config()?.createdBy?.profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="{{ hostName }}'s profile photo" />
         </div>
-        <span class="text-[12px] sm:text-[13px] text-on-surface-variant font-medium">
+        <span class="text-[12px] sm:text-[13px] text-on-surface-variant font-medium truncate">
           Hosted by <span class="text-on-surface font-semibold ml-0.5">{{ hostName }}</span>
         </span>
       </div>
-
-      <!-- Tags Row (Pills) -->
-      <div class="flex flex-wrap items-center gap-1.5 mb-2 sm:mb-3">
-        <div
-          class="vl-chip flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-[12px] font-medium whitespace-nowrap">
-          <span class="material-symbols-outlined !text-[14px] text-primary" aria-hidden="true">local_activity</span>
-          {{ config()?.category?.title || 'Event' }}
-        </div>
-        @if (shouldShowAudiencePreference) {
-          <div
-          class="vl-chip is-selected flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-[12px] font-semibold whitespace-nowrap">
-            <span class="material-symbols-outlined !text-[14px]" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
-            {{ audiencePreferenceLabel }}
-          </div>
-        }
-        @for (tag of (displayTags | slice:0:2); track tag) {
-        <div
-          class="vl-chip flex items-center gap-1 px-2.5 py-1 text-[11px] sm:text-[12px] font-medium whitespace-nowrap">
-          <span class="material-symbols-outlined !text-[14px] text-primary" aria-hidden="true">local_offer</span>
-          {{ tag }}
-        </div>
-        }
-      </div>
     </div>
 
-    <!-- Separator -->
-    <hr class="border-border mb-2.5 sm:mb-3">
-
-    <!-- Footer Row -->
-    <div class="flex items-center justify-between">
+    <!-- Separator & Footer Row -->
+    <div class="pt-3 mt-3 border-t border-border flex items-center justify-between">
       <!-- Attendees (Left) -->
       @if ((attendees?.length || 0) > 0) {
       <div class="flex items-center gap-1.5">
         <div class="flex -space-x-1.5">
           @for (attendee of (attendees | slice:0:3); track $index) {
           <div
-            class="w-5 h-5 sm:w-6 sm:h-6 rounded-full flex-shrink-0 overflow-hidden border border-surface relative"
+            class="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex-shrink-0 overflow-hidden border border-surface relative"
             [style.z-index]="3 - $index">
             <img class="w-full h-full object-cover"
               [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="" />

@@ -18,6 +18,8 @@ export class EventCardComponent {
   config = input<any>({});
   presentation = input<'default' | 'profile'>('default');
   profileStatus = input<'attended' | 'hosted'>('attended');
+  showWishlist = input<boolean>(true);
+  cardClick = output<any>();
 
   router = inject(RouteService)
   authService = inject(AuthService);
@@ -25,12 +27,15 @@ export class EventCardComponent {
   _shared = inject(SharedService);
 
   onViewEventClick() {
-    this.router.navigate('/events', this.config()._id)
+    const eventData = this.config();
+    this.cardClick.emit(eventData);
+    this.router.navigate('/events', eventData?._id);
   }
 
   get isWishlisted(): boolean {
     if (!this.authService.isLoggedIn() || !this.authService.userDetails) return false;
-    return this.authService.userDetails?.wishlist?.includes(this.config()?._id) || false;
+    const eventId = this.config()?._id || this.config()?.id;
+    return Boolean(eventId && this.authService.userDetails?.wishlist?.includes(eventId));
   }
 
   onWishlistToggle(event: Event) {
@@ -40,11 +45,12 @@ export class EventCardComponent {
       return;
     }
 
-    const eventId = this.config()._id;
+    const eventId = this.config()?._id || this.config()?.id;
+    if (!eventId) return;
 
     // Optimistic Update
     if (this.isWishlisted) {
-      this.authService.userDetails.wishlist = this.authService.userDetails.wishlist.filter((id: string) => id !== eventId);
+      this.authService.userDetails.wishlist = (this.authService.userDetails.wishlist || []).filter((id: string) => id !== eventId);
     } else {
       if (!this.authService.userDetails.wishlist) this.authService.userDetails.wishlist = [];
       this.authService.userDetails.wishlist.push(eventId);

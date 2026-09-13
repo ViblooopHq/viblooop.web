@@ -20,9 +20,7 @@
   <main class="events-main vl-section-wrapper">
     <div class="events-grid">
       @if (isLoading() && isInitialLoad()) {
-        <div class="loading-state">
-          <i class="fa-solid fa-spinner fa-spin"></i> Loading events...
-        </div>
+        <vl-event-card-skeleton [count]="8"></vl-event-card-skeleton>
       } @else if (events().length === 0) {
         <div class="empty-state-wrapper">
           <vl-empty-state subject="events" context="found here" contextPrefix="" (exploreAll)="loadEvents()"></vl-empty-state>
@@ -33,7 +31,12 @@
             @if (isPastCollection()) {
               <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewEvent(event)"></vl-past-event-card>
             } @else {
-              <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+              <div class="vl-card-desktop">
+                <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+              </div>
+              <div class="vl-card-mobile">
+                <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+              </div>
             }
           </div>
         }

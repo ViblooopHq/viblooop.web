@@ -5,12 +5,14 @@ import { AuthService } from '../../../shared/services/auth/auth.service';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
+import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
+import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
 
 @Component({
   selector: 'vl-wishlist',
   standalone: true,
-  imports: [CommonModule, EventCardComponent, FormDrawerComponent],
+  imports: [CommonModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, FormDrawerComponent],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.scss'
 })
@@ -22,6 +24,7 @@ export class WishlistComponent implements OnInit {
   private routeService = inject(RouteService);
   private router = inject(Router);
   wishlistedEvents: any[] = [];
+  skeletonItems = [1, 2, 3, 4, 5, 6];
   isLoading = true;
 
   goBack(): void {
@@ -33,6 +36,11 @@ export class WishlistComponent implements OnInit {
     this.appDrawerService.close();
     this.drawerClosed.emit();
     this.router.navigateByUrl('/');
+  }
+
+  onEventCardClick(): void {
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
   }
 
   ngOnInit() {

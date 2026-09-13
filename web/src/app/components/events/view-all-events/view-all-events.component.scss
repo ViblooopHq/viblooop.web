@@ -84,23 +84,43 @@
 
 .events-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-6);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
   width: 100%;
 
-  @media (max-width: 1200px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--space-4);
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
   }
 
-  @media (max-width: 860px) {
+  @media (max-width: 1024px) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--space-3);
+    gap: 1.25rem;
   }
 
-  @media (max-width: 540px) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--space-4);
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+}
+
+.vl-card-desktop {
+  display: block;
+  height: 100%;
+}
+
+.vl-card-mobile {
+  display: none;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .vl-card-desktop {
+    display: none;
+  }
+
+  .vl-card-mobile {
+    display: block;
   }
 }
 

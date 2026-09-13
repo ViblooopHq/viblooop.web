@@ -2,13 +2,15 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from "../../../shared/components/event-card/event-card.component";
-import { Location, NgClass } from '@angular/common';
+import { CompactEventCardComponent } from "../../../shared/components/compact-event-card/compact-event-card.component";
+import { EventCardSkeletonComponent } from "../../../shared/components/event-card-skeleton/event-card-skeleton.component";
+import { Location } from '@angular/common';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { MessageStore } from '../../../shared/store/message.store';
 
 @Component({
   selector: 'vl-events-list',
-  imports: [EventCardComponent, EmptyStateComponent, NgClass],
+  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent],
   templateUrl: './events-list.component.html',
   styleUrl: './events-list.component.scss'
 })

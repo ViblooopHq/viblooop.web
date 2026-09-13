@@ -3,6 +3,8 @@ import { CommonModule, Location } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
+import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
+import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { RouteService } from '../../../shared/services/route/route.service';
@@ -10,7 +12,7 @@ import { RouteService } from '../../../shared/services/route/route.service';
 @Component({
   selector: 'vl-view-all-events',
   standalone: true,
-  imports: [CommonModule, RouterModule, EventCardComponent, PastEventCardComponent, EmptyStateComponent],
+  imports: [CommonModule, RouterModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, PastEventCardComponent, EmptyStateComponent],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.scss']
 })
@@ -123,13 +125,17 @@ export class ViewAllEventsComponent implements OnInit {
         ? event.gallery.length
         : Number(event?.photoCount || 0);
 
+    const rawLoc = event?.location;
+    const locString = typeof rawLoc === 'string' && rawLoc && !rawLoc.includes('[object') ? rawLoc : null;
+    const location = locString || [area || city, pinCode || state].filter(Boolean).join(', ') || 'Location';
+
     return {
       title: event?.title,
       image: event?.image,
       eventDate: event?.eventDate,
       city: area || city,
       state,
-      location: event?.location || [area || city, pinCode || state].filter(Boolean).join(', '),
+      location,
       hostName: event?.createdBy?.name || event?.createdBy?.username || event?.hostName,
       hostVerified: Boolean(event?.createdBy?.isVerified || event?.hostVerified),
       attendedCount: attendees,

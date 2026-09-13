@@ -111,6 +111,10 @@
     display: flex;
     flex-direction: column;
     padding: 1.25rem 1.25rem 3rem;
+
+    @media (max-width: 640px) {
+      padding: 0.85rem 0.65rem 3rem;
+    }
   }
 
   &__grid {
@@ -118,9 +122,30 @@
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 1rem;
 
-    @media (max-width: 600px) {
-      grid-template-columns: 1fr;
+    @media (max-width: 640px) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
     }
+  }
+}
+
+.vl-card-desktop {
+  display: block;
+  height: 100%;
+}
+
+.vl-card-mobile {
+  display: none;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .vl-card-desktop {
+    display: none;
+  }
+
+  .vl-card-mobile {
+    display: block;
   }
 }
 
@@ -168,3 +193,4 @@
     line-height: 1.45;
   }
 }
+

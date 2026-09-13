@@ -41,6 +41,22 @@
     </button>
 
     @if (userDetails) {
+    <!-- Desktop Wishlist Button -->
+    <button
+      type="button"
+      [matTooltip]="'Wishlist'"
+      (click)="navigateTo('/my-wishlist')"
+      class="vl-icon-button relative"
+      aria-label="Wishlist">
+      <span class="material-symbols-outlined" translate="no">favorite</span>
+      @if (userDetails?.wishlist?.length > 0) {
+      <span
+        class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white dark:border-surface-container">
+        {{ userDetails.wishlist.length }}
+      </span>
+      }
+    </button>
+
     <div class="notification-anchor relative flex items-center">
       <button type="button" [matTooltip]="'Notifications'" (click)="$event.stopPropagation(); toggleNotification()"
         class="vl-icon-button relative">
