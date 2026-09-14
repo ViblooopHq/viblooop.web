@@ -311,10 +311,16 @@ export class ExploreEventsComponent implements OnInit {
           return of({ success: false, data: { categories: [] } });
         })
       ),
-      events: this.eventsService.getAllEvents(this.activeFilterId, category).pipe(
+      events: this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).pipe(
         catchError((error) => {
           console.error('Failed to load events', error);
           this.messageStore.addMessage('Failed to load events.', 'error');
+          return of({ data: [] });
+        })
+      ),
+      forYouEvents: this.eventsService.getEventForYou('all', undefined, undefined, 8).pipe(
+        catchError((error) => {
+          console.error('Failed to load recommended events', error);
           return of({ data: [] });
         })
       ),
@@ -331,7 +337,7 @@ export class ExploreEventsComponent implements OnInit {
         }
       })
     ).subscribe({
-      next: ({ categories, events, pastEvents }) => {
+      next: ({ categories, events, forYouEvents, pastEvents }) => {
         if (requestId !== this.eventsRequestId) return;
 
         // Populate categories
@@ -348,9 +354,8 @@ export class ExploreEventsComponent implements OnInit {
         // Populate events
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
-        if (this.activeFilterId === 'all' && !category) {
-          this.justForYouEvents.set(filteredEvents);
-        }
+        const recommendedEvents = Array.isArray(forYouEvents?.data) ? forYouEvents.data : [];
+        this.justForYouEvents.set(recommendedEvents);
 
         // Populate past events
         const pastData = pastEvents?.data;
@@ -383,16 +388,13 @@ export class ExploreEventsComponent implements OnInit {
     const requestId = ++this.eventsRequestId;
     const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
 
-    this.eventsService.getAllEvents(this.activeFilterId, category).subscribe({
+    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).subscribe({
       next: (events: any) => {
         if (requestId !== this.eventsRequestId) return;
 
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
 
-        if (this.activeFilterId === 'all' && !category) {
-          this.justForYouEvents.set(filteredEvents);
-        }
       },
       error: () => {
         if (requestId !== this.eventsRequestId) return;
