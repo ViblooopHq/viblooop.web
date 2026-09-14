@@ -26,8 +26,8 @@ import { EventJoinStatusStore } from '../../../shared/services/events/event-join
 import { GalleryImage } from '../../../shared/components/gallery/gallery.component';
 import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
-import { EngagingLoaderComponent } from '../../../shared/components/engaging-loader/engaging-loader.component';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
+import { EventDetailsSkeletonComponent } from '../../../shared/components/event-details-skeleton/event-details-skeleton.component';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
   AttendeeProfile,
@@ -93,8 +93,8 @@ const defaultModalState: ActionModalState = {
     ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
-    EngagingLoaderComponent,
     InlineLoaderComponent,
+    EventDetailsSkeletonComponent,
     EventRelatedComponent,
     MatTooltip,
   ],
@@ -484,8 +484,6 @@ export class EventDetailsComponent {
       this.loadingErrorMessage.set('');
     }
 
-    const startTime = Date.now();
-    const minLoaderTimeMs = 600;
 
     this.eventsService.getEventDetails(eventId).subscribe({
       next: (res: any) => {
@@ -547,20 +545,12 @@ export class EventDetailsComponent {
             }
 
             if (showLoader) {
-              const elapsed = Date.now() - startTime;
-              const remaining = Math.max(0, minLoaderTimeMs - elapsed);
-              setTimeout(() => {
-                this.isLoadingEvent.set(false);
-              }, remaining);
+              this.isLoadingEvent.set(false);
             }
           },
           error: () => {
             if (showLoader) {
-              const elapsed = Date.now() - startTime;
-              const remaining = Math.max(0, minLoaderTimeMs - elapsed);
-              setTimeout(() => {
-                this.isLoadingEvent.set(false);
-              }, remaining);
+              this.isLoadingEvent.set(false);
             }
           }
         });

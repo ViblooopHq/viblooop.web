@@ -1,27 +1,5 @@
 @if (isLoadingEvent()) {
-  <div class="vl-ed-loading-view" role="status" aria-live="polite">
-    <vl-engaging-loader
-      [title]="eventDetails()?.title || 'Loading Event Details'"
-      [tagLabel]="'Event Details'"
-      [primaryIcon]="'fa-solid fa-calendar-check'"
-      [satelliteIcons]="[
-        'fa-solid fa-location-dot',
-        'fa-solid fa-users',
-        'fa-solid fa-ticket',
-        'fa-solid fa-comments'
-      ]"
-      [enableCyclingText]="true"
-      [cyclingTexts]="[
-        'Fetching event details & vibes...',
-        'Loading venue & map coordinates...',
-        'Syncing attendees & chat room...',
-        'Polishing your event experience...'
-      ]"
-      [cycleIntervalMs]="1100"
-      [showProgressBar]="true"
-      [isFullscreen]="false">
-    </vl-engaging-loader>
-  </div>
+  <vl-event-details-skeleton />
 } @else if (hasLoadingError()) {
   <div class="vl-ed-error-view">
     <div class="vl-ed-error-card">
