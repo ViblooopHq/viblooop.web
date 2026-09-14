@@ -1,0 +1,415 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.vl-profile-skeleton {
+  width: 100%;
+  animation: fadeIn 0.25s ease-out;
+
+  // ── Shimmer Animation ──
+  .vl-shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-surface, #131722) 0%,
+      var(--color-surface-raised, #1e2333) 50%,
+      var(--color-surface, #131722) 100%
+    );
+    background-size: 200% 100%;
+    animation: vl-skeleton-shimmer 1.5s infinite linear;
+  }
+
+  // ── Header Nav ──
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+    margin-bottom: var(--space-3, 0.75rem);
+    padding: var(--space-2, 0.5rem) 0;
+  }
+
+  &__back-circle {
+    width: 2.375rem;
+    height: 2.375rem;
+    border-radius: var(--radius-full, 9999px);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  }
+
+  // ── Lines ──
+  &__line {
+    border-radius: var(--radius-sm, 6px);
+
+    &--back-label {
+      width: 44px;
+      height: 16px;
+    }
+
+    &--name {
+      width: clamp(140px, 30vw, 220px);
+      height: 32px;
+    }
+
+    &--handle {
+      width: 110px;
+      height: 18px;
+      margin-top: 0.35rem;
+    }
+
+    &--bio-1 {
+      width: 90%;
+      max-width: 520px;
+      height: 16px;
+      margin-top: 0.75rem;
+    }
+
+    &--bio-2 {
+      width: 60%;
+      max-width: 360px;
+      height: 16px;
+      margin-top: 0.4rem;
+    }
+
+    &--strip-title {
+      width: 70px;
+      height: 18px;
+    }
+
+    &--stat-num {
+      width: 48px;
+      height: 24px;
+    }
+
+    &--stat-lbl {
+      width: 76px;
+      height: 14px;
+    }
+
+    &--tab-text {
+      width: 60px;
+      height: 16px;
+    }
+
+    &--card-title {
+      width: 85%;
+      height: 18px;
+      margin-top: 0.5rem;
+    }
+
+    &--card-meta {
+      width: 65%;
+      height: 14px;
+      margin-top: 0.4rem;
+    }
+
+    &--host-name {
+      width: 100px;
+      height: 14px;
+    }
+  }
+
+  // ── 1. Hero Skeleton ──
+  &__hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(1.5rem, 4vw, 2.75rem);
+    align-items: center;
+    min-height: 280px;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    overflow: hidden;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-xl, 24px);
+    background-color: var(--color-surface, #131722);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  }
+
+  &__avatar-wrap {
+    position: relative;
+    width: clamp(120px, 20vw, 180px);
+    aspect-ratio: 1;
+    flex: 0 0 auto;
+  }
+
+  &__avatar {
+    width: 100%;
+    height: 100%;
+    border: 3px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-full, 9999px);
+  }
+
+  &__avatar-badge {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-full, 9999px);
+    border: 2px solid var(--color-surface, #131722);
+  }
+
+  &__identity {
+    min-width: 0;
+  }
+
+  &__name-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  &__verified-badge {
+    width: 68px;
+    height: 24px;
+    border-radius: var(--radius-pill, 9999px);
+  }
+
+  &__bio-lines {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__vibes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2, 0.5rem);
+    margin-top: 1rem;
+  }
+
+  &__pill {
+    width: 88px;
+    height: 28px;
+    border-radius: var(--radius-pill, 9999px);
+
+    &--sm {
+      width: 70px;
+      height: 22px;
+    }
+  }
+
+  // Photo Strip
+  &__photo-strip {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--space-3, 0.75rem);
+    margin: 1rem calc(clamp(1.5rem, 4vw, 2.5rem) * -1) calc(clamp(1.5rem, 4vw, 2.5rem) * -1);
+    padding: 1rem clamp(1rem, 2.4vw, 1.5rem);
+    border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    background-color: var(--color-surface-raised, #181d2b);
+  }
+
+  &__photo-strip-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 0.5rem);
+  }
+
+  &__icon-box {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-xs, 4px);
+  }
+
+  &__photo-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: var(--space-2, 0.5rem);
+  }
+
+  &__photo-item {
+    aspect-ratio: 1;
+    border-radius: var(--radius-md, 12px);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  }
+
+  // ── 2. Stats Skeleton ──
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    margin-top: 1rem;
+    padding: var(--space-4, 1.25rem);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-lg, 16px);
+    background-color: var(--color-surface, #131722);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1, 0.25rem);
+    min-height: 80px;
+
+    + .vl-profile-skeleton__stat {
+      border-left: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    }
+  }
+
+  &__stat-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-bottom: var(--space-1, 0.25rem);
+    border-radius: var(--radius-md, 10px);
+  }
+
+  // ── 3. Content Panel Skeleton ──
+  &__panel {
+    margin-top: var(--space-4, 1.25rem);
+    overflow: hidden;
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    border-radius: var(--radius-xl, 24px);
+    background-color: var(--color-surface, #131722);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
+  }
+
+  &__tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    min-height: 64px;
+    border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2, 0.5rem);
+    position: relative;
+
+    &.active::after {
+      content: "";
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 0;
+      height: 3px;
+      border-radius: var(--radius-pill, 9999px) var(--radius-pill, 9999px) 0 0;
+      background: var(--color-primary, #6366f1);
+    }
+  }
+
+  &__tab-icon {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-xs, 4px);
+  }
+
+  &__tab-content {
+    padding: var(--space-4, 1.25rem);
+  }
+
+  &__event-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-4, 1.25rem);
+  }
+
+  &__event-card {
+    border-radius: var(--radius-lg, 16px);
+    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+    background-color: var(--color-surface-raised, #181d2b);
+    overflow: hidden;
+  }
+
+  &__card-media {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+  }
+
+  &__card-body {
+    padding: 1rem;
+  }
+
+  &__card-pills {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  &__card-host {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  &__host-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: var(--radius-full, 9999px);
+  }
+}
+
+// ── Mobile Responsive Adaptations (<= 768px) ──
+@media (max-width: 768px) {
+  .vl-profile-skeleton {
+    &__hero {
+      grid-template-columns: 1fr;
+      gap: var(--space-4, 1rem);
+      padding: var(--space-4, 1rem);
+      text-align: center;
+    }
+
+    &__avatar-wrap {
+      margin: 0 auto;
+      width: 100px;
+    }
+
+    &__name-row {
+      justify-content: center;
+    }
+
+    &__line--handle {
+      margin: 0.35rem auto 0;
+    }
+
+    &__bio-lines {
+      align-items: center;
+    }
+
+    &__vibes {
+      justify-content: center;
+    }
+
+    &__photo-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    &__stats {
+      padding: var(--space-2, 0.5rem);
+    }
+
+    &__stat {
+      min-height: 64px;
+    }
+
+    &__stat-icon {
+      width: 2rem;
+      height: 2rem;
+    }
+
+    &__event-list {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+@keyframes vl-skeleton-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

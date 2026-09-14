@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
@@ -18,6 +18,7 @@ import { ProfileSocialLinksComponent, SocialLink } from './components/profile-so
 import { ProfileAccountPreferencesComponent } from './components/profile-account-preferences/profile-account-preferences.component';
 import { ActionModalComponent } from '../../shared/components/action-modal/action-modal.component';
 import { UpdateAvatarModalComponent } from './components/update-avatar-modal/update-avatar-modal.component';
+import { ProfileSkeletonComponent } from '../../shared/components/profile-skeleton/profile-skeleton.component';
 
 @Component({
   selector: 'vl-user-profile',
@@ -33,6 +34,7 @@ import { UpdateAvatarModalComponent } from './components/update-avatar-modal/upd
     ProfileAccountPreferencesComponent,
     ActionModalComponent,
     UpdateAvatarModalComponent,
+    ProfileSkeletonComponent,
   ],
   templateUrl: './user-profile.component.html',
   styleUrl: './user-profile.component.scss'
@@ -58,6 +60,7 @@ export class UserProfileComponent implements OnInit {
 
   activeTab: string = 'Joined';
   userProfile: any;
+  readonly isLoading = signal<boolean>(true);
   tabs: string[] = ['Joined', 'Hosted', 'Gallery'];
   isCurrentUser: boolean = false;
   userId: string = '';
@@ -141,17 +144,28 @@ export class UserProfileComponent implements OnInit {
   loadProfile() {
     if (!this.userId) return;
 
-    this.mainService.viewProfile(this.userId).subscribe((response: any) => {
-      if (response?.profile?.success && response.profile.statusCode === 200) {
-        this.userProfile = this.normalizeProfile(response.profile.data);
-      } else {
-        console.warn('Unexpected profile response format or status code:', response?.profile);
-      }
+    if (!this.userProfile) {
+      this.isLoading.set(true);
+    }
 
-      this.attendedEvents = this.getResponseData(response?.attendedEvents);
-      this.hostedEvents = this.getResponseData(response?.createdEvents);
-      this.userGallery = this.buildGallery(response?.eventsGallery);
-      this.setReviewSummary(response?.userReviews);
+    this.mainService.viewProfile(this.userId).subscribe({
+      next: (response: any) => {
+        if (response?.profile?.success && response.profile.statusCode === 200) {
+          this.userProfile = this.normalizeProfile(response.profile.data);
+        } else {
+          console.warn('Unexpected profile response format or status code:', response?.profile);
+        }
+
+        this.attendedEvents = this.getResponseData(response?.attendedEvents);
+        this.hostedEvents = this.getResponseData(response?.createdEvents);
+        this.userGallery = this.buildGallery(response?.eventsGallery);
+        this.setReviewSummary(response?.userReviews);
+        this.isLoading.set(false);
+      },
+      error: (err: any) => {
+        console.error('Error loading profile:', err);
+        this.isLoading.set(false);
+      }
     });
   }
 
@@ -168,6 +182,10 @@ export class UserProfileComponent implements OnInit {
   }
 
   private initProfile(userId: string) {
+    if (this.userId !== userId) {
+      this.userProfile = null;
+      this.isLoading.set(true);
+    }
     this.userId = userId;
     this.updateCurrentUserState();
     this.loadProfile();
