@@ -82,18 +82,7 @@ export class AppComponent implements OnInit {
         this.scrollToTopOnNavigation(event.urlAfterRedirects);
       });
 
-    this.appSplashService.showBootSplash();
     this.authService.initAuth();
-
-    this.authService.isAuthInitialized$
-      .pipe(
-        filter(initialized => initialized),
-        takeUntilDestroyed(this.destroyRef)
-      )
-      .subscribe(() => {
-        // Once auth resolution is complete, smoothly fade out splash loader after 3s
-        this.appSplashService.hide(3000);
-      });
 
     this.authService.userDetails$
       .pipe(takeUntilDestroyed(this.destroyRef))

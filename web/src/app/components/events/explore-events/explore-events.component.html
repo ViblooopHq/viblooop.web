@@ -1,3 +1,6 @@
+@if (isLoading()) {
+  <vl-explore-skeleton />
+} @else {
 <div class="explore-container vl-section-wrapper vl-section-top-padding">
   <!-- Header & Search -->
   <header class="explore-header">
@@ -181,3 +184,4 @@
     </div>
   </section>
 </div>
+}

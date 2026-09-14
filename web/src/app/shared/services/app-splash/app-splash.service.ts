@@ -16,7 +16,7 @@ export class AppSplashService {
   private readonly platformId = inject(PLATFORM_ID);
 
   /** Whether the splash screen is mounted in the DOM */
-  readonly isVisible = signal<boolean>(true);
+  readonly isVisible = signal<boolean>(false);
 
   /** Whether the splash screen is currently playing its exit fade-out animation */
   readonly isFadingOut = signal<boolean>(false);

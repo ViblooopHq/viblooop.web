@@ -1,5 +1,7 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { forkJoin, of } from 'rxjs';
+import { catchError, finalize } from 'rxjs/operators';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
@@ -10,6 +12,8 @@ import { MessageStore } from '../../../shared/store/message.store';
 import { MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
 import { PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
 import { RouterModule } from '@angular/router';
+import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
+
 export interface EventFilter {
   id: string;
   label: string;
@@ -18,12 +22,24 @@ export interface EventFilter {
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
-  imports: [CommonModule, RouterModule, EventCardComponent, CompactEventCardComponent, EmptyStateComponent, PastEventCardComponent, MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    EventCardComponent,
+    CompactEventCardComponent,
+    EmptyStateComponent,
+    PastEventCardComponent,
+    MultiCarouselComponent,
+    FullPageCarouselComponent,
+    PreviewCarouselComponent,
+    ExploreSkeletonComponent,
+  ],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ExploreEventsComponent implements OnInit {
+  isLoading = signal(true);
   categories = signal<any[]>([]);
   trendingEvents = signal<any[]>([]);
   justForYouEvents = signal<any[]>([]);
@@ -140,9 +156,7 @@ export class ExploreEventsComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.loadCategories();
-    this.loadEvents();
-    this.loadPastEvents();
+    this.loadInitialData();
   }
 
   activeFilterId: string = 'all'; // Default active filter
@@ -283,6 +297,68 @@ export class ExploreEventsComponent implements OnInit {
 
   get emptyStateContextPrefix(): string {
     return '';
+  }
+
+  private loadInitialData() {
+    this.isLoading.set(true);
+    const requestId = ++this.eventsRequestId;
+    const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
+
+    forkJoin({
+      categories: this.eventsService.getEventCategories().pipe(
+        catchError((error) => {
+          console.error('Failed to load categories', error);
+          return of({ success: false, data: { categories: [] } });
+        })
+      ),
+      events: this.eventsService.getAllEvents(this.activeFilterId, category).pipe(
+        catchError((error) => {
+          console.error('Failed to load events', error);
+          this.messageStore.addMessage('Failed to load events.', 'error');
+          return of({ data: [] });
+        })
+      ),
+      pastEvents: this.eventsService.getPastEvents(undefined, 5).pipe(
+        catchError((error) => {
+          console.error('Failed to load past events', error);
+          return of({ data: { events: [], nextCursor: null } });
+        })
+      )
+    }).pipe(
+      finalize(() => {
+        if (requestId === this.eventsRequestId) {
+          this.isLoading.set(false);
+        }
+      })
+    ).subscribe({
+      next: ({ categories, events, pastEvents }) => {
+        if (requestId !== this.eventsRequestId) return;
+
+        // Populate categories
+        if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
+          this.categories.set(categories.data.categories.map((cat: any) => ({
+            id: cat._id,
+            label: cat.title,
+            icon: cat.icon,
+            cover: cat.image,
+            tags: cat.tags || []
+          })));
+        }
+
+        // Populate events
+        const filteredEvents = Array.isArray(events?.data) ? events.data : [];
+        this.trendingEvents.set(filteredEvents);
+        if (this.activeFilterId === 'all' && !category) {
+          this.justForYouEvents.set(filteredEvents);
+        }
+
+        // Populate past events
+        const pastData = pastEvents?.data;
+        this.pastEvents.set(Array.isArray(pastData?.events) ? pastData.events : []);
+        this.hasMorePastEvents.set(Boolean(pastData?.nextCursor));
+        this.showPastEventsSeeMore.set(false);
+      }
+    });
   }
 
   private loadCategories() {
