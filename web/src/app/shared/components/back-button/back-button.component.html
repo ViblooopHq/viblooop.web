@@ -1,0 +1,9 @@
+<button
+  [type]="type"
+  class="vl-round-btn vl-round-btn--{{ size }} vl-round-btn--{{ variant }}"
+  [attr.aria-label]="ariaLabel"
+  [title]="title || ariaLabel"
+  [disabled]="disabled"
+  (click)="onClick($event)">
+  <span class="material-symbols-outlined vl-round-btn__icon" translate="no" aria-hidden="true">{{ icon }}</span>
+</button>

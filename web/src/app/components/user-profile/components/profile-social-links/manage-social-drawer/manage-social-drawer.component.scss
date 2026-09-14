@@ -75,6 +75,12 @@
     }
   }
 
+  &__back-btn {
+    @media (min-width: 768px) {
+      display: none !important;
+    }
+  }
+
   &__icon-button {
     @include primitives.button-base;
 
@@ -100,7 +106,7 @@
     }
 
     @media (min-width: 768px) {
-      display: none;
+      display: none !important;
     }
   }
 

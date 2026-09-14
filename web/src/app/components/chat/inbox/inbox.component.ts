@@ -1,22 +1,33 @@
-import { Component, effect, HostListener, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, effect, EventEmitter, HostBinding, HostListener, inject, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { ChatComponent } from '../chat.component';
 import { Subscription } from 'rxjs';
 import { SharedService } from '../../../shared/services/shared.service';
 import { BrowserService } from '../../../shared/services/browser/browser.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
+import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-inbox',
   standalone: true,
-  imports: [CommonModule, DatePipe, ChatComponent],
+  imports: [CommonModule, DatePipe, ChatComponent, FormDrawerComponent, BackButtonComponent],
   templateUrl: './inbox.component.html',
   styleUrl: './inbox.component.scss'
 })
 export class InboxComponent implements OnInit, OnDestroy {
+  @Input() isDrawer = false;
+  @Output() drawerClosed = new EventEmitter<void>();
+
+  @HostBinding('class.is-drawer') get hostIsDrawer(): boolean {
+    return this.isDrawer;
+  }
+
   socketService = inject(SocketService);
   sharedService = inject(SharedService);
   browserService = inject(BrowserService);
+  private appDrawerService = inject(AppDrawerService);
 
   conversations: any[] = [];
   selectedEventId: string | null = null;
@@ -29,9 +40,23 @@ export class InboxComponent implements OnInit, OnDestroy {
     }
   });
 
+  closeDrawer(): void {
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
+  }
+
+  get unreadTotalCount(): number {
+    return this.conversations.reduce((sum, c) => sum + (c.unreadCount || 0), 0);
+  }
+
   ngOnInit(): void {
     this.syncViewportMode();
     this.socketService.getInbox();
+
+    const drawerState = this.appDrawerService.currentDrawerState;
+    if (drawerState?.type === 'chats' && drawerState.eventId) {
+      this.selectedEventId = drawerState.eventId;
+    }
     
     this.subs.push(
       this.socketService.inbox$.subscribe(inbox => {

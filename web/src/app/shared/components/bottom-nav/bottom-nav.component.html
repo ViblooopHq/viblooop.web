@@ -27,19 +27,25 @@
         </button>
 
         <!-- Chats Tab -->
-        <a routerLink="/chats" (click)="handleItemClick({path: '/chats', label: 'Chats', icon: 'chat'})"
-          routerLinkActive="vl-dock-item--active" class="vl-dock-item" #rlaChats="routerLinkActive">
+        <button
+          type="button"
+          (click)="navigateToChats()"
+          [class.vl-dock-item--active]="isChatsOpen() || isChatsRoute()"
+          class="vl-dock-item"
+          aria-label="Chats">
           <div class="vl-dock-item__pill">
             <div class="vl-dock-item__icon-wrap">
-              <span class="material-symbols-outlined vl-dock-item__icon"
-                [style.font-variation-settings]="getActiveFill(rlaChats)" translate="no">chat</span>
+              <span
+                class="material-symbols-outlined vl-dock-item__icon"
+                [style.font-variation-settings]="(isChatsOpen() || isChatsRoute()) ? '\'FILL\' 1, \'wght\' 600' : '\'FILL\' 0, \'wght\' 400'"
+                translate="no">chat</span>
               @if (sharedService.notificationCount() > 0) {
                 <span class="vl-dock-item__badge"></span>
               }
             </div>
             <span class="vl-dock-item__label">Chats</span>
           </div>
-        </a>
+        </button>
       }
 
       <!-- Vibrant Gradient Action Button Slot (Create Vibe / +) -->

@@ -9,6 +9,7 @@ import { RouteService } from '../../services/route/route.service';
 import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
 import { FormDrawerComponent } from '../form-drawer/form-drawer.component';
+import { BackButtonComponent } from '../back-button/back-button.component';
 
 export enum NotificationType {
   JOIN_REQUEST = "JOIN_REQUEST",
@@ -23,7 +24,7 @@ export enum NotificationType {
 
 @Component({
   selector: 'vl-notification',
-  imports: [OutsideClickDirective, FormDrawerComponent],
+  imports: [OutsideClickDirective, FormDrawerComponent, BackButtonComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss'
 })

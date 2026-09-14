@@ -1,9 +1,12 @@
 <section class="chat-box" [class.embedded]="isEmbedded()" role="region" [attr.aria-label]="chatTitle()">
   <header class="chat-header">
     @if (showBackButton()) {
-      <button class="chat-back" type="button" aria-label="Back to chats" (click)="backToInbox.emit()">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">arrow_back_ios_new</span>
-      </button>
+      <vl-back-button
+        class="chat-back-btn"
+        ariaLabel="Back to chats"
+        title="Back"
+        (action)="backToInbox.emit()"
+      ></vl-back-button>
     }
 
     <div class="chat-avatar" aria-hidden="true">
@@ -17,17 +20,16 @@
       }
     </div>
 
-    <div class="chat-actions">
-      @if (!isEmbedded()) {
-        <button class="icon-btn" type="button" aria-label="Close chat" (click)="closeChat.emit()">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
-        </button>
-      } @else {
-        <button class="icon-btn" type="button" aria-label="Chat options">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">more_vert</span>
-        </button>
-      }
-    </div>
+    @if (!isEmbedded()) {
+      <div class="chat-actions">
+        <vl-back-button
+          icon="close"
+          ariaLabel="Close chat"
+          title="Close"
+          (action)="closeChat.emit()"
+        ></vl-back-button>
+      </div>
+    }
   </header>
 
   <div class="chat-messages" #messagesContainer role="log" aria-live="polite">

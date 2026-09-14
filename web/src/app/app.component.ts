@@ -26,6 +26,7 @@ import { CreateEventComponent } from './components/events/create-event/create-ev
 import { EditProfileComponent } from './components/user-profile/edit-profile/edit-profile.component';
 import { WishlistComponent } from './components/user-profile/wishlist/wishlist.component';
 import { NotificationComponent } from './shared/components/notification/notification.component';
+import { InboxComponent } from './components/chat/inbox/inbox.component';
 import { MessageService } from './shared/services/message/message.service';
 import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
 import { AppSplashService } from './shared/services/app-splash/app-splash.service';
@@ -46,6 +47,7 @@ import { ToastContainerComponent } from './shared/components/toast-container/toa
     EditProfileComponent,
     WishlistComponent,
     NotificationComponent,
+    InboxComponent,
     AppSplashLoaderComponent,
     ToastContainerComponent,
   ],

@@ -5,6 +5,7 @@ export type AppDrawerState =
   | { type: 'edit-profile' }
   | { type: 'wishlist' }
   | { type: 'notifications' }
+  | { type: 'chats'; eventId?: string | null }
   | { type: 'create-event'; mode: 'create' | 'edit'; eventId?: string | null };
 
 @Injectable({
@@ -32,6 +33,10 @@ export class AppDrawerService {
 
   openNotifications(): void {
     this.drawerSubject.next({ type: 'notifications' });
+  }
+
+  openChats(eventId?: string | null): void {
+    this.drawerSubject.next({ type: 'chats', eventId });
   }
 
   openCreateEvent(): void {

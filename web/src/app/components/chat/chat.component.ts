@@ -14,6 +14,7 @@ import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { SocketService } from '../../shared/services/socket/socket.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
+import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
 
 export interface ChatMessage {
   _id?: string;
@@ -27,7 +28,7 @@ export interface ChatMessage {
 
 @Component({
   selector: 'vl-chat',
-  imports: [FormsModule, DatePipe],
+  imports: [FormsModule, DatePipe, BackButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',

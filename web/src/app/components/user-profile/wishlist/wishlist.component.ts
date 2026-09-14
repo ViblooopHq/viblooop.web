@@ -8,11 +8,12 @@ import { EventCardComponent } from '../../../shared/components/event-card/event-
 import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
 import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-wishlist',
   standalone: true,
-  imports: [CommonModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, FormDrawerComponent],
+  imports: [CommonModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, FormDrawerComponent, BackButtonComponent],
   templateUrl: './wishlist.component.html',
   styleUrl: './wishlist.component.scss'
 })

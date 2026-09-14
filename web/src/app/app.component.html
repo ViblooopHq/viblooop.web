@@ -20,6 +20,11 @@
         (panelClosed)="appDrawerService.close()"
         (drawerClosed)="appDrawerService.close()" />
     }
+    @case ('chats') {
+      <vl-inbox
+        [isDrawer]="true"
+        (drawerClosed)="appDrawerService.close()" />
+    }
     @case ('create-event') {
       <vl-create-event
         [drawerMode]="activeDrawer.mode"

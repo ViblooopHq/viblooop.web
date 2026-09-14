@@ -66,6 +66,11 @@ export class RouteService {
       return;
     }
 
+    if (drawerPath === 'chats') {
+      this.appDrawerService.openChats(queryParams?.['eventId']);
+      return;
+    }
+
     this.navigateByUrl(mobileFallbackPath);
   }
 

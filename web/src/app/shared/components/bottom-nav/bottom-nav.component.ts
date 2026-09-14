@@ -55,6 +55,15 @@ export class BottomNavComponent {
     return this.appDrawerService.currentDrawerState?.type === 'wishlist';
   });
 
+  readonly isChatsOpen = computed(() => {
+    return this.appDrawerService.currentDrawerState?.type === 'chats';
+  });
+
+  readonly isChatsRoute = computed(() => {
+    const url = this.currentUrl() || '';
+    return url.includes('/chats');
+  });
+
   readonly mobileMenu: BottomNavItem[] = [
     { path: '/', label: 'Explore', icon: 'explore' },
     { path: '/my-wishlist', label: 'Wishlist', icon: 'favorite' },
@@ -106,6 +115,15 @@ export class BottomNavComponent {
       return;
     }
     this.appDrawerService.openWishlist();
+  }
+
+  navigateToChats(): void {
+    if (!this.isLoggedIn()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+    this.sharedService.requestChatConversations();
+    this.appDrawerService.openChats();
   }
 
   getActiveFill(rla: RouterLinkActive): string {

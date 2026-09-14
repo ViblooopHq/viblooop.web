@@ -2,9 +2,13 @@
 <main class="vl-edit-profile">
   <form [formGroup]="profileForm" (ngSubmit)="saveProfile()" class="vl-edit-profile__shell">
     <header class="vl-edit-profile__header">
-      <button type="button" class="vl-edit-profile__icon-button" aria-label="Go back" (click)="goBack()">
-        <span class="material-symbols-outlined" translate="no">chevron_left</span>
-      </button>
+      <vl-back-button
+        class="vl-edit-profile__back-btn"
+        [hideOnDesktop]="true"
+        ariaLabel="Go back"
+        title="Back"
+        (action)="goBack()"
+      ></vl-back-button>
 
       <h1 class="vl-title-md">Edit Profile</h1>
 

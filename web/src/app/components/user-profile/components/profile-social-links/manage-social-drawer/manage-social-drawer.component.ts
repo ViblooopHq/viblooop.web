@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, effect, inject, input, ou
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FormDrawerComponent } from '../../../../../shared/components/form-drawer/form-drawer.component';
+import { BackButtonComponent } from '../../../../../shared/components/back-button/back-button.component';
 import { UserService } from '../../../../../shared/services/user/user.service';
 import { ToastService } from '../../../../../shared/services/toast/toast.service';
 import {
@@ -18,7 +19,7 @@ import {
 @Component({
   selector: 'vl-manage-social-drawer',
   standalone: true,
-  imports: [CommonModule, FormsModule, FormDrawerComponent],
+  imports: [CommonModule, FormsModule, FormDrawerComponent, BackButtonComponent],
   templateUrl: './manage-social-drawer.component.html',
   styleUrl: './manage-social-drawer.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

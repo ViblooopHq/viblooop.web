@@ -1,10 +1,13 @@
 <vl-form-drawer ariaLabel="My Wishlist">
   <main class="vl-wishlist-drawer">
     <header class="vl-wishlist-drawer__header">
-      <button type="button" class="vl-wishlist-drawer__icon-button" (click)="goBack()" aria-label="Go back" title="Back">
-        <span class="material-symbols-outlined" translate="no">chevron_left</span>
-      </button>
-
+      <vl-back-button
+        class="vl-wishlist-drawer__back-btn"
+        [hideOnDesktop]="true"
+        ariaLabel="Go back"
+        title="Back"
+        (action)="goBack()"
+      ></vl-back-button>
       <div class="vl-wishlist-drawer__title-wrap">
         <h1 id="wishlist-title" class="vl-title-md">My Wishlist</h1>
         @if (wishlistedEvents.length > 0) {

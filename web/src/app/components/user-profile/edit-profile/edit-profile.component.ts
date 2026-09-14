@@ -12,6 +12,7 @@ import { SelfieVerificationComponent } from '../selfie-verification/selfie-verif
 import { CommonModule } from '@angular/common';
 import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
 import { PillComponent } from '../../../shared/components/pill/pill.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 type SocialPlatform = {
   key: string;
@@ -46,6 +47,7 @@ type ProfilePhotoItem = {
     FormDrawerComponent,
     DatepickerComponent,
     PillComponent,
+    BackButtonComponent,
   ]
 })
 export class EditProfileComponent implements OnInit {
