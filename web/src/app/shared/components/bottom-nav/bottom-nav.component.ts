@@ -64,7 +64,6 @@ export class BottomNavComponent {
 
   readonly guestMobileMenu: BottomNavItem[] = [
     { path: '/', label: 'Explore', icon: 'explore' },
-    { path: '/my-wishlist', label: 'Wishlist', icon: 'favorite' },
     { path: '/login', label: 'Sign In', icon: 'login' },
   ];
 

@@ -38,7 +38,7 @@
     </div>
 
     <!-- Top Right Wishlist Button -->
-    @if (showWishlist() && !isEventEnded) {
+    @if (showWishlist() && isLoggedIn() && !isEventEnded) {
     <button
       (click)="onWishlistToggle($event)"
       type="button"

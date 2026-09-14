@@ -24,10 +24,16 @@
         <div class="vl-wishlist-drawer__grid">
           @for (event of wishlistedEvents; track event._id) {
             <div class="vl-card-desktop">
-              <vl-event-card [config]="event" [showWishlist]="false" (cardClick)="onEventCardClick()"></vl-event-card>
+              <vl-event-card
+                [config]="event"
+                (cardClick)="onEventCardClick()"
+                (wishlistChange)="onWishlistChange(event, $event)"></vl-event-card>
             </div>
             <div class="vl-card-mobile">
-              <vl-compact-event-card [config]="event" [showWishlist]="false" (cardClick)="onEventCardClick()"></vl-compact-event-card>
+              <vl-compact-event-card
+                [config]="event"
+                (cardClick)="onEventCardClick()"
+                (wishlistChange)="onWishlistChange(event, $event)"></vl-compact-event-card>
             </div>
           }
         </div>

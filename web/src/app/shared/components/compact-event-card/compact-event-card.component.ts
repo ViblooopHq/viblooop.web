@@ -1,5 +1,6 @@
 import { CurrencyPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouteService } from '../../services/route/route.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
@@ -18,9 +19,14 @@ export class CompactEventCardComponent {
   config = input<any>({});
   showWishlist = input<boolean>(true);
   cardClick = output<any>();
+  wishlistChange = output<boolean>();
 
   private router = inject(RouteService);
   private authService = inject(AuthService);
+  private readonly currentUser = toSignal(this.authService.userDetails$, {
+    initialValue: this.authService.userDetails,
+  });
+  readonly isLoggedIn = computed(() => !!this.currentUser());
 
   onViewEventClick(): void {
     const eventData = this.config();
@@ -32,8 +38,9 @@ export class CompactEventCardComponent {
   }
 
   get isWishlisted(): boolean {
-    if (!this.authService.isLoggedIn() || !this.authService.userDetails) return false;
-    return this.authService.userDetails?.wishlist?.includes(this.config()?._id) || false;
+    this.currentUser();
+    if (!this.authService.isLoggedIn()) return false;
+    return this.authService.isEventWishlisted(this.config()?._id);
   }
 
   onWishlistToggle(event: Event): void {
@@ -46,17 +53,20 @@ export class CompactEventCardComponent {
     const eventId = this.config()?._id;
     if (!eventId) return;
 
-    if (this.isWishlisted) {
-      this.authService.userDetails.wishlist = this.authService.userDetails.wishlist.filter((id: string) => id !== eventId);
-    } else {
-      if (!this.authService.userDetails.wishlist) this.authService.userDetails.wishlist = [];
-      this.authService.userDetails.wishlist.push(eventId);
-    }
-
-    this.authService.userDetails$.next(this.authService.userDetails);
+    const wasWishlisted = this.isWishlisted;
+    this.authService.setEventWishlistState(eventId, !wasWishlisted);
 
     this.authService.toggleSavedEvent(eventId).subscribe({
-      error: (err) => console.error('Failed to toggle wishlist', err)
+      next: (res: any) => {
+        if (Array.isArray(res?.data)) {
+          this.authService.replaceWishlist(res.data);
+        }
+        this.wishlistChange.emit(this.authService.isEventWishlisted(eventId));
+      },
+      error: (err) => {
+        this.authService.setEventWishlistState(eventId, wasWishlisted);
+        console.error('Failed to toggle wishlist', err);
+      }
     });
   }
 
@@ -75,7 +85,7 @@ export class CompactEventCardComponent {
     if (!eventDateTime) return null;
 
     const now = new Date();
-    if (eventDateTime < now) {
+    if (this.isEventEnded) {
       return { text: 'Ended', icon: 'event_busy' };
     }
 
@@ -113,6 +123,14 @@ export class CompactEventCardComponent {
   }
 
   get isEventEnded(): boolean {
+    const endDate = this.config()?.endDate;
+    if (endDate) {
+      const eventEndDate = new Date(endDate);
+      if (Number.isNaN(eventEndDate.getTime())) return false;
+      eventEndDate.setHours(23, 59, 59, 999);
+      return eventEndDate < new Date();
+    }
+
     const eventDateTime = this.getEventDateTime();
     return eventDateTime ? eventDateTime < new Date() : false;
   }
