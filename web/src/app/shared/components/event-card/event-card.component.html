@@ -1,9 +1,8 @@
 <article
   class="vl-event-card vl-surface vl-surface--interactive min-w-0 relative group cursor-pointer w-full h-full flex flex-col"
-  [ngClass]="{'vl-event-card--profile-default': presentation() === 'profile'}"
   (click)="onViewEventClick()">
   <!-- Image Header -->
-  <div class="h-44 sm:h-48 relative w-full overflow-hidden">
+  <div class="vl-event-card__media relative w-full overflow-hidden">
     <img [src]="config()?.image | imageUrl" [alt]="config()?.title || 'Event image'"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
 
@@ -118,80 +117,30 @@
       </div>
       }
 
-      <!-- Footer Right Section (Spots & Price separated by pipe) -->
-      @if (!isEventEnded) {
-      <div class="flex items-center ml-auto" [ngClass]="{'w-full justify-between': (attendees?.length || 0) === 0}">
+      <!-- Footer Right Section (Spots & Price) -->
+      <div class="flex items-center ml-auto" [ngClass]="{'w-full justify-between': (attendees?.length || 0) === 0 && !isEventEnded && getRemainingSpots() > 0}">
         <!-- Spots Left -->
+        @if (!isEventEnded && getRemainingSpots() > 0) {
         <div class="flex items-center gap-1 pl-2 sm:pl-3">
           <span class="material-symbols-outlined text-amber-500 !text-[15px]" aria-hidden="true"
             style="font-variation-settings: 'FILL' 1;">bolt</span>
           <span class="text-amber-600 dark:text-amber-400 font-semibold text-[11px] sm:text-[12px] whitespace-nowrap">{{
             getRemainingSpots() }} spots</span>
         </div>
+        }
 
         <!-- Price -->
-        <div class="flex items-center gap-1 border-l border-border pl-2 sm:pl-3 ml-2 sm:ml-3">
-          <span class="text-on-surface font-extrabold text-[13px] sm:text-[15px] whitespace-nowrap">
-            {{ config()?.cost === 'Free' ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+        <div class="flex items-center gap-1"
+          [ngClass]="{
+            'border-l border-border pl-2 sm:pl-3 ml-2 sm:ml-3': !isEventEnded && getRemainingSpots() > 0,
+            'ml-auto': (attendees?.length || 0) > 0 || isEventEnded || getRemainingSpots() <= 0
+          }">
+          <span class="text-on-surface font-extrabold text-[13px] sm:text-[15px] whitespace-nowrap"
+            [class.text-emerald-500]="isFree">
+            {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
           </span>
         </div>
       </div>
-      }
     </div>
   </div>
 </article>
-
-@if (presentation() === 'profile') {
-<article class="vl-event-card-profile-row" (click)="onViewEventClick()">
-  <div class="vl-event-card-profile-row__media">
-    <img [src]="(config()?.image | imageUrl) || 'assets/images/default-cover.jpg'" [alt]="config()?.title || 'Event image'" />
-
-    <div class="vl-event-card-profile-row__date">
-      <strong>{{ config()?.eventDate | date:'dd' }}</strong>
-      <span>{{ config()?.eventDate | date:'MMM' }}</span>
-    </div>
-  </div>
-
-  <div class="vl-event-card-profile-row__content">
-    <h3 class="vl-title-md">{{ config()?.title || 'Event Title' }}</h3>
-
-    <p class="vl-event-card-profile-row__meta">
-      <span class="material-symbols-outlined" translate="no" aria-hidden="true">location_on</span>
-      {{ location }}
-      <span class="vl-event-card-profile-row__dot" aria-hidden="true">•</span>
-      <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
-      {{ isEscapeEvent ? tripDateRangeLabel : (config()?.eventDate | date:'d MMM y') }}
-    </p>
-
-    <div class="vl-event-card-profile-row__bottom">
-      <div class="vl-event-card-profile-row__bottom-left">
-        <div class="vl-event-card-profile-row__attendees">
-          @for (attendee of attendees | slice:0:4; track $index) {
-          <img [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="" />
-          }
-          @if (remainingAttendeeCount > 0) {
-          <span>+{{ remainingAttendeeCount }}</span>
-          }
-        </div>
-
-        <span class="vl-event-card-profile-row__category">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">landscape</span>
-          {{ categoryTitle }}
-        </span>
-
-        @if (shouldShowAudiencePreference) {
-          <span class="vl-event-card-profile-row__category vl-event-card-profile-row__category--audience">
-            <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
-            {{ audiencePreferenceLabel }}
-          </span>
-        }
-      </div>
-
-      <span class="vl-event-card-profile-row__status">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">check</span>
-        {{ profileStatusLabel }}
-      </span>
-    </div>
-  </div>
-</article>
-}

@@ -55,6 +55,10 @@
         <vl-profile-content-panel
           [tabs]="tabs"
           [activeTab]="activeTab"
+          [isCurrentUser]="isCurrentUser"
+          [isJoinedLoading]="isJoinedLoading()"
+          [isHostedLoading]="isHostedLoading()"
+          [isGalleryLoading]="isGalleryLoading()"
           [visibleJoinedEvents]="visibleJoinedEvents"
           [totalJoinedCount]="attendedEvents.length"
           [visibleHostedEvents]="visibleHostedEvents"

@@ -81,6 +81,12 @@ export class EventCardComponent {
     return Math.max(0, config.attendeeLimit - totalCurrentAttendees);
   }
 
+  get isFree(): boolean {
+    const cost = this.config()?.cost;
+    const price = this.config()?.price;
+    return cost === 'Free' || cost === 'free' || price === 0 || price === '0' || (!cost && !price);
+  }
+
   getInterestedCount(): number {
     // Basic logic: actual attendees + a small random factor for "interested" look
     const length = this.config().attendees?.length || 0;

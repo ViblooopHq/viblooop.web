@@ -95,12 +95,26 @@ export class SharedService {
     }
   }
 
+  getUserProfile(userId: string) {
+    return this.http.post(`${this.authService.baseUrl}/getUserProfile`, { userId: userId });
+  }
+
+  loadInitialProfile(userId: string) {
+    return forkJoin({
+      profile: this.getUserProfile(userId),
+      attendedEvents: this.getAttendedEvents(userId),
+      userReviews: this.getUserReviews(userId).pipe(
+        catchError(() => of({ success: false, statusCode: 500, data: null }))
+      )
+    });
+  }
+
   viewProfile(userId: string) {
     return forkJoin({
-      profile: this.http.post(`${this.authService.baseUrl}/getUserProfile`, { userId: userId }),
-      attendedEvents: this.http.post(`${this.authService.baseUrl}/getAllAttendedEvents`, { userId: userId }),
-      createdEvents: this.http.post(`${this.authService.baseUrl}/getAllEventsByUser`, { userId: userId }),
-      eventsGallery: this.http.post(`${this.authService.baseUrl}/getAllEventsImagesByUser`, { userId: userId }),
+      profile: this.getUserProfile(userId),
+      attendedEvents: this.getAttendedEvents(userId),
+      createdEvents: this.getCreatedEvents(userId),
+      eventsGallery: this.getEventsGallery(userId),
       userReviews: this.getUserReviews(userId).pipe(
         catchError(() => of({ success: false, statusCode: 500, data: null }))
       )

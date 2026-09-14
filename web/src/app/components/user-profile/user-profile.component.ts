@@ -61,6 +61,11 @@ export class UserProfileComponent implements OnInit {
   activeTab: string = 'Joined';
   userProfile: any;
   readonly isLoading = signal<boolean>(true);
+  readonly isJoinedLoading = signal<boolean>(false);
+  readonly isHostedLoading = signal<boolean>(false);
+  readonly isGalleryLoading = signal<boolean>(false);
+  hasFetchedHosted = false;
+  hasFetchedGallery = false;
   tabs: string[] = ['Joined', 'Hosted', 'Gallery'];
   isCurrentUser: boolean = false;
   userId: string = '';
@@ -139,6 +144,11 @@ export class UserProfileComponent implements OnInit {
 
   setActiveTab(tab: string) {
     this.activeTab = tab;
+    if (tab === 'Hosted' && !this.hasFetchedHosted) {
+      this.loadHostedEvents();
+    } else if (tab === 'Gallery' && !this.hasFetchedGallery) {
+      this.loadGalleryEvents();
+    }
   }
 
   loadProfile() {
@@ -147,8 +157,9 @@ export class UserProfileComponent implements OnInit {
     if (!this.userProfile) {
       this.isLoading.set(true);
     }
+    this.isJoinedLoading.set(true);
 
-    this.mainService.viewProfile(this.userId).subscribe({
+    this.mainService.loadInitialProfile(this.userId).subscribe({
       next: (response: any) => {
         if (response?.profile?.success && response.profile.statusCode === 200) {
           this.userProfile = this.normalizeProfile(response.profile.data);
@@ -157,14 +168,55 @@ export class UserProfileComponent implements OnInit {
         }
 
         this.attendedEvents = this.getResponseData(response?.attendedEvents);
-        this.hostedEvents = this.getResponseData(response?.createdEvents);
-        this.userGallery = this.buildGallery(response?.eventsGallery);
         this.setReviewSummary(response?.userReviews);
+        this.isJoinedLoading.set(false);
         this.isLoading.set(false);
+
+        // If currently on Hosted or Gallery, trigger their fetch
+        if (this.activeTab === 'Hosted' && !this.hasFetchedHosted) {
+          this.loadHostedEvents();
+        } else if (this.activeTab === 'Gallery' && !this.hasFetchedGallery) {
+          this.loadGalleryEvents();
+        }
       },
       error: (err: any) => {
         console.error('Error loading profile:', err);
+        this.isJoinedLoading.set(false);
         this.isLoading.set(false);
+      }
+    });
+  }
+
+  loadHostedEvents(): void {
+    if (!this.userId || this.isHostedLoading()) return;
+    this.isHostedLoading.set(true);
+
+    this.mainService.getCreatedEvents(this.userId).subscribe({
+      next: (res: any) => {
+        this.hostedEvents = this.getResponseData(res);
+        this.hasFetchedHosted = true;
+        this.isHostedLoading.set(false);
+      },
+      error: (err: any) => {
+        console.error('Error loading hosted events:', err);
+        this.isHostedLoading.set(false);
+      }
+    });
+  }
+
+  loadGalleryEvents(): void {
+    if (!this.userId || this.isGalleryLoading()) return;
+    this.isGalleryLoading.set(true);
+
+    this.mainService.getEventsGallery(this.userId).subscribe({
+      next: (res: any) => {
+        this.userGallery = this.buildGallery(res);
+        this.hasFetchedGallery = true;
+        this.isGalleryLoading.set(false);
+      },
+      error: (err: any) => {
+        console.error('Error loading events gallery:', err);
+        this.isGalleryLoading.set(false);
       }
     });
   }
@@ -184,6 +236,11 @@ export class UserProfileComponent implements OnInit {
   private initProfile(userId: string) {
     if (this.userId !== userId) {
       this.userProfile = null;
+      this.attendedEvents = [];
+      this.hostedEvents = [];
+      this.userGallery = [];
+      this.hasFetchedHosted = false;
+      this.hasFetchedGallery = false;
       this.isLoading.set(true);
     }
     this.userId = userId;
