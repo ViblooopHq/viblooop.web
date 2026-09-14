@@ -1,97 +1,103 @@
 @if (!isCreateRoute()) {
-<!-- Apple iOS 18 Floating Island Tab Bar -->
-<div class="vl-ios-dock-wrapper" role="navigation" aria-label="Mobile Bottom Navigation">
-  <nav class="vl-ios-dock">
-    <!-- Explore Tab -->
-    <a
-      routerLink="/"
-      routerLinkActive="vl-ios-dock__item--active"
-      [routerLinkActiveOptions]="{exact: true}"
-      class="vl-ios-dock__item"
-      #rlaExplore="routerLinkActive">
-      <div class="vl-ios-dock__icon-wrap">
-        <span
-          class="material-symbols-outlined vl-ios-dock__icon"
-          [style.font-variation-settings]="getActiveFill(rlaExplore)"
-          translate="no">explore</span>
-      </div>
-      <span class="vl-ios-dock__label">Explore</span>
-    </a>
-
-    <!-- Wishlist Tab -->
-    <button
-      type="button"
-      (click)="navigateToWishlist()"
-      [class.vl-ios-dock__item--active]="isWishlistOpen()"
-      class="vl-ios-dock__item"
-      aria-label="Wishlist">
-      <div class="vl-ios-dock__icon-wrap">
-        <span
-          class="material-symbols-outlined vl-ios-dock__icon"
-          [style.font-variation-settings]="isWishlistOpen() ? '\'FILL\' 1, \'wght\' 600' : '\'FILL\' 0, \'wght\' 400'"
-          translate="no">favorite</span>
-      </div>
-      <span class="vl-ios-dock__label">Wishlist</span>
-    </button>
-
-    <!-- Center Elevated Plus (+) Action -->
-    <button
-      type="button"
-      class="vl-ios-dock__fab"
-      aria-label="Create Vibe"
-      (click)="navigateToCreate()">
-      <span class="material-symbols-outlined" translate="no">add</span>
-    </button>
-
-    @if (isLoggedIn()) {
-      <!-- Chats Tab -->
+<!-- Floating Island Tab Bar with Dual Capsule Architecture -->
+<div class="vl-bottom-dock-wrapper" role="navigation" aria-label="Mobile Bottom Navigation">
+  <div class="vl-bottom-dock-container">
+    <!-- Main Dock Capsule -->
+    <nav class="vl-dock-capsule" [class.vl-dock-capsule--guest]="!isLoggedIn()">
+      <!-- Explore Tab -->
       <a
-        routerLink="/chats"
-        (click)="handleItemClick({path: '/chats', label: 'Chats', icon: 'chat'})"
-        routerLinkActive="vl-ios-dock__item--active"
-        class="vl-ios-dock__item"
-        #rlaChats="routerLinkActive">
-        <div class="vl-ios-dock__icon-wrap">
+        routerLink="/"
+        routerLinkActive="vl-dock-item--active"
+        [routerLinkActiveOptions]="{exact: true}"
+        class="vl-dock-item"
+        #rlaExplore="routerLinkActive">
+        <div class="vl-dock-item__pill">
           <span
-            class="material-symbols-outlined vl-ios-dock__icon"
-            [style.font-variation-settings]="getActiveFill(rlaChats)"
-            translate="no">chat</span>
-          @if (sharedService.notificationCount() > 0) {
-            <span class="vl-ios-dock__badge"></span>
-          }
+            class="material-symbols-outlined vl-dock-item__icon"
+            [style.font-variation-settings]="getActiveFill(rlaExplore)"
+            translate="no">explore</span>
+          <span class="vl-dock-item__label">Explore</span>
         </div>
-        <span class="vl-ios-dock__label">Chats</span>
       </a>
 
-      <!-- Profile Tab -->
+      <!-- Wishlist Tab -->
+      <button
+        type="button"
+        (click)="navigateToWishlist()"
+        [class.vl-dock-item--active]="isWishlistOpen()"
+        class="vl-dock-item"
+        aria-label="Wishlist">
+        <div class="vl-dock-item__pill">
+          <span
+            class="material-symbols-outlined vl-dock-item__icon"
+            [style.font-variation-settings]="isWishlistOpen() ? '\'FILL\' 1, \'wght\' 600' : '\'FILL\' 0, \'wght\' 400'"
+            translate="no">favorite</span>
+          <span class="vl-dock-item__label">Wishlist</span>
+        </div>
+      </button>
+
+      @if (isLoggedIn()) {
+        <!-- Chats Tab -->
+        <a
+          routerLink="/chats"
+          (click)="handleItemClick({path: '/chats', label: 'Chats', icon: 'chat'})"
+          routerLinkActive="vl-dock-item--active"
+          class="vl-dock-item"
+          #rlaChats="routerLinkActive">
+          <div class="vl-dock-item__pill">
+            <div class="vl-dock-item__icon-wrap">
+              <span
+                class="material-symbols-outlined vl-dock-item__icon"
+                [style.font-variation-settings]="getActiveFill(rlaChats)"
+                translate="no">chat</span>
+              @if (sharedService.notificationCount() > 0) {
+                <span class="vl-dock-item__badge"></span>
+              }
+            </div>
+            <span class="vl-dock-item__label">Chats</span>
+          </div>
+        </a>
+      }
+
+      <!-- Vibrant Gradient Action Button Slot (Create Vibe / +) -->
+      <div class="vl-dock-action-wrap">
+        <button
+          type="button"
+          class="vl-dock-action-btn"
+          aria-label="Create Vibe"
+          (click)="navigateToCreate()">
+          <span class="material-symbols-outlined vl-dock-action-btn__icon" translate="no">add</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Satellite Capsule (Sign In for Guests / Profile for Logged In) -->
+    @if (isLoggedIn()) {
       <a
         routerLink="/profile"
-        routerLinkActive="vl-ios-dock__item--active"
-        class="vl-ios-dock__item"
-        #rlaProfile="routerLinkActive">
-        <div class="vl-ios-dock__icon-wrap">
-          <span class="vl-ios-dock__avatar" [class.vl-ios-dock__avatar--active]="rlaProfile.isActive">
-            <img [src]="profileImage()" alt="Profile" />
-          </span>
+        routerLinkActive="vl-dock-satellite--active"
+        class="vl-dock-satellite vl-dock-satellite--profile"
+        #rlaProfile="routerLinkActive"
+        aria-label="Profile">
+        <div class="vl-dock-satellite__avatar-wrap" [class.vl-dock-satellite__avatar-wrap--active]="rlaProfile.isActive">
+          <img [src]="profileImage()" alt="Profile" />
         </div>
-        <span class="vl-ios-dock__label">Profile</span>
+        <span class="vl-dock-satellite__label">Profile</span>
       </a>
     } @else {
-      <!-- Sign In Tab (Guest) -->
       <a
         routerLink="/login"
-        routerLinkActive="vl-ios-dock__item--active"
-        class="vl-ios-dock__item"
-        #rlaLogin="routerLinkActive">
-        <div class="vl-ios-dock__icon-wrap">
-          <span
-            class="material-symbols-outlined vl-ios-dock__icon"
-            [style.font-variation-settings]="getActiveFill(rlaLogin)"
-            translate="no">login</span>
-        </div>
-        <span class="vl-ios-dock__label">Sign In</span>
+        routerLinkActive="vl-dock-satellite--active"
+        class="vl-dock-satellite vl-dock-satellite--signin"
+        #rlaLogin="routerLinkActive"
+        aria-label="Sign In">
+        <span
+          class="material-symbols-outlined vl-dock-satellite__icon"
+          [style.font-variation-settings]="getActiveFill(rlaLogin)"
+          translate="no">login</span>
+        <span class="vl-dock-satellite__label">Sign In</span>
       </a>
     }
-  </nav>
+  </div>
 </div>
 }
