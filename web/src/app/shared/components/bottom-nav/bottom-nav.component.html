@@ -61,7 +61,7 @@
     <a routerLink="/profile" routerLinkActive="vl-dock-satellite--active"
       class="vl-dock-satellite vl-dock-satellite--profile" #rlaProfile="routerLinkActive" aria-label="Profile">
       <div class="vl-dock-satellite__avatar-wrap" [class.vl-dock-satellite__avatar-wrap--active]="rlaProfile.isActive">
-        <img [src]="profileImage()" alt="Profile" />
+        <img [src]="profileImage() | imageUrl" alt="Profile" />
       </div>
       <span class="vl-dock-satellite__label">Profile</span>
     </a>

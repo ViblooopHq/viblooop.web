@@ -11,20 +11,15 @@
 
     <div class="vl-compact-card__overlay" aria-hidden="true"></div>
 
-    <!-- Top Left Badges Row -->
+    <!-- Top Left Schedule Badge -->
     <div class="vl-compact-card__badges">
-      @if (isEventEnded) {
-        <div class="vl-compact-card__badge vl-compact-card__badge--ended">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">event_busy</span>
-          <span>Ended</span>
-        </div>
-      } @else {
-        <!-- Small Audience / Mix Badge -->
+      @if (getEventBadge(); as badge) {
         <div
-          class="vl-compact-card__badge vl-compact-card__badge--aud"
-          [attr.data-type]="audiencePreferenceType">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
-          <span>{{ audiencePreferenceLabel }}</span>
+          class="vl-compact-card__badge"
+          [class.vl-compact-card__badge--schedule]="!isEventEnded"
+          [class.vl-compact-card__badge--ended]="isEventEnded">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          <span>{{ badge.text }}</span>
         </div>
       }
     </div>
@@ -49,6 +44,16 @@
 
     <!-- Event Title On Top of Image (Bottom Overlay) -->
     <div class="vl-compact-card__title-overlay">
+      @if (!isEventEnded && shouldShowAudiencePreference) {
+        <div
+          class="vl-compact-card__badge vl-compact-card__badge--aud vl-compact-card__audience-pill"
+          [attr.data-type]="audiencePreferenceType"
+          [title]="audiencePreferenceLabel">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+          <span>{{ audiencePreferenceLabel }}</span>
+        </div>
+      }
+
       <h3 class="vl-compact-card__title" [title]="config()?.title || ''">
         {{ config()?.title || 'Event Title' }}
       </h3>
@@ -77,7 +82,7 @@
         <div class="vl-compact-card__host-avatar-wrap">
           <img
             class="vl-compact-card__host-avatar"
-            [src]="hostAvatar || 'assets/images/default-profile.png'"
+            [src]="(hostAvatar | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
             alt="" />
         </div>
         <span class="vl-compact-card__host-text">

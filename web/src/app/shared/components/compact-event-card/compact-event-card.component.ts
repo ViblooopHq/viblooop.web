@@ -6,6 +6,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
+import { isThisCalendarWeekend } from '../../utils/date-badge.util';
 
 @Component({
   selector: 'vl-compact-event-card',
@@ -84,16 +85,8 @@ export class CompactEventCardComponent {
     const eventDateTime = this.getEventDateTime();
     if (!eventDateTime) return null;
 
-    const now = new Date();
     if (this.isEventEnded) {
       return { text: 'Ended', icon: 'event_busy' };
-    }
-
-    const diffMs = eventDateTime.getTime() - now.getTime();
-    const diffHrs = diffMs / (1000 * 60 * 60);
-
-    if (diffHrs > 0 && diffHrs <= 6) {
-      return { text: `${Math.ceil(diffHrs)}h left`, icon: 'bolt' };
     }
 
     const today = new Date();
@@ -107,16 +100,23 @@ export class CompactEventCardComponent {
     eventDay.setHours(0, 0, 0, 0);
 
     if (eventDay.getTime() === today.getTime()) {
-      return { text: 'Today', icon: 'calendar_today' };
+      return { text: 'Today', icon: 'today' };
     }
 
     if (eventDay.getTime() === tomorrow.getTime()) {
-      return { text: 'Tomorrow', icon: 'calendar_today' };
+      return { text: 'Tomorrow', icon: 'event_upcoming' };
+    }
+
+    if (isThisCalendarWeekend(eventDay, today)) {
+      return { text: 'This Weekend', icon: 'weekend' };
     }
 
     const dayOfWeek = eventDay.getDay();
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      return { text: 'Weekend', icon: 'weekend' };
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const diffDays = Math.round((eventDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+
+    if (diffDays > 0 && diffDays < 7) {
+      return { text: `Coming ${dayNames[dayOfWeek]}`, icon: 'calendar_month' };
     }
 
     return null;
@@ -165,12 +165,16 @@ export class CompactEventCardComponent {
   get audiencePreferenceLabel(): string {
     switch (this.audiencePreferenceType) {
       case 'women':
-        return 'Women';
+        return 'Women Only';
       case 'men':
-        return 'Men';
+        return 'Men Only';
       default:
         return 'Mix';
     }
+  }
+
+  get shouldShowAudiencePreference(): boolean {
+    return this.audiencePreferenceType === 'women' || this.audiencePreferenceType === 'men';
   }
 
   get audiencePreferenceIcon(): string {

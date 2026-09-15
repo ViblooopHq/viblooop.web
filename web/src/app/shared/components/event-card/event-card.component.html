@@ -6,7 +6,7 @@
     <img [src]="config()?.image | imageUrl" [alt]="config()?.title || 'Event image'"
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
 
-    <!-- Top Left Badges Row (Status, Category, Gender Allowed) -->
+    <!-- Top Left Schedule Badge -->
     <div class="vl-event-card__top-badges">
       @if (getEventBadge(); as badge) {
         <div class="event-status-pill"
@@ -15,26 +15,18 @@
           {{ badge.text }}
         </div>
       }
-
-      <!-- Category Badge -->
-      @if (categoryTitle) {
-        <div class="vl-event-card__pill vl-event-card__pill--cat" [title]="categoryTitle">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">category</span>
-          <span>{{ categoryTitle | truncate:18 }}</span>
-        </div>
-      }
-
-      <!-- Gender Allowed Badge -->
-      @if (!isEventEnded) {
-        <div
-          class="vl-event-card__pill vl-event-card__pill--aud"
-          [attr.data-type]="audiencePreferenceType"
-          [title]="audiencePreferenceLabel + ' Allowed'">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
-          <span>{{ audiencePreferenceLabel }}</span>
-        </div>
-      }
     </div>
+
+    <!-- Bottom Right Audience / Crowd Gender Badge -->
+    @if (!isEventEnded && shouldShowAudiencePreference) {
+      <div
+        class="vl-event-card__pill vl-event-card__pill--aud vl-event-card__audience-pill"
+        [attr.data-type]="audiencePreferenceType"
+        [title]="audiencePreferenceLabel">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+        <span>{{ audiencePreferenceLabel }}</span>
+      </div>
+    }
 
     <!-- Top Right Wishlist Button -->
     @if (showWishlist() && isLoggedIn() && !isEventEnded) {
@@ -66,20 +58,20 @@
       </h3>
 
       <!-- Location & Time Row -->
-      <div class="flex items-center gap-2 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5 min-w-0">
+      <div class="flex items-center gap-1 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5 min-w-0">
         <div class="flex items-center gap-1 min-w-0 flex-1" [title]="location">
           <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">location_on</span>
           <span class="truncate font-medium">{{ location | truncate:24 }}</span>
         </div>
         <span class="text-slate-400 font-normal flex-shrink-0" aria-hidden="true">•</span>
-        <div class="flex items-center gap-1 min-w-0 flex-1">
+        <div class="flex items-center gap-1 flex-shrink-0" [title]="isEscapeEvent ? tripDateRangeLabel : ''">
           <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">
             {{ isEscapeEvent ? 'date_range' : 'schedule' }}
           </span>
           @if (isEscapeEvent) {
-            <span class="truncate font-medium">{{ tripDateRangeLabel }}</span>
+            <span class="whitespace-nowrap font-medium">{{ tripDateRangeLabel }}</span>
           } @else {
-            <span class="truncate font-medium">{{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}</span>
+            <span class="whitespace-nowrap font-medium">{{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}</span>
           }
         </div>
       </div>

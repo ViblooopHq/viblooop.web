@@ -8,6 +8,7 @@ import { SharedService } from '../../services/shared.service';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
+import { isThisCalendarWeekend } from '../../utils/date-badge.util';
 
 @Component({
   selector: 'vl-event-card',
@@ -101,19 +102,10 @@ export class EventCardComponent {
     const eventDateTime = this.getEventDateTime();
     if (!eventDateTime) return null;
 
-    const now = new Date();
     const eventDate = new Date(config.eventDate);
 
     if (this.isEventEnded) {
       return { text: 'Event Over', icon: 'event_busy' };
-    }
-
-    const diffMs = eventDateTime.getTime() - now.getTime();
-    const diffHrs = diffMs / (1000 * 60 * 60);
-
-    // 1. Starts in X hrs (if within next 6 hours)
-    if (diffHrs > 0 && diffHrs <= 6) {
-      return { text: `⚡ Starts in ${Math.ceil(diffHrs)} hrs`, icon: 'bolt' };
     }
 
     // Setup for day checks
@@ -126,24 +118,23 @@ export class EventCardComponent {
     const eventDay = new Date(eventDate);
     eventDay.setHours(0, 0, 0, 0);
 
-    // 2. Today
+    // 1. Today
     if (eventDay.getTime() === today.getTime()) {
-      const formattedTime = new TimePipe().transform(config.eventTime);
-      return { text: `Today • ${formattedTime}`, icon: 'calendar_today' };
+      return { text: 'Today', icon: 'today' };
     }
 
-    // 3. Tomorrow
+    // 2. Tomorrow
     if (eventDay.getTime() === tomorrow.getTime()) {
-      return { text: 'Tomorrow', icon: 'calendar_today' };
+      return { text: 'Tomorrow', icon: 'event_upcoming' };
     }
 
-    // 4. This Weekend (Sat/Sun and not today/tomorrow)
+    // 3. This Weekend (Sat/Sun in the current calendar week)
     const dayOfWeek = eventDay.getDay(); // 0 = Sun, 6 = Sat
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
+    if (isThisCalendarWeekend(eventDay, today)) {
       return { text: 'This Weekend', icon: 'weekend' };
     }
 
-    // 5. Coming [Day] (for other days within the next 7 days)
+    // 4. Coming [Day] (for other days within the next 7 days)
     const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     const diffDays = Math.round((eventDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -227,9 +218,9 @@ export class EventCardComponent {
   get audiencePreferenceLabel(): string {
     switch (this.audiencePreferenceType) {
       case 'women':
-        return 'Women';
+        return 'Women Only';
       case 'men':
-        return 'Men';
+        return 'Men Only';
       default:
         return 'Mix';
     }

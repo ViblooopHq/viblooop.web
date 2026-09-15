@@ -14,6 +14,7 @@ import { RouteService } from '../../services/route/route.service';
 import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 import { CompleteProfileService } from '../../services/popup/complete-profile.service';
 import { CommonModule } from '@angular/common';
+import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
 export interface BottomNavItem {
   path: string;
@@ -24,7 +25,7 @@ export interface BottomNavItem {
 @Component({
   selector: 'vl-bottom-nav',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, ImageUrlPipe],
   templateUrl: './bottom-nav.component.html',
   styleUrl: './bottom-nav.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

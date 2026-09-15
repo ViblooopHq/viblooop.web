@@ -97,34 +97,32 @@
       font-size: 0.72rem;
     }
 
-    &--aud {
-      &[data-type="women"] {
-        background: rgba(219, 39, 119, 0.9);
-        border-color: rgba(251, 207, 232, 0.45);
-        color: #ffffff;
+    &--schedule {
+      .material-symbols-outlined {
+        color: var(--color-primary);
+      }
+    }
 
+    &--aud {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+
+      &[data-type="women"] {
         .material-symbols-outlined {
-          color: #fbcfe8;
+          color: #fb5b8d;
         }
       }
 
       &[data-type="men"] {
-        background: rgba(2, 132, 199, 0.9);
-        border-color: rgba(186, 230, 253, 0.45);
-        color: #ffffff;
-
         .material-symbols-outlined {
-          color: #bae6fd;
+          color: #60a5fa;
         }
       }
 
       &[data-type="open"] {
-        background: rgba(15, 23, 42, 0.8);
-        border-color: rgba(255, 255, 255, 0.25);
-        color: #ffffff;
-
         .material-symbols-outlined {
-          color: #c084fc;
+          color: #9b6cff;
         }
       }
     }
@@ -138,6 +136,10 @@
         color: #ffffff;
       }
     }
+  }
+
+  &__audience-pill {
+    align-self: flex-end;
   }
 
   /* ── Top Right Wishlist ── */
@@ -184,6 +186,10 @@
     bottom: 0.45rem;
     left: 0.45rem;
     right: 0.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
     z-index: 2;
     pointer-events: none;
   }

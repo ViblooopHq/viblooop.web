@@ -48,6 +48,13 @@
   max-width: calc(100% - 3.8rem);
 }
 
+.vl-event-card__audience-pill {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 5;
+}
+
 .vl-event-card__pill {
   display: inline-flex;
   align-items: center;
@@ -70,44 +77,26 @@
     font-size: 0.82rem;
   }
 
-  &--cat {
-    background: rgba(15, 23, 42, 0.78);
-    border-color: rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-
-    .material-symbols-outlined {
-      color: #a5b4fc;
-    }
-  }
-
   &--aud {
-    &[data-type="women"] {
-      background: rgba(219, 39, 119, 0.88);
-      border-color: rgba(251, 207, 232, 0.45);
-      color: #ffffff;
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
 
+    &[data-type="women"] {
       .material-symbols-outlined {
-        color: #fbcfe8;
+        color: #fb5b8d;
       }
     }
 
     &[data-type="men"] {
-      background: rgba(2, 132, 199, 0.88);
-      border-color: rgba(186, 230, 253, 0.45);
-      color: #ffffff;
-
       .material-symbols-outlined {
-        color: #bae6fd;
+        color: #60a5fa;
       }
     }
 
     &[data-type="open"] {
-      background: rgba(15, 23, 42, 0.78);
-      border-color: rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-
       .material-symbols-outlined {
-        color: #c084fc;
+        color: #9b6cff;
       }
     }
   }
