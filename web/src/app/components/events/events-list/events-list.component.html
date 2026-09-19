@@ -15,35 +15,32 @@
   <main class="vl-main-layout">
     <!-- Full-Width Cinematic Category Hero Banner -->
     <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory?.image ? 'url(' + activeEventCategory.image + ')' : 'none'">
-      <div class="vl-category-hero-cover__bg" aria-hidden="true"></div>
-      <div class="vl-category-hero-cover__overlay" aria-hidden="true"></div>
-
-      <div class="vl-category-hero-cover__content">
-        <div class="vl-category-hero-cover__badges-row">
-          <span class="vl-category-hero-cover__badge">
-            <span class="material-symbols-outlined" translate="no">category</span>
-            <span>Category</span>
-          </span>
-          <span class="vl-category-hero-cover__pill">
-            <span class="vl-category-hero-cover__sparkle">✨</span>
-            <span>Curated Experiences &amp; Vibes</span>
-          </span>
+      @if (activeHeroSlides.length > 0) {
+        <div class="vl-category-hero-cover__swiper">
+          <vl-full-page-carousel
+            direction="horizontal"
+            [items]="activeHeroSlides"
+            [autoplay]="true"
+            [loop]="true"
+            [showPagination]="true">
+            <ng-template let-slide>
+              <img
+                class="vl-category-hero-cover__slide-image"
+                [src]="slide.src"
+                [alt]="slide.alt"
+                [style.object-position]="slide.position"
+                decoding="async" />
+            </ng-template>
+          </vl-full-page-carousel>
         </div>
-
+      } @else {
+        <div class="vl-category-hero-cover__bg" aria-hidden="true"></div>
+      }
+      <div class="vl-category-hero-cover__content">
         <div class="vl-category-hero-cover__text-group">
           <h1 class="vl-category-hero-cover__title">{{ activeEventCategory?.title }}</h1>
           <p class="vl-category-hero-cover__description">{{ activeEventCategory?.description }}</p>
         </div>
-
-        @if (activeEventCategory?.tags && activeEventCategory.tags.length > 0) {
-          <div class="vl-category-hero-cover__tags">
-            @for (tag of activeEventCategory.tags; track tag) {
-              <span class="vl-category-hero-tag">
-                <span class="vl-category-hero-tag__hash">#</span>{{ tag }}
-              </span>
-            }
-          </div>
-        }
       </div>
     </header>
 

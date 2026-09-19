@@ -76,8 +76,8 @@
             <span class="material-symbols-outlined" aria-hidden="true">chat_bubble</span>
           </div>
           <div class="info-content">
-            <p class="info-main">{{ formService.formValue().hostOnlyChat ? 'Chat opens after approval' : 'Public chat enabled' }}</p>
-            <p class="info-sub">Host controls the chat</p>
+            <p class="info-main">{{ formService.formValue().hostOnlyChat ? 'Only the host can send messages' : 'Everyone can send messages' }}</p>
+            <p class="info-sub">{{ formService.formValue().hostOnlyChat ? 'Attendees can view host updates' : 'Joined attendees can chat together' }}</p>
           </div>
         </div>
       </div>

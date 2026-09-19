@@ -37,14 +37,16 @@
       <div class="chat-empty">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">forum</span>
         <h2 class="vl-title-md">No messages yet</h2>
-        <p class="vl-body-sm">Start the conversation with this group.</p>
+        <p class="vl-body-sm">
+          {{ canSendMessages() === false ? 'Host updates will appear here.' : 'Start the conversation with this group.' }}
+        </p>
       </div>
     } @else {
       <div class="timeline-chip">Today</div>
 
       <div class="system-note">
         <strong>You joined "{{ chatTitle() }}"</strong>
-        <span>You can now start chatting with the group.</span>
+        <span>{{ canSendMessages() === false ? 'Only the host can post updates in this chat.' : 'You can now start chatting with the group.' }}</span>
       </div>
 
       <div class="new-messages-divider">
@@ -71,19 +73,27 @@
     }
   </div>
 
-  <form class="chat-input" (ngSubmit)="sendMessage()">
-    <label for="chat-message-input" class="sr-only">Type a message</label>
-    <input
-      id="chat-message-input"
-      type="text"
-      name="newMessage"
-      [ngModel]="newMessage()"
-      (ngModelChange)="newMessage.set($event)"
-      placeholder="Type a message..."
-      autocomplete="off"
-    />
-    <button type="submit" aria-label="Send message" [disabled]="!newMessage().trim()">
-      <span class="material-symbols-outlined" translate="no" aria-hidden="true">send</span>
-    </button>
-  </form>
+  @if (canSendMessages() === false) {
+    <div class="chat-read-only" role="status">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">lock</span>
+      <span>Only the host can send messages in this chat.</span>
+    </div>
+  } @else {
+    <form class="chat-input" (ngSubmit)="sendMessage()">
+      <label for="chat-message-input" class="sr-only">Type a message</label>
+      <input
+        id="chat-message-input"
+        type="text"
+        name="newMessage"
+        [ngModel]="newMessage()"
+        (ngModelChange)="newMessage.set($event)"
+        [placeholder]="canSendMessages() === null ? 'Loading chat permissions…' : 'Type a message...'"
+        [disabled]="canSendMessages() !== true"
+        autocomplete="off"
+      />
+      <button type="submit" aria-label="Send message" [disabled]="canSendMessages() !== true || !newMessage().trim()">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">send</span>
+      </button>
+    </form>
+  }
 </section>

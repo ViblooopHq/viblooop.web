@@ -45,6 +45,7 @@ export class ChatComponent {
 
   newMessage = signal('');
   messages = signal<ChatMessage[]>([]);
+  canSendMessages = signal<boolean | null>(null);
   currentUserId = '';
 
   private socketService = inject(SocketService);
@@ -58,6 +59,7 @@ export class ChatComponent {
       if (history.eventId !== this.eventId()) return;
 
       this.messages.set(history.messages);
+      this.canSendMessages.set(history.canSendMessages);
       this.scrollToBottom();
     });
 
@@ -87,6 +89,8 @@ export class ChatComponent {
         this.messages.set([]);
       }
 
+      this.canSendMessages.set(null);
+
       // We don't "leave" the old room anymore because we want
       // to keep receiving global message pings for unread badges.
       // We just join the new one to trigger a history load.
@@ -100,7 +104,7 @@ export class ChatComponent {
   }
 
   sendMessage(): void {
-    if (!this.newMessage().trim()) return;
+    if (this.canSendMessages() !== true || !this.newMessage().trim()) return;
     this.socketService.sendChatMessage(this.eventId(), this.newMessage());
     this.newMessage.set('');
   }

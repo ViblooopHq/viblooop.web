@@ -333,7 +333,20 @@ export class CreateEventFormService {
   init(): void {
     this.eventsService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
-        const enriched = res.data.categories.map((category: any) => this.categoryPresentation.withDisplayTags(category));
+        const enriched = res.data.categories
+          .map((category: any) => this.categoryPresentation.withDisplayTags(category));
+        if (!enriched.some((category: any) => this.categoryPresentation.getCreationKind(category) === 'play')) {
+          enriched.push(this.categoryPresentation.withDisplayTags({
+            id: 'play',
+            title: 'Sports',
+            description: 'Games, sports, fitness & more',
+            image: 'assets/images/play-page-bg.png',
+            icon: 'sports_soccer',
+            tags: ['sports', 'play', 'gaming', 'fitness'],
+          }));
+        }
+
+        enriched.sort((a: any, b: any) => this.categoryPresentation.getDisplayOrder(a) - this.categoryPresentation.getDisplayOrder(b));
         const seenTitles = new Set<string>();
         const uniqueCategories = enriched.filter((cat: any) => {
           const displayTitle = this.categoryPresentation.getDisplayTitle(cat);

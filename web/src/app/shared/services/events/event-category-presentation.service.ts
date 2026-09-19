@@ -58,6 +58,12 @@ export class EventCategoryPresentationService {
     return this.getDisplayConfig(category)?.tags ?? [];
   }
 
+  getDisplayOrder(category: any): number {
+    const config = this.getDisplayConfig(category);
+    const index = config ? CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS.indexOf(config) : -1;
+    return index === -1 ? CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS.length : index;
+  }
+
   withDisplayTags(category: any): any {
     if (!category) return category;
     const config = this.getDisplayConfig(category);

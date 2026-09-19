@@ -342,13 +342,7 @@ export class ExploreEventsComponent implements OnInit {
 
         // Populate categories
         if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
-          this.categories.set(categories.data.categories.map((cat: any) => ({
-            id: cat._id,
-            label: cat.title,
-            icon: cat.icon,
-            cover: cat.image,
-            tags: cat.tags || []
-          })));
+          this.categories.set(categories.data.categories.map((cat: any) => this.toExploreCategory(cat)));
         }
 
         // Populate events
@@ -369,15 +363,7 @@ export class ExploreEventsComponent implements OnInit {
   private loadCategories() {
     this.eventsService.getEventCategories().subscribe((categories: any) => {
       if (categories.success && categories.statusCode === 200) {
-        this.categories.set(categories.data.categories.map((category: any) => {
-          return {
-            id: category._id,
-            label: category.title,
-            icon: category.icon,
-            cover: category.image,
-            tags: category.tags || []
-          };
-        }));
+        this.categories.set(categories.data.categories.map((category: any) => this.toExploreCategory(category)));
       }
     }, (error: any) => {
       console.log(error);
@@ -423,6 +409,22 @@ export class ExploreEventsComponent implements OnInit {
 
   private normalize(value: any): string {
     return String(value || '').trim().toLowerCase();
+  }
+
+  private toExploreCategory(category: any): any {
+    const title = String(category?.title || '').trim();
+    const normalizedTitle = title.toLowerCase();
+    const label = normalizedTitle === 'travel' || normalizedTitle === 'travel companion'
+      ? 'Escape'
+      : title;
+
+    return {
+      id: category._id,
+      label,
+      icon: category.icon,
+      cover: category.image,
+      tags: category.tags || []
+    };
   }
 
 }

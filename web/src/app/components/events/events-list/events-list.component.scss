@@ -51,7 +51,6 @@
   flex-direction: column;
   justify-content: flex-end;
   padding: clamp(1.5rem, 3.5vw, 2.75rem);
-  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
 
   @media (min-width: 768px) {
@@ -77,13 +76,22 @@
     }
   }
 
-  &__overlay {
+  &__swiper {
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.2) 0%, rgba(15, 23, 42, 0.6) 45%, rgba(15, 23, 42, 0.94) 100%),
-                linear-gradient(90deg, rgba(15, 23, 42, 0.88) 0%, rgba(15, 23, 42, 0.4) 65%, transparent 100%);
-    z-index: 1;
-    pointer-events: none;
+    z-index: 0;
+
+    vl-full-page-carousel {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__slide-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
 
   &__content {
@@ -93,55 +101,6 @@
     flex-direction: column;
     gap: var(--space-4);
     max-width: 52rem;
-  }
-
-  &__badges-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.8rem;
-    border-radius: var(--radius-pill);
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-
-    .material-symbols-outlined {
-      font-size: 0.95rem;
-      color: #c084fc;
-    }
-  }
-
-  &__pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.85rem;
-    border-radius: var(--radius-pill);
-    background: rgba(124, 58, 237, 0.35);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(168, 85, 247, 0.45);
-    color: #f3e8ff;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-  }
-
-  &__sparkle {
-    font-size: 0.85rem;
   }
 
   &__text-group {
@@ -169,40 +128,6 @@
     text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
   }
 
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 0.2rem;
-  }
-}
-
-/* ── Hero Hashtag Tags ── */
-.vl-category-hero-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  padding: 0.35rem 0.85rem;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  font-size: 0.8125rem;
-  font-weight: 650;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-
-  &__hash {
-    color: #c084fc;
-    font-weight: 800;
-  }
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.22);
-    border-color: rgba(255, 255, 255, 0.4);
-    transform: translateY(-1.5px);
-  }
 }
 
 /* ── Search & Filter Controls ── */

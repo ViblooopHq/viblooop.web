@@ -12,7 +12,12 @@ export class SocketService {
   notifications$ = new BehaviorSubject<any>(null);
 
   // Chat observables
-  chatHistory$ = new Subject<{ eventId: string; messages: any[] }>();
+  chatHistory$ = new Subject<{
+    eventId: string;
+    messages: any[];
+    hostOnlyChat: boolean;
+    canSendMessages: boolean;
+  }>();
   chatMessage$ = new Subject<any>();
   chatError$ = new Subject<string>();
   inbox$ = new BehaviorSubject<any[]>([]);
@@ -89,6 +94,8 @@ export class SocketService {
         this.chatHistory$.next({
           eventId: this.activeEventId || '',
           messages: payload,
+          hostOnlyChat: false,
+          canSendMessages: true,
         });
         return;
       }
@@ -96,6 +103,8 @@ export class SocketService {
       this.chatHistory$.next({
         eventId: payload?.eventId || this.activeEventId || '',
         messages: Array.isArray(payload?.messages) ? payload.messages : [],
+        hostOnlyChat: payload?.hostOnlyChat === true,
+        canSendMessages: typeof payload?.canSendMessages === 'boolean' ? payload.canSendMessages : true,
       });
     });
 

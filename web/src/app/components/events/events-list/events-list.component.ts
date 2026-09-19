@@ -7,14 +7,81 @@ import { EventCardSkeletonComponent } from "../../../shared/components/event-car
 import { Location } from '@angular/common';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { MessageStore } from '../../../shared/store/message.store';
+import { FullPageCarouselComponent } from '../../../shared/components/carousels';
 
 @Component({
   selector: 'vl-events-list',
-  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent],
+  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent],
   templateUrl: './events-list.component.html',
   styleUrl: './events-list.component.scss'
 })
 export class EventsListComponent implements OnInit, OnDestroy {
+  readonly partyHeroSlides = [
+    {
+      src: 'assets/images/party-hero/party-pool.jpg',
+      alt: 'Friends enjoying a daytime pool party',
+      position: 'center 48%'
+    },
+    {
+      src: 'assets/images/party-hero/party-house.jpg',
+      alt: 'Friends socializing at an evening house party',
+      position: 'center 50%'
+    },
+    {
+      src: 'assets/images/party-hero/party-rooftop.jpg',
+      alt: 'Friends gathering at a rooftop party',
+      position: 'center 45%'
+    },
+    {
+      src: 'assets/images/party-hero/party-club.jpg',
+      alt: 'Friends dancing together at a club',
+      position: 'center 42%'
+    }
+  ];
+
+  readonly travelHeroSlides = [
+    {
+      src: 'assets/images/travel-hero/travel-coast.jpg',
+      alt: 'Friends watching the sunset over a tropical coast',
+      position: 'center 56%'
+    },
+    {
+      src: 'assets/images/travel-hero/travel-hike.jpg',
+      alt: 'Friends hiking through green mountains',
+      position: 'center 50%'
+    },
+    {
+      src: 'assets/images/travel-hero/travel-cafe.jpg',
+      alt: 'Travel companions working together at a coastal cafe',
+      position: 'center 45%'
+    },
+    {
+      src: 'assets/images/travel-hero/travel-road-trip.jpg',
+      alt: 'Friends enjoying a sunset road trip',
+      position: 'center 43%'
+    }
+  ];
+
+  readonly playHeroSlides = [
+    {
+      src: 'assets/images/play-hero/play-board-games.jpg',
+      alt: 'Friends playing a board game together at a cafe',
+      position: 'center 52%'
+    },
+    {
+      src: 'assets/images/play-hero/play-badminton.webp',
+      alt: 'Players enjoying badminton on indoor courts',
+      position: 'center center'
+    },
+    {
+      src: 'assets/images/play-hero/play-cricket.webp',
+      alt: 'Players enjoying a nighttime cricket match',
+      position: 'center center'
+    }
+  ];
+
+  private readonly noHeroSlides: any[] = [];
+
   breadcrumbs = [
     { label: 'Home', url: '/' },
   ];
@@ -50,6 +117,28 @@ export class EventsListComponent implements OnInit, OnDestroy {
   searchTerm = '';
   isLoading = false;
   hasLoaded = false;
+
+  get isPartyCategory(): boolean {
+    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    return title === 'party' || title === 'social';
+  }
+
+  get isTravelCategory(): boolean {
+    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    return ['travel', 'travel companion', 'escape', 'escapes'].includes(title);
+  }
+
+  get isPlayCategory(): boolean {
+    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    return ['play', 'sports', 'sports activities', 'gaming', 'fitness'].includes(title);
+  }
+
+  get activeHeroSlides(): any[] {
+    if (this.isPartyCategory) return this.partyHeroSlides;
+    if (this.isTravelCategory) return this.travelHeroSlides;
+    if (this.isPlayCategory) return this.playHeroSlides;
+    return this.noHeroSlides;
+  }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
