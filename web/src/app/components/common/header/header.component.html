@@ -150,10 +150,6 @@
 <!-- Mobile Top Header (Logo & Actions) -->
 <header
   class="vl-app-header vl-app-header--mobile md:hidden fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4">
-  <div class="flex items-center cursor-pointer" routerLink="/">
-    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
-  </div>
-
   <div class="flex items-center gap-3">
     <button
       class="vl-icon-button w-9 min-w-9 h-9 active:scale-95"
@@ -177,6 +173,10 @@
     </div>
 
     }
+  </div>
+
+  <div class="flex items-center cursor-pointer" routerLink="/">
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
   </div>
 </header>
 

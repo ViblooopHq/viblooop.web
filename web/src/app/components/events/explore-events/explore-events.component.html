@@ -1,5 +1,5 @@
 @if (isLoading()) {
-  <vl-explore-skeleton />
+<vl-explore-skeleton />
 } @else {
 <div class="explore-container vl-section-wrapper vl-section-top-padding">
   <!-- Header & Search -->
@@ -28,14 +28,8 @@
                 <p class="slide-description">{{item.description}}</p>
 
                 <div class="slide-actions">
-                  <button class="btn-play">
-                    <i class="fa-solid fa-play"></i> Watch Now
-                  </button>
-                  <button class="btn-icon">
-                    <i class="fa-solid fa-download"></i>
-                  </button>
-                  <button class="btn-icon">
-                    <i class="fa-solid fa-ellipsis"></i>
+                  <button class="btn-play" [class.disabled]="true">
+                    <i class="fa-solid fa-play"></i> View Event
                   </button>
                 </div>
               </div>
@@ -45,10 +39,7 @@
       </div>
     </div>
 
-    <vl-event-filters
-      [filters]="filters"
-      [activeFilterId]="activeFilterId"
-      (filterChange)="setActiveFilter($event)" />
+    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId" (filterChange)="setActiveFilter($event)" />
   </header>
 
   <!-- Categories -->
@@ -103,10 +94,8 @@
       }
       @if (trendingEvents().length === 0) {
       <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
-        [contextPrefix]="emptyStateContextPrefix"
-        image="assets/images/empty-states/explore.png"
-        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping"
-        (exploreAll)="resetFilters()">
+        [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
       </vl-empty-state>
       }
     </div>
@@ -135,13 +124,9 @@
       </div>
       }
       @if (justForYouEvents().length === 0) {
-      <vl-empty-state
-        subject="events"
-        context="near you"
-        contextPrefix=""
+      <vl-empty-state subject="events" context="near you" contextPrefix=""
         image="assets/images/empty-states/explore.png"
-        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping"
-        (exploreAll)="resetFilters()">
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
       </vl-empty-state>
       }
     </div>
@@ -166,12 +151,6 @@
       <vl-empty-state subject="past vibes" context="yet" contextPrefix="" (exploreAll)="resetFilters()">
       </vl-empty-state>
       }
-    </div>
-  </section>
-
-  <section class="test-carousels-section">
-    <div>
-      <vl-preview-carousel [items]="previewItems"></vl-preview-carousel>
     </div>
   </section>
 </div>

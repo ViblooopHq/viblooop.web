@@ -34,6 +34,6 @@ export const Environment = {
   },
 
   // OG Meta
-  ogImageUrl: 'https://example.com/image.jpg',
-  ogPageUrl: 'https://example.com/page',
+  ogImageUrl: 'https://www.viblooop.com/og.png',
+  ogPageUrl: 'https://www.viblooop.com',
 };

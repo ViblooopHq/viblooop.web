@@ -9,7 +9,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
-import { MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
+import { MultiCarouselComponent, FullPageCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
 import { PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
 import { RouterModule } from '@angular/router';
 import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
@@ -27,7 +27,6 @@ import { EventFiltersComponent } from '../../../shared/components/event-filters/
     PastEventCardComponent,
     MultiCarouselComponent,
     FullPageCarouselComponent,
-    PreviewCarouselComponent,
     ExploreSkeletonComponent,
     EventFiltersComponent,
   ],
