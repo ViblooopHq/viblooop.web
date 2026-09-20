@@ -8,13 +8,13 @@
         <a class="vl-breadcrumb__link" [href]="crumb.url">{{ crumb.label }}</a>
         <span class="material-symbols-outlined vl-breadcrumb__separator" translate="no">chevron_right</span>
       }
-      <span class="vl-breadcrumb__current" aria-current="page">{{ activeEventCategory?.title || 'Category' }}</span>
+      <span class="vl-breadcrumb__current" aria-current="page">{{ activeEventCategory()?.title || 'Category' }}</span>
     </nav>
   </div>
 
   <main class="vl-main-layout">
     <!-- Full-Width Cinematic Category Hero Banner -->
-    <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory?.image ? 'url(' + activeEventCategory.image + ')' : 'none'">
+    <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory()?.image ? 'url(' + activeEventCategory().image + ')' : 'none'">
       @if (activeHeroSlides.length > 0) {
         <div class="vl-category-hero-cover__swiper">
           <vl-full-page-carousel
@@ -38,8 +38,8 @@
       }
       <div class="vl-category-hero-cover__content">
         <div class="vl-category-hero-cover__text-group">
-          <h1 class="vl-category-hero-cover__title">{{ activeEventCategory?.title }}</h1>
-          <p class="vl-category-hero-cover__description">{{ activeEventCategory?.description }}</p>
+          <h1 class="vl-category-hero-cover__title">{{ activeEventCategory()?.title }}</h1>
+          <p class="vl-category-hero-cover__description">{{ activeEventCategory()?.description }}</p>
         </div>
       </div>
     </header>
@@ -81,8 +81,8 @@
       } @empty {
         <div class="vl-events-list__status">
           <vl-empty-state
-            subject="events"
-            [context]="searchTerm ? 'matching your search' : 'for this filter in ' + (activeEventCategory?.title || 'this category')"
+            [subject]="activeEventCategory()?.title || 'events'"
+            [context]="emptyStateContext"
             contextPrefix="">
           </vl-empty-state>
         </div>

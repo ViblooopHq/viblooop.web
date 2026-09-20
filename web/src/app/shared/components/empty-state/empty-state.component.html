@@ -1,25 +1,37 @@
 <article class="empty-state">
-  <div class="empty-state__art" aria-hidden="true">
-    <span class="empty-state__sparkle empty-state__sparkle--left">+</span>
-    <span class="empty-state__bag material-symbols-outlined" translate="no">local_activity</span>
-    <span class="empty-state__sparkle empty-state__sparkle--right">+</span>
-    <span class="empty-state__close material-symbols-outlined" translate="no">close</span>
+  <div class="empty-state__art">
+    @if (artImage; as image) {
+      <img
+        class="empty-state__image"
+        [src]="image"
+        [alt]="artImageAlt"
+        loading="lazy"
+        decoding="async" />
+    } @else {
+      <div class="empty-state__fallback-art" aria-hidden="true">
+        <span class="empty-state__blob"></span>
+        <span class="empty-state__icon empty-state__icon--primary material-symbols-outlined" translate="no">
+          {{ presentation.primaryIcon }}
+        </span>
+        <span class="empty-state__icon empty-state__icon--secondary material-symbols-outlined" translate="no">
+          {{ presentation.secondaryIcon }}
+        </span>
+        <span class="empty-state__sparkle empty-state__sparkle--one material-symbols-outlined" translate="no">auto_awesome</span>
+        <span class="empty-state__sparkle empty-state__sparkle--two"></span>
+      </div>
+    }
   </div>
 
-  <h3 class="vl-title-md">
-    No <span>{{ titleSubject }}</span> plans
-    <ng-container *ngIf="titleContext"> {{ titleContext }}</ng-container>
-  </h3>
+  <h3 class="empty-state__title">{{ emptyTitle }}</h3>
 
-  <p class="vl-body-sm">{{ description }}</p>
+  <p class="empty-state__description">{{ emptyDescription }}</p>
 
   <div class="empty-state__actions">
     <a class="empty-state__button empty-state__button--primary" [routerLink]="createLink">
       <span class="material-symbols-outlined" translate="no">add</span>
-      Create {{ planSubject }} Plan
+      {{ presentation.action }}
     </a>
     <button class="empty-state__button empty-state__button--secondary" type="button" (click)="exploreAll.emit()">
-      <span class="material-symbols-outlined" translate="no">explore</span>
       Explore All Vibes
     </button>
   </div>

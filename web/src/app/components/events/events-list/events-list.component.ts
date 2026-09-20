@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from "../../../shared/components/event-card/event-card.component";
@@ -111,7 +111,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
     }
   }
 
-  activeEventCategory: any = {};
+  activeEventCategory = signal<any>({});
   activeCategoryEvents: any = [];
   activeTimeFilter = 'all';
   categoryId = '';
@@ -120,17 +120,17 @@ export class EventsListComponent implements OnInit, OnDestroy {
   hasLoaded = false;
 
   get isPartyCategory(): boolean {
-    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    const title = String(this.activeEventCategory()?.title || '').trim().toLowerCase();
     return title === 'party' || title === 'social';
   }
 
   get isTravelCategory(): boolean {
-    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    const title = String(this.activeEventCategory()?.title || '').trim().toLowerCase();
     return ['travel', 'travel companion', 'escape', 'escapes'].includes(title);
   }
 
   get isPlayCategory(): boolean {
-    const title = String(this.activeEventCategory?.title || '').trim().toLowerCase();
+    const title = String(this.activeEventCategory()?.title || '').trim().toLowerCase();
     return ['play', 'sports', 'sports activities', 'gaming', 'fitness'].includes(title);
   }
 
@@ -149,6 +149,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
       this.searchTerm = '';
       this.activeCategoryEvents = [];
       this.hasLoaded = false;
+      const selectedCategory = this.eventService.selectedCategory;
+      this.activeEventCategory.set(
+        selectedCategory?._id === this.categoryId
+          ? this.withCatalogDisplayTitle(selectedCategory)
+          : {}
+      );
       this.loadCategoryDetails(this.categoryId);
       this.loadEventsByCategory();
     });
@@ -175,6 +181,12 @@ export class EventsListComponent implements OnInit, OnDestroy {
     }
 
     this.searchTimer = setTimeout(() => this.loadEventsByCategory(), 300);
+  }
+
+  get emptyStateContext(): string {
+    if (this.searchTerm.trim()) return 'search';
+
+    return this.activeTimeFilter;
   }
 
   loadEventsByCategory() {
@@ -310,10 +322,11 @@ export class EventsListComponent implements OnInit, OnDestroy {
       next: (res: any) => {
         const categories = Array.isArray(res?.data?.categories) ? res.data.categories : [];
         const category = categories.find((item: any) => item._id === categoryId);
-        this.activeEventCategory = this.withCatalogDisplayTitle(category);
-      },
-      error: () => {
-        this.activeEventCategory = {};
+        if (category) {
+          const displayCategory = this.withCatalogDisplayTitle(category);
+          this.eventService.selectedCategory = displayCategory;
+          this.activeEventCategory.set(displayCategory);
+        }
       }
     });
   }

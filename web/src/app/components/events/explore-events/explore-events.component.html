@@ -103,7 +103,10 @@
       }
       @if (trendingEvents().length === 0) {
       <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
-        [contextPrefix]="emptyStateContextPrefix" (exploreAll)="resetFilters()">
+        [contextPrefix]="emptyStateContextPrefix"
+        image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping"
+        (exploreAll)="resetFilters()">
       </vl-empty-state>
       }
     </div>
@@ -132,7 +135,13 @@
       </div>
       }
       @if (justForYouEvents().length === 0) {
-      <vl-empty-state subject="events" context="near you" contextPrefix="" (exploreAll)="resetFilters()">
+      <vl-empty-state
+        subject="events"
+        context="near you"
+        contextPrefix=""
+        image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping"
+        (exploreAll)="resetFilters()">
       </vl-empty-state>
       }
     </div>

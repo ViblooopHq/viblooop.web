@@ -221,6 +221,17 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   setActiveCategory(id: string) {
+    const category = this.categories().find((item) => item.id === id);
+    if (category) {
+      this.eventsService.selectedCategory = {
+        _id: category.id,
+        title: category.label,
+        description: category.description,
+        image: category.cover,
+        icon: category.icon,
+        tags: category.tags,
+      };
+    }
     this.router.navigate('/eventCategories', id);
   }
 
@@ -280,16 +291,7 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   get emptyStateContext(): string {
-    switch (this.activeFilterId) {
-      case 'tonight':
-        return 'tonight';
-      case 'this_weekend':
-        return 'this weekend';
-      case 'free':
-        return 'for free';
-      default:
-        return 'near you';
-    }
+    return this.activeFilterId;
   }
 
   get emptyStateContextPrefix(): string {
@@ -422,6 +424,7 @@ export class ExploreEventsComponent implements OnInit {
     return {
       id: category._id,
       label,
+      description: category.description,
       icon: category.icon,
       cover: category.image,
       tags: category.tags || []
