@@ -71,7 +71,12 @@
           @if (isEscapeEvent) {
             <span class="whitespace-nowrap font-medium">{{ tripDateRangeLabel }}</span>
           } @else {
-            <span class="whitespace-nowrap font-medium">{{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}</span>
+            <span class="whitespace-nowrap font-medium">
+              {{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}
+              @if (config()?.endTime) {
+                – {{ config()?.endDate | date:'MMM d' }} • {{ config()?.endTime | time }}
+              }
+            </span>
           }
         </div>
       </div>

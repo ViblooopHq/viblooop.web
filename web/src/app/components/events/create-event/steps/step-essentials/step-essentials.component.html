@@ -1,13 +1,13 @@
 <main class="step-content" [formGroup]="formService.eventForm">
   <div class="form-stack">
 
-    <!-- Event Title -->
+    <!-- Category-aware title -->
     <div class="form-card">
       <div class="card-header">
         <span class="material-symbols-outlined header-icon" aria-hidden="true">edit</span>
         <span>
           <label class="header-label" for="event-title-input">{{ formService.titleFieldLabel() }}</label>
-          <small>Give your event a catchy name</small>
+          <small>{{ formService.titleFieldHint() }}</small>
         </span>
       </div>
       <div class="input-wrapper">
@@ -21,32 +21,73 @@
       <div class="card-header">
         <span class="material-symbols-outlined header-icon" aria-hidden="true">calendar_month</span>
         <span>
-          <span class="header-label">{{ formService.isEscapeCreation() ? 'Trip Dates' : 'Date & Time' }}</span>
-          <small>{{ formService.isEscapeCreation() ? 'When is your trip happening?' : 'When is your event happening?' }}</small>
+          <span class="header-label">{{ formService.timingTitle() }}</span>
+          <small>{{ formService.timingHint() }}</small>
         </span>
       </div>
-      <div class="date-time-row">
-        <div class="date-field">
-          <vl-datepicker
-            formControlName="eventDate"
-            [min]="formService.datePickerMinDate()"
-            [placeholder]="formService.isEscapeCreation() ? 'From' : 'Select Date'"
-            outputType="date">
-          </vl-datepicker>
+      @if (formService.isHangoutCreation()) {
+        <div class="hangout-timing-fields">
+          <div class="date-range-row">
+            <label class="time-range-field">
+              <span>Start date</span>
+              <vl-datepicker
+                formControlName="eventDate"
+                [min]="formService.datePickerMinDate()"
+                placeholder="Start Date"
+                outputType="date">
+              </vl-datepicker>
+            </label>
+            <label class="time-range-field">
+              <span>End date</span>
+              <vl-datepicker
+                formControlName="endDate"
+                [min]="formService.minEndDate()"
+                placeholder="End Date"
+                outputType="date">
+              </vl-datepicker>
+            </label>
+          </div>
+          <div class="time-range-row">
+            <label class="time-range-field">
+              <span>Start time</span>
+              <vl-time-picker-dropdown
+                placeholder="Start Time"
+                [value]="formService.eventTimeValue()"
+                (valueChange)="setEventTime($event)" />
+            </label>
+            <label class="time-range-field">
+              <span>End time</span>
+              <vl-time-picker-dropdown
+                placeholder="End Time"
+                [value]="formService.endTimeValue()"
+                (valueChange)="setEndTime($event)" />
+            </label>
+          </div>
         </div>
-        @if (formService.isEscapeCreation()) {
+      } @else {
+        <div class="date-time-row">
           <div class="date-field">
             <vl-datepicker
-              formControlName="endDate"
-              [min]="formService.minEndDate()"
-              placeholder="To"
+              formControlName="eventDate"
+              [min]="formService.datePickerMinDate()"
+              [placeholder]="formService.isEscapeCreation() ? 'From' : 'Select Date'"
               outputType="date">
             </vl-datepicker>
           </div>
-        } @else {
-          <vl-time-picker-dropdown [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />
-        }
-      </div>
+          @if (formService.isEscapeCreation()) {
+            <div class="date-field">
+              <vl-datepicker
+                formControlName="endDate"
+                [min]="formService.minEndDate()"
+                placeholder="To"
+                outputType="date">
+              </vl-datepicker>
+            </div>
+          } @else {
+            <vl-time-picker-dropdown [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />
+          }
+        </div>
+      }
     </div>
 
     <!-- Location -->
@@ -55,7 +96,7 @@
         <span class="material-symbols-outlined header-icon" aria-hidden="true">location_on</span>
         <span>
           <span class="header-label">Location</span>
-          <small>Where is your event taking place?</small>
+          <small>{{ formService.locationHint() }}</small>
         </span>
       </div>
 
@@ -63,19 +104,19 @@
         <label class="location-line" for="address-street-input">
           <span class="material-symbols-outlined location-line__icon" aria-hidden="true">home</span>
           <span class="location-line__copy">
-            <span class="location-line__label">Address Line <strong>*</strong></span>
-            <span class="location-line__hint">House / Flat No., Building, Street</span>
+            <span class="location-line__label">{{ formService.addressFieldLabel() }} <strong>*</strong></span>
+            <span class="location-line__hint">{{ formService.addressFieldHint() }}</span>
           </span>
-          <input id="address-street-input" class="location-input" type="text" formControlName="street" placeholder="e.g. Flat A302, Brigade Residency, 12th Main Road">
+          <input id="address-street-input" class="location-input" type="text" formControlName="street" [placeholder]="formService.addressFieldPlaceholder()">
         </label>
 
         <label class="location-line" for="address-area-input">
           <span class="material-symbols-outlined location-line__icon" aria-hidden="true">home</span>
           <span class="location-line__copy">
             <span class="location-line__label">Area / Locality <strong>*</strong></span>
-            <span class="location-line__hint">Your area, sector, or locality</span>
+            <span class="location-line__hint">{{ formService.areaFieldHint() }}</span>
           </span>
-          <input id="address-area-input" class="location-input" type="text" formControlName="area" placeholder="e.g. Koramangala 5th Block">
+          <input id="address-area-input" class="location-input" type="text" formControlName="area" [placeholder]="formService.areaFieldPlaceholder()">
         </label>
 
         <label class="location-stack-field" for="address-pincode-input">

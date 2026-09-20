@@ -198,7 +198,12 @@ export class EventDetailsComponent {
   mapOptions = computed<google.maps.MapOptions>(() => ({ center: this.mapPosition(), zoom: 16 }));
 
   isEventEnded = computed(() => {
-    const eventDateTime = getEventDateTime(this.eventDetails());
+    const details = this.eventDetails();
+    const eventDateTime = getEventDateTime(
+      details,
+      details?.endTime || details?.eventTime,
+      details?.endDate || details?.eventDate,
+    );
     return eventDateTime ? eventDateTime < new Date() : false;
   });
 
@@ -208,7 +213,7 @@ export class EventDetailsComponent {
     const hasEndDate = Boolean(details?.endDate);
     const categoryTitle = String((category as any)?.title || (category as any)?.name || category || '').toLowerCase();
 
-    return hasEndDate || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
+    return (hasEndDate && !details?.endTime) || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
   });
   tripDateRangeLabel = computed(() => {
     const details = this.eventDetails();
@@ -233,7 +238,7 @@ export class EventDetailsComponent {
     const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-    if (diffMs < 0) return 'Event ended';
+    if (diffMs < 0) return this.isEventEnded() ? 'Event ended' : 'Happening now';
     if (diffMins < 60) return 'Starting soon';
     if (diffHrs < 24) return `Starts in ${diffHrs} hrs`;
     if (diffDays === 1) return 'Starts tomorrow';
@@ -1078,13 +1083,14 @@ function formatTripDate(value: string | Date | null | undefined): string {
   return new Intl.DateTimeFormat('en-US', { weekday: 'short', month: 'short', day: 'numeric' }).format(date);
 }
 
-function getEventDateTime(details: EventDetails | null): Date | null {
-  if (!details?.eventDate) return null;
+function getEventDateTime(details: EventDetails | null, timeValue?: string, dateValue?: string | Date): Date | null {
+  const resolvedDate = dateValue || details?.eventDate;
+  if (!resolvedDate) return null;
 
-  const eventDateTime = new Date(details.eventDate);
+  const eventDateTime = new Date(resolvedDate);
   if (Number.isNaN(eventDateTime.getTime())) return null;
 
-  const eventTime = String(details?.eventTime || '').trim();
+  const eventTime = String(timeValue ?? details?.eventTime ?? '').trim();
   if (!eventTime) return eventDateTime;
 
   const match = eventTime.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);

@@ -15,6 +15,7 @@ export interface CreateEventFormValue {
   eventDate: Date | string;
   endDate: Date | string;
   eventTime: string;
+  endTime: string;
   address: CreateEventAddressValue;
   attendeeLimit: number;
   audiencePreference: AudienceMixType;

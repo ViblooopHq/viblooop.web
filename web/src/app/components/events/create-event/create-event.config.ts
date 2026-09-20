@@ -1,4 +1,4 @@
-export type CreationKind = 'event' | 'play' | 'escape';
+export type CreationKind = 'event' | 'play' | 'escape' | 'hangout';
 
 export interface CategoryDisplayConfig {
   matches: string[];
@@ -20,7 +20,16 @@ export interface HostNoteQuickAdd {
 export interface CreationTypeConfig {
   headerTitle: string;
   titleFieldLabel: string;
+  titleFieldHint: string;
   titleFieldPlaceholder: string;
+  timingTitle: string;
+  timingHint: string;
+  locationHint: string;
+  addressFieldLabel: string;
+  addressFieldHint: string;
+  addressFieldPlaceholder: string;
+  areaFieldHint: string;
+  areaFieldPlaceholder: string;
   defaultCoverImage: string;
   stepTwoDescription: string;
   stepThreeDescription: string;
@@ -33,6 +42,7 @@ export interface CreationTypeConfig {
   hostNoteQuickAdds: HostNoteQuickAdd[];
   animationPath: string;
   usesDateRange: boolean;
+  requiresEndTime: boolean;
 }
 
 export const CREATE_EVENT_STEPS = ['Vibe', 'Essentials', 'Scene', 'Review'];
@@ -166,9 +176,18 @@ const ESCAPE_HOST_NOTE_QUICK_ADDS: HostNoteQuickAdd[] = [
 
 export const CREATE_EVENT_TYPE_CONFIGS: Record<CreationKind, CreationTypeConfig> = {
   event: {
-    headerTitle: 'Create Event',
-    titleFieldLabel: 'Event Title',
+    headerTitle: 'Create Party',
+    titleFieldLabel: 'Party Title',
+    titleFieldHint: 'Give your party a catchy name',
     titleFieldPlaceholder: 'e.g. Rooftop Party at Sky Lounge',
+    timingTitle: 'Date & Time',
+    timingHint: 'When is your party happening?',
+    locationHint: 'Where is your party taking place?',
+    addressFieldLabel: 'Venue / Address',
+    addressFieldHint: 'Venue name, building, or street',
+    addressFieldPlaceholder: 'e.g. Sky Lounge, 12th Main Road',
+    areaFieldHint: 'Neighbourhood or locality',
+    areaFieldPlaceholder: 'e.g. Indiranagar',
     defaultCoverImage: 'assets/images/landing-page-bg.jpg',
     stepTwoDescription: 'Add the basics so people know about your event.',
     stepThreeDescription: 'Visuals and vibes make your event stand out.',
@@ -181,11 +200,21 @@ export const CREATE_EVENT_TYPE_CONFIGS: Record<CreationKind, CreationTypeConfig>
     hostNoteQuickAdds: EVENT_HOST_NOTE_QUICK_ADDS,
     animationPath: 'assets/json/event-created.json',
     usesDateRange: false,
+    requiresEndTime: false,
   },
   play: {
     headerTitle: 'Create Play',
-    titleFieldLabel: 'Session Title',
-    titleFieldPlaceholder: 'Late Night FIFA Session',
+    titleFieldLabel: 'Game Title',
+    titleFieldHint: 'Give your game or session a clear name',
+    titleFieldPlaceholder: 'e.g. Sunday Badminton Doubles',
+    timingTitle: 'Date & Time',
+    timingHint: 'When does the game start?',
+    locationHint: 'Where are you playing?',
+    addressFieldLabel: 'Venue / Court',
+    addressFieldHint: 'Court, turf, arena, or ground',
+    addressFieldPlaceholder: 'e.g. Smash Arena, 7th Main Road',
+    areaFieldHint: 'Neighbourhood or locality',
+    areaFieldPlaceholder: 'e.g. HSR Layout',
     defaultCoverImage: 'assets/images/play-page-bg.png',
     stepTwoDescription: 'Add the key details so players know what to expect.',
     stepThreeDescription: 'Show players what the session feels like.',
@@ -198,11 +227,21 @@ export const CREATE_EVENT_TYPE_CONFIGS: Record<CreationKind, CreationTypeConfig>
     hostNoteQuickAdds: PLAY_HOST_NOTE_QUICK_ADDS,
     animationPath: 'assets/json/gaming.json',
     usesDateRange: false,
+    requiresEndTime: false,
   },
   escape: {
     headerTitle: 'Create Escape',
     titleFieldLabel: 'Trip Title',
-    titleFieldPlaceholder: 'Pondicherry Road Trip',
+    titleFieldHint: 'Give your trip a memorable name',
+    titleFieldPlaceholder: 'e.g. Weekend Trek to Nandi Hills',
+    timingTitle: 'Trip Dates',
+    timingHint: 'When is your trip happening?',
+    locationHint: 'Where does the trip begin?',
+    addressFieldLabel: 'Meeting / Starting Point',
+    addressFieldHint: 'Landmark, pickup point, or trailhead',
+    addressFieldPlaceholder: 'e.g. Metro Station Gate 2, MG Road',
+    areaFieldHint: 'Starting area or locality',
+    areaFieldPlaceholder: 'e.g. Central Bengaluru',
     defaultCoverImage: 'assets/images/escape-page-bg.png',
     stepTwoDescription: 'Share the essentials so people know the journey ahead.',
     stepThreeDescription: 'Bring your trip vibe to life with great visuals.',
@@ -218,6 +257,34 @@ Day 2: Main activities and return journey 🌄`,
     hostNoteQuickAdds: ESCAPE_HOST_NOTE_QUICK_ADDS,
     animationPath: 'assets/json/Travel.json',
     usesDateRange: true,
+    requiresEndTime: false,
+  },
+  hangout: {
+    headerTitle: 'Create Hangout',
+    titleFieldLabel: 'Hangout Title',
+    titleFieldHint: 'Give your hangout a friendly name',
+    titleFieldPlaceholder: 'e.g. Coffee and Conversations',
+    timingTitle: 'Date & Time',
+    timingHint: 'When does your hangout start and end?',
+    locationHint: 'Where are you meeting?',
+    addressFieldLabel: 'Meeting Spot',
+    addressFieldHint: 'Cafe, park, landmark, or venue',
+    addressFieldPlaceholder: 'e.g. Third Wave Coffee, 12th Main Road',
+    areaFieldHint: 'Neighbourhood or locality',
+    areaFieldPlaceholder: 'e.g. Indiranagar',
+    defaultCoverImage: 'assets/images/landing-page-bg.jpg',
+    stepTwoDescription: 'Add the details so people know when and where to meet.',
+    stepThreeDescription: 'Show people the vibe of your hangout.',
+    chatAccessSubtitle: 'Manage chat access for this hangout.',
+    everyoneChatMobileDescription: 'Joined guests can coordinate and chat together.',
+    hostOnlyChatMobileDescription: 'Only the host can share hangout updates.',
+    hostNotesTitle: 'Hangout Details',
+    hostNotesSubtitle: 'Share anything your guests should know before joining.',
+    hostNotesPlaceholder: 'E.g. Meet near the entrance. Casual, friendly hangout.',
+    hostNoteQuickAdds: EVENT_HOST_NOTE_QUICK_ADDS,
+    animationPath: 'assets/json/event-created.json',
+    usesDateRange: false,
+    requiresEndTime: true,
   },
 };
 
@@ -256,16 +323,7 @@ export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
     materialIcon: 'local_cafe',
     accent: 'orange',
     tags: ['Coffee', 'Chai', 'Conversation', 'Board Games', 'Walk & Talk', 'Work Friendly'],
-    soon: true
-  },
-  {
-    matches: ['shopping buddies', 'shopping buddy', 'shopping', 'buddies', 'malls'],
-    title: 'Shopping Buddy',
-    description: 'Shop together, explore & more',
-    materialIcon: 'shopping_bag',
-    accent: 'pink',
-    tags: ['Store Hopping', 'Style Advice', 'Best Deals', 'New Finds', 'Coffee Break', 'Fashion'],
-    soon: true
+    kind: 'hangout'
   }
 ];
 

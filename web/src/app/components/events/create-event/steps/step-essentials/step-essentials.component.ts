@@ -28,4 +28,8 @@ export class StepEssentialsComponent {
   setEventTime(value: string): void {
     this.formService.eventForm.get('eventTime')?.setValue(value);
   }
+
+  setEndTime(value: string): void {
+    this.formService.eventForm.get('endTime')?.setValue(value);
+  }
 }
