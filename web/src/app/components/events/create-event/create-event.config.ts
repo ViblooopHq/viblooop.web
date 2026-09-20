@@ -250,8 +250,8 @@ export const CREATE_EVENT_CATEGORY_DISPLAY_CONFIGS: CategoryDisplayConfig[] = [
     kind: 'play'
   },
   {
-    matches: ['local events', 'events', 'quick', 'quickies', 'local'],
-    title: 'Quickies',
+    matches: ['hangout', 'hangouts', 'local events', 'events', 'quick', 'quickies', 'local'],
+    title: 'Hangouts',
     description: 'Coffee, chai, quick hangouts & more',
     materialIcon: 'local_cafe',
     accent: 'orange',
@@ -274,6 +274,7 @@ export const CREATE_EVENT_CATEGORY_ICON_MAP: Record<string, string> = {
   travel: 'flight',
   sports: 'sports_soccer',
   events: 'event',
+  hangouts: 'groups',
   shopping: 'shopping_bag',
   chill: 'local_cafe',
   hangout: 'groups',

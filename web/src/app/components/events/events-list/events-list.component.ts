@@ -8,10 +8,11 @@ import { Location } from '@angular/common';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { MessageStore } from '../../../shared/store/message.store';
 import { FullPageCarouselComponent } from '../../../shared/components/carousels';
+import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
 
 @Component({
   selector: 'vl-events-list',
-  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent],
+  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent, EventFiltersComponent],
   templateUrl: './events-list.component.html',
   styleUrl: './events-list.component.scss'
 })
@@ -164,18 +165,16 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.loadEventsByCategory();
   }
 
-  onSearchInput(event: Event): void {
-    this.searchTerm = (event.target as HTMLInputElement).value;
+  onSearchChange(searchTerm: string): void {
+    this.searchTerm = searchTerm;
     if (this.searchTimer) clearTimeout(this.searchTimer);
+
+    if (!this.searchTerm) {
+      this.loadEventsByCategory();
+      return;
+    }
 
     this.searchTimer = setTimeout(() => this.loadEventsByCategory(), 300);
-  }
-
-  clearSearch(): void {
-    if (!this.searchTerm) return;
-    this.searchTerm = '';
-    if (this.searchTimer) clearTimeout(this.searchTimer);
-    this.loadEventsByCategory();
   }
 
   loadEventsByCategory() {
@@ -310,11 +309,24 @@ export class EventsListComponent implements OnInit, OnDestroy {
     this.eventService.getEventCategories().subscribe({
       next: (res: any) => {
         const categories = Array.isArray(res?.data?.categories) ? res.data.categories : [];
-        this.activeEventCategory = categories.find((category: any) => category._id === categoryId) || {};
+        const category = categories.find((item: any) => item._id === categoryId);
+        this.activeEventCategory = this.withCatalogDisplayTitle(category);
       },
       error: () => {
         this.activeEventCategory = {};
       }
     });
+  }
+
+  private withCatalogDisplayTitle(category: any): any {
+    if (!category) return {};
+
+    const title = String(category.title || '').trim();
+    const normalizedTitle = title.toLowerCase();
+    const displayTitle = ['events', 'local events', 'quickies', 'hangout', 'hangouts'].includes(normalizedTitle)
+      ? 'Hangouts'
+      : title;
+
+    return { ...category, title: displayTitle };
   }
 }

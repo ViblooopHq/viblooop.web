@@ -14,7 +14,7 @@ export class EventsService {
     'Social',
     'Travel Companion',
     'Sports Activities',
-    'Local Events',
+    'Hangouts',
     'Shopping Buddies'
   ];
 

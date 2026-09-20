@@ -13,12 +13,8 @@ import { MultiCarouselComponent, FullPageCarouselComponent, PreviewCarouselCompo
 import { PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
 import { RouterModule } from '@angular/router';
 import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
+import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
 
-export interface EventFilter {
-  id: string;
-  label: string;
-  icon: string;
-}
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
@@ -33,6 +29,7 @@ export interface EventFilter {
     FullPageCarouselComponent,
     PreviewCarouselComponent,
     ExploreSkeletonComponent,
+    EventFiltersComponent,
   ],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
@@ -51,7 +48,7 @@ export class ExploreEventsComponent implements OnInit {
   private messageStore = inject(MessageStore);
   private eventsRequestId = 0;
 
-  filters: EventFilter[] = [
+  filters = [
     { id: 'all', label: 'All', icon: 'celebration' },
     { id: 'tonight', label: 'Tonight', icon: 'sports_tennis' },
     { id: 'this_weekend', label: 'This weekend', icon: 'self_improvement' },
@@ -414,9 +411,13 @@ export class ExploreEventsComponent implements OnInit {
   private toExploreCategory(category: any): any {
     const title = String(category?.title || '').trim();
     const normalizedTitle = title.toLowerCase();
-    const label = normalizedTitle === 'travel' || normalizedTitle === 'travel companion'
-      ? 'Escape'
-      : title;
+    let label = title;
+
+    if (normalizedTitle === 'travel' || normalizedTitle === 'travel companion') {
+      label = 'Escape';
+    } else if (['events', 'local events', 'quickies', 'hangout', 'hangouts'].includes(normalizedTitle)) {
+      label = 'Hangouts';
+    }
 
     return {
       id: category._id,

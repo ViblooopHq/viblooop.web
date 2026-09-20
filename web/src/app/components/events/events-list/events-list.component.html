@@ -45,47 +45,14 @@
     </header>
 
     <!-- Search & Filter Controls -->
-    <section class="explore-controls category-event-controls" aria-label="Search and filter category events">
-      <div class="search-bar">
-        <span class="material-symbols-outlined search-icon" translate="no">search</span>
-        <input
-          type="search"
-          class="search-input"
-          [value]="searchTerm"
-          (input)="onSearchInput($event)"
-          placeholder="Search events, vibes, or locations..."
-          aria-label="Search category events" />
-        @if (searchTerm) {
-          <button class="search-clear" type="button" (click)="clearSearch()" aria-label="Clear search">
-            <span class="material-symbols-outlined" translate="no">close</span>
-          </button>
-        }
-        <button
-          type="button"
-          class="location-pill"
-          [class.active]="activeTimeFilter === 'nearby'"
-          [attr.aria-pressed]="activeTimeFilter === 'nearby'"
-          (click)="setTimeFilter('nearby')">
-          <span class="material-symbols-outlined" translate="no">near_me</span>
-          <span>Near You</span>
-        </button>
-      </div>
-
-      <div class="filter-tags-scroll">
-        <div class="filter-tags" aria-label="Time filters">
-          @for (filter of timeFilters; track filter.id) {
-            <button
-              type="button"
-              class="filter-tag"
-              [class.active]="activeTimeFilter === filter.id"
-              [attr.aria-pressed]="activeTimeFilter === filter.id"
-              (click)="setTimeFilter(filter.id)">
-              {{ filter.label }}
-            </button>
-          }
-        </div>
-      </div>
-    </section>
+    <vl-event-filters
+      class="category-event-controls"
+      [filters]="timeFilters"
+      [activeFilterId]="activeTimeFilter"
+      [searchTerm]="searchTerm"
+      searchAriaLabel="Search category events"
+      (searchTermChange)="onSearchChange($event)"
+      (filterChange)="setTimeFilter($event)" />
 
     <!-- Section Controls Header -->
     <div class="vl-section-controls">

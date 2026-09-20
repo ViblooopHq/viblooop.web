@@ -45,28 +45,10 @@
       </div>
     </div>
 
-    <div class="explore-controls">
-      <div class="search-bar">
-        <i class="fa-solid fa-magnifying-glass search-icon text-on-surface"></i>
-        <input type="text" placeholder="Search events, vibes, or locations..." class="search-input">
-        <div class="location-pill vl-chip" [class.active]="activeFilterId === 'nearby'"
-          (click)="setActiveFilter('nearby')" role="button" tabindex="0">
-          <i class="fa-solid fa-location-dot"></i>
-          <span>Near You</span>
-        </div>
-      </div>
-
-      <section class="filter-tags-scroll" aria-label="Quick filters">
-        <div class="filter-tags">
-          @for (filter of filters; track filter.id) {
-          <button class="filter-tag vl-chip" [class.active]="activeFilterId === filter.id"
-            (click)="setActiveFilter(filter.id)">
-            {{filter.label}}
-          </button>
-          }
-        </div>
-      </section>
-    </div>
+    <vl-event-filters
+      [filters]="filters"
+      [activeFilterId]="activeFilterId"
+      (filterChange)="setActiveFilter($event)" />
   </header>
 
   <!-- Categories -->

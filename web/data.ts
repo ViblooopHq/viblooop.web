@@ -214,7 +214,7 @@ export const EventData = [
   },
   {
     cid: 4,
-    categoryTitle: 'Local Events',
+    categoryTitle: 'Hangouts',
     categoryDescription: 'Dive into community events happening around you.',
     categoryImage: 'https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?q=80&w=800',
     categoryIcon: 'fa-solid fa-calendar-days',
