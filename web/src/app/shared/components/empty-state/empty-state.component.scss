@@ -166,7 +166,7 @@
 @media (max-width: 480px) {
   .empty-state {
     min-height: 25rem;
-    padding: var(--space-8) var(--space-4);
+    padding: 0 var(--space-4);
 
     &__art {
       width: min(14rem, 76vw);
