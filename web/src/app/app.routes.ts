@@ -78,6 +78,45 @@ export const routes: Routes = [
     component: LoginComponent,
   },
   {
+    path: 'terms',
+    loadComponent: () => import('./components/legal/legal-policy/legal-policy.component').then(m => m.LegalPolicyComponent),
+    data: { tab: 'terms' }
+  },
+  {
+    path: 'terms-and-conditions',
+    redirectTo: 'terms',
+    pathMatch: 'full'
+  },
+  {
+    path: 'privacy',
+    loadComponent: () => import('./components/legal/legal-policy/legal-policy.component').then(m => m.LegalPolicyComponent),
+    data: { tab: 'privacy' }
+  },
+  {
+    path: 'privacy-policy',
+    redirectTo: 'privacy',
+    pathMatch: 'full'
+  },
+  {
+    path: 'safety-guidelines',
+    loadComponent: () => import('./components/legal/legal-policy/legal-policy.component').then(m => m.LegalPolicyComponent),
+    data: { tab: 'safety' }
+  },
+  {
+    path: 'safety',
+    redirectTo: 'safety-guidelines',
+    pathMatch: 'full'
+  },
+  {
+    path: 'legal',
+    redirectTo: 'terms',
+    pathMatch: 'full'
+  },
+  {
+    path: 'legal/:tab',
+    loadComponent: () => import('./components/legal/legal-policy/legal-policy.component').then(m => m.LegalPolicyComponent)
+  },
+  {
     path: '**',
     component: NotFoundComponent,
   },

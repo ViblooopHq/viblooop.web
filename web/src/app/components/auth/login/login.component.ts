@@ -10,7 +10,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 import type { ISourceOptions } from '@tsparticles/engine';
@@ -18,7 +18,7 @@ import type { ISourceOptions } from '@tsparticles/engine';
 @Component({
   selector: 'vl-login',
   standalone: true,
-  imports: [ReactiveFormsModule, OtpVerificationComponent],
+  imports: [ReactiveFormsModule, OtpVerificationComponent, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush

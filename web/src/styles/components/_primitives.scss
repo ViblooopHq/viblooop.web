@@ -194,6 +194,7 @@
 /* Circular & square icon button (44px min touch target) */
 .vl-icon-button {
   @include button-base;
+  overflow: visible;
 
   width: 2.75rem;
   min-width: 2.75rem;

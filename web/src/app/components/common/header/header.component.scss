@@ -3,6 +3,13 @@
  * Clean, solid desktop floating navbar & native mobile bottom navigation.
  */
 
+@media print {
+  :host,
+  .vl-app-header {
+    display: none !important;
+  }
+}
+
 .vl-app-header {
   border: 1px solid var(--color-border);
   background-color: var(--color-surface);
@@ -126,3 +133,31 @@
   overflow: hidden;
   z-index: 100;
 }
+
+/* Ensure notification, wishlist & chat badges are never clipped by button boundary */
+:host .vl-icon-button {
+  overflow: visible !important;
+}
+
+.vl-header-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: var(--radius-full, 9999px);
+  border: 2px solid var(--color-surface);
+  background-color: var(--color-error);
+  color: var(--color-on-error, #ffffff);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+}
+

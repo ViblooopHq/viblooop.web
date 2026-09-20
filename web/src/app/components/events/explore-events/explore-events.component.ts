@@ -9,8 +9,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
-import { MultiCarouselComponent, FullPageCarouselComponent, PreviewSlide } from '../../../shared/components/carousels';
-import { PopularCardConfig } from '../../../shared/components/popular-card/popular-card.component';
+import { MultiCarouselComponent, FullPageCarouselComponent } from '../../../shared/components/carousels';
 import { RouterModule } from '@angular/router';
 import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
@@ -55,99 +54,27 @@ export class ExploreEventsComponent implements OnInit {
     { id: 'nearby', label: 'Nearby', icon: 'location_on' }
   ];
 
-  dummyImages = [
-    { url: 'https://picsum.photos/800/400?random=1', alt: 'Dummy 1' },
-    { url: 'https://picsum.photos/800/400?random=2', alt: 'Dummy 2' },
-    { url: 'https://picsum.photos/800/400?random=3', alt: 'Dummy 3' }
-  ];
-
-  previewItems: PreviewSlide[] = [
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1476610182048-b716b8518aae?auto=format&fit=crop&q=80&w=1200&h=800',
-      preTitle: 'Iceland, a Nordic island nation',
-      title: 'Iceland',
-      description: 'Iceland, a Nordic island nation, is defined by its dramatic landscape with volcanoes, geysers, hot springs and lava fields.',
-      subtitle: 'Nordic island nation'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=1200&h=800',
-      preTitle: 'New Zealand, an island country',
-      title: 'New Zealand',
-      description: 'New Zealand is a country in the southwestern Pacific Ocean consisting of 2 main landmasses and over 700 smaller islands.',
-      subtitle: 'Island country'
-    },
-    {
-      type: 'image',
-      url: 'https://images.unsplash.com/photo-1786614840853-ab60bacc1cd2?auto=format&fit=crop&q=80&w=1200&h=800',
-      preTitle: 'Norway, a Scandinavian country',
-      title: 'Norway',
-      description: 'Norway is a Scandinavian country encompassing mountains, glaciers and deep coastal fjords.',
-      subtitle: 'Scandinavian country'
-    },
-    {
-      type: 'video',
-      url: 'https://www.w3schools.com/html/mov_bbb.mp4',
-      preTitle: 'Video Example',
-      title: 'Video Background',
-      description: 'This slide demonstrates how seamless video playback looks as a background element with the modern carousel layout.',
-      subtitle: 'Video demo'
-    }
-  ];
-
   fullPageDummyItems = [
     {
-      image: 'https://images.unsplash.com/photo-1540039155733-d7696d5eb3fc?auto=format&fit=crop&q=80&w=1200&h=600',
+      image: 'assets/images/explore-hero/image-3.webp',
+      trending: true,
+      tags: ['Party', 'Nightlife'],
+      title: 'Midnight Madness',
+      description: 'The ultimate underground party experience. Secret location, exclusive DJ sets, and a night you won\'t forget.',
+    },
+    {
+      image: 'assets/images/explore-hero/image-1.webp',
       trending: true,
       tags: ['Music', 'Festival'],
       title: 'Neon Nights Festival',
       description: 'Get ready for the biggest EDM festival of the year. Join thousands of music lovers for a night of unforgettable beats and lights.',
     },
     {
-      image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=1200&h=600',
+      image: 'assets/images/explore-hero/image-2.webp',
       trending: false,
       tags: ['Chill', 'Acoustic'],
       title: 'Acoustic Sunset',
       description: 'Relaxing vibes by the beach with top indie artists playing stripped-down acoustic versions of their hits.',
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1478147424098-b80a56391b15?auto=format&fit=crop&q=80&w=1200&h=600',
-      trending: true,
-      tags: ['Party', 'Nightlife'],
-      title: 'Midnight Madness',
-      description: 'The ultimate underground party experience. Secret location, exclusive DJ sets, and a night you won\'t forget.',
-    }
-  ];
-
-  popularNowItems: PopularCardConfig[] = [
-    {
-      image: 'https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&q=80&w=400&h=533', // Food/Pancakes
-      badgeText: 'Live',
-      badgeType: 'live',
-      viewCount: '12K',
-      title: 'Food'
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=400&h=533', // Food plate
-      badgeText: 'Premier',
-      badgeType: 'premier',
-      viewCount: '12K',
-      title: 'Nathan 5'
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&q=80&w=400&h=533', // Adventure/Mountain
-      badgeText: 'Live',
-      badgeType: 'live',
-      viewCount: '12K',
-      title: 'Adventure'
-    },
-    {
-      image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&q=80&w=400&h=533', // Photographer/Travel
-      badgeText: 'Premier',
-      badgeType: 'premier',
-      viewCount: '8.5K',
-      title: 'Travel Vibes'
     }
   ];
 

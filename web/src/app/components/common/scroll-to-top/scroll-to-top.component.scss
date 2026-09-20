@@ -3,6 +3,13 @@
  * High contrast, zero gradient, floating above iOS island.
  * ────────────────────────────────────────────────────────── */
 
+@media print {
+  :host,
+  .vl-scroll-top {
+    display: none !important;
+  }
+}
+
 .vl-scroll-top {
   position: fixed;
   display: flex;

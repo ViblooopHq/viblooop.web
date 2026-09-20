@@ -48,4 +48,5 @@ export class EventHeroComponent {
   cancelEvent = output<void>();
   leaveEvent = output<void>();
   cancelJoinRequest = output<void>();
+  shareEvent = output<void>();
 }

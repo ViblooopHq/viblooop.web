@@ -1,51 +1,49 @@
 <footer class="vl-footer">
   <div class="vl-footer__container">
-    <div class="vl-footer__grid">
+    <div class="vl-footer__main">
       
-      <!-- Brand Section -->
+      <!-- Brand & Info Section (Left) -->
       <div class="vl-footer__brand">
-        <div class="vl-footer__logo">
+        <a routerLink="/" class="vl-footer__logo-wrap" aria-label="Viblooop Home">
           <img [src]="themeService.logoSrc()" alt="Viblooop" class="vl-footer__logo-img">
+        </a>
+        <p class="vl-footer__tagline" i18n>
+          Find your vibe, create your loop. Discover curated events, host unforgettable experiences, and connect with people who share your passion.
+        </p>
+
+        <div class="vl-footer__trust-pill">
+          <span class="material-symbols-outlined trust-icon" aria-hidden="true">verified_user</span>
+          <span>Verified Vibes & Safe Real-World Meetups</span>
         </div>
-        <p class="vl-footer__tagline" i18n>Find your vibe, create your loop. The ultimate social discovery platform.</p>
-        
-        <div class="vl-footer__social">
+
+        <div class="vl-footer__social" aria-label="Social media channels">
           @for (social of socialLinks; track social.name) {
-            <a [href]="social.url" class="vl-footer__social-link" [title]="social.name">
+            <a [href]="social.url" target="_blank" rel="noopener noreferrer" class="vl-footer__social-link" [attr.aria-label]="social.name" [title]="social.name">
               <i class="fab" [ngClass]="social.icon"></i>
             </a>
           }
         </div>
       </div>
 
-      <!-- Quick Links -->
-      <div class="vl-footer__links-col">
-        <h4 class="vl-footer__links-title" i18n>Vibe With Us</h4>
-        <ul class="vl-footer__links-list">
-          @for (link of quickLinks; track link.label) {
-            <li><a class="vl-footer__link" [href]="link.url" i18n>{{link.label}}</a></li>
-          }
-        </ul>
-      </div>
-
-      <!-- Community -->
-      <div class="vl-footer__links-col">
-        <h4 class="vl-footer__links-title" i18n>Community</h4>
-        <ul class="vl-footer__links-list">
-          @for (link of communityLinks; track link.label) {
-            <li><a class="vl-footer__link" [href]="link.url" i18n>{{link.label}}</a></li>
-          }
-        </ul>
-      </div>
-
-      <!-- Support -->
-      <div class="vl-footer__links-col">
-        <h4 class="vl-footer__links-title" i18n>Support</h4>
-        <ul class="vl-footer__links-list">
-          @for (link of supportLinks; track link.label) {
-            <li><a class="vl-footer__link" [href]="link.url" i18n>{{link.label}}</a></li>
-          }
-        </ul>
+      <!-- Useful Links Section (Right) -->
+      <div class="vl-footer__links-section">
+        <div class="vl-footer__links-card">
+          <h4 class="vl-footer__links-title">
+            <span class="title-accent"></span>
+            <span i18n>Useful Links</span>
+          </h4>
+          <ul class="vl-footer__links-list">
+            @for (link of usefulLinks; track link.path) {
+              <li>
+                <a [routerLink]="link.path" routerLinkActive="vl-footer__link--active" class="vl-footer__link">
+                  <span class="material-symbols-outlined link-icon" aria-hidden="true">{{ link.icon }}</span>
+                  <span class="link-label" i18n>{{ link.label }}</span>
+                  <span class="material-symbols-outlined link-arrow" aria-hidden="true">arrow_forward</span>
+                </a>
+              </li>
+            }
+          </ul>
+        </div>
       </div>
 
     </div>

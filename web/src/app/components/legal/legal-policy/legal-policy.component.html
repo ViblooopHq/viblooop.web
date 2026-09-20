@@ -1,0 +1,811 @@
+<div class="legal-page">
+  <!-- Decorative Ambient Glow Background -->
+  <div class="legal-page__glow legal-page__glow--top" aria-hidden="true"></div>
+  <div class="legal-page__glow legal-page__glow--accent" aria-hidden="true"></div>
+
+  <!-- Hero Section -->
+  <header class="legal-hero">
+    <div class="legal-hero__container">
+      
+      <!-- Top Navigation & Breadcrumb -->
+      <nav class="legal-hero__nav" aria-label="Breadcrumbs">
+        <a routerLink="/" class="legal-hero__back-link">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          <span>Back to Explore</span>
+        </a>
+        <div class="legal-hero__breadcrumbs">
+          <span>Home</span>
+          <span class="material-symbols-outlined separator" aria-hidden="true">chevron_right</span>
+          <span>Legal & Community</span>
+          <span class="material-symbols-outlined separator" aria-hidden="true">chevron_right</span>
+          <span class="current">{{ currentMeta().title }}</span>
+        </div>
+      </nav>
+
+      <!-- Badge & Title -->
+      <div class="legal-hero__header">
+        <div class="legal-hero__badge">
+          <span class="material-symbols-outlined badge-icon" aria-hidden="true">verified_user</span>
+          <span>Official Viblooop Governance • {{ policyVersion }}</span>
+        </div>
+
+        <h1 class="legal-hero__title">
+          <span class="title-gradient">{{ currentMeta().title }}</span>
+        </h1>
+
+        <p class="legal-hero__subtitle">
+          {{ currentMeta().subtitle }}
+        </p>
+
+        <!-- Meta info & Actions -->
+        <div class="legal-hero__meta-bar">
+          <div class="meta-item">
+            <span class="material-symbols-outlined meta-icon" aria-hidden="true">calendar_today</span>
+            <span>Effective: <strong>{{ lastUpdated }}</strong></span>
+          </div>
+          <span class="meta-divider" aria-hidden="true">•</span>
+          <div class="meta-item">
+            <span class="material-symbols-outlined meta-icon" aria-hidden="true">schedule</span>
+            <span>{{ currentMeta().readTime }}</span>
+          </div>
+
+          <div class="hero-actions">
+            <button
+              type="button"
+              class="hero-action-btn"
+              (click)="copyShareUrl()"
+              [class.hero-action-btn--success]="copiedLink()"
+              [attr.aria-label]="copiedLink() ? 'Link copied to clipboard' : 'Share policy link'">
+              <span class="material-symbols-outlined" aria-hidden="true">
+                {{ copiedLink() ? 'done' : 'share' }}
+              </span>
+              <span>{{ copiedLink() ? 'Copied Link!' : 'Share' }}</span>
+            </button>
+
+            <button
+              type="button"
+              class="hero-action-btn"
+              (click)="printPolicy()"
+              aria-label="Print policy document">
+              <span class="material-symbols-outlined" aria-hidden="true">print</span>
+              <span>Print PDF</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Segmented Control / Tab Switcher -->
+      <div class="legal-hero__tabs-wrap" role="tablist" aria-label="Legal document categories">
+        <div class="legal-hero__tabs">
+          <button
+            type="button"
+            role="tab"
+            class="tab-btn"
+            [class.tab-btn--active]="activeTab() === 'terms'"
+            [attr.aria-selected]="activeTab() === 'terms'"
+            (click)="selectTab('terms')">
+            <span class="material-symbols-outlined tab-icon" aria-hidden="true">gavel</span>
+            <span class="tab-label">Terms and Conditions</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            class="tab-btn"
+            [class.tab-btn--active]="activeTab() === 'privacy'"
+            [attr.aria-selected]="activeTab() === 'privacy'"
+            (click)="selectTab('privacy')">
+            <span class="material-symbols-outlined tab-icon" aria-hidden="true">shield_lock</span>
+            <span class="tab-label">Privacy Policy</span>
+          </button>
+
+          <button
+            type="button"
+            role="tab"
+            class="tab-btn"
+            [class.tab-btn--active]="activeTab() === 'safety'"
+            [attr.aria-selected]="activeTab() === 'safety'"
+            (click)="selectTab('safety')">
+            <span class="material-symbols-outlined tab-icon" aria-hidden="true">verified_user</span>
+            <span class="tab-label">Safety Guidelines</span>
+            <span class="tab-badge">Zero Tolerance</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="legal-content">
+    <div class="legal-content__container">
+
+      <!-- Sticky Sidebar (Table of Contents & Quick Support) -->
+      <aside class="legal-sidebar">
+        <div class="legal-sidebar__sticky">
+          
+          <div class="toc-card">
+            <div class="toc-card__header">
+              <span class="material-symbols-outlined toc-icon" aria-hidden="true">menu_book</span>
+              <h2 class="toc-title">Table of Contents</h2>
+            </div>
+
+            <nav class="toc-card__nav" aria-label="Sections in this document">
+              <ul class="toc-list">
+                @for (item of currentToc(); track item.id) {
+                  <li>
+                    <button
+                      type="button"
+                      class="toc-item-btn"
+                      [class.toc-item-btn--active]="activeSectionId() === item.id"
+                      (click)="scrollToSection(item.id)">
+                      <span class="toc-indicator" aria-hidden="true"></span>
+                      <span class="toc-text">{{ item.title }}</span>
+                      @if (item.badge) {
+                        <span class="toc-badge">{{ item.badge }}</span>
+                      }
+                    </button>
+                  </li>
+                }
+              </ul>
+            </nav>
+          </div>
+
+          <!-- Community Support / Trust Card -->
+          <div class="support-card">
+            <div class="support-card__icon-wrap">
+              <span class="material-symbols-outlined" aria-hidden="true">volunteer_activism</span>
+            </div>
+            <h3 class="support-card__title">Safety & Trust First</h3>
+            <p class="support-card__text">
+              Have questions regarding our terms, privacy rights, or wish to report a safety concern?
+            </p>
+            <a href="mailto:safety@viblooop.com" class="support-card__btn">
+              <span class="material-symbols-outlined" aria-hidden="true">mail</span>
+              <span>Contact Safety Team</span>
+            </a>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- Document Body Area -->
+      <article class="legal-body">
+
+        <!-- =================================================================== -->
+        <!-- TAB 1: TERMS AND CONDITIONS                                         -->
+        <!-- =================================================================== -->
+        @if (activeTab() === 'terms') {
+          <div class="document-section">
+
+            <!-- Section 1: Acceptance -->
+            <section id="terms-intro" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">01</div>
+                <h2 class="policy-section__title">Acceptance of Terms & The Viblooop Vision</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Welcome to Viblooop. These Terms and Conditions constitute a legally binding agreement between you (“User”, “Host”, “Attendee”, or “you”) and Viblooop Inc. (“Viblooop”, “we”, “us”, or “our”). By accessing our web platform, creating an account, discovering experiences, purchasing event passes, or hosting activities, you express full assent to these terms.
+                </p>
+                <div class="policy-callout policy-callout--info">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">info</span>
+                  <div class="callout-body">
+                    <strong>Our Core Mission:</strong> Viblooop empowers real-world connection. We bridge online discovery with offline social loops. In doing so, we require every member to uphold real authenticity, respect, and mutual community safety.
+                  </div>
+                </div>
+                <p>
+                  If you do not agree with any provision set forth herein, you must immediately terminate access to Viblooop and refrain from purchasing tickets or attending community gatherings coordinated via the platform.
+                </p>
+              </div>
+            </section>
+
+            <!-- Section 2: Accounts & Vibes Score -->
+            <section id="terms-eligibility" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">02</div>
+                <h2 class="policy-section__title">Account Eligibility & Vibes Score Integrity</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  To unlock full platform capabilities, create events, and interact within chat loops, you must establish an authorized account. You agree to provide accurate, up-to-date, and authentic information.
+                </p>
+                <ul class="policy-list">
+                  <li>
+                    <strong>Minimum Age Requirement:</strong> You must be at least 18 years of age or the legal age of majority in your jurisdiction to create an account, purchase event passes, or host events.
+                  </li>
+                  <li>
+                    <strong>Profile Authenticity:</strong> Impersonation, fraudulent credential submission, or operating duplicate accounts to circumvent moderation suspensions is strictly prohibited.
+                  </li>
+                  <li>
+                    <strong>The Vibes Score:</strong> Viblooop calculates a proprietary trust metric (“Vibes Score”) based on verified event attendance, community reviews, punctual hosting, and positive peer ratings. Attempting to artificially game, manipulate, or buy Vibes scores constitutes grounds for immediate lifetime platform termination.
+                  </li>
+                  <li>
+                    <strong>Account Confidentiality:</strong> You remain solely responsible for safeguarding your login credentials and for all activities originating from your account.
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 3: Host Obligations & Ticketing -->
+            <section id="terms-hosting" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">03</div>
+                <h2 class="policy-section__title">Host Obligations & Event Management</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  When you create, publish, or manage an event on Viblooop, you act as an independent organizer (“Host”) and not as an employee, contractor, or agent of Viblooop.
+                </p>
+                <div class="policy-callout policy-callout--warning">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">gavel</span>
+                  <div class="callout-body">
+                    <strong>Host Responsibility:</strong> As a host, you are legally and operationally responsible for obtaining all necessary municipal permits, securing appropriate venue rights, ensuring participant fire safety, and honoring the capacity limits designated in your event listing.
+                  </div>
+                </div>
+                <p>
+                  Hosts agree to:
+                </p>
+                <ul class="policy-list">
+                  <li>Provide truthful, non-misleading descriptions including accurate start/end times, venue accessibility, and dress codes.</li>
+                  <li>Execute our mandatory Host Safety Agreement before publishing paid or public gathering requests.</li>
+                  <li>Notify all confirmed ticket-holders via platform broadcast at least 24 hours prior to any unavoidable schedule or venue modifications.</li>
+                  <li>Refrain from hosting events in unauthorized private residences that have not passed verified host security checks.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 4: User Conduct & Content -->
+            <section id="terms-conduct" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">04</div>
+                <h2 class="policy-section__title">User Conduct & Community Standards</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop thrives on genuine camaraderie and safe celebration. When interacting through event chatrooms, reviews, direct messages, or attending physical meetups, you strictly pledge to avoid prohibited behaviors.
+                </p>
+                <div class="policy-grid-cards">
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-error" aria-hidden="true">block</span>
+                    <h4 class="rule-card__title">Zero Harassment</h4>
+                    <p class="rule-card__text">No stalking, intimidation, non-consensual photography, hate speech, or discrimination based on race, gender, or orientation.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-error" aria-hidden="true">warning</span>
+                    <h4 class="rule-card__title">No Illicit Substances</h4>
+                    <p class="rule-card__text">Offering, distributing, consuming, or facilitating illegal narcotics, controlled substances, or weapons at events is strictly forbidden.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-primary" aria-hidden="true">handshake</span>
+                    <h4 class="rule-card__title">Mutual Consent</h4>
+                    <p class="rule-card__text">Every social interaction must be consensual. Physical contact, invitations, and persistent messaging require explicit, enthusiastic consent.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-secondary" aria-hidden="true">verified</span>
+                    <h4 class="rule-card__title">Honest Representation</h4>
+                    <p class="rule-card__text">No multi-level marketing, unauthorized commercial solicitations, or deceptive promotional campaigns disguised as community meetups.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 5: Payments, Fees & Refunds -->
+            <section id="terms-payments" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">05</div>
+                <h2 class="policy-section__title">Payments, Ticketing & Refund Policy</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Ticket transactions executed on Viblooop are processed via tier-1 PCI-DSS compliant financial providers (e.g., Stripe). Viblooop does not store complete debit or credit card credentials on local servers.
+                </p>
+                <ul class="policy-list">
+                  <li>
+                    <strong>Platform Service Fees:</strong> Viblooop applies a nominal platform service fee on paid tickets to sustain infrastructure, 24/7 moderation, and attendee guarantees. All applicable fees are itemized transparently prior to checkout.
+                  </li>
+                  <li>
+                    <strong>Standard Refund Window:</strong> Attendees may request a full refund up to 48 hours before an event’s scheduled kick-off time, unless the Host explicitly designated a stricter "Final Sale" policy clearly highlighted on the event landing page.
+                  </li>
+                  <li>
+                    <strong>Event Cancellation by Host:</strong> If an organizer cancels an event or materially alters the date/location without attendee consent, all registered attendees receive an automated 100% refund to their original payment method.
+                  </li>
+                  <li>
+                    <strong>Host Payouts:</strong> To prevent ticket fraud and ensure fulfillment, host payouts are initiated 24 hours following the confirmed conclusion of the event, contingent upon the absence of severe safety escalations.
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 6: Intellectual Property -->
+            <section id="terms-ip" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">06</div>
+                <h2 class="policy-section__title">Intellectual Property & Media Licensing</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  All proprietary brand assets, logos, design systems, illustrations, software algorithms, and visual interfaces are the exclusive intellectual property of Viblooop Inc.
+                </p>
+                <p>
+                  <strong>User Content License:</strong> By uploading photos, event banners, review comments, or video highlights to Viblooop, you retain ownership while granting Viblooop a worldwide, non-exclusive, royalty-free license to display, adapt, and distribute your content across our platform and discovery loops to facilitate event promotion.
+                </p>
+              </div>
+            </section>
+
+            <!-- Section 7: Disclaimers & Liability -->
+            <section id="terms-liability" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">07</div>
+                <h2 class="policy-section__title">Disclaimers, Assumption of Risk & Liability</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop provides a discovery platform to connect independent hosts and community attendees. While we implement strict safety screening, identity checks, and zero-tolerance policies:
+                </p>
+                <div class="policy-callout policy-callout--neutral">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">shield</span>
+                  <div class="callout-body">
+                    <strong>Assumption of Risk:</strong> Real-world gatherings, sports, nightlife, and outdoor excursions carry inherent personal risks. You voluntarily assume all risks associated with attending in-person events, including personal injury, property loss, or unforeseen venue hazards.
+                  </div>
+                </div>
+                <p>
+                  To the maximum extent permitted under applicable law, Viblooop, its officers, employees, and affiliates shall not be held liable for indirect, incidental, punitive, or consequential damages arising from host conduct, attendee behavior, or event cancellation beyond the amount paid for the specific event pass.
+                </p>
+              </div>
+            </section>
+
+            <!-- Section 8: Legal Inquiries -->
+            <section id="terms-contact" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">08</div>
+                <h2 class="policy-section__title">Governing Law & Legal Inquiries</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  These Terms shall be interpreted and governed in accordance with applicable laws, without regard to conflicts of law principles. Any dispute arising hereunder that cannot be settled amicably shall be resolved through binding confidential arbitration.
+                </p>
+                <p>
+                  For formal legal notices, subpoena submissions, or terms clarifications, please address our legal department:
+                </p>
+                <div class="contact-box">
+                  <div class="contact-line">
+                    <span class="material-symbols-outlined contact-icon" aria-hidden="true">mail</span>
+                    <span>legal@viblooop.com</span>
+                  </div>
+                  <div class="contact-line">
+                    <span class="material-symbols-outlined contact-icon" aria-hidden="true">domain</span>
+                    <span>Viblooop Technologies Inc., Attn: Legal & Compliance</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        }
+
+        <!-- =================================================================== -->
+        <!-- TAB 2: PRIVACY POLICY                                               -->
+        <!-- =================================================================== -->
+        @if (activeTab() === 'privacy') {
+          <div class="document-section">
+
+            <!-- Section 1: Data We Collect -->
+            <section id="privacy-collection" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">01</div>
+                <h2 class="policy-section__title">Information We Collect</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  At Viblooop, data privacy is an engineering priority. We collect only the data necessary to provide personalized event discovery, secure authentication, and trustworthy community connections.
+                </p>
+                <ul class="policy-list">
+                  <li>
+                    <strong>Account & Identity Data:</strong> Your name, email address, profile avatar, self-selected vibe interests, and verified phone numbers for one-time passcode (OTP) security.
+                  </li>
+                  <li>
+                    <strong>Activity & Ticketing Records:</strong> Events you bookmark, RSVP history, ticket QR verification codes, past attendance logs, and host ratings.
+                  </li>
+                  <li>
+                    <strong>Communications Data:</strong> In-app messages exchanged within event group chats and direct inquiries with hosts (stored encrypted in transit and at rest).
+                  </li>
+                  <li>
+                    <strong>Technical Telemetry:</strong> Device architecture, IP address, operating system, crash logs, and browser diagnostics used for platform stability and fraud detection.
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 2: How We Use Data -->
+            <section id="privacy-usage" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">02</div>
+                <h2 class="policy-section__title">How We Use Your Information</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  We treat your data with strict stewardship. We <strong>never sell your personal information</strong> to third-party data brokers or advertising networks.
+                </p>
+                <div class="policy-callout policy-callout--success">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">lock</span>
+                  <div class="callout-body">
+                    <strong>Zero Data Selling:</strong> Your personal profile, contact information, and attendance habits are never monetized or exposed to external marketers.
+                  </div>
+                </div>
+                <p>We process your data solely for:</p>
+                <ul class="policy-list">
+                  <li>Delivering tailored event recommendations matching your music, culture, and lifestyle tags.</li>
+                  <li>Facilitating real-time socket communication for instant chat notifications and updates.</li>
+                  <li>Maintaining community safety through automated keyword detection for harassment or illegal drug solicitation.</li>
+                  <li>Generating trust verification badges and anti-bot validation.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 3: Geolocation & Discovery -->
+            <section id="privacy-geolocation" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">03</div>
+                <h2 class="policy-section__title">Geolocation Privacy & Discovery Controls</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop helps you discover what’s happening in your city. When you enable location permissions:
+                </p>
+                <ul class="policy-list">
+                  <li>
+                    <strong>Proximity Calculation:</strong> We calculate approximate distance (e.g., “2.4 km away”) to sort relevant gatherings near your neighborhood.
+                  </li>
+                  <li>
+                    <strong>Privacy Radius:</strong> We do <em>not</em> broadcast your live pinpoint coordinates to other attendees. Your profile displays only the general neighborhood or city tag you choose to reveal.
+                  </li>
+                  <li>
+                    <strong>Location Revocation:</strong> You can revoke device location access at any moment via your browser or smartphone settings; Viblooop will gracefully fall back to city-level search.
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 4: Third-Party Sharing -->
+            <section id="privacy-sharing" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">04</div>
+                <h2 class="policy-section__title">Third-Party Service Providers & Subprocessors</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  To deliver seamless performance, we partner with vetted infrastructure providers bound by strict confidentiality and data-protection covenants:
+                </p>
+                <div class="policy-grid-cards">
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-primary" aria-hidden="true">credit_card</span>
+                    <h4 class="rule-card__title">Payment Processors</h4>
+                    <p class="rule-card__text">PCI-DSS certified payment gateways (e.g. Stripe) manage card authorizations and payouts.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-secondary" aria-hidden="true">cloud</span>
+                    <h4 class="rule-card__title">Cloud Infrastructure</h4>
+                    <p class="rule-card__text">Encrypted cloud compute and database clusters located in high-security regional data centers.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-primary" aria-hidden="true">sms</span>
+                    <h4 class="rule-card__title">Transactional Messaging</h4>
+                    <p class="rule-card__text">Automated email and SMS gateways for one-time passwords, ticket confirmations, and emergency updates.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-secondary" aria-hidden="true">map</span>
+                    <h4 class="rule-card__title">Mapping Services</h4>
+                    <p class="rule-card__text">Geocoding APIs to convert venue addresses into interactive map overlays without tracking users.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 5: Storage & Cookies -->
+            <section id="privacy-cookies" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">05</div>
+                <h2 class="policy-section__title">Cookies, Local Storage & Session State</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop uses essential cookies and browser LocalStorage tokens to sustain your login session, preserve your light/dark theme preference, and protect against Cross-Site Request Forgery (CSRF).
+                </p>
+                <p>
+                  We do not deploy invasive cross-site advertising tracking cookies. You may configure your browser to reject cookies, though certain interactive features like instant notifications and active wishlist saves may require manual re-authentication.
+                </p>
+              </div>
+            </section>
+
+            <!-- Section 6: Your Rights & Data Export -->
+            <section id="privacy-rights" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">06</div>
+                <h2 class="policy-section__title">Your Rights, Data Portability & Account Deletion</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Under global privacy frameworks including GDPR, CCPA, and CPRA, you possess comprehensive rights over your personal data:
+                </p>
+                <ul class="policy-list">
+                  <li><strong>Right to Access:</strong> Request a full, machine-readable export of all profile data, attended events, and purchase history.</li>
+                  <li><strong>Right to Rectification:</strong> Edit, modify, or correct your personal information directly within your Profile Settings at any time.</li>
+                  <li><strong>Right to Erasure (“Right to be Forgotten”):</strong> Request permanent account deletion. Upon verification, all identifiable profile records, messages, and wishlists will be purged within 30 days.</li>
+                  <li><strong>Right to Opt-Out:</strong> Easily manage your email digest preferences, push notifications, and marketing communications through account settings.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 7: Security & Retention -->
+            <section id="privacy-security" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">07</div>
+                <h2 class="policy-section__title">Data Security Architecture & Retention</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  We employ defense-in-depth architectural security protocols:
+                </p>
+                <ul class="policy-list">
+                  <li>256-bit TLS encryption for all data transmitted between your browser and our server clusters.</li>
+                  <li>Encrypted data storage at rest with strictly restricted role-based employee access controls.</li>
+                  <li>Real-time automated anomaly detection and rate-limiting to prevent unauthorized credential stuffing.</li>
+                  <li>Retention of transactional records strictly as mandated by financial, tax, and anti-money laundering regulations.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 8: DPO -->
+            <section id="privacy-dpo" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">08</div>
+                <h2 class="policy-section__title">Data Protection Officer & Privacy Inquiries</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  For privacy queries, GDPR/CCPA data export requests, or complaints regarding our data handling, contact our dedicated privacy team:
+                </p>
+                <div class="contact-box">
+                  <div class="contact-line">
+                    <span class="material-symbols-outlined contact-icon" aria-hidden="true">mail</span>
+                    <span>privacy@viblooop.com</span>
+                  </div>
+                  <div class="contact-line">
+                    <span class="material-symbols-outlined contact-icon" aria-hidden="true">badge</span>
+                    <span>Data Protection Officer, Viblooop Technologies</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+        }
+
+        <!-- =================================================================== -->
+        <!-- TAB 3: SAFETY GUIDELINES                                            -->
+        <!-- =================================================================== -->
+        @if (activeTab() === 'safety') {
+          <div class="document-section">
+
+            <!-- Section 1: The Viblooop Pledge -->
+            <section id="safety-pledge" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">01</div>
+                <h2 class="policy-section__title">The Viblooop Community Safety Pledge</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop was engineered to bring people together in the real world. That magic only works when everyone feels safe, protected, and respected. Every host and attendee who steps into a Viblooop experience commits to our shared covenant:
+                </p>
+                <div class="policy-callout policy-callout--success">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">volunteer_activism</span>
+                  <div class="callout-body">
+                    <strong>The Community Pledge:</strong> "We celebrate diversity, honor personal boundaries, respect venue regulations, and look out for one another. No vibe is worth compromising someone’s safety or peace of mind."
+                  </div>
+                </div>
+                <p>
+                  Whether attending an intimate workshop, an outdoor music circle, a tech meetup, or a community dinner, respect is non-negotiable.
+                </p>
+              </div>
+            </section>
+
+            <!-- Section 2: Zero-Tolerance Policy -->
+            <section id="safety-zero-tolerance" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">02</div>
+                <h2 class="policy-section__title">Zero-Tolerance Substance & Violence Standards</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop maintains an uncompromising, strict zero-tolerance enforcement stance against activities that endanger human health or violate civil laws:
+                </p>
+                <div class="policy-callout policy-callout--danger">
+                  <span class="material-symbols-outlined callout-icon" aria-hidden="true">gavel</span>
+                  <div class="callout-body">
+                    <strong>Strictly Prohibited at All Viblooop Events:</strong>
+                    <ul class="danger-list">
+                      <li><strong>Illicit Substances:</strong> Any possession, sale, distribution, consumption, or facilitation of illegal drugs or banned narcotics is strictly forbidden.</li>
+                      <li><strong>Weapons & Dangerous Items:</strong> Firearms, knives, fireworks, hazardous chemicals, or self-defense weapons are prohibited regardless of permit status.</li>
+                      <li><strong>Violence & Threat of Force:</strong> Any physical altercation, aggressive posturing, bullying, or intimidation results in immediate removal and permanent banning.</li>
+                      <li><strong>Non-Consensual Sexual Misconduct:</strong> Unsolicited touching, predatory behavior, sexual harassment, or verbal degradation will trigger immediate platform blacklisting and law enforcement notification.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 3: Host Safety Agreement -->
+            <section id="safety-host-agreement" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">03</div>
+                <h2 class="policy-section__title">The Mandatory Host Safety Agreement</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Every organizer must review and execute the Viblooop Host Safety Agreement prior to publishing an event. As a host, you are the steward of your attendees' wellbeing.
+                </p>
+                <div class="host-checklist">
+                  <h4 class="checklist-title">
+                    <span class="material-symbols-outlined" aria-hidden="true">checklist</span>
+                    <span>Host Safety Standards Checklist</span>
+                  </h4>
+                  <div class="checklist-grid">
+                    <div class="check-item">
+                      <span class="material-symbols-outlined check-icon text-success" aria-hidden="true">check_circle</span>
+                      <div class="check-text">
+                        <strong>Authorized Venues Only:</strong> Confirm explicit landlord, business owner, or municipal permit permissions before inviting guests.
+                      </div>
+                    </div>
+                    <div class="check-item">
+                      <span class="material-symbols-outlined check-icon text-success" aria-hidden="true">check_circle</span>
+                      <div class="check-text">
+                        <strong>Capacity Management:</strong> Never exceed designated fire and building code room occupancy limits.
+                      </div>
+                    </div>
+                    <div class="check-item">
+                      <span class="material-symbols-outlined check-icon text-success" aria-hidden="true">check_circle</span>
+                      <div class="check-text">
+                        <strong>Emergency Clear Routes:</strong> Ensure fire exits, first-aid kits, and emergency egress corridors are clearly marked and unobstructed.
+                      </div>
+                    </div>
+                    <div class="check-item">
+                      <span class="material-symbols-outlined check-icon text-success" aria-hidden="true">check_circle</span>
+                      <div class="check-text">
+                        <strong>Designated Safety Lead:</strong> Assign a verified co-host or staff member who remains sober, observant, and reachable throughout the gathering.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 4: In-Person Meetup Protocol -->
+            <section id="safety-meetup-rules" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">04</div>
+                <h2 class="policy-section__title">Attendee Safety Protocols for In-Person Gatherings</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  When stepping out to meet new people and experience real-world loops, practice sensible situational awareness:
+                </p>
+                <ul class="policy-list">
+                  <li>
+                    <strong>Check the Venue & Reviews:</strong> Verify the host’s profile, read reviews from past attendees, and confirm that the venue is in an accessible public location.
+                  </li>
+                  <li>
+                    <strong>Share Your Plans:</strong> Let a trusted friend or family member know which Viblooop event you’re attending and share your expected return time.
+                  </li>
+                  <li>
+                    <strong>Arrive on Your Own Terms:</strong> Arrange your own transportation to and from the event so you have complete autonomy to leave at any moment.
+                  </li>
+                  <li>
+                    <strong>Protect Personal Items:</strong> Keep personal belongings, identification, and mobile devices secure. Never leave your drink unattended.
+                  </li>
+                  <li>
+                    <strong>Trust Your Gut:</strong> If at any point an atmosphere feels uncomfortable, unsafe, or contradictory to Viblooop standards, leave immediately and report the host.
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- Section 5: Verified Vibes Trust -->
+            <section id="safety-verified-vibes" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">05</div>
+                <h2 class="policy-section__title">Verified Vibes & Identity Trust Architecture</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  To eliminate anonymous bad actors, Viblooop operates a multi-layered verification system:
+                </p>
+                <div class="policy-grid-cards">
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-secondary" aria-hidden="true">verified</span>
+                    <h4 class="rule-card__title">Verified Host Badge</h4>
+                    <p class="rule-card__text">Hosts undergo government ID verification and phone validation before unlocking unlimited event creation.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-primary" aria-hidden="true">stars</span>
+                    <h4 class="rule-card__title">Post-Event Peer Reviews</h4>
+                    <p class="rule-card__text">Only attendees who scanned in via ticket QR code can rate and leave feedback on event safety and vibe authenticity.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-secondary" aria-hidden="true">security</span>
+                    <h4 class="rule-card__title">Vibes Score Metric</h4>
+                    <p class="rule-card__text">Accounts with repeated no-shows, cancellation spikes, or safety flags automatically drop below the discovery threshold.</p>
+                  </div>
+                  <div class="rule-card">
+                    <span class="material-symbols-outlined rule-card__icon text-primary" aria-hidden="true">lock</span>
+                    <h4 class="rule-card__title">Encrypted Messaging</h4>
+                    <p class="rule-card__text">Event chatrooms provide automated filtering for malicious links, financial spam, and aggressive content.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 6: Reporting Incidents -->
+            <section id="safety-reporting" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">06</div>
+                <h2 class="policy-section__title">24/7 Incident Escalation & Rapid Reporting</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  If you observe a violation of our safety policies, experience discomfort, or witness an unauthorized situation:
+                </p>
+                <div class="reporting-steps">
+                  <div class="step-card">
+                    <div class="step-num">1</div>
+                    <div class="step-content">
+                      <h4 class="step-title">In-App Immediate Report</h4>
+                      <p class="step-text">Click the triple-dot menu on any Event, Profile, or Chat message and select <em>"Report to Safety Team"</em>. Categorize the infraction with optional screenshot evidence.</p>
+                    </div>
+                  </div>
+                  <div class="step-card">
+                    <div class="step-num">2</div>
+                    <div class="step-content">
+                      <h4 class="step-title">Emergency Rapid Escalation</h4>
+                      <p class="step-text">For active, urgent in-person concerns during an ongoing gathering, email our priority triage channel at <strong>safety-urgent@viblooop.com</strong> with your event link.</p>
+                    </div>
+                  </div>
+                  <div class="step-card">
+                    <div class="step-num">3</div>
+                    <div class="step-content">
+                      <h4 class="step-title">Immediate Local Authorities</h4>
+                      <p class="step-text">If anyone is in immediate physical peril or medical distress, always dial local emergency services (e.g., 911 / 112) first before contacting platform staff.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Section 7: Penalties & Legal Action -->
+            <section id="safety-enforcement" class="policy-section">
+              <div class="policy-section__header">
+                <div class="policy-section__num">07</div>
+                <h2 class="policy-section__title">Enforcement Actions & Legal Accountability</h2>
+              </div>
+              <div class="policy-section__content">
+                <p>
+                  Viblooop does not negotiate on community safety. Verified infractions trigger decisive, non-reversible consequences:
+                </p>
+                <ul class="policy-list">
+                  <li><strong>Immediate Event Delisting:</strong> The event is instantaneously unlisted, ticket sales frozen, and registered attendees sent safety warnings.</li>
+                  <li><strong>Permanent Account Ban:</strong> The offender’s email, phone, and payment profiles are permanently blacklisted across our ecosystem.</li>
+                  <li><strong>Forfeiture of Payouts:</strong> Hosts who violate safety standards or permit illegal substances forfeit platform payouts to fund attendee refunds.</li>
+                  <li><strong>Law Enforcement Referral:</strong> In cases involving physical violence, narcotics distribution, sexual assault, or property destruction, Viblooop fully cooperates with judicial authorities and provides evidence as permitted by law.</li>
+                </ul>
+              </div>
+            </section>
+
+          </div>
+        }
+
+      </article>
+
+    </div>
+  </main>
+</div>

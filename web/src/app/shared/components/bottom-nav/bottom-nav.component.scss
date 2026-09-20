@@ -10,6 +10,10 @@
   @media (min-width: 768px) {
     display: none !important;
   }
+
+  @media print {
+    display: none !important;
+  }
 }
 
 /* ── Floating Dock Wrapper ── */
@@ -208,7 +212,7 @@
   height: 100%;
 }
 
-/* ── Vibrant Gradient Action Button (+) ── */
+/* ── Vibrant Theme Action Button (+) ── */
 .vl-dock-action-btn {
   display: flex;
   align-items: center;
@@ -218,16 +222,22 @@
   margin: 0;
   border: 0;
   border-radius: var(--radius-pill, 9999px);
-  background: linear-gradient(135deg, #F43F5E 0%, #DB2777 40%, #8B5CF6 100%);
+  background: linear-gradient(135deg, var(--color-primary, #7C3AED) 0%, #6D28D9 100%);
   color: #FFFFFF;
-  box-shadow: 0 3px 12px rgba(219, 39, 119, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+  box-shadow: 0 3px 14px rgba(124, 58, 237, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
   cursor: pointer;
   flex-shrink: 0;
   transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, filter 0.15s ease;
 
+  :host-context([data-theme='dark']) &,
+  [data-theme='dark'] & {
+    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+
   &:hover {
-    filter: brightness(1.06);
-    box-shadow: 0 5px 16px rgba(219, 39, 119, 0.55);
+    filter: brightness(1.08);
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.6);
     transform: scale(1.02);
   }
 

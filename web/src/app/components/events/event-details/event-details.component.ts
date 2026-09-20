@@ -787,6 +787,37 @@ export class EventDetailsComponent {
     if (this.platform.isBrowserPlatform()) window.history.back();
   }
 
+  async shareCurrentEvent(): Promise<void> {
+    const event = this.eventDetails();
+    const eventTitle = event?.title || 'Check out this event on Viblooop';
+    const eventDesc = event?.description ? event.description.substring(0, 120) + '...' : 'Discover and join events on Viblooop!';
+    const url = this.platform.isBrowserPlatform() ? window.location.href : '';
+
+    if (this.platform.isBrowserPlatform() && typeof navigator.share === 'function') {
+      try {
+        await navigator.share({
+          title: eventTitle,
+          text: `${eventTitle} — ${eventDesc}`,
+          url: url,
+        });
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') {
+          return;
+        }
+      }
+    }
+
+    if (this.platform.isBrowserPlatform() && navigator.clipboard) {
+      try {
+        await navigator.clipboard.writeText(url);
+        this.toastService.success('Event link copied to clipboard!', 'Link Copied');
+      } catch {
+        this.toastService.info(url, 'Event Link');
+      }
+    }
+  }
+
   openAttendeesDrawer(): void {
     this.activeDrawer.set('attendees');
   }

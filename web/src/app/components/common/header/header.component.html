@@ -51,7 +51,7 @@
       <span class="material-symbols-outlined" translate="no">favorite</span>
       @if (userDetails?.wishlist?.length > 0) {
       <span
-        class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white dark:border-surface-container">
+        class="vl-header-badge" aria-label="Wishlist item count">
         {{ userDetails.wishlist.length }}
       </span>
       }
@@ -59,11 +59,12 @@
 
     <div class="notification-anchor relative flex items-center">
       <button type="button" [matTooltip]="'Notifications'" (click)="$event.stopPropagation(); toggleNotification()"
-        class="vl-icon-button relative">
+        class="vl-icon-button relative"
+        aria-label="Notifications">
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
         <span
-          class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white dark:border-surface-container animate-pulse">
+          class="vl-header-badge animate-pulse" aria-label="Unread notifications count">
           {{ sharedService.notificationCount() }}
         </span>
         }
@@ -74,14 +75,15 @@
     </div>
 
     <button
-      class="vl-icon-button relative">
+      class="vl-icon-button relative"
+      aria-label="Chats">
       <a [matTooltip]="'Chats'" routerLink="/chats">
         <span class="material-symbols-outlined" translate="no">chat</span>
       </a>
       @if (socketService.unreadCount$ | async; as total) {
       @if (total > 0) {
       <span
-        class="absolute -top-1 -right-1 bg-error text-white text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white dark:border-surface-container">
+        class="vl-header-badge" aria-label="Unread chats count">
         {{ total > 99 ? '99+' : total }}
       </span>
       }
@@ -147,13 +149,20 @@
   </div>
 </nav>
 
-<!-- Mobile Top Header (Logo & Actions) -->
+<!-- Mobile Top Header (Logo on Left & Actions on Right) -->
 <header
   class="vl-app-header vl-app-header--mobile md:hidden fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4">
+  <!-- Left: Logo -->
+  <div class="flex items-center cursor-pointer" routerLink="/">
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
+  </div>
+
+  <!-- Right: Actions (Theme Toggle & Notifications) -->
   <div class="flex items-center gap-3">
     <button
       class="vl-icon-button w-9 min-w-9 h-9 active:scale-95"
-      (click)="toggleTheme()">
+      (click)="toggleTheme()"
+      [attr.aria-label]="isLightTheme() ? 'Switch to dark mode' : 'Switch to light mode'">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
 
@@ -165,18 +174,13 @@
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
         <span
-          class="absolute -top-1 -right-1 bg-error text-on-error text-[10px] font-bold rounded-full min-w-[18px] h-[18px] flex items-center justify-center border-2 border-white dark:border-surface-container">
+          class="vl-header-badge" aria-label="Unread notifications count">
           {{ sharedService.notificationCount() }}
         </span>
         }
       </button>
     </div>
-
     }
-  </div>
-
-  <div class="flex items-center cursor-pointer" routerLink="/">
-    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
   </div>
 </header>
 

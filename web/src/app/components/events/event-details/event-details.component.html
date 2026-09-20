@@ -45,6 +45,7 @@
           [eventPriceLabel]="eventPriceLabel()"
           [pendingJoinRequestCount]="pendingJoinRequestCount()"
           (goBack)="goBack()"
+          (shareEvent)="shareCurrentEvent()"
           (toggleMenu)="toggleEventMenu()"
           (editEvent)="openEditEvent()"
           (closeMenu)="closeEventMenu()"
@@ -181,38 +182,47 @@
           <span class="mobile-sticky-join-bar__spots">{{ remainingSpotsLabel() }}</span>
         </div>
 
-        @if (isEventCreator()) {
-          <button type="button" class="vl-button vl-button--secondary mobile-sticky-join-bar__btn"
-            (click)="openRequestsDrawer()">
-            <span class="material-symbols-outlined" translate="no">group</span>
-            <span>Requests {{ pendingJoinRequestCount() > 0 ? '(' + pendingJoinRequestCount() + ')' : '' }}</span>
+        <div class="mobile-sticky-join-bar__actions">
+          <button type="button" class="vl-icon-button mobile-sticky-join-bar__share-btn"
+            (click)="shareCurrentEvent()"
+            aria-label="Share Event"
+            matTooltip="Share Event">
+            <span class="material-symbols-outlined" translate="no">share</span>
           </button>
-        } @else if (isUserAttendee()) {
-          <button type="button" class="vl-button vl-button--secondary mobile-sticky-join-bar__btn mobile-sticky-join-bar__btn--leave"
-            (click)="openLeaveConfirmation()">
-            <span class="material-symbols-outlined" translate="no">logout</span>
-            <span>Leave Event</span>
-          </button>
-        } @else if (joinRequestStatus() === 'Requested') {
-          <button type="button" class="vl-button vl-button--danger-subtle mobile-sticky-join-bar__btn mobile-sticky-join-bar__btn--cancel"
-            (click)="openCancelRequestConfirmation()">
-            <span class="material-symbols-outlined" translate="no">undo</span>
-            <span>Cancel Request</span>
-          </button>
-        } @else {
-          <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
-            (click)="requestJoinEvent()"
-            [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
-            [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
-            matTooltipPosition="above">
-            @if (isJoinRequestPending()) {
-              <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
-            } @else {
-              <span class="material-symbols-outlined" translate="no">local_fire_department</span>
-              <span>{{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}</span>
-            }
-          </button>
-        }
+
+          @if (isEventCreator()) {
+            <button type="button" class="vl-button vl-button--secondary mobile-sticky-join-bar__btn"
+              (click)="openRequestsDrawer()">
+              <span class="material-symbols-outlined" translate="no">group</span>
+              <span>Requests {{ pendingJoinRequestCount() > 0 ? '(' + pendingJoinRequestCount() + ')' : '' }}</span>
+            </button>
+          } @else if (isUserAttendee()) {
+            <button type="button" class="vl-button vl-button--secondary mobile-sticky-join-bar__btn mobile-sticky-join-bar__btn--leave"
+              (click)="openLeaveConfirmation()">
+              <span class="material-symbols-outlined" translate="no">logout</span>
+              <span>Leave Event</span>
+            </button>
+          } @else if (joinRequestStatus() === 'Requested') {
+            <button type="button" class="vl-button vl-button--danger-subtle mobile-sticky-join-bar__btn mobile-sticky-join-bar__btn--cancel"
+              (click)="openCancelRequestConfirmation()">
+              <span class="material-symbols-outlined" translate="no">undo</span>
+              <span>Cancel Request</span>
+            </button>
+          } @else {
+            <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
+              (click)="requestJoinEvent()"
+              [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+              [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
+              matTooltipPosition="above">
+              @if (isJoinRequestPending()) {
+                <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+              } @else {
+                <span class="material-symbols-outlined" translate="no">local_fire_department</span>
+                <span>{{ joinRequestStatus() === 'Request Join' ? 'Join Event' : joinRequestStatus() }}</span>
+              }
+            </button>
+          }
+        </div>
       </div>
     }
   </div>

@@ -411,3 +411,39 @@ img[ngSrc].blur-up[data-loaded="true"] {
     opacity: 0.35 !important;
   }
 }
+
+/* ==========================================================================
+   GLOBAL PRINT STYLES
+   Ensures clean document print without leaking fixed headers, bottom navigation docks, or floating buttons
+   ========================================================================== */
+@media print {
+  vl-header,
+  .vl-app-header,
+  vl-bottom-nav,
+  .vl-bottom-dock-wrapper,
+  vl-scroll-to-top,
+  .vl-scroll-top,
+  vl-toast-container,
+  vl-global-loader,
+  .cdk-overlay-container {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+
+  body,
+  .vl-body-container {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  @page {
+    margin: 1.5cm 1.2cm 1.5cm 1.2cm;
+    size: auto;
+  }
+}
