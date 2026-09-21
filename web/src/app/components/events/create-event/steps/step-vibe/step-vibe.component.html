@@ -7,13 +7,18 @@
         (select)="select(categoryKey(cat))" />
     }
 
-    <!-- Custom placeholder -->
-    <button type="button" class="vibe-card vibe-card--custom">
+    <!-- Custom option (Disabled - not supported yet) -->
+    <button
+      type="button"
+      class="vibe-card vibe-card--custom vibe-card--disabled"
+      disabled
+      aria-disabled="true"
+      title="Custom vibe is currently not supported">
       <div class="vibe-custom-mark">
         <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
       </div>
       <span class="vibe-label">Custom</span>
-      <span class="vibe-tags">Create your own vibe</span>
+      <span class="vibe-tags">Coming Soon</span>
     </button>
   </div>
 </main>

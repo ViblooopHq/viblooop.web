@@ -43,6 +43,25 @@
     }
   }
 
+  &--disabled {
+    cursor: not-allowed !important;
+    opacity: 0.52;
+    border: 1.5px dashed var(--color-border) !important;
+    background-color: color-mix(in srgb, var(--color-surface-raised) 45%, transparent) !important;
+    pointer-events: none;
+
+    &:hover {
+      border-color: var(--color-border) !important;
+      background-color: color-mix(in srgb, var(--color-surface-raised) 45%, transparent) !important;
+      transform: none !important;
+    }
+
+    .vibe-custom-mark {
+      background-color: var(--color-text-tertiary);
+      opacity: 0.7;
+    }
+  }
+
   @media (min-width: 768px) {
     min-height: 198px;
   }

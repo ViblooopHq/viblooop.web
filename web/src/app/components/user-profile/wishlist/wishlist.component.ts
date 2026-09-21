@@ -63,7 +63,9 @@ export class WishlistComponent implements OnInit {
       this.isLoading = false;
       return;
     }
-    this.isLoading = true;
+    if (this.wishlistedEvents.length === 0) {
+      this.isLoading = true;
+    }
     this.authService.getWishlistedEvents().subscribe({
       next: (res: any) => {
         if (res?.success && Array.isArray(res.data)) {

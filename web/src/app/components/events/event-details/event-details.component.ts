@@ -382,13 +382,6 @@ export class EventDetailsComponent {
   });
 
   constructor() {
-    this.appDrawerService.drawer$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((drawerState) => {
-        if (!drawerState && this.eventId()) {
-          this.fetchEventDetails(this.eventId(), false);
-        }
-      });
 
     effect(() => {
       const eventId = this.eventId();
