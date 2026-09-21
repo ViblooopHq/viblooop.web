@@ -7,32 +7,10 @@
 
     <div class="explore-hero-carousel-wrap">
       <div class="explore-hero-carousel">
-        <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="fullPageDummyItems">
+        <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="marketingSlides">
           <ng-template let-item>
-            <div class="full-page-slide" [style.background-image]="'url(' + item.image + ')'">
-              <div class="slide-overlay"></div>
-              <div class="slide-content">
-                @if (item.trending) {
-                <div class="trending-badge">
-                  <span class="fire-icon">🔥</span> Now Trending
-                </div>
-                }
-
-                <div class="tags-row">
-                  @for (tag of item.tags; track tag) {
-                  <span class="tag-pill">{{tag}}</span>
-                  }
-                </div>
-
-                <h1 class="slide-title">{{item.title}}</h1>
-                <p class="slide-description">{{item.description}}</p>
-
-                <div class="slide-actions">
-                  <button class="btn-play" [class.disabled]="true">
-                    <i class="fa-solid fa-play"></i> View Event
-                  </button>
-                </div>
-              </div>
+            <div class="full-page-slide">
+              <img class="slide-image" [src]="item.image" [alt]="item.alt">
             </div>
           </ng-template>
         </vl-full-page-carousel>

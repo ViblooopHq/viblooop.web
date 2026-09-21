@@ -29,13 +29,14 @@
 
 .explore-hero-carousel {
   position: relative;
-  height: 55dvh;
+  aspect-ratio: 16 / 9;
+  height: auto;
   overflow: hidden;
   border-radius: var(--radius-xl);
+  background: var(--color-surface);
   box-shadow: var(--shadow-sm);
 
   @media (max-width: 768px) {
-    height: 360px;
     border-radius: var(--radius-lg);
   }
 }
@@ -44,126 +45,14 @@
   position: relative;
   width: 100%;
   height: 100%;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: flex-end;
-  padding: var(--space-8);
+}
 
-  @media (max-width: 640px) {
-    padding: var(--space-4);
-  }
-
-  .slide-overlay {
-    position: absolute;
-    inset: 0;
-    background-color: rgba(10, 13, 24, 0.65);
-    z-index: 1;
-  }
-
-  .slide-content {
-    position: relative;
-    z-index: 2;
-    max-width: 650px;
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-  }
-
-  .trending-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
-    padding: 4px 12px;
-    background-color: var(--color-primary);
-    border-radius: var(--radius-pill);
-    color: #ffffff;
-    font-size: var(--text-caption);
-    font-weight: 700;
-    width: fit-content;
-  }
-
-  .tags-row {
-    display: flex;
-    gap: var(--space-2);
-    flex-wrap: wrap;
-
-    .tag-pill {
-      padding: 4px 12px;
-      border-radius: var(--radius-pill);
-      background-color: rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      color: #ffffff;
-      font-size: var(--text-caption);
-      font-weight: 600;
-    }
-  }
-
-  .slide-title {
-    font-size: var(--text-h1);
-    font-weight: 800;
-    color: #ffffff;
-    margin: 0;
-    line-height: var(--text-h1-line);
-  }
-
-  .slide-description {
-    font-size: var(--text-body);
-    color: #E2E8F0;
-    margin: 0;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    overflow: hidden;
-    line-height: var(--line-height-normal);
-  }
-
-  .slide-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--space-3);
-    margin-top: var(--space-2);
-
-    .btn-play {
-      display: inline-flex;
-      align-items: center;
-      gap: var(--space-2);
-      padding: 0 var(--space-6);
-      height: 2.75rem;
-      border-radius: var(--radius-md);
-      background-color: var(--color-primary);
-      color: #ffffff;
-      font-weight: 700;
-      font-size: var(--text-body);
-      border: none;
-      cursor: pointer;
-      box-shadow: var(--shadow-sm);
-      transition: background-color var(--transition-base), transform var(--transition-fast);
-
-      &:hover {
-        background-color: var(--color-primary-hover);
-        transform: translateY(-1px);
-      }
-    }
-
-    .btn-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.75rem;
-      height: 2.75rem;
-      border-radius: var(--radius-full);
-      background-color: rgba(0, 0, 0, 0.4);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      cursor: pointer;
-      transition: background-color var(--transition-base);
-
-      &:hover {
-        background-color: rgba(0, 0, 0, 0.6);
-      }
-    }
-  }
+.slide-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 /* Category Vibes Horizontal Scroll */

@@ -1,61 +1,51 @@
 <footer class="vl-footer">
   <div class="vl-footer__container">
-    <div class="vl-footer__main">
-      
-      <!-- Brand & Info Section (Left) -->
-      <div class="vl-footer__brand">
+    <div class="vl-footer__top">
+      <div class="vl-footer__identity">
         <a routerLink="/" class="vl-footer__logo-wrap" aria-label="Viblooop Home">
           <img [src]="themeService.logoSrc()" alt="Viblooop" class="vl-footer__logo-img">
         </a>
-        <p class="vl-footer__tagline" i18n>
-          Find your vibe, create your loop. Discover curated events, host unforgettable experiences, and connect with people who share your passion.
-        </p>
 
-        <div class="vl-footer__trust-pill">
-          <span class="material-symbols-outlined trust-icon" aria-hidden="true">verified_user</span>
-          <span>Verified Vibes & Safe Real-World Meetups</span>
-        </div>
+        <span class="vl-footer__divider" aria-hidden="true"></span>
 
-        <div class="vl-footer__social" aria-label="Social media channels">
-          @for (social of socialLinks; track social.name) {
-            <a [href]="social.url" target="_blank" rel="noopener noreferrer" class="vl-footer__social-link" [attr.aria-label]="social.name" [title]="social.name">
-              <i class="fab" [ngClass]="social.icon"></i>
-            </a>
-          }
+        <div class="vl-footer__trust">
+          <span class="material-symbols-outlined vl-footer__trust-icon" aria-hidden="true">verified_user</span>
+          <span i18n>Verified vibes <span aria-hidden="true">•</span> Safe meetups</span>
         </div>
       </div>
 
-      <!-- Useful Links Section (Right) -->
-      <div class="vl-footer__links-section">
-        <div class="vl-footer__links-card">
-          <h4 class="vl-footer__links-title">
-            <span class="title-accent"></span>
-            <span i18n>Useful Links</span>
-          </h4>
-          <ul class="vl-footer__links-list">
-            @for (link of usefulLinks; track link.path) {
-              <li>
-                <a [routerLink]="link.path" routerLinkActive="vl-footer__link--active" class="vl-footer__link">
-                  <span class="material-symbols-outlined link-icon" aria-hidden="true">{{ link.icon }}</span>
-                  <span class="link-label" i18n>{{ link.label }}</span>
-                  <span class="material-symbols-outlined link-arrow" aria-hidden="true">arrow_forward</span>
-                </a>
-              </li>
-            }
-          </ul>
-        </div>
+      <div class="vl-footer__social" aria-label="Social media channels">
+        @for (social of socialLinks; track social.name) {
+          <a
+            [href]="social.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="vl-footer__social-link"
+            [attr.aria-label]="social.name"
+            [title]="social.name">
+            <i class="fab" [ngClass]="social.icon" aria-hidden="true"></i>
+          </a>
+        }
       </div>
-
     </div>
 
-    <!-- Bottom Bar -->
     <div class="vl-footer__bottom">
-      <div class="vl-footer__copyright">
-        <span class="material-symbols-outlined vl-footer__copyright-icon" translate="no">copyright</span>
-        <span>{{copyRightInfo}}</span>
+      <div class="vl-footer__legal">
+        <span class="vl-footer__copyright">
+          <span class="material-symbols-outlined vl-footer__copyright-icon" aria-hidden="true">copyright</span>
+          <span>{{ copyRightInfo }}</span>
+        </span>
+
+        @for (link of usefulLinks; track link.path) {
+          <span class="vl-footer__legal-divider" aria-hidden="true"></span>
+          <a [routerLink]="link.path" class="vl-footer__legal-link" i18n>{{ link.label }}</a>
+        }
       </div>
-      <div class="vl-footer__meta">
-        <span i18n>Built with 💖 for Vibloopers</span>
+
+      <span class="vl-footer__bottom-divider" aria-hidden="true"></span>
+
+      <div class="vl-footer__meta" i18n>
+        Built with <span class="vl-footer__heart" aria-hidden="true">♥</span> for Vibloopers
       </div>
     </div>
   </div>

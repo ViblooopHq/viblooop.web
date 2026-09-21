@@ -54,27 +54,18 @@ export class ExploreEventsComponent implements OnInit {
     { id: 'nearby', label: 'Nearby', icon: 'location_on' }
   ];
 
-  fullPageDummyItems = [
+  marketingSlides = [
     {
       image: 'assets/images/explore-hero/image-3.webp',
-      trending: true,
-      tags: ['Party', 'Nightlife'],
-      title: 'Midnight Madness',
-      description: 'The ultimate underground party experience. Secret location, exclusive DJ sets, and a night you won\'t forget.',
+      alt: 'Friends making plans together on a rooftop at sunset'
     },
     {
-      image: 'assets/images/explore-hero/image-1.webp',
-      trending: true,
-      tags: ['Music', 'Festival'],
-      title: 'Neon Nights Festival',
-      description: 'Get ready for the biggest EDM festival of the year. Join thousands of music lovers for a night of unforgettable beats and lights.',
+      image: 'assets/images/explore-hero/escape-together.jpg',
+      alt: 'Friends taking a mountain adventure selfie together'
     },
     {
       image: 'assets/images/explore-hero/image-2.webp',
-      trending: false,
-      tags: ['Chill', 'Acoustic'],
-      title: 'Acoustic Sunset',
-      description: 'Relaxing vibes by the beach with top indie artists playing stripped-down acoustic versions of their hits.',
+      alt: 'Friends working together from a mountain café'
     }
   ];
 

@@ -57,90 +57,15 @@
 .explore-skeleton__hero {
   position: relative;
   width: 100%;
-  height: 440px;
+  aspect-ratio: 16 / 9;
+  height: auto;
   overflow: hidden;
   border-radius: var(--radius-xl, 20px);
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: flex-end;
-  padding: var(--space-8, 2rem);
 
   @media (max-width: 768px) {
-    height: 360px;
     border-radius: var(--radius-lg, 16px);
-    padding: var(--space-4, 1rem);
-  }
-}
-
-.explore-skeleton__hero-overlay {
-  position: absolute;
-  inset: 0;
-  background-color: rgba(10, 13, 24, 0.45);
-  z-index: 1;
-}
-
-.explore-skeleton__hero-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3, 0.75rem);
-  max-width: 650px;
-  width: 100%;
-}
-
-.explore-skeleton__badge {
-  width: 130px;
-  height: 24px;
-  border-radius: var(--radius-pill, 9999px);
-}
-
-.explore-skeleton__tags {
-  display: flex;
-  gap: var(--space-2, 0.5rem);
-}
-
-.explore-skeleton__tag {
-  width: 75px;
-  height: 22px;
-  border-radius: var(--radius-pill, 9999px);
-}
-
-.explore-skeleton__hero-title {
-  width: min(85%, 440px);
-  height: 38px;
-  border-radius: var(--radius-sm, 8px);
-}
-
-.explore-skeleton__hero-desc {
-  width: min(95%, 520px);
-  height: 16px;
-  border-radius: var(--radius-sm, 6px);
-
-  &--short {
-    width: min(75%, 380px);
-  }
-}
-
-.explore-skeleton__hero-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3, 0.75rem);
-  margin-top: var(--space-2, 0.5rem);
-}
-
-.explore-skeleton__btn {
-  &--primary {
-    width: 120px;
-    height: 42px;
-    border-radius: var(--radius-pill, 9999px);
-  }
-
-  &--circle {
-    width: 42px;
-    height: 42px;
-    border-radius: var(--radius-full, 9999px);
   }
 }
 
