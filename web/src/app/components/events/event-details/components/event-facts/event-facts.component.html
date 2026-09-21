@@ -18,12 +18,14 @@
       <span>{{ eventTime() | time }}{{ endTime() ? ' – ' : ' onwards' }}{{ endTime() | time }}</span>
     </div>
     }
-    <div class="info-row">
-      <span class="info-row__icon">
-        <span class="material-symbols-outlined" translate="no">confirmation_number</span>
-      </span>
-      <span><strong>{{ eventPriceLabel() }}</strong> per person</span>
-    </div>
+    @if (eventPriceLabel()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">confirmation_number</span>
+        </span>
+        <span><strong>{{ eventPriceLabel() }}</strong> per person</span>
+      </div>
+    }
     <div class="info-row">
       <span class="info-row__icon">
         <span class="material-symbols-outlined" translate="no">{{ audiencePreferenceIcon() }}</span>
@@ -34,7 +36,11 @@
       <span class="info-row__icon">
         <span class="material-symbols-outlined" translate="no">group</span>
       </span>
-      <span>{{ totalAttendeesCount() }} spots booked <span class="dot" aria-hidden="true">•</span> {{ remainingSpotsLabel() }}</span>
+      @if (isEventEnded()) {
+        <span>{{ totalAttendeesCount() }} {{ totalAttendeesCount() === 1 ? 'person attended' : 'people attended' }}</span>
+      } @else {
+        <span>{{ totalAttendeesCount() }} spots booked <span class="dot" aria-hidden="true">•</span> {{ remainingSpotsLabel() }}</span>
+      }
     </div>
   </div>
 </section>

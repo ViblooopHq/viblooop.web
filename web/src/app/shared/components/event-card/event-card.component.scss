@@ -124,13 +124,47 @@
   }
 
   &--ended {
-    background-color: var(--color-error-soft);
-    border-color: transparent;
-    color: var(--color-error);
+    background: var(--color-overlay-scrim);
+    border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+    color: var(--color-on-primary);
+    box-shadow: var(--shadow-sm);
 
     .event-status-pill__icon {
-      color: var(--color-error);
+      color: var(--color-primary);
     }
+  }
+}
+
+.vl-event-card__attendance-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+
+  > .material-symbols-outlined {
+    font-size: 1rem;
+    color: var(--color-text-tertiary);
+  }
+}
+
+.vl-event-card__attendee-avatars {
+  display: flex;
+  align-items: center;
+  padding-left: 0.25rem;
+
+  img {
+    position: relative;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-left: -0.3rem;
+    border: 1px solid var(--color-surface);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-raised);
+    object-fit: cover;
   }
 }
 
@@ -189,4 +223,3 @@
     object-fit: cover;
   }
 }
-

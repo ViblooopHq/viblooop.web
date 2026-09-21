@@ -105,7 +105,7 @@ export class EventCardComponent {
     const eventDate = new Date(config.eventDate);
 
     if (this.isEventEnded) {
-      return { text: 'Event Over', icon: 'event_busy' };
+      return { text: 'Ended', icon: 'history' };
     }
 
     // Setup for day checks

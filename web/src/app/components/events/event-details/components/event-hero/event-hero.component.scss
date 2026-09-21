@@ -298,12 +298,23 @@
     }
 
     &--ended {
-      background-color: var(--color-error-soft);
-      color: var(--color-error);
-      border-color: var(--color-error-soft);
+      gap: 0.45rem;
+      min-height: 2.25rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--color-overlay-scrim);
+      color: var(--color-on-primary);
+      border-color: color-mix(in srgb, var(--color-on-primary) 20%, transparent);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
 
-      .event-status-pill__icon {
-        color: var(--color-error);
+      .event-status-pill__dot {
+        display: block;
+        flex: 0 0 auto;
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: var(--radius-full);
+        background-color: var(--color-primary);
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
       }
     }
 
@@ -382,26 +393,46 @@
     align-items: center;
     gap: var(--space-2);
     min-width: 0;
-    border: 0;
-    background: transparent;
+    padding: 0.3rem 0.6rem 0.3rem 0.3rem;
+    border: 1px solid color-mix(in srgb, var(--color-on-primary) 18%, transparent);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--color-overlay-scrim) 72%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: inherit;
     cursor: pointer;
-    padding: 0;
     text-align: left;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      background: var(--color-overlay-scrim);
+      border-color: color-mix(in srgb, var(--color-on-primary) 30%, transparent);
+      transform: translateY(-1px);
+    }
+
+    &--past {
+      background: color-mix(in srgb, var(--color-overlay-scrim) 84%, transparent);
+    }
   }
 
   .hero-attendance-label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    color: rgba(255, 255, 255, 0.9);
+    color: var(--color-on-primary);
     font-size: var(--text-body-sm);
     font-weight: 600;
+    line-height: 1.25;
 
     .material-symbols-outlined,
     i {
-      color: rgba(255, 255, 255, 0.78);
+      color: color-mix(in srgb, var(--color-on-primary) 78%, transparent);
       font-size: 1.125rem;
+    }
+
+    .hero-attendance__arrow {
+      flex-shrink: 0;
+      font-size: 1rem;
     }
   }
 
@@ -528,6 +559,41 @@
 
     .hero-title {
       font-size: var(--text-h2);
+    }
+
+    .hero-action-row {
+      gap: var(--space-2);
+    }
+
+    .hero-attendance-group {
+      width: 100%;
+      justify-content: space-between;
+      gap: var(--space-2);
+    }
+
+    .hero-attendance {
+      max-width: calc(100% - 5.5rem);
+    }
+
+    .avatar-stack {
+      flex-shrink: 0;
+
+      img,
+      .more-count {
+        width: 2.15rem;
+        height: 2.15rem;
+      }
+    }
+
+    .hero-attendance-label {
+      min-width: 0;
+
+      > span:first-child {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+      }
     }
   }
 }

@@ -96,48 +96,64 @@
 
     <!-- Separator & Footer Row -->
     <div class="pt-3 mt-3 border-t border-border flex items-center justify-between">
-      <!-- Attendees (Left) -->
-      @if ((attendees?.length || 0) > 0) {
-      <div class="flex items-center gap-1.5">
-        <div class="flex -space-x-1.5">
-          @for (attendee of (attendees | slice:0:3); track $index) {
-          <div
-            class="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex-shrink-0 overflow-hidden border border-surface relative"
-            [style.z-index]="3 - $index">
-            <img class="w-full h-full object-cover"
-              [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="" />
-          </div>
+      @if (isEventEnded) {
+        <div class="vl-event-card__attendance-summary">
+          @if ((attendees?.length || 0) > 0) {
+            <div class="vl-event-card__attendee-avatars" aria-hidden="true">
+              @for (attendee of (attendees | slice:0:3); track $index) {
+                <img
+                  [style.z-index]="3 - $index"
+                  [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'"
+                  alt="" />
+              }
+            </div>
+          } @else {
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
           }
+          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'No attendees' }}</span>
         </div>
-        <span class="text-on-surface-variant text-[11px] sm:text-[12px] font-medium whitespace-nowrap">{{
-          attendees.length }} {{ isEventEnded ? 'joined' : 'going' }}</span>
-      </div>
-      }
-
-      <!-- Footer Right Section (Spots & Price) -->
-      <div class="flex items-center ml-auto" [ngClass]="{'w-full justify-between': (attendees?.length || 0) === 0 && !isEventEnded && getRemainingSpots() > 0}">
-        <!-- Spots Left -->
-        @if (!isEventEnded && getRemainingSpots() > 0) {
-        <div class="flex items-center gap-1 pl-2 sm:pl-3">
-          <span class="material-symbols-outlined text-amber-500 !text-[15px]" aria-hidden="true"
-            style="font-variation-settings: 'FILL' 1;">bolt</span>
-          <span class="text-amber-600 dark:text-amber-400 font-semibold text-[11px] sm:text-[12px] whitespace-nowrap">{{
-            getRemainingSpots() }} spots</span>
+      } @else {
+        <!-- Attendees (Left) -->
+        @if ((attendees?.length || 0) > 0) {
+        <div class="flex items-center gap-1.5">
+          <div class="flex -space-x-1.5">
+            @for (attendee of (attendees | slice:0:3); track $index) {
+            <div
+              class="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex-shrink-0 overflow-hidden border border-surface relative"
+              [style.z-index]="3 - $index">
+              <img class="w-full h-full object-cover"
+                [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="" />
+            </div>
+            }
+          </div>
+          <span class="text-on-surface-variant text-[11px] sm:text-[12px] font-medium whitespace-nowrap">{{
+            attendees.length }} going</span>
         </div>
         }
 
-        <!-- Price -->
-        <div class="flex items-center gap-1"
-          [ngClass]="{
-            'border-l border-border pl-2 sm:pl-3 ml-2 sm:ml-3': !isEventEnded && getRemainingSpots() > 0,
-            'ml-auto': (attendees?.length || 0) > 0 || isEventEnded || getRemainingSpots() <= 0
-          }">
-          <span class="text-on-surface font-extrabold text-[13px] sm:text-[15px] whitespace-nowrap"
-            [class.text-emerald-500]="isFree">
-            {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
-          </span>
+        <!-- Footer Right Section (Spots & Price) -->
+        <div class="flex items-center ml-auto" [ngClass]="{'w-full justify-between': (attendees?.length || 0) === 0 && getRemainingSpots() > 0}">
+          @if (getRemainingSpots() > 0) {
+          <div class="flex items-center gap-1 pl-2 sm:pl-3">
+            <span class="material-symbols-outlined text-amber-500 !text-[15px]" aria-hidden="true"
+              style="font-variation-settings: 'FILL' 1;">bolt</span>
+            <span class="text-amber-600 dark:text-amber-400 font-semibold text-[11px] sm:text-[12px] whitespace-nowrap">{{
+              getRemainingSpots() }} spots</span>
+          </div>
+          }
+
+          <div class="flex items-center gap-1"
+            [ngClass]="{
+              'border-l border-border pl-2 sm:pl-3 ml-2 sm:ml-3': getRemainingSpots() > 0,
+              'ml-auto': (attendees?.length || 0) > 0 || getRemainingSpots() <= 0
+            }">
+            <span class="text-on-surface font-extrabold text-[13px] sm:text-[15px] whitespace-nowrap"
+              [class.text-emerald-500]="isFree">
+              {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+            </span>
+          </div>
         </div>
-      </div>
+      }
     </div>
   </div>
 </article>

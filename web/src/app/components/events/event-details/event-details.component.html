@@ -68,6 +68,7 @@
 
           <vl-event-facts class="event-facts--mobile"
             [isEscapeEvent]="isEscapeEvent()"
+            [isEventEnded]="isEventEnded()"
             [tripDateRangeLabel]="tripDateRangeLabel()"
             [eventDate]="eventDetails()?.eventDate"
             [endDate]="eventDetails()?.endDate"
@@ -150,6 +151,7 @@
 
         <vl-event-facts class="event-facts--desktop"
           [isEscapeEvent]="isEscapeEvent()"
+          [isEventEnded]="isEventEnded()"
           [tripDateRangeLabel]="tripDateRangeLabel()"
           [eventDate]="eventDetails()?.eventDate"
           [endDate]="eventDetails()?.endDate"

@@ -12,7 +12,7 @@
       <span class="material-symbols-outlined" translate="no">share</span>
     </button>
 
-    @if (isEventCreator()) {
+    @if (isEventCreator() && !isEventEnded()) {
     <div class="hero-owner-menu" vibOutsideClick (onOutsideClick)="isEventMenuOpen() ? closeMenu.emit() : null">
       <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="menu" [attr.aria-expanded]="isEventMenuOpen()"
         aria-label="Event options" (click)="toggleMenu.emit()">
@@ -57,7 +57,8 @@
 
     <div class="hero-action-row">
       <div class="hero-attendance-group">
-        <button type="button" class="hero-attendance" (click)="openAttendees.emit()"
+        <button type="button" class="hero-attendance" [class.hero-attendance--past]="isEventEnded()"
+          (click)="openAttendees.emit()"
           [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
           <div class="avatar-stack">
             <img
@@ -74,8 +75,8 @@
             }
           </div>
           <span class="hero-attendance-label">
-            <span class="material-symbols-outlined" translate="no">group</span>
             <span>{{ attendanceSummaryLabel() }}</span>
+            <span class="material-symbols-outlined hero-attendance__arrow" translate="no" aria-hidden="true">chevron_right</span>
           </span>
         </button>
 
@@ -86,8 +87,8 @@
         </span>
         } @else if (isEventEnded()) {
         <span class="event-status-pill event-status-pill--ended">
-          <span class="material-symbols-outlined event-status-pill__icon" translate="no">check_circle</span>
-          <span>Event ended</span>
+          <span class="event-status-pill__dot" aria-hidden="true"></span>
+          <span>Ended</span>
         </span>
         }
       </div>

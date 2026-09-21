@@ -25,6 +25,11 @@
 
 .explore-hero-carousel-wrap {
   width: 100%;
+
+  @media (min-width: 1024px) {
+    width: min(100%, 60rem);
+    margin-inline: auto;
+  }
 }
 
 .explore-hero-carousel {

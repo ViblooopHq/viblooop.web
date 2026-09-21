@@ -1,4 +1,4 @@
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, SlicePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouteService } from '../../services/route/route.service';
@@ -11,7 +11,7 @@ import { isThisCalendarWeekend } from '../../utils/date-badge.util';
 @Component({
   selector: 'vl-compact-event-card',
   standalone: true,
-  imports: [ImageUrlPipe, CurrencyPipe, TruncatePipe],
+  imports: [ImageUrlPipe, CurrencyPipe, SlicePipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compact-event-card.component.html',
   styleUrl: './compact-event-card.component.scss'
@@ -86,7 +86,7 @@ export class CompactEventCardComponent {
     if (!eventDateTime) return null;
 
     if (this.isEventEnded) {
-      return { text: 'Ended', icon: 'event_busy' };
+      return { text: 'Ended', icon: 'history' };
     }
 
     const today = new Date();

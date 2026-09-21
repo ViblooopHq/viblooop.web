@@ -128,12 +128,13 @@
     }
 
     &--ended {
-      background: rgba(239, 68, 68, 0.9);
-      border-color: rgba(254, 202, 202, 0.4);
-      color: #ffffff;
+      background: var(--color-overlay-scrim);
+      border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+      color: var(--color-on-primary);
+      box-shadow: var(--shadow-sm);
 
       .material-symbols-outlined {
-        color: #ffffff;
+        color: var(--color-primary);
       }
     }
   }
@@ -324,6 +325,42 @@
     border-top: 1px solid var(--color-border);
     gap: 0.25rem;
     min-width: 0;
+
+    &--ended {
+      justify-content: flex-start;
+    }
+  }
+
+  &__attendance-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.67rem;
+    font-weight: 700;
+    white-space: nowrap;
+
+    > .material-symbols-outlined {
+      font-size: 0.9rem;
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  &__attendee-avatars {
+    display: flex;
+    align-items: center;
+    padding-left: 0.15rem;
+
+    img {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-left: -0.22rem;
+      border: 1px solid var(--color-surface);
+      border-radius: var(--radius-full);
+      background-color: var(--color-surface-raised);
+      object-fit: cover;
+    }
   }
 
   &__price {

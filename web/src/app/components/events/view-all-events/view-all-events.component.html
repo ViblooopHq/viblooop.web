@@ -37,7 +37,7 @@
     </header>
 
     <div class="events-main">
-      <div class="events-grid">
+      <div class="events-grid" [class.events-grid--past]="isPastCollection()">
         @if (isLoading() && isInitialLoad()) {
           <vl-event-card-skeleton [count]="8"></vl-event-card-skeleton>
         } @else if (events().length === 0) {

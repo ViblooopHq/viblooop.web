@@ -1,10 +1,11 @@
-import { DecimalPipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
-import { TruncatePipe } from '../../pipes/truncate.pipe';
+import { EventCategoryPresentationService } from '../../services/events/event-category-presentation.service';
 
 export interface PastEventCardConfig {
   title?: string;
+  category?: { title?: string; name?: string } | string;
+  attendeeImages?: string[];
   location?: string;
   city?: string;
   state?: string;
@@ -23,14 +24,31 @@ export interface PastEventCardConfig {
 @Component({
   selector: 'vl-past-event-card',
   standalone: true,
-  imports: [DecimalPipe, ImageUrlPipe, TruncatePipe],
+  imports: [ImageUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './past-event-card.component.html',
   styleUrl: './past-event-card.component.scss',
 })
 export class PastEventCardComponent {
+  private categoryPresentation = inject(EventCategoryPresentationService);
   @Input() config: PastEventCardConfig = {};
   @Output() viewMemories = new EventEmitter<PastEventCardConfig>();
+
+  get categoryLabel(): string {
+    const category = this.config.category;
+    const title = typeof category === 'string' ? category : category?.title || category?.name;
+    if (!title || /^[a-f\d]{24}$/i.test(title)) return 'Vibe';
+    return this.categoryPresentation.getDisplayTitle({ title });
+  }
+
+  get attendeeImages(): string[] {
+    return (this.config.attendeeImages || []).filter(Boolean).slice(0, 3);
+  }
+
+  onImageError(event: Event, fallback: string): void {
+    const image = event.target as HTMLImageElement;
+    if (image.getAttribute('src') !== fallback) image.src = fallback;
+  }
 
   get locationLabel(): string {
     const loc = this.config.location;

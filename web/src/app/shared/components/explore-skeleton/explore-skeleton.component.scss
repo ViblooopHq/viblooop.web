@@ -64,6 +64,11 @@
   border: 1px solid var(--color-border);
   box-shadow: var(--shadow-sm);
 
+  @media (min-width: 1024px) {
+    width: min(100%, 60rem);
+    margin-inline: auto;
+  }
+
   @media (max-width: 768px) {
     border-radius: var(--radius-lg, 16px);
   }

@@ -9,6 +9,12 @@
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
 
+// Photo overlays retain the same contrast in either theme.
+:root {
+  --color-media-background: #080809;
+  --color-media-foreground: #ffffff;
+}
+
 @theme {
   /* Tailwind consumes canonical semantic design tokens */
   --color-primary: var(--color-primary);

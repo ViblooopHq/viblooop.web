@@ -269,6 +269,8 @@ export class EventDetailsComponent {
   });
 
   eventPriceLabel = computed(() => {
+    if (this.isEventEnded()) return '';
+
     const details = this.eventDetails();
     if (details?.cost === 'Free') return 'Free';
     return details?.price ? '₹' + details.price : 'Free';

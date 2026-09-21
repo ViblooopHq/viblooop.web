@@ -12,17 +12,17 @@ import { ThemeService } from '../../../shared/services/theme/theme.service';
 export class FooterComponent {
   public themeService = inject(ThemeService);
   currentYear = new Date().getFullYear();
-  copyRightInfo = `${this.currentYear} Viblooop`;
+  copyRightInfo = `${this.currentYear} Viblooop. All rights reserved.`;
 
   usefulLinks = [
-    { label: 'Terms', path: '/terms' },
-    { label: 'Privacy', path: '/privacy' },
+    { label: 'Terms of Service', path: '/terms' },
+    { label: 'Privacy Policy', path: '/privacy' },
     { label: 'Safety', path: '/safety-guidelines' }
   ];
 
   socialLinks = [
-    { name: 'Facebook', icon: 'fa-facebook-f', url: 'https://facebook.com' },
-    { name: 'Twitter', icon: 'fa-x-twitter', url: 'https://x.com' },
-    { name: 'Instagram', icon: 'fa-instagram', url: 'https://instagram.com' }
+    { name: 'Instagram', icon: 'fa-instagram', url: 'https://instagram.com' },
+    { name: 'LinkedIn', icon: 'fa-linkedin-in', url: 'https://linkedin.com' },
+    { name: 'Facebook', icon: 'fa-facebook-f', url: 'https://facebook.com' }
   ];
 }

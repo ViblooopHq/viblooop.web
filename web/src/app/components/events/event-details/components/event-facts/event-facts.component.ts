@@ -11,6 +11,7 @@ import { TimePipe } from '../../../../../shared/pipes/time.pipe';
 })
 export class EventFactsComponent {
   isEscapeEvent = input(false);
+  isEventEnded = input(false);
   tripDateRangeLabel = input('');
   eventDate = input<string | undefined>(undefined);
   endDate = input<string | undefined>(undefined);

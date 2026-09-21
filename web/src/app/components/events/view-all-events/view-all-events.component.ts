@@ -131,6 +131,10 @@ export class ViewAllEventsComponent implements OnInit {
 
     return {
       title: event?.title,
+      category: event?.category,
+      attendeeImages: Array.isArray(event?.attendees)
+        ? event.attendees.map((attendee: any) => attendee?.profileImage).filter(Boolean)
+        : [],
       image: event?.image,
       eventDate: event?.eventDate,
       city: area || city,

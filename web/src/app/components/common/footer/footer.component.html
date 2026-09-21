@@ -1,49 +1,56 @@
 <footer class="vl-footer">
   <div class="vl-footer__container">
     <div class="vl-footer__top">
-      <div class="vl-footer__identity">
+      <div class="vl-footer__brand">
         <a routerLink="/" class="vl-footer__logo-wrap" aria-label="Viblooop Home">
           <img [src]="themeService.logoSrc()" alt="Viblooop" class="vl-footer__logo-img">
         </a>
 
-        <span class="vl-footer__divider" aria-hidden="true"></span>
-
-        <div class="vl-footer__trust">
-          <span class="material-symbols-outlined vl-footer__trust-icon" aria-hidden="true">verified_user</span>
-          <span i18n>Verified vibes <span aria-hidden="true">•</span> Safe meetups</span>
-        </div>
+        <p class="vl-footer__tagline" aria-label="Discover, plan, vibe, repeat">
+          <span>Discover</span><span aria-hidden="true">•</span>
+          <span>Plan</span><span aria-hidden="true">•</span>
+          <span>Vibe</span><span aria-hidden="true">•</span>
+          <span>Repeat</span>
+        </p>
       </div>
 
-      <div class="vl-footer__social" aria-label="Social media channels">
-        @for (social of socialLinks; track social.name) {
-          <a
-            [href]="social.url"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="vl-footer__social-link"
-            [attr.aria-label]="social.name"
-            [title]="social.name">
-            <i class="fab" [ngClass]="social.icon" aria-hidden="true"></i>
-          </a>
-        }
+      <div class="vl-footer__community">
+        <div class="vl-footer__social" aria-label="Social media channels">
+          @for (social of socialLinks; track social.name) {
+            <a
+              [href]="social.url"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="vl-footer__social-link"
+              [attr.aria-label]="social.name"
+              [title]="social.name">
+              <i class="fab" [ngClass]="social.icon" aria-hidden="true"></i>
+            </a>
+          }
+        </div>
+
+        <p class="vl-footer__community-note">
+          Same people. New stories. <span aria-hidden="true">♡</span>
+        </p>
       </div>
     </div>
 
-    <div class="vl-footer__bottom">
-      <div class="vl-footer__legal">
-        <span class="vl-footer__copyright">
-          <span class="material-symbols-outlined vl-footer__copyright-icon" aria-hidden="true">copyright</span>
-          <span>{{ copyRightInfo }}</span>
-        </span>
+    <span class="vl-footer__section-divider" aria-hidden="true"></span>
 
-        @for (link of usefulLinks; track link.path) {
+    <nav class="vl-footer__legal" aria-label="Legal links">
+      @for (link of usefulLinks; track link.path; let last = $last) {
+        <a [routerLink]="link.path" class="vl-footer__legal-link" i18n>{{ link.label }}</a>
+        @if (!last) {
           <span class="vl-footer__legal-divider" aria-hidden="true"></span>
-          <a [routerLink]="link.path" class="vl-footer__legal-link" i18n>{{ link.label }}</a>
         }
-      </div>
+      }
+    </nav>
 
-      <span class="vl-footer__bottom-divider" aria-hidden="true"></span>
-
+    <div class="vl-footer__bottom">
+      <p class="vl-footer__copyright">
+        <span class="material-symbols-outlined vl-footer__copyright-icon" aria-hidden="true">copyright</span>
+        <span>{{ copyRightInfo }}</span>
+      </p>
       <div class="vl-footer__meta" i18n>
         Built with <span class="vl-footer__heart" aria-hidden="true">♥</span> for Vibloopers
       </div>

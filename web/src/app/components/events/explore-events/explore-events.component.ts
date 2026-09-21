@@ -34,6 +34,13 @@ import { EventFiltersComponent } from '../../../shared/components/event-filters/
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class ExploreEventsComponent implements OnInit {
+  readonly pastVibeBreakpoints = {
+    320: { slidesPerView: 1.08, spaceBetween: 12 },
+    640: { slidesPerView: 1.6, spaceBetween: 16 },
+    1024: { slidesPerView: 2.3, spaceBetween: 24 },
+    1280: { slidesPerView: 3, spaceBetween: 24 },
+  };
+
   isLoading = signal(true);
   categories = signal<any[]>([]);
   trendingEvents = signal<any[]>([]);
@@ -186,6 +193,10 @@ export class ExploreEventsComponent implements OnInit {
 
     return {
       title: event?.title,
+      category: event?.category,
+      attendeeImages: Array.isArray(event?.attendees)
+        ? event.attendees.map((attendee: any) => attendee?.profileImage).filter(Boolean)
+        : [],
       image: event?.image,
       eventDate: event?.eventDate,
       city: area || city,

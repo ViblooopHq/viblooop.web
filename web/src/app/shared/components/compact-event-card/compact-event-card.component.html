@@ -91,22 +91,39 @@
       </div>
     </div>
 
-    <!-- Bottom Meta (Price & Spots/Attendees) -->
-    <div class="vl-compact-card__footer">
-      <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
-        {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
-      </div>
+    <!-- Bottom Meta -->
+    <div class="vl-compact-card__footer" [class.vl-compact-card__footer--ended]="isEventEnded">
+      @if (isEventEnded) {
+        <div class="vl-compact-card__attendance-summary">
+          @if (attendees.length > 0) {
+            <div class="vl-compact-card__attendee-avatars" aria-hidden="true">
+              @for (attendee of (attendees | slice:0:3); track $index) {
+                <img
+                  [src]="($any(attendee).profileImage | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
+                  alt="" />
+              }
+            </div>
+          } @else {
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+          }
+          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'No attendees' }}</span>
+        </div>
+      } @else {
+        <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
+          {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+        </div>
 
-      @if (attendees.length > 0) {
-        <div class="vl-compact-card__attendees">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
-          <span>{{ attendees.length }} {{ isEventEnded ? 'went' : 'going' }}</span>
-        </div>
-      } @else if (getRemainingSpots() > 0 && !isEventEnded) {
-        <div class="vl-compact-card__spots">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
-          <span>{{ getRemainingSpots() }} spots</span>
-        </div>
+        @if (attendees.length > 0) {
+          <div class="vl-compact-card__attendees">
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+            <span>{{ attendees.length }} going</span>
+          </div>
+        } @else if (getRemainingSpots() > 0) {
+          <div class="vl-compact-card__spots">
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
+            <span>{{ getRemainingSpots() }} spots</span>
+          </div>
+        }
       }
     </div>
   </div>
