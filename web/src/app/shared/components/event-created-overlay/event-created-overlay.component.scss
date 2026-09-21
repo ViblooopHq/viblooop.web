@@ -22,38 +22,42 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: min(100%, 26.5rem);
+  width: min(100%, 27rem);
   padding: var(--space-6) var(--space-5) var(--space-5);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-2xl);
-  box-shadow: var(--shadow-modal);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, rgba(255, 255, 255, 0.1));
+  border-radius: var(--radius-2xl, 1.75rem);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.04);
   animation: modal-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
 
   @media (max-width: 480px) {
     padding: var(--space-5) var(--space-4) var(--space-4);
-    border-radius: var(--radius-xl);
+    border-radius: var(--radius-xl, 1.25rem);
   }
 
   &__close {
     position: absolute;
     top: var(--space-3);
     right: var(--space-3);
-    width: 2rem;
-    height: 2rem;
+    width: 2.125rem;
+    height: 2.125rem;
     border-radius: var(--radius-full);
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--color-surface-interactive);
+    background-color: color-mix(in srgb, var(--color-surface-interactive) 85%, transparent);
+    backdrop-filter: blur(8px);
     border: 1px solid var(--color-border);
     color: var(--color-text-secondary);
     cursor: pointer;
-    transition: background-color var(--transition-fast), color var(--transition-fast);
+    transition: all var(--transition-fast);
 
     &:hover {
       background-color: var(--color-primary-soft);
       color: var(--color-primary);
+      transform: rotate(90deg);
     }
   }
 
@@ -292,12 +296,21 @@
    ========================================================================== */
 .vl-celebration-badge-stage {
   position: relative;
-  width: 6.5rem;
-  height: 6.5rem;
-  margin: var(--space-1) auto var(--space-3);
+  width: 7rem;
+  height: 7rem;
+  margin: var(--space-2) auto var(--space-4);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.vl-celebration-aura {
+  position: absolute;
+  inset: -8px;
+  border-radius: var(--radius-full);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.25) 0%, rgba(16, 185, 129, 0) 70%);
+  pointer-events: none;
+  animation: ring-pulse 3s ease-in-out infinite;
 }
 
 .vl-badge-ring {
@@ -308,7 +321,7 @@
 
   &--inner {
     inset: 4px;
-    opacity: 0.25;
+    opacity: 0.3;
     animation: ring-pulse 2.4s ease-in-out infinite;
   }
 
@@ -333,23 +346,25 @@
 .vl-satellite {
   position: absolute;
   z-index: 3;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.85rem;
+  height: 1.85rem;
   border-radius: var(--radius-full);
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background-color: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, rgba(255, 255, 255, 0.15));
   color: var(--color-primary);
   font-size: 0.75rem;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   animation: satellite-float 3s ease-in-out infinite;
 
-  &--top-left { top: 2px; left: 2px; animation-delay: 0s; }
-  &--top-right { top: 2px; right: 2px; animation-delay: 0.7s; }
-  &--bottom-left { bottom: 2px; left: 2px; animation-delay: 1.4s; }
-  &--bottom-right { bottom: 2px; right: 2px; animation-delay: 2.1s; }
+  &--top-left { top: 0; left: 0; animation-delay: 0s; }
+  &--top-right { top: 0; right: 0; animation-delay: 0.7s; }
+  &--bottom-left { bottom: 0; left: 0; animation-delay: 1.4s; }
+  &--bottom-right { bottom: 0; right: 0; animation-delay: 2.1s; }
 }
 
 @keyframes satellite-float {
@@ -363,12 +378,12 @@
   width: 4.25rem;
   height: 4.25rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-success);
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(16, 185, 129, 0.45), 0 0 0 4px rgba(16, 185, 129, 0.15);
   animation: badge-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both;
 }
 
@@ -406,57 +421,65 @@
 .vl-celebration-tag {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: 4px 12px;
+  gap: var(--space-2);
+  padding: 5px 14px;
   border-radius: var(--radius-pill);
   background-color: var(--color-success-soft);
   color: var(--color-success);
   font-size: var(--text-caption);
   font-weight: 700;
-  margin-bottom: var(--space-1);
+  letter-spacing: 0.01em;
+  margin-bottom: var(--space-2);
   border: 1px solid var(--color-success-border);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--color-success) 15%, transparent);
 
   &__icon {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 }
 
 .vl-event-confirmation-card {
   width: 100%;
   margin-top: var(--space-4);
-  padding: var(--space-3);
-  border-radius: var(--radius-lg);
-  background-color: var(--color-surface-raised);
-  border: 1px solid var(--color-border);
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-xl, 1rem);
+  background: color-mix(in srgb, var(--color-surface-raised) 70%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, rgba(255, 255, 255, 0.08));
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  gap: 0.875rem;
   text-align: left;
 
   &__icon {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-radius: var(--radius-md);
-    background-color: var(--color-primary-soft);
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-lg, 0.75rem);
+    background: linear-gradient(135deg, var(--color-primary-soft), color-mix(in srgb, var(--color-primary) 22%, transparent));
+    border: 1px solid color-mix(in srgb, var(--color-primary) 30%, transparent);
     color: var(--color-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     flex-shrink: 0;
   }
 
   &__info {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 4px;
     min-width: 0;
+    flex: 1;
   }
 
   &__title {
     color: var(--color-text-primary);
     font-size: var(--text-body-sm);
     font-weight: 700;
+    letter-spacing: -0.01em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -464,27 +487,35 @@
 
   &__meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2);
+    gap: 0.5rem;
   }
 
   &__badge {
-    display: inline-block;
-    padding: 1px 6px;
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
     border-radius: var(--radius-pill);
     background-color: var(--color-surface-interactive);
-    color: var(--color-text-secondary);
-    font-size: 0.7rem;
-    font-weight: 600;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    color: var(--color-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
   }
 
-  &__date {
-    color: var(--color-text-secondary);
-    font-size: 0.72rem;
-    font-weight: 500;
-    display: flex;
+  &__meta-item {
+    display: inline-flex;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+
+    i {
+      font-size: 0.7rem;
+      opacity: 0.85;
+    }
   }
 }
 
@@ -513,17 +544,18 @@
   width: 4.25rem;
   height: 4.25rem;
   border-radius: var(--radius-full);
-  background-color: var(--color-danger);
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
 }
 
 .vl-error-tag {
   display: inline-flex;
   align-items: center;
+  gap: var(--space-1);
   padding: 4px 12px;
   border-radius: var(--radius-pill);
   background-color: var(--color-danger-soft);
@@ -541,13 +573,13 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: 0 var(--space-4);
-  border-radius: var(--radius-md);
+  min-height: 48px;
+  padding: 0 var(--space-5);
+  border-radius: var(--radius-pill, 9999px);
   font-size: var(--text-body-sm);
   font-weight: 700;
   cursor: pointer;
-  transition: background-color var(--transition-base), transform var(--transition-fast);
+  transition: all var(--transition-fast);
 
   &:active {
     transform: scale(0.98);
@@ -555,22 +587,24 @@
 
   &--secondary {
     color: var(--color-text-primary);
-    background-color: var(--color-surface-interactive);
+    background-color: color-mix(in srgb, var(--color-surface-interactive) 80%, transparent);
     border: 1px solid var(--color-border);
 
     &:hover {
       background-color: var(--color-border);
+      color: var(--color-text-primary);
     }
   }
 
   &--primary {
     color: #ffffff;
-    background-color: var(--color-primary);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #9333ea 100%);
     border: none;
-    box-shadow: var(--shadow-sm);
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
 
     &:hover {
-      background-color: var(--color-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
     }
   }
 }

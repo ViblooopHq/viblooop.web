@@ -32,11 +32,14 @@
       <!-- ==================== 2. SUCCESS CELEBRATION STATE ==================== -->
       @if (state === 'success') {
         <div class="vl-celebration-badge-stage">
+          <!-- Ambient Celebration Aura -->
+          <div class="vl-celebration-aura" aria-hidden="true"></div>
+
           <!-- Contained Pulse Glow Rings -->
           <div class="vl-badge-ring vl-badge-ring--inner" aria-hidden="true"></div>
           <div class="vl-badge-ring vl-badge-ring--outer" aria-hidden="true"></div>
 
-          <!-- Intentional Category Satellite Icons -->
+          <!-- Category Satellite Badges -->
           <div class="vl-satellite vl-satellite--top-left" [title]="iconPack().categoryName" aria-hidden="true">
             <i [class]="iconPack().satelliteIcons[0]"></i>
           </div>
@@ -68,10 +71,10 @@
         <!-- Title & Subtitle -->
         <h2 id="overlay-title" class="vl-celebration-modal__title">Event Created!</h2>
         <p class="vl-celebration-modal__subtitle">
-          Your event has been published successfully and is now discoverable across Viblooop.
+          Your event has been published successfully and is now live across Viblooop.
         </p>
 
-        <!-- Event Quick Confirmation Card (Consumer Style) -->
+        <!-- Event Quick Confirmation Card (Consumer Ticket/Pass Style) -->
         <div class="vl-event-confirmation-card">
           <div class="vl-event-confirmation-card__icon">
             <i [class]="iconPack().primaryIcon"></i>
@@ -80,9 +83,16 @@
             <span class="vl-event-confirmation-card__title">{{ eventTitle }}</span>
             <div class="vl-event-confirmation-card__meta">
               <span class="vl-event-confirmation-card__badge">{{ iconPack().categoryName }}</span>
-              @if (eventDate) {
-                <span class="vl-event-confirmation-card__date">
-                  <i class="fa-regular fa-calendar text-[11px]" aria-hidden="true"></i> {{ eventDate }}
+              @if (formattedEventDate()) {
+                <span class="vl-event-confirmation-card__meta-item">
+                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  <span>{{ formattedEventDate() }}</span>
+                </span>
+              }
+              @if (formattedEventTime()) {
+                <span class="vl-event-confirmation-card__meta-item">
+                  <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                  <span>{{ formattedEventTime() }}</span>
                 </span>
               }
             </div>
@@ -103,7 +113,7 @@
             class="vl-btn vl-btn--primary"
             (click)="viewEvent.emit()">
             <span>View Event</span>
-            <i class="fa-solid fa-arrow-right text-xs" aria-hidden="true"></i>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
           </button>
         </div>
       }

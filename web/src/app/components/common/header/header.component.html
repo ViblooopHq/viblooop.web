@@ -3,9 +3,7 @@
   class="vl-app-header vl-app-header--desktop hidden md:flex fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl z-[100] items-center justify-between px-8 py-3 rounded-full transition-all duration-300">
 
   <!-- Logo -->
-  <div
-    class="flex items-center cursor-pointer hover:scale-105 transition-transform"
-    routerLink="/">
+  <div class="flex items-center cursor-pointer transition-transform" routerLink="/">
     <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="header-logo">
   </div>
 
@@ -27,31 +25,24 @@
 
   <!-- Right Actions -->
   <div class="flex items-center gap-4">
-    <button type="button" (click)="openCreateDrawer()"
-      class="vl-app-header__create-pill group" aria-label="Create Event">
+    <button type="button" (click)="openCreateDrawer()" class="vl-app-header__create-pill group"
+      aria-label="Create Event">
       <span class="material-symbols-outlined create-icon group-hover:rotate-90 transition-transform duration-300"
         translate="no">add</span>
       <span class="create-text" i18n>Create Event</span>
     </button>
 
-    <button
-      class="vl-icon-button"
-      (click)="toggleTheme()" [matTooltip]="isLightTheme() ? 'Dark Mode' : 'Light Mode'">
+    <button class="vl-icon-button" (click)="toggleTheme()" [matTooltip]="isLightTheme() ? 'Dark Mode' : 'Light Mode'">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
 
     @if (userDetails) {
     <!-- Desktop Wishlist Button -->
-    <button
-      type="button"
-      [matTooltip]="'Wishlist'"
-      (click)="navigateTo('/my-wishlist')"
-      class="vl-icon-button relative"
+    <button type="button" [matTooltip]="'Wishlist'" (click)="navigateTo('/my-wishlist')" class="vl-icon-button relative"
       aria-label="Wishlist">
       <span class="material-symbols-outlined" translate="no">favorite</span>
       @if (userDetails?.wishlist?.length > 0) {
-      <span
-        class="vl-header-badge" aria-label="Wishlist item count">
+      <span class="vl-header-badge" aria-label="Wishlist item count">
         {{ userDetails.wishlist.length }}
       </span>
       }
@@ -63,9 +54,9 @@
         [attr.aria-label]="sharedService.notificationCount() > 0 ? 'Notifications, ' + sharedService.notificationCount() + ' unread' : 'Notifications'">
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
-          <span class="vl-header-badge" aria-hidden="true">
-            {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
-          </span>
+        <span class="vl-header-badge" aria-hidden="true">
+          {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
+        </span>
         }
       </button>
       @if (isNotificationVisible) {
@@ -73,16 +64,13 @@
       }
     </div>
 
-    <button
-      class="vl-icon-button relative"
-      aria-label="Chats">
+    <button class="vl-icon-button relative" aria-label="Chats">
       <a [matTooltip]="'Chats'" routerLink="/chats">
         <span class="material-symbols-outlined" translate="no">chat</span>
       </a>
       @if (socketService.unreadCount$ | async; as total) {
       @if (total > 0) {
-      <span
-        class="vl-header-badge" aria-label="Unread chats count">
+      <span class="vl-header-badge" aria-label="Unread chats count">
         {{ total > 99 ? '99+' : total }}
       </span>
       }
@@ -158,24 +146,21 @@
 
   <!-- Right: Actions (Theme Toggle & Notifications) -->
   <div class="flex items-center gap-3">
-    <button
-      class="vl-icon-button w-9 min-w-9 h-9 active:scale-95"
-      (click)="toggleTheme()"
+    <button class="vl-icon-button w-9 min-w-9 h-9 active:scale-95" (click)="toggleTheme()"
       [attr.aria-label]="isLightTheme() ? 'Switch to dark mode' : 'Switch to light mode'">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
 
     @if (userDetails) {
     <div class="notification-anchor relative flex items-center">
-      <button type="button"
-        class="vl-icon-button relative w-9 min-w-9 h-9 active:scale-95"
+      <button type="button" class="vl-icon-button relative w-9 min-w-9 h-9 active:scale-95"
         (click)="navigateTo('/notifications')"
         [attr.aria-label]="sharedService.notificationCount() > 0 ? 'Notifications, ' + sharedService.notificationCount() + ' unread' : 'Notifications'">
         <span class="material-symbols-outlined" translate="no">notifications</span>
         @if (sharedService.notificationCount() > 0) {
-          <span class="vl-header-badge" aria-hidden="true">
-            {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
-          </span>
+        <span class="vl-header-badge" aria-hidden="true">
+          {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
+        </span>
         }
       </button>
     </div>

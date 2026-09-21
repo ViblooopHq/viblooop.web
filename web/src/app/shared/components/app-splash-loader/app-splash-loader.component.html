@@ -5,13 +5,17 @@
   aria-live="polite"
   aria-label="App loading">
 
+  <!-- Top Indeterminate Progress Track -->
+  <div class="vl-splash__top-bar" aria-hidden="true">
+    <div class="vl-splash__top-progress"></div>
+  </div>
+
   <div class="vl-splash__content">
-    <!-- Brand Logo -->
-    <div class="vl-splash__logo-wrap">
-      <img
-        [src]="effectiveLogoSrc"
-        [alt]="brandName + ' Logo'"
-        class="vl-splash__logo" />
+    <!-- Premium Minimalist Spinner -->
+    <div class="vl-splash__spinner-stage" aria-hidden="true">
+      <div class="vl-splash__ring vl-splash__ring--outer"></div>
+      <div class="vl-splash__ring vl-splash__ring--inner"></div>
+      <div class="vl-splash__core-glow"></div>
     </div>
 
     <!-- Dynamic Status Message -->

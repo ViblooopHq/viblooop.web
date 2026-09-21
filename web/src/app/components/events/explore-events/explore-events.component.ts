@@ -1,5 +1,5 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { EventsService } from '../../../shared/services/events/events.service';
@@ -78,7 +78,13 @@ export class ExploreEventsComponent implements OnInit {
     }
   ];
 
+  private platformId = inject(PLATFORM_ID);
+
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) {
+      // On the server, keep isLoading(true) so initial SSR HTML is the skeleton loader, avoiding hydration flicker
+      return;
+    }
     this.loadInitialData();
   }
 

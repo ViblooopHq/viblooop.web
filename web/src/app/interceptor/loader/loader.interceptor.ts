@@ -5,12 +5,21 @@ import { finalize } from 'rxjs';
 
 export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
   const loaderService = inject(LoaderService);
-  if (req.url.includes('updateProfile') || req.url.includes('deleteEvent')) {
+  const method = req.method.toUpperCase();
+  const isMutating = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
+  const isCreateEvent = req.url.includes('createEvent') || req.headers.has('X-Skip-Global-Loader');
+
+  const shouldShowLoader = isMutating && !isCreateEvent;
+
+  if (shouldShowLoader) {
     loaderService.show();
   }
+
   return next(req).pipe(
     finalize(() => {
-      loaderService.hide()
+      if (shouldShowLoader) {
+        loaderService.hide();
+      }
     })
   );
 };

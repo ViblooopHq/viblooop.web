@@ -148,6 +148,37 @@ export class EventCreatedOverlayComponent implements OnInit, OnChanges, OnDestro
     return CATEGORY_ICON_PACKS['default'];
   });
 
+  readonly formattedEventDate = computed(() => {
+    const raw = this.eventDate;
+    if (!raw) return '';
+    try {
+      const d = new Date(raw);
+      if (isNaN(d.getTime())) return String(raw);
+      return d.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      });
+    } catch {
+      return String(raw);
+    }
+  });
+
+  readonly formattedEventTime = computed(() => {
+    const time = this.eventTime;
+    if (!time) return '';
+    const trimmed = time.trim();
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(trimmed)) {
+      const [hStr, mStr] = trimmed.split(':');
+      let h = parseInt(hStr, 10);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12 || 12;
+      return `${h}:${mStr} ${ampm}`;
+    }
+    return trimmed;
+  });
+
   readonly currentLoadingMessage = computed(() => {
     const steps = this.iconPack().loaderSteps;
     return steps[this.currentMessageIndex() % steps.length];

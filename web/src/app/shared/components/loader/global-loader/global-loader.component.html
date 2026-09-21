@@ -1,9 +1,30 @@
 @if (loaderService.loading$ | async) {
-  <div class="overlay" role="status" aria-live="polite" aria-label="Loading">
-    <ng-lottie
-      [options]="options"
-      width="200px"
-      height="200px">
-    </ng-lottie>
+  <div
+    class="vl-global-loader"
+    role="status"
+    aria-live="polite"
+    aria-label="Processing request">
+
+    <!-- Top Indeterminate Progress Track -->
+    <div class="vl-global-loader__top-bar" aria-hidden="true">
+      <div class="vl-global-loader__top-progress"></div>
+    </div>
+
+    <div class="vl-global-loader__content">
+      <!-- Premium Minimalist Dual-Ring Spinner Stage -->
+      <div class="vl-global-loader__spinner-stage" aria-hidden="true">
+        <div class="vl-global-loader__ring vl-global-loader__ring--outer"></div>
+        <div class="vl-global-loader__ring vl-global-loader__ring--inner"></div>
+        <div class="vl-global-loader__core-glow"></div>
+      </div>
+
+      <!-- Minimal Modern Progress Dots -->
+      <div class="vl-global-loader__dots" aria-hidden="true">
+        <span class="vl-global-loader__dot vl-global-loader__dot--1"></span>
+        <span class="vl-global-loader__dot vl-global-loader__dot--2"></span>
+        <span class="vl-global-loader__dot vl-global-loader__dot--3"></span>
+      </div>
+    </div>
   </div>
 }
+
