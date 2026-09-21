@@ -2,7 +2,8 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Inject, inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, forkJoin } from 'rxjs';
+import { BehaviorSubject, forkJoin, Observable, of, throwError } from 'rxjs';
+import { filter, take, switchMap, tap, catchError } from 'rxjs/operators';
 import { Environment } from '../../../../environment';
 import { AppSplashService } from '../app-splash/app-splash.service';
 
@@ -20,6 +21,10 @@ export class AuthService {
   userDetails: any;
   userDetails$ = new BehaviorSubject<any>(undefined);
   isAuthInitialized$ = new BehaviorSubject<boolean>(false);
+
+  private isAuthInitializing = false;
+  private isRefreshing = false;
+  private refreshTokenSubject = new BehaviorSubject<boolean | null>(null);
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
@@ -52,19 +57,65 @@ export class AuthService {
     return this.http.post(`${this.logInbaseUrl}/signup`, data);
   }
 
-  initAuth() {
-    return this.http.get(`${this.logInbaseUrl}/me`, { withCredentials: true }).subscribe({
+  initAuth(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      // On the server during SSR, we do not have browser cookies.
+      // Mark as initialized so server-side rendering can finish without waiting/hanging.
+      this.isAuthInitialized$.next(true);
+      return;
+    }
+
+    if (this.isAuthInitializing) {
+      return;
+    }
+    this.isAuthInitializing = true;
+
+    this.http.get(`${this.logInbaseUrl}/me`, { withCredentials: true }).subscribe({
       next: (res: any) => {
         if (res?.success) {
           this.userDetails = res.data;
           this.userDetails$.next(this.userDetails);
         }
+        this.isAuthInitializing = false;
         this.isAuthInitialized$.next(true);
       },
-      error: () => {
-        this.userDetails = null;
-        this.userDetails$.next(null);
-        this.isAuthInitialized$.next(true);
+      error: (err) => {
+        if (err.status === 401) {
+          // Access token might be expired; attempt silent token refresh with refresh_token cookie
+          this.refreshToken().subscribe({
+            next: () => {
+              // Token refreshed successfully; retry getting user details
+              this.http.get(`${this.logInbaseUrl}/me`, { withCredentials: true }).subscribe({
+                next: (retryRes: any) => {
+                  if (retryRes?.success) {
+                    this.userDetails = retryRes.data;
+                    this.userDetails$.next(this.userDetails);
+                  }
+                  this.isAuthInitializing = false;
+                  this.isAuthInitialized$.next(true);
+                },
+                error: () => {
+                  this.userDetails = null;
+                  this.userDetails$.next(null);
+                  this.isAuthInitializing = false;
+                  this.isAuthInitialized$.next(true);
+                }
+              });
+            },
+            error: () => {
+              // Refresh token is expired or invalid; mark user as unauthenticated
+              this.userDetails = null;
+              this.userDetails$.next(null);
+              this.isAuthInitializing = false;
+              this.isAuthInitialized$.next(true);
+            }
+          });
+        } else {
+          this.userDetails = null;
+          this.userDetails$.next(null);
+          this.isAuthInitializing = false;
+          this.isAuthInitialized$.next(true);
+        }
       }
     });
   }
@@ -118,8 +169,36 @@ export class AuthService {
     return !!this.userDetails$.value;
   }
 
-  refreshToken() {
-    return this.http.post(`${this.logInbaseUrl}/refresh-access-token`, { withCredentials: true });
+  refreshToken(): Observable<any> {
+    if (this.isRefreshing) {
+      return this.refreshTokenSubject.pipe(
+        filter((result): result is boolean => result !== null),
+        take(1),
+        switchMap((success) => {
+          if (success) {
+            return of({ success: true });
+          }
+          return throwError(() => new Error('Token refresh failed'));
+        })
+      );
+    }
+
+    this.isRefreshing = true;
+    this.refreshTokenSubject.next(null);
+
+    return this.http
+      .post(`${this.logInbaseUrl}/refresh-access-token`, {}, { withCredentials: true })
+      .pipe(
+        tap(() => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(true);
+        }),
+        catchError((err) => {
+          this.isRefreshing = false;
+          this.refreshTokenSubject.next(false);
+          return throwError(() => err);
+        })
+      );
   }
 
   logout(redirect: boolean = true, isUserInitiated: boolean = true) {

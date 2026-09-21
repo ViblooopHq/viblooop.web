@@ -31,13 +31,14 @@ export const routes: Routes = [
   { path: 'profile', loadComponent: () => import('./components/user-profile/user-profile.component').then(c => c.UserProfileComponent) },
   {
     path: 'profile/edit',
+    canActivate: [authGuard],
     canDeactivate: [unsavedChangeGuard],
     component: EditProfileComponent,
   },
   {
     path: 'profile/update',
+    canActivate: [authGuard],
     component: ProfileSetupComponent,
-
   },
   {
     path: 'notifications',

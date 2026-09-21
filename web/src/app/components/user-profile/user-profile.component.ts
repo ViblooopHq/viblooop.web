@@ -126,9 +126,13 @@ export class UserProfileComponent implements OnInit {
     this.authSerivice.isAuthInitialized$
       .pipe(filter(Boolean), take(1))
       .subscribe(() => {
+        if (!this.platform.isBrowserPlatform()) {
+          return;
+        }
+
         const currentUserId = this.authSerivice.userDetails?.id;
         if (!currentUserId) {
-          this.router.navigateByUrl('/login');
+          this.router.navigateByUrl('/login?redirect=' + encodeURIComponent('/profile'));
           return;
         }
 

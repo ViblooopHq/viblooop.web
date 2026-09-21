@@ -2,10 +2,7 @@ import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { LoaderService } from '../../shared/services/loader/loader.service';
-import { BehaviorSubject, catchError, filter, switchMap, take, throwError } from 'rxjs';
-
-let isRefreshing = false;
-const refreshTokenSubject: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+import { catchError, switchMap, throwError } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const cloned = req.clone({
@@ -35,41 +32,21 @@ export const authInterceptorWithRefresh: HttpInterceptorFn = (req, next) => {
           return throwError(() => error);
         }
 
-        if (!isRefreshing) {
-          isRefreshing = true;
-          refreshTokenSubject.next(null);
-          loaderService.show();
+        loaderService.show();
 
-          return authService.refreshToken().pipe(
-            switchMap(() => {
-              isRefreshing = false;
-              loaderService.hide();
-              refreshTokenSubject.next(true);
-              return next(clonedReq);
-            }),
-            catchError((err) => {
-              isRefreshing = false;
-              loaderService.hide();
-              refreshTokenSubject.next(false);
-              authService.logout(false, false);
-              return throwError(() => err);
-            })
-          );
-        } else {
-          return refreshTokenSubject.pipe(
-            filter(result => result !== null),
-            take(1),
-            switchMap((success) => {
-              if (success) {
-                return next(clonedReq);
-              } else {
-                return throwError(() => new Error('Token refresh failed'));
-              }
-            })
-          );
-        }
+        return authService.refreshToken().pipe(
+          switchMap(() => {
+            loaderService.hide();
+            return next(clonedReq);
+          }),
+          catchError((err) => {
+            loaderService.hide();
+            authService.logout(false, false);
+            return throwError(() => err);
+          })
+        );
       }
       return throwError(() => error);
     })
   );
-}
+};
