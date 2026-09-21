@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { } from '../../../../assets/json/data.json'
 import { HttpService } from '../http/http.service';
-import { Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay } from 'rxjs';
 import { Environment } from '../../../../environment';
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,7 @@ export class EventsService {
     'Social',
     'Travel Companion',
     'Sports Activities',
-    'Hangouts',
-    'Shopping Buddies'
+    'Hangouts'
   ];
 
   eventTags = [
@@ -29,10 +28,7 @@ export class EventsService {
     'football',
     'fitness',
     'community',
-    'festivals',
-    'shopping',
-    'buddies',
-    'fashion'
+    'festivals'
   ]
 
   jsonPath = '../../../assets/json/data.json'
@@ -86,10 +82,28 @@ export class EventsService {
   getEventCategories(): Observable<any> {
     if (!this.categoriesCache$) {
       this.categoriesCache$ = this.httpService.http.get(`${this.baseUrl}/categories`).pipe(
+        map((response: any) => {
+          const categories = Array.isArray(response?.data?.categories)
+            ? response.data.categories.filter((category: any) => !this.isShoppingCategory(category))
+            : [];
+
+          return {
+            ...response,
+            data: {
+              ...response?.data,
+              categories,
+            },
+          };
+        }),
         shareReplay(1)
       );
     }
     return this.categoriesCache$;
+  }
+
+  private isShoppingCategory(category: any): boolean {
+    const title = String(category?.title || '').trim().toLowerCase();
+    return ['shopping', 'shopping buddy', 'shopping buddies'].includes(title);
   }
 
   getAllEvents(filter: string = 'all', category?: string, search?: string, limit?: number): Observable<any> {

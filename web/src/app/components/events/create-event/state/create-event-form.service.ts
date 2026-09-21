@@ -29,6 +29,7 @@ export class CreateEventFormService {
     eventDate: ['', Validators.required],
     endDate: [''],
     eventTime: ['', Validators.required],
+    endTime: [''],
     address: this.fb.group({
       street: ['', Validators.required],
       area: ['', Validators.required],
@@ -59,6 +60,7 @@ export class CreateEventFormService {
   readonly categoryValue = toSignal(this.eventForm.get('category')!.valueChanges, { initialValue: this.eventForm.get('category')!.value });
   private readonly eventDateValue = toSignal(this.eventForm.get('eventDate')!.valueChanges, { initialValue: this.eventForm.get('eventDate')!.value });
   readonly eventTimeValue = toSignal(this.eventForm.get('eventTime')!.valueChanges, { initialValue: this.eventForm.get('eventTime')!.value });
+  readonly endTimeValue = toSignal(this.eventForm.get('endTime')!.valueChanges, { initialValue: this.eventForm.get('endTime')!.value });
   private readonly attendeeMixValue = toSignal(this.eventForm.get('attendeeMix')!.valueChanges, { initialValue: this.eventForm.get('attendeeMix')!.value });
   readonly attendeeLimitValue = toSignal(this.eventForm.get('attendeeLimit')!.valueChanges, { initialValue: this.eventForm.get('attendeeLimit')!.value });
   readonly descriptionValue = toSignal(this.eventForm.get('description')!.valueChanges, { initialValue: this.eventForm.get('description')!.value as string });
@@ -80,10 +82,21 @@ export class CreateEventFormService {
   readonly selectedCreationConfig = computed<CreationTypeConfig>(() => CREATE_EVENT_TYPE_CONFIGS[this.creationKind()]);
 
   readonly isEscapeCreation = computed(() => this.selectedCreationConfig().usesDateRange);
+  readonly isHangoutCreation = computed(() => this.selectedCreationConfig().requiresEndTime);
+  readonly requiresEndDate = computed(() => this.isEscapeCreation() || this.isHangoutCreation());
   readonly createHeaderTitle = computed(() => (this.isEditMode() ? 'Edit Event' : this.selectedCreationConfig().headerTitle));
   readonly createHeaderSubtitle = computed(() => (this.isEditMode() ? 'Update the details for your vibe' : "Let's set up your amazing event"));
   readonly titleFieldLabel = computed(() => this.selectedCreationConfig().titleFieldLabel);
+  readonly titleFieldHint = computed(() => this.selectedCreationConfig().titleFieldHint);
   readonly titleFieldPlaceholder = computed(() => this.selectedCreationConfig().titleFieldPlaceholder);
+  readonly timingTitle = computed(() => this.selectedCreationConfig().timingTitle);
+  readonly timingHint = computed(() => this.selectedCreationConfig().timingHint);
+  readonly locationHint = computed(() => this.selectedCreationConfig().locationHint);
+  readonly addressFieldLabel = computed(() => this.selectedCreationConfig().addressFieldLabel);
+  readonly addressFieldHint = computed(() => this.selectedCreationConfig().addressFieldHint);
+  readonly addressFieldPlaceholder = computed(() => this.selectedCreationConfig().addressFieldPlaceholder);
+  readonly areaFieldHint = computed(() => this.selectedCreationConfig().areaFieldHint);
+  readonly areaFieldPlaceholder = computed(() => this.selectedCreationConfig().areaFieldPlaceholder);
   readonly defaultCoverImage = computed(() => this.selectedCreationConfig().defaultCoverImage);
   readonly stepTwoDescription = computed(() => this.selectedCreationConfig().stepTwoDescription);
   readonly stepThreeDescription = computed(() => this.selectedCreationConfig().stepThreeDescription);
@@ -284,7 +297,7 @@ export class CreateEventFormService {
   }
 
   private keepEndDateOnOrAfterStartDate(): void {
-    if (!this.isEscapeCreation()) return;
+    if (!this.requiresEndDate()) return;
 
     const startDate = this.eventForm.get('eventDate')?.value;
     const endDate = this.eventForm.get('endDate')?.value;
@@ -296,19 +309,29 @@ export class CreateEventFormService {
 
   private updateDateValidatorsForCreationKind(): void {
     const eventTime = this.eventForm.get('eventTime');
+    const endTime = this.eventForm.get('endTime');
     const endDate = this.eventForm.get('endDate');
+
+    if (this.requiresEndDate()) {
+      endDate?.setValidators([Validators.required]);
+    } else {
+      endDate?.clearValidators();
+    }
 
     if (this.isEscapeCreation()) {
       eventTime?.clearValidators();
-      eventTime?.setValue('', { emitEvent: false });
-      endDate?.setValidators([Validators.required]);
     } else {
       eventTime?.setValidators([Validators.required]);
-      endDate?.clearValidators();
-      endDate?.setValue('', { emitEvent: false });
+    }
+
+    if (this.isHangoutCreation()) {
+      endTime?.setValidators([Validators.required]);
+    } else {
+      endTime?.clearValidators();
     }
 
     eventTime?.updateValueAndValidity({ emitEvent: false });
+    endTime?.updateValueAndValidity({ emitEvent: false });
     endDate?.updateValueAndValidity({ emitEvent: false });
   }
 
@@ -389,6 +412,7 @@ export class CreateEventFormService {
       eventDate: this.toDateControlValue(event.eventDate),
       endDate: this.toDateControlValue(event.endDate || event.eventDate),
       eventTime: this.toTimeControlValue(event.eventTime),
+      endTime: this.toTimeControlValue(event.endTime),
       address: {
         street: event.address?.street || '',
         area: event.address?.area || '',
@@ -471,7 +495,9 @@ export class CreateEventFormService {
     return (
       !f.get('title')?.value ||
       !f.get('eventDate')?.value ||
-      (this.isEscapeCreation() ? !f.get('endDate')?.value : !f.get('eventTime')?.value) ||
+      (this.requiresEndDate() && !f.get('endDate')?.value) ||
+      (!this.isEscapeCreation() && !f.get('eventTime')?.value) ||
+      (this.isHangoutCreation() && !f.get('endTime')?.value) ||
       !addr.get('street')?.value ||
       !addr.get('area')?.value ||
       !addr.get('pinCode')?.value
@@ -491,6 +517,7 @@ export class CreateEventFormService {
       const controls = this.isEscapeCreation()
         ? ['title', 'eventDate', 'endDate']
         : ['title', 'eventDate', 'eventTime'];
+      if (this.isHangoutCreation()) controls.push('endDate', 'endTime');
       if (this.isCapacityLimited()) controls.push('attendeeLimit');
 
       let valid = true;
@@ -511,6 +538,11 @@ export class CreateEventFormService {
       const attendeeLimit = Number(this.eventForm.get('attendeeLimit')?.value);
       if (this.isCapacityLimited() && (attendeeLimit < this.capacityMin || attendeeLimit > this.capacityMax)) {
         alert(`Capacity must be between ${this.capacityMin} and ${this.capacityMax} spots.`);
+        return false;
+      }
+
+      if (this.isHangoutCreation() && !this.hasValidHangoutDateTimeRange()) {
+        alert('Hangout end date and time must be after the start date and time.');
         return false;
       }
       return valid;
@@ -550,7 +582,9 @@ export class CreateEventFormService {
 
   findFirstInvalidStep(): number {
     if (this.eventForm.get('category')?.invalid) return 0;
-    const timingControls = this.isEscapeCreation() ? ['eventDate', 'endDate'] : ['eventDate', 'eventTime'];
+    const timingControls = this.isEscapeCreation()
+      ? ['eventDate', 'endDate']
+      : ['eventDate', 'eventTime', ...(this.isHangoutCreation() ? ['endDate', 'endTime'] : [])];
     if (['title', ...timingControls].some(c => this.eventForm.get(c)?.invalid)) return 1;
     return -1;
   }
@@ -561,9 +595,9 @@ export class CreateEventFormService {
     const formData = new FormData();
 
     Object.keys(this.eventForm.controls).forEach(key => {
-      const value = key === 'eventTime' && this.isEscapeCreation()
-        ? (this.eventForm.get(key)?.value || '00:00')
-        : this.eventForm.get(key)?.value;
+      let value = this.eventForm.get(key)?.value;
+      if (key === 'eventTime' && this.isEscapeCreation()) value = value || '00:00';
+      if (key === 'endTime' && !this.isHangoutCreation()) value = '';
 
       if (key === 'address' || key === 'expectations') {
         formData.append(key, JSON.stringify(value));
@@ -575,5 +609,22 @@ export class CreateEventFormService {
     });
 
     return formData;
+  }
+
+  private hasValidHangoutDateTimeRange(): boolean {
+    const startDate = this.eventForm.get('eventDate')?.value;
+    const endDate = this.eventForm.get('endDate')?.value;
+    const startTime = this.eventForm.get('eventTime')?.value;
+    const endTime = this.eventForm.get('endTime')?.value;
+    if (!startDate || !endDate || !startTime || !endTime) return false;
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+    start.setHours(startHours, startMinutes, 0, 0);
+    end.setHours(endHours, endMinutes, 0, 0);
+
+    return end > start;
   }
 }

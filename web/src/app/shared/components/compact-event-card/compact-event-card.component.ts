@@ -123,15 +123,20 @@ export class CompactEventCardComponent {
   }
 
   get isEventEnded(): boolean {
-    const endDate = this.config()?.endDate;
+    const config = this.config();
+    const endDate = config?.endDate;
     if (endDate) {
+      if (config?.endTime) {
+        const eventEndDateTime = this.getEventDateTime(config.endTime, endDate);
+        return eventEndDateTime ? eventEndDateTime < new Date() : false;
+      }
       const eventEndDate = new Date(endDate);
       if (Number.isNaN(eventEndDate.getTime())) return false;
       eventEndDate.setHours(23, 59, 59, 999);
       return eventEndDate < new Date();
     }
 
-    const eventDateTime = this.getEventDateTime();
+    const eventDateTime = this.getEventDateTime(this.config()?.endTime || this.config()?.eventTime);
     return eventDateTime ? eventDateTime < new Date() : false;
   }
 
@@ -202,7 +207,7 @@ export class CompactEventCardComponent {
     const hasEndDate = Boolean(config?.endDate);
     const categoryTitle = String(category?.title || category?.name || category || '').toLowerCase();
 
-    return hasEndDate || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
+    return (hasEndDate && !config?.endTime) || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
   }
 
   get tripDateRangeLabel(): string {
@@ -228,7 +233,12 @@ export class CompactEventCardComponent {
 
     if (config.eventTime) {
       const timeStr = new TimePipe().transform(config.eventTime);
-      return `${month} ${day} • ${timeStr}`;
+      const endTimeStr = config.endTime ? new TimePipe().transform(config.endTime) : '';
+      const endDate = config.endDate ? new Date(config.endDate) : null;
+      const endDateStr = endDate && !Number.isNaN(endDate.getTime())
+        ? `${endDate.toLocaleDateString('en-US', { month: 'short' })} ${endDate.getDate()}`
+        : '';
+      return `${month} ${day} • ${timeStr}${endTimeStr ? ` – ${endDateStr || `${month} ${day}`} • ${endTimeStr}` : ''}`;
     }
     return `${month} ${day}`;
   }
@@ -238,14 +248,15 @@ export class CompactEventCardComponent {
     return config?.cost === 'Free' || !config?.price || config?.price === 0;
   }
 
-  private getEventDateTime(): Date | null {
+  private getEventDateTime(timeValue?: string, dateValue?: string | Date): Date | null {
     const config = this.config();
-    if (!config?.eventDate) return null;
+    const resolvedDate = dateValue || config?.eventDate;
+    if (!resolvedDate) return null;
 
-    const eventDateTime = new Date(config.eventDate);
-    if (config.eventTime) {
+    const eventDateTime = new Date(resolvedDate);
+    if (timeValue) {
       try {
-        const timeStr = config.eventTime.trim();
+        const timeStr = timeValue.trim();
         const [time, modifier] = timeStr.split(/\s+/);
         let [hours, minutes] = time.split(':').map(Number);
 

@@ -47,6 +47,13 @@
                 -
                 {{ (formService.formValue().endDate | date:'dd MMM') || 'To' }}
               </p>
+            } @else if (formService.isHangoutCreation()) {
+              <p class="info-main">
+                {{ (formService.formValue().eventDate | date:'dd MMM') || 'Start Date' }}
+                {{ (formService.formValue().eventTime | time) || 'Start Time' }} –
+                {{ (formService.formValue().endDate | date:'dd MMM') || 'End Date' }}
+                {{ (formService.formValue().endTime | time) || 'End Time' }}
+              </p>
             } @else {
               <p class="info-main">{{ (formService.formValue().eventDate | date:'EEEE, dd MMM') || 'Select Date' }} • {{ (formService.formValue().eventTime | time) || 'Select Time' }}</p>
             }

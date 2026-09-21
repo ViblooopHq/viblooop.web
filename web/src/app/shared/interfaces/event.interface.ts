@@ -42,6 +42,7 @@ export interface EventDetails {
   price?: number;
   eventDate?: string;
   eventTime?: string;
+  endTime?: string;
   endDate?: string;
   category?: { title?: string; name?: string } | string;
   address?: EventAddress;

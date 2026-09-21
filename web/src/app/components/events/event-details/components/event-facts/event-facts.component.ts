@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { TimePipe } from '../../../../../shared/pipes/time.pipe';
 
 @Component({
   selector: 'vl-event-facts',
-  imports: [DatePipe],
+  imports: [DatePipe, TimePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-facts.component.html',
   styleUrl: './event-facts.component.scss',
@@ -12,7 +13,9 @@ export class EventFactsComponent {
   isEscapeEvent = input(false);
   tripDateRangeLabel = input('');
   eventDate = input<string | undefined>(undefined);
+  endDate = input<string | undefined>(undefined);
   eventTime = input<string | undefined>(undefined);
+  endTime = input<string | undefined>(undefined);
   eventPriceLabel = input('Free');
   audiencePreferenceIcon = input('fa-solid fa-earth-asia');
   audiencePreferenceLabel = input('Open to everyone');

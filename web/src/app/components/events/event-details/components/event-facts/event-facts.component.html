@@ -5,14 +5,17 @@
       <span class="info-row__icon">
         <span class="material-symbols-outlined" translate="no">calendar_today</span>
       </span>
-      <span>{{ isEscapeEvent() ? tripDateRangeLabel() : (eventDate() | date:'EEEE, d MMMM y') }}</span>
+      <span>
+        {{ isEscapeEvent() ? tripDateRangeLabel() : (eventDate() | date:'EEEE, d MMMM y') }}
+        @if (!isEscapeEvent() && endDate()) { – {{ endDate() | date:'EEEE, d MMMM y' }} }
+      </span>
     </div>
     @if (!isEscapeEvent()) {
     <div class="info-row">
       <span class="info-row__icon">
         <span class="material-symbols-outlined" translate="no">schedule</span>
       </span>
-      <span>{{ eventTime() }} onwards</span>
+      <span>{{ eventTime() | time }}{{ endTime() ? ' – ' : ' onwards' }}{{ endTime() | time }}</span>
     </div>
     }
     <div class="info-row">
