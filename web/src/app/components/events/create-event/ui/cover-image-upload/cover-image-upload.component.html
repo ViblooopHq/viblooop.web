@@ -2,7 +2,12 @@
   [class.upload-card--loading]="isImageLoading()"
   [class.upload-card--empty]="!mainImagePreview()"
   [style.--default-cover-image]="'url(' + defaultCoverImage() + ')'"
-  [attr.aria-busy]="isImageLoading()">
+  [attr.aria-busy]="isImageLoading()"
+  [attr.tabindex]="isImageLoading() ? -1 : 0"
+  role="button"
+  aria-label="Choose an event cover image"
+  (keydown.enter)="fileInput.click()"
+  (keydown.space)="$event.preventDefault(); fileInput.click()">
 
   @if (isImageLoading()) {
     <div class="upload-loading-overlay">
@@ -31,16 +36,24 @@
           <span class="material-symbols-outlined upload-camera-icon" aria-hidden="true">add_a_photo</span>
         </div>
         <div class="upload-text-content">
-          <p class="upload-title-new">Upload Cover Image</p>
-          <p class="upload-sub-new">16:9 ratio recommended</p>
+          <span class="upload-kicker">
+            <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+            Recommended
+          </span>
+          <p class="upload-title-new">Add a cover image</p>
+          <p class="upload-sub-new">Show the vibe at a glance · 16:9 works best</p>
+          <span class="upload-cta">
+            <span class="material-symbols-outlined" aria-hidden="true">upload</span>
+            Choose photo
+          </span>
           <div class="joins-note">
-            <span class="material-symbols-outlined arrow-curve" aria-hidden="true">shortcut</span>
-            <span class="note-text">Best photos get more joins! ✨</span>
+            <span class="material-symbols-outlined" aria-hidden="true">trending_up</span>
+            <span class="note-text">Great covers get more joins ✨</span>
           </div>
         </div>
       </div>
     </div>
   }
 
-  <input type="file" class="sr-only" [disabled]="isImageLoading()" (change)="onFileChange($event)" accept="image/*,.heic,.heif" />
+  <input #fileInput type="file" class="sr-only" [disabled]="isImageLoading()" (change)="onFileChange($event)" accept="image/*,.heic,.heif" />
 </label>

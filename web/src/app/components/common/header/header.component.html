@@ -146,14 +146,19 @@
 
   <!-- Right: Actions (Theme Toggle & Notifications) -->
   <div class="flex items-center gap-3">
-    <button class="vl-icon-button w-9 min-w-9 h-9 active:scale-95" (click)="toggleTheme()"
+    <button type="button" class="vl-icon-button vl-mobile-header-icon w-9 min-w-9 h-9 active:scale-95"
+      (click)="openCalendarDrawer($event)" aria-label="Open calendar">
+      <span class="material-symbols-outlined" translate="no">event_available</span>
+    </button>
+
+    <button class="vl-icon-button vl-mobile-header-icon w-9 min-w-9 h-9 active:scale-95" (click)="toggleTheme()"
       [attr.aria-label]="isLightTheme() ? 'Switch to dark mode' : 'Switch to light mode'">
       <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
     </button>
 
     @if (userDetails) {
     <div class="notification-anchor relative flex items-center">
-      <button type="button" class="vl-icon-button relative w-9 min-w-9 h-9 active:scale-95"
+      <button type="button" class="vl-icon-button vl-mobile-header-icon relative w-9 min-w-9 h-9 active:scale-95"
         (click)="navigateTo('/notifications')"
         [attr.aria-label]="sharedService.notificationCount() > 0 ? 'Notifications, ' + sharedService.notificationCount() + ' unread' : 'Notifications'">
         <span class="material-symbols-outlined" translate="no">notifications</span>

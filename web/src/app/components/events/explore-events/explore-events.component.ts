@@ -14,6 +14,23 @@ import { RouterModule } from '@angular/router';
 import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
 
+const CATEGORY_FILTER_IMAGES: Record<string, string> = {
+  party: 'assets/images/category-filter/party.png',
+  social: 'assets/images/category-filter/party.png',
+  'social events': 'assets/images/category-filter/party.png',
+  escape: 'assets/images/category-filter/escape.png',
+  escapes: 'assets/images/category-filter/escape.png',
+  travel: 'assets/images/category-filter/escape.png',
+  'travel companion': 'assets/images/category-filter/escape.png',
+  sports: 'assets/images/category-filter/sports.png',
+  'sports activities': 'assets/images/category-filter/sports.png',
+  events: 'assets/images/category-filter/hangouts.png',
+  'local events': 'assets/images/category-filter/hangouts.png',
+  quickies: 'assets/images/category-filter/hangouts.png',
+  hangout: 'assets/images/category-filter/hangouts.png',
+  hangouts: 'assets/images/category-filter/hangouts.png',
+};
+
 @Component({
   selector: 'vl-explore-events',
   standalone: true,
@@ -360,7 +377,7 @@ export class ExploreEventsComponent implements OnInit {
       label,
       description: category.description,
       icon: category.icon,
-      cover: category.image,
+      cover: CATEGORY_FILTER_IMAGES[normalizedTitle] || category.image,
       tags: category.tags || []
     };
   }

@@ -385,6 +385,14 @@ export class EventDetailsComponent {
 
   constructor() {
 
+    this.eventsService.eventUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((updatedEventId) => {
+        if (updatedEventId === this.eventId()) {
+          this.fetchEventDetails(updatedEventId, false);
+        }
+      });
+
     effect(() => {
       const eventId = this.eventId();
       if (eventId) this.fetchEventDetails(eventId, true);

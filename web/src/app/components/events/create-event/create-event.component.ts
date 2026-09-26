@@ -3,6 +3,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   EventEmitter,
+  ElementRef,
   Inject,
   Input,
   NgZone,
@@ -62,6 +63,7 @@ export class CreateEventComponent implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly ngZone = inject(NgZone);
   private readonly titleService = inject(Title);
+  private readonly hostElement = inject(ElementRef<HTMLElement>);
 
   readonly totalSteps = CREATE_EVENT_STEPS;
   readonly currentStep = signal(0);
@@ -173,6 +175,7 @@ export class CreateEventComponent implements OnInit {
   prevStep(): void {
     if (this.currentStep() > 0) {
       this.currentStep.update(s => s - 1);
+      this.scrollPageToTop();
     } else {
       this.appDrawerService.close();
       this.drawerClosed.emit();
@@ -187,8 +190,14 @@ export class CreateEventComponent implements OnInit {
     if (!isPlatformBrowser(this.platformId)) return;
 
     setTimeout(() => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.querySelector('.vl-body-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+      const drawer = this.hostElement.nativeElement.querySelector('.vl-form-drawer') as HTMLElement | null;
+      if (drawer) {
+        drawer.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        return;
+      }
+
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+      document.querySelector('.vl-body-container')?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     });
   }
 

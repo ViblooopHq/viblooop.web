@@ -161,6 +161,12 @@ export class HeaderComponent implements OnInit {
     this.openCreateDrawer();
   }
 
+  openCalendarDrawer(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.appDrawerService.openCalendar();
+  }
+
   openCreateDrawer() {
     if (!this.userDetails) {
       this.redirectToLogin();

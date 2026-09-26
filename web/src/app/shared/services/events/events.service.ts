@@ -1,12 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { } from '../../../../assets/json/data.json'
 import { HttpService } from '../http/http.service';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, shareReplay, Subject, tap } from 'rxjs';
 import { Environment } from '../../../../environment';
 @Injectable({
   providedIn: 'root'
 })
 export class EventsService {
+  private readonly eventUpdatedSubject = new Subject<string>();
+  readonly eventUpdated$ = this.eventUpdatedSubject.asObservable();
+
   eventCategories: any = []
   eventDetails: any = []
   selectedCategory: any = {};
@@ -107,7 +110,10 @@ export class EventsService {
   }
 
   getAllEvents(filter: string = 'all', category?: string, search?: string, limit?: number): Observable<any> {
-    const params: Record<string, string> = { filter };
+    const params: Record<string, string> = {
+      filter,
+      timezoneOffset: String(new Date().getTimezoneOffset()),
+    };
     if (category) params['category'] = category;
     if (search) params['search'] = search;
     if (limit) params['limit'] = String(limit);
@@ -116,7 +122,10 @@ export class EventsService {
   }
 
   getEventForYou(filter: string = 'all', category?: string, search?: string, limit?: number): Observable<any> {
-    const params: Record<string, string> = { filter };
+    const params: Record<string, string> = {
+      filter,
+      timezoneOffset: String(new Date().getTimezoneOffset()),
+    };
     if (category) params['category'] = category;
     if (search) params['search'] = search;
     if (limit) params['limit'] = String(limit);
@@ -150,7 +159,14 @@ export class EventsService {
   }
 
   updateEvent(eventData: any): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/updateEvent`, eventData);
+    return this.httpService.http.post(`${this.baseUrl}/updateEvent`, eventData).pipe(
+      tap((response: any) => {
+        const eventId = response?.data?.event?._id;
+        if (response?.success && eventId) {
+          this.eventUpdatedSubject.next(eventId);
+        }
+      })
+    );
   }
 
   removeEventGalleryImage(eventId: string, imagePath: string): Observable<any> {

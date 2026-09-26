@@ -31,6 +31,8 @@ import { MessageService } from './shared/services/message/message.service';
 import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
 import { AppSplashService } from './shared/services/app-splash/app-splash.service';
 import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
+import { FormDrawerComponent } from './shared/components/form-drawer/form-drawer.component';
+import { MyPlansComponent } from './components/events/my-plans/my-plans.component';
 
 @Component({
   selector: 'vl-app-root',
@@ -50,6 +52,8 @@ import { ToastContainerComponent } from './shared/components/toast-container/toa
     InboxComponent,
     AppSplashLoaderComponent,
     ToastContainerComponent,
+    FormDrawerComponent,
+    MyPlansComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',

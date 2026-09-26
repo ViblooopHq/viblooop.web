@@ -89,6 +89,17 @@
   overflow: visible;
 }
 
+.vl-mobile-header-icon {
+  border-color: transparent;
+  background-color: transparent;
+  box-shadow: none;
+
+  &:hover {
+    border-color: transparent;
+    background-color: var(--color-surface-interactive);
+  }
+}
+
 .header-profile-trigger {
   display: grid;
   place-items: center;

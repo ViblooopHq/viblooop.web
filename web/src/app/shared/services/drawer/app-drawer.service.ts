@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export type AppDrawerState =
+  | { type: 'calendar' }
   | { type: 'edit-profile' }
   | { type: 'wishlist' }
   | { type: 'notifications' }
@@ -21,6 +22,10 @@ export class AppDrawerService {
 
   get currentDrawerState(): AppDrawerState | null {
     return this.drawerSubject.value;
+  }
+
+  openCalendar(): void {
+    this.drawerSubject.next({ type: 'calendar' });
   }
 
   openEditProfile(): void {
@@ -51,4 +56,3 @@ export class AppDrawerService {
     this.drawerSubject.next(null);
   }
 }
-

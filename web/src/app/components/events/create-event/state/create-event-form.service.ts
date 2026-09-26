@@ -357,7 +357,10 @@ export class CreateEventFormService {
     this.eventsService.getCategoriesList().subscribe((res: any) => {
       if (res?.data?.categories) {
         const enriched = res.data.categories
-          .map((category: any) => this.categoryPresentation.withDisplayTags(category));
+          .map((category: any) => this.categoryPresentation.withDisplayTags(category))
+          .map((category: any) => this.categoryPresentation.getDisplayTitle(category) === 'Social'
+            ? { ...category, image: 'assets/images/category-cards/social-rooftop-party.jpg' }
+            : category);
         if (!enriched.some((category: any) => this.categoryPresentation.getCreationKind(category) === 'play')) {
           enriched.push(this.categoryPresentation.withDisplayTags({
             id: 'play',
