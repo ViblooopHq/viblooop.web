@@ -257,6 +257,10 @@
     (viewPerson)="openPersonProfile($event)" />
 
   <vl-action-modal
+    [presentation]="actionModal().action === 'cancel' || actionModal().action === 'delete' ? 'sheet' : 'dialog'"
+    [destructive]="actionModal().action === 'cancel' || actionModal().action === 'delete'"
+    [icon]="actionModal().action === 'delete' ? 'delete' : actionModal().action === 'cancel' ? 'error_outline' : ''"
+    [impactMessage]="actionModal().action === 'cancel' ? 'All attendees will be notified.' : ''"
     [isOpen]="actionModal().isOpen"
     [variant]="actionModal().variant"
     [title]="actionModal().title"

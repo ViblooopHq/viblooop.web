@@ -1,4 +1,4 @@
-import { CurrencyPipe, SlicePipe } from '@angular/common';
+import { CurrencyPipe, SlicePipe, DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouteService } from '../../services/route/route.service';
@@ -11,7 +11,7 @@ import { isThisCalendarWeekend } from '../../utils/date-badge.util';
 @Component({
   selector: 'vl-compact-event-card',
   standalone: true,
-  imports: [ImageUrlPipe, CurrencyPipe, SlicePipe, TruncatePipe],
+  imports: [DatePipe, TimePipe, ImageUrlPipe, CurrencyPipe, SlicePipe, DatePipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compact-event-card.component.html',
   styleUrl: './compact-event-card.component.scss'
@@ -220,27 +220,9 @@ export class CompactEventCardComponent {
     return 'Dates TBA';
   }
 
-  get formattedDateTime(): string {
-    if (this.isEscapeEvent) {
-      return this.tripDateRangeLabel;
-    }
-    const config = this.config();
-    if (!config?.eventDate) return '';
-
-    const date = new Date(config.eventDate);
-    const month = date.toLocaleDateString('en-US', { month: 'short' });
-    const day = date.getDate();
-
-    if (config.eventTime) {
-      const timeStr = new TimePipe().transform(config.eventTime);
-      const endTimeStr = config.endTime ? new TimePipe().transform(config.endTime) : '';
-      const endDate = config.endDate ? new Date(config.endDate) : null;
-      const endDateStr = endDate && !Number.isNaN(endDate.getTime())
-        ? `${endDate.toLocaleDateString('en-US', { month: 'short' })} ${endDate.getDate()}`
-        : '';
-      return `${month} ${day} • ${timeStr}${endTimeStr ? ` – ${endDateStr || `${month} ${day}`} • ${endTimeStr}` : ''}`;
-    }
-    return `${month} ${day}`;
+  get isMultiDay(): boolean {
+    const { eventDate, endDate } = this.config() || {};
+    return !!eventDate && !!endDate && new Date(eventDate).toDateString() !== new Date(endDate).toDateString();
   }
 
   get isFree(): boolean {

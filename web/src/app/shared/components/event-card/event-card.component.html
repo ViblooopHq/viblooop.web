@@ -57,27 +57,25 @@
         {{ config()?.title || 'Event Title' }}
       </h3>
 
-      <!-- Location & Time Row -->
-      <div class="flex items-center gap-1 text-on-surface-variant text-[12px] sm:text-[13px] mb-2 sm:mb-2.5 min-w-0">
-        <div class="flex items-center gap-1 min-w-0 flex-1" [title]="location">
-          <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">location_on</span>
-          <span class="truncate font-medium">{{ location | truncate:24 }}</span>
+      <div class="vl-event-card__schedule">
+        <div class="vl-event-card__schedule-row">
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime) { · {{ config()?.eventTime | time }} }</span>
         </div>
-        <span class="text-slate-400 font-normal flex-shrink-0" aria-hidden="true">•</span>
-        <div class="flex items-center gap-1 flex-shrink-0" [title]="isEscapeEvent ? tripDateRangeLabel : ''">
-          <span class="material-symbols-outlined !text-[16px] text-primary flex-shrink-0" aria-hidden="true">
-            {{ isEscapeEvent ? 'date_range' : 'schedule' }}
-          </span>
-          @if (isEscapeEvent) {
-            <span class="whitespace-nowrap font-medium">{{ tripDateRangeLabel }}</span>
-          } @else {
-            <span class="whitespace-nowrap font-medium">
-              {{ config()?.eventDate | date:'MMM d' }} • {{ config()?.eventTime | time }}
-              @if (config()?.endTime) {
-                – {{ config()?.endDate | date:'MMM d' }} • {{ config()?.endTime | time }}
-              }
-            </span>
-          }
+        @if (isMultiDay) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">event</span>
+            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime) { · {{ config()?.endTime | time }} }</span>
+          </div>
+        } @else if (config()?.eventTime || config()?.endTime) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <span>{{ config()?.eventTime | time }}@if (config()?.eventTime && config()?.endTime) { – }{{ config()?.endTime | time }}</span>
+          </div>
+        }
+        <div class="vl-event-card__schedule-row" [title]="location">
+          <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+          <span class="truncate">{{ location | truncate:24 }}</span>
         </div>
       </div>
 

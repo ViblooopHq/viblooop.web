@@ -63,13 +63,21 @@
   <!-- Card Body -->
   <div class="vl-compact-card__body">
     <div class="vl-compact-card__top">
-      <!-- Date & Time Row -->
-      @if (formattedDateTime) {
         <div class="vl-compact-card__datetime">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
-          <span>{{ formattedDateTime }}</span>
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime) { · {{ config()?.eventTime | time }} }</span>
         </div>
-      }
+        @if (isMultiDay) {
+          <div class="vl-compact-card__datetime">
+            <span class="material-symbols-outlined" aria-hidden="true">event</span>
+            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime) { · {{ config()?.endTime | time }} }</span>
+          </div>
+        } @else if (config()?.eventTime || config()?.endTime) {
+          <div class="vl-compact-card__datetime">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <span>{{ config()?.eventTime | time }}@if (config()?.eventTime && config()?.endTime) { – }{{ config()?.endTime | time }}</span>
+          </div>
+        }
 
       <!-- Location Row -->
       <div class="vl-compact-card__location" [title]="location">

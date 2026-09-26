@@ -246,6 +246,11 @@ export class EventCardComponent {
     }
   }
 
+  get isMultiDay(): boolean {
+    const { eventDate, endDate } = this.config() || {};
+    return !!eventDate && !!endDate && new Date(eventDate).toDateString() !== new Date(endDate).toDateString();
+  }
+
   get isEscapeEvent(): boolean {
     const config = this.config();
     const category = config?.category;

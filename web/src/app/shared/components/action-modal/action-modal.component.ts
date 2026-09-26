@@ -5,6 +5,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { A11yModule } from '@angular/cdk/a11y';
 import { FormsModule } from '@angular/forms';
 import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
 
@@ -12,13 +13,17 @@ export type ActionModalVariant = 'confirm' | 'warning' | 'error' | 'success' | '
 
 @Component({
   selector: 'vl-action-modal',
-  imports: [FormsModule, InlineLoaderComponent],
+  imports: [A11yModule, FormsModule, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './action-modal.component.html',
   styleUrl: './action-modal.component.scss',
 })
 export class ActionModalComponent {
   isOpen = input(false);
+  presentation = input<'dialog' | 'sheet'>('dialog');
+  icon = input('');
+  impactMessage = input('');
+  destructive = input(false);
   variant = input<ActionModalVariant>('confirm');
   title = input('Are you sure?');
   message = input('');

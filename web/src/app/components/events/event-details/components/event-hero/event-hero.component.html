@@ -13,30 +13,12 @@
     </button>
 
     @if (isEventCreator() && !isEventEnded()) {
-    <div class="hero-owner-menu" vibOutsideClick (onOutsideClick)="isEventMenuOpen() ? closeMenu.emit() : null">
-      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="menu" [attr.aria-expanded]="isEventMenuOpen()"
+    <div class="hero-owner-menu">
+      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="dialog" [attr.aria-expanded]="isEventMenuOpen()"
         aria-label="Event options" (click)="toggleMenu.emit()">
         <span class="material-symbols-outlined" translate="no">more_horiz</span>
       </button>
 
-      @if (isEventMenuOpen()) {
-      <div class="hero-menu-popover" role="menu">
-        <button type="button" role="menuitem" class="vl-menu-item" (click)="editEvent.emit()">
-          <span class="material-symbols-outlined" translate="no">edit</span>
-          <span>Edit Event</span>
-        </button>
-        @if (!isEventEnded() && !isCancelled()) {
-        <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--warning" (click)="cancelEvent.emit()">
-          <span class="material-symbols-outlined" translate="no">block</span>
-          <span>Cancel Event</span>
-        </button>
-        }
-        <button type="button" role="menuitem" class="vl-menu-item vl-menu-item--danger" (click)="deleteEvent.emit()">
-          <span class="material-symbols-outlined" translate="no">delete</span>
-          <span>Delete Event</span>
-        </button>
-      </div>
-      }
     </div>
     }
   </div>
@@ -46,9 +28,20 @@
 
     <div class="hero-meta">
       <span class="meta-badge">
-        <span class="material-symbols-outlined" translate="no">{{ isEscapeEvent() ? 'calendar_today' : 'schedule' }}</span>
-        <span>{{ isEventEnded() ? (eventDate() | date:'EEEE, d MMMM y') : timeLeftLabel() }}</span>
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
+        <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (isMultiDay() && event()?.eventTime) { · {{ event()?.eventTime | time }} }</span>
       </span>
+      @if (isMultiDay()) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
+          <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime) { · {{ event()?.endTime | time }} }</span>
+        </span>
+      } @else if (event()?.eventTime || event()?.endTime) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
+          <span>{{ event()?.eventTime | time }}@if (event()?.eventTime && event()?.endTime) { – }{{ event()?.endTime | time }}</span>
+        </span>
+      }
       <span class="meta-badge">
         <span class="material-symbols-outlined" translate="no">location_on</span>
         <span>{{ locationLabel() }}</span>
@@ -142,3 +135,29 @@
     </div>
   </div>
 </section>
+
+<dialog #actionsDialog class="event-actions-sheet" aria-labelledby="event-actions-title"
+  (cancel)="$event.preventDefault(); closeMenu.emit()" (click)="onSheetBackdrop($event)">
+  <div class="event-actions-sheet__content">
+    <div class="event-actions-sheet__handle" aria-hidden="true"></div>
+    <h2 id="event-actions-title">Event actions</h2>
+    <button type="button" class="event-action" (click)="editEvent.emit()">
+      <span class="event-action__icon material-symbols-outlined" aria-hidden="true">edit</span>
+      <span class="event-action__copy"><strong>Edit Event</strong><small>Update event details, time, location etc.</small></span>
+      <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
+    </button>
+    @if (!isEventEnded() && !isCancelled()) {
+      <button type="button" class="event-action event-action--warning" (click)="cancelEvent.emit()">
+        <span class="event-action__icon material-symbols-outlined" aria-hidden="true">block</span>
+        <span class="event-action__copy"><strong>Cancel Event</strong><small>Cancel and notify all attendees</small></span>
+        <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
+      </button>
+    }
+    <div class="event-actions-sheet__divider"></div>
+    <button type="button" class="event-action event-action--danger" (click)="deleteEvent.emit()">
+      <span class="event-action__icon material-symbols-outlined" aria-hidden="true">delete</span>
+      <span class="event-action__copy"><strong>Delete Event</strong><small>Permanently delete this event</small></span>
+    </button>
+    <button type="button" class="event-actions-sheet__cancel" (click)="closeMenu.emit()">Cancel</button>
+  </div>
+</dialog>

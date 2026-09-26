@@ -223,3 +223,26 @@
     object-fit: cover;
   }
 }
+
+.vl-event-card__schedule {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vl-event-card__schedule-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  line-height: 1.5;
+
+  .material-symbols-outlined {
+    flex-shrink: 0;
+    font-size: 17px;
+    color: var(--color-primary);
+  }
+}

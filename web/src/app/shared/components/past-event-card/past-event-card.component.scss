@@ -12,11 +12,10 @@
   display: flex;
   align-items: flex-end;
   width: 100%;
-  min-height: 320px;
-  height: 100%;
-  aspect-ratio: 1.17;
+  min-height: 260px;
+  height: 280px;
   overflow: hidden;
-  border: 1px solid color-mix(in srgb, var(--color-media-foreground) 16%, transparent);
+  border: none;
   border-radius: 24px;
   background: var(--color-media-background);
   color: var(--color-media-foreground);
@@ -56,7 +55,7 @@
   &__content {
     width: 100%;
     min-width: 0;
-    padding: 100px 20px 20px;
+    padding: 64px 16px 16px;
     text-shadow: 0 2px 8px color-mix(in srgb, var(--color-media-background) 75%, transparent);
   }
 
@@ -73,7 +72,7 @@
   &__title {
     margin: 0 0 9px;
     color: var(--color-media-foreground);
-    font-size: clamp(20px, 4.7cqi, 28px);
+    font-size: clamp(18px, 5.5cqi, 22px);
     font-weight: 750;
     line-height: 1.2;
     letter-spacing: -0.025em;
@@ -100,7 +99,7 @@
     flex-wrap: nowrap;
     align-items: center;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 14px;
   }
 
   &__stat {
@@ -170,6 +169,14 @@
   .vl-past-card__moments { padding-left: 8px; }
   .vl-past-card__cta { gap: 6px; padding-left: 8px; font-size: 11px; }
   .vl-past-card__cta-circle { width: 34px; height: 34px; }
+}
+
+@container (max-width: 350px) {
+  .vl-past-card { height: 260px; }
+  .vl-past-card__date-pill { top: 12px; right: 12px; padding: 6px 9px; font-size: 11px; }
+  .vl-past-card__location { font-size: 12px; }
+  .vl-past-card__footer { flex-wrap: wrap; row-gap: 10px; }
+  .vl-past-card__cta { flex-basis: 100%; padding-left: 0; border-left: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -274,3 +274,71 @@
     font-size: 0.8125rem;
   }
 }
+
+.vl-modal-backdrop--sheet {
+  .vl-modal {
+    max-height: 90dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 16px 20px max(24px, env(safe-area-inset-bottom));
+    border-radius: 24px;
+  }
+  .vl-modal__handle {
+    width: 48px;
+    height: 5px;
+    margin: 0 auto 24px;
+    border-radius: var(--radius-pill);
+    background: var(--color-border);
+  }
+  .vl-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 12px;
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    &:disabled { opacity: 0.5; cursor: wait; }
+  }
+  .vl-modal__icon-ring {
+    width: 76px;
+    height: 76px;
+    border: 0;
+    .material-symbols-outlined { font-size: 36px; }
+  }
+  .vl-modal__impact {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border-radius: 14px;
+    background: var(--color-warning-soft);
+    color: var(--color-text-primary);
+    font-size: 14px;
+    text-align: left;
+    .material-symbols-outlined { color: var(--color-warning); }
+  }
+  .vl-modal__actions { display: flex; flex-direction: column-reverse; gap: 10px; }
+  .vl-modal__btn { width: 100%; min-height: 50px; border-radius: 14px; }
+  .vl-modal__btn--cancel { border: 0; background: var(--color-primary-soft); }
+  .vl-modal__btn--destructive {
+    background: var(--color-error);
+    color: var(--color-on-primary);
+    box-shadow: none;
+    &:hover:not(:disabled) { background: var(--color-error-hover, var(--color-error)); box-shadow: none; }
+  }
+}
+
+@media (max-width: 600px) {
+  .vl-modal-backdrop--sheet {
+    padding: 0;
+    align-items: end;
+    .vl-modal { width: 100%; border-radius: 24px 24px 0 0; }
+  }
+}

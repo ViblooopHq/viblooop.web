@@ -6,17 +6,24 @@
         <span class="material-symbols-outlined" translate="no">calendar_today</span>
       </span>
       <span>
-        {{ isEscapeEvent() ? tripDateRangeLabel() : (eventDate() | date:'EEEE, d MMMM y') }}
-        @if (!isEscapeEvent() && endDate()) { – {{ endDate() | date:'EEEE, d MMMM y' }} }
+        {{ eventDate() | date:'EEEE, d MMMM y' }}
+        @if (isMultiDay() && eventTime()) { · {{ eventTime() | time }} }
       </span>
     </div>
-    @if (!isEscapeEvent()) {
-    <div class="info-row">
-      <span class="info-row__icon">
-        <span class="material-symbols-outlined" translate="no">schedule</span>
-      </span>
-      <span>{{ eventTime() | time }}{{ endTime() ? ' – ' : ' onwards' }}{{ endTime() | time }}</span>
-    </div>
+    @if (isMultiDay()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">event</span>
+        </span>
+        <span>{{ endDate() | date:'EEEE, d MMMM y' }}@if (endTime()) { · {{ endTime() | time }} }</span>
+      </div>
+    } @else if (eventTime() || endTime()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">schedule</span>
+        </span>
+        <span>{{ eventTime() | time }}@if (eventTime() && endTime()) { – }{{ endTime() | time }}</span>
+      </div>
     }
     @if (eventPriceLabel()) {
       <div class="info-row">

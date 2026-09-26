@@ -201,12 +201,17 @@ export class EventDetailsComponent {
 
   isEventEnded = computed(() => {
     const details = this.eventDetails();
+    if (details?.endDate && !details.endTime) {
+      const end = new Date(details.endDate);
+      end.setHours(23, 59, 59, 999);
+      return end.getTime() <= this.now();
+    }
     const eventDateTime = getEventDateTime(
       details,
       details?.endTime || details?.eventTime,
       details?.endDate || details?.eventDate,
     );
-    return eventDateTime ? eventDateTime < new Date() : false;
+    return eventDateTime ? eventDateTime.getTime() <= this.now() : false;
   });
 
   isEscapeEvent = computed(() => {
@@ -884,10 +889,10 @@ export class EventDetailsComponent {
     this.actionModal.set({
       ...defaultModalState,
       isOpen: true,
-      variant: 'warning',
-      title: 'Delete Event',
-      message: 'This will permanently delete this event and all its data. This action cannot be undone.',
-      confirmLabel: 'Delete',
+      variant: 'error',
+      title: 'Delete Event?',
+      message: 'This will permanently delete the event and its pending join requests. This action cannot be undone. Events with attendees must be cancelled instead.',
+      confirmLabel: 'Yes, Delete Event',
       showInput: false,
       action: 'delete',
     });
@@ -899,9 +904,10 @@ export class EventDetailsComponent {
       ...defaultModalState,
       isOpen: true,
       variant: 'warning',
-      title: 'Cancel Event',
-      message: 'All attendees will be notified that this event has been cancelled. Please provide a reason.',
-      confirmLabel: 'Cancel Event',
+      title: 'Cancel Event?',
+      message: 'This will cancel the event. Please provide a reason to share with attendees.',
+      confirmLabel: 'Yes, Cancel Event',
+      cancelLabel: 'Keep Event',
       showInput: true,
       inputPlaceholder: 'Why are you cancelling this event?',
       inputRequired: true,
