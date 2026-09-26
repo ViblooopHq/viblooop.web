@@ -37,15 +37,10 @@
     </button>
 
     @if (userDetails) {
-    <!-- Desktop Wishlist Button -->
-    <button type="button" [matTooltip]="'Wishlist'" (click)="navigateTo('/my-wishlist')" class="vl-icon-button relative"
-      aria-label="Wishlist">
-      <span class="material-symbols-outlined" translate="no">favorite</span>
-      @if (userDetails?.wishlist?.length > 0) {
-      <span class="vl-header-badge" aria-label="Wishlist item count">
-        {{ userDetails.wishlist.length }}
-      </span>
-      }
+    <!-- Desktop My Plans Button -->
+    <button type="button" [matTooltip]="'My Plans'" (click)="openMyPlans($event)" class="vl-icon-button relative"
+      aria-label="My Plans">
+      <span class="material-symbols-outlined" translate="no">confirmation_number</span>
     </button>
 
     <div class="notification-anchor relative flex items-center">
@@ -110,16 +105,6 @@
               class="material-symbols-outlined w-5 text-center text-error group-hover/item:scale-110 transition-transform"
               translate="no">favorite</span>
             <span class="font-medium">My Wishlist</span>
-          </li>
-
-          <div class="h-[1px] bg-gray-200/50 dark:bg-outline-variant/20 my-1 mx-2"></div>
-
-          <li
-            class="px-4 py-2.5 hover:bg-error/10 dark:hover:bg-error/20 cursor-pointer flex items-center gap-3 transition-all text-error group/item"
-            (click)="logout()">
-            <span class="material-symbols-outlined w-5 text-center group-hover/item:translate-x-1 transition-transform"
-              translate="no">logout</span>
-            <span class="font-medium">Logout</span>
           </li>
         </ul>
       </div>
@@ -194,12 +179,6 @@
     (click)="navigateTo('/my-wishlist')">
     <span class="material-symbols-outlined w-5 text-center text-error" translate="no">favorite</span> <span
       class="font-medium text-sm">My Wishlist</span>
-  </li>
-  <li
-    class="px-4 py-2.5 hover:bg-error/10 dark:hover:bg-error/20 active:bg-error/20 cursor-pointer flex items-center gap-3 text-error transition-colors"
-    (click)="logout()">
-    <span class="material-symbols-outlined w-5 text-center" translate="no">logout</span> <span
-      class="font-medium text-sm">Logout</span>
   </li>
 </div>
 }

@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output, signal } from '@angular/core';
 import { EventDetails } from '../../../../shared/interfaces/event.interface';
 import { ImageUrlPipe } from '../../../../shared/pipes/image-url.pipe';
 import { TimePipe } from '../../../../shared/pipes/time.pipe';
 import { ThemeService } from '../../../../shared/services/theme/theme.service';
+import * as QRCode from 'qrcode';
 
 @Component({
   selector: 'vl-ticket',
@@ -17,6 +18,25 @@ export class TicketComponent {
   readonly plan = input.required<EventDetails>();
   readonly selected = output<EventDetails>();
   readonly themeService = inject(ThemeService);
+  readonly qrDataUrl = signal<string>('');
+
+  constructor() {
+    effect(() => {
+      const code = this.ticketCode();
+      const eventId = this.plan()._id || this.plan()['id'] || '';
+      const payload = `https://viblooop.com/verify-ticket?code=${code}&event=${eventId}`;
+      QRCode.toDataURL(payload, {
+        margin: 1,
+        width: 250,
+        color: {
+          dark: '#111827',
+          light: '#ffffff',
+        },
+      })
+        .then((url) => this.qrDataUrl.set(url))
+        .catch(() => this.qrDataUrl.set(''));
+    });
+  }
 
   selectPlan(): void {
     this.selected.emit(this.plan());

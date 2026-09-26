@@ -91,12 +91,14 @@
           [audiencePreferenceIcon]="audiencePreferenceIcon()"
           [eventPriceLabel]="eventPriceLabel()" />
 
-        @if (eventGalleryImages().length > 0) {
+        @if (eventGalleryImages().length > 0 || isUserAttendee()) {
         @defer (on viewport) {
           <vl-event-gallery-section
             [images]="eventGalleryImages()"
             [isEventCreator]="isEventCreator()"
+            [canUpload]="isUserAttendee()"
             [canDownload]="canDownloadGalleryImage()"
+            [currentUserId]="currentUserId()"
             [deletingImagePath]="deletingGalleryImagePath()"
             [isUploading]="isUploadingGallery()"
             (uploadPhotos)="onUploadPhotos($event)"

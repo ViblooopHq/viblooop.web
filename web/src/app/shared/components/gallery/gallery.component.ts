@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, HostListener, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostListener, input, output, signal } from '@angular/core';
 import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
 
 export interface GalleryImage {
@@ -6,6 +6,7 @@ export interface GalleryImage {
   path?: string;
   title?: string;
   archived?: boolean; // true = hidden in profile
+  uploaderId?: string;
 }
 
 @Component({
@@ -23,6 +24,8 @@ export class GalleryComponent {
   showActions = input(false);
   canDownload = input(false);
   canDelete = input(false);
+  isEventCreator = input(false);
+  currentUserId = input('');
   deletingImagePath = input('');
 
   deleteImage = output<GalleryImage>();
@@ -32,6 +35,14 @@ export class GalleryComponent {
   isActionsOpen = signal(false);
   isDeleteConfirmOpen = signal(false);
   isDesktop = signal(window.innerWidth >= 768); // tablet & laptop only
+
+  canDeleteSelectedImage = computed(() => {
+    if (this.isEventCreator() || this.canDelete()) return true;
+    const img = this.selectedImage();
+    const userId = this.currentUserId();
+    if (!img || !userId) return false;
+    return !!(img.uploaderId && String(img.uploaderId) === String(userId));
+  });
 
   // Update view on resize
   @HostListener('window:resize')
@@ -90,7 +101,7 @@ export class GalleryComponent {
   }
 
   get shouldShowActions(): boolean {
-    return this.showActions() && (this.canDownload() || this.canDelete());
+    return this.showActions() && (this.canDownload() || this.canDeleteSelectedImage());
   }
 
   toggleActions() {
@@ -99,7 +110,7 @@ export class GalleryComponent {
   }
 
   openDeleteConfirm() {
-    if (!this.canDelete()) return;
+    if (!this.canDeleteSelectedImage()) return;
     this.isActionsOpen.set(false);
     this.isDeleteConfirmOpen.set(true);
   }
@@ -110,7 +121,7 @@ export class GalleryComponent {
 
   requestDelete() {
     const image = this.selectedImage();
-    if (!this.canDelete() || !image) return;
+    if (!this.canDeleteSelectedImage() || !image) return;
     this.deleteImage.emit(image);
   }
 

@@ -157,6 +157,8 @@ export class EventDetailsComponent {
   totalAttendeesCount = computed(() => this.attendees().length + 1); // +1 includes the creator
   attendeePreviewProfiles = computed(() => this.attendeeProfiles().slice(0, 5));
 
+  currentUserId = computed(() => this.currentUser()?.id || this.currentUser()?._id || '');
+
   isLoggedIn = computed(() => {
     const user = this.currentUser();
     return !!(user?.id || user?._id || user?.username || user?.email);
@@ -509,7 +511,16 @@ export class EventDetailsComponent {
         details.image = this.sharedService.getImageUrl(details.image);
 
         const galleryImages: GalleryImage[] = Array.isArray(details.gallery)
-          ? details.gallery.map((image: string) => ({ path: image, url: this.sharedService.getImageUrl(image) }))
+          ? details.gallery.map((image: any) => {
+              if (typeof image === 'object' && image !== null) {
+                return {
+                  path: image.path || image.url,
+                  url: this.sharedService.getImageUrl(image.path || image.url),
+                  uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
+                };
+              }
+              return { path: image, url: this.sharedService.getImageUrl(image) };
+            })
           : [];
         details.gallery = galleryImages.map((image) => image.url);
 
@@ -717,12 +728,17 @@ export class EventDetailsComponent {
   }
 
   async onUploadPhotos(files: File[]): Promise<void> {
-    if (!this.isEventCreator() || this.isUploadingGallery()) return;
+    if (!this.isUserAttendee() || this.isUploadingGallery()) return;
 
     this.isUploadingGallery.set(true);
     const eventId = this.eventId();
+    const userId = this.currentUserId();
+
     const formData = new FormData();
     formData.append('eventId', eventId);
+    if (userId) {
+      formData.append('uploaderId', userId);
+    }
     for (const file of files) {
       const finalFile = await this.sharedService.convertHeicToJpg(file);
       formData.append('gallery', finalFile);
@@ -738,7 +754,20 @@ export class EventDetailsComponent {
         }
 
         const gallery = Array.isArray(res.data?.event?.gallery) ? res.data.event.gallery : [];
-        this.eventGalleryImages.set(gallery.map((image: string) => ({ path: image, url: this.sharedService.getImageUrl(image) })));
+        this.eventGalleryImages.set(gallery.map((image: any) => {
+          if (typeof image === 'object' && image !== null) {
+            return {
+              path: image.path || image.url,
+              url: this.sharedService.getImageUrl(image.path || image.url),
+              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy || userId,
+            };
+          }
+          return {
+            path: image,
+            url: this.sharedService.getImageUrl(image),
+            uploaderId: userId,
+          };
+        }));
         this.toastService.success('Photos added to event gallery!', 'Photos Uploaded');
       },
       error: (err: any) => {
@@ -751,7 +780,16 @@ export class EventDetailsComponent {
 
   onDeleteGalleryImage(imagePath: string): void {
     const eventId = this.eventId();
-    if (!this.isEventCreator() || !eventId || !imagePath || this.deletingGalleryImagePath()) return;
+    if (!this.isUserAttendee() || !eventId || !imagePath || this.deletingGalleryImagePath()) return;
+
+    const targetImage = this.eventGalleryImages().find((img) => img.path === imagePath || img.url === imagePath);
+    const userId = this.currentUserId();
+    const canDeleteThis = this.isEventCreator() || (targetImage?.uploaderId && String(targetImage.uploaderId) === String(userId));
+
+    if (!canDeleteThis) {
+      this.toastService.error('You can only delete photos that you uploaded.', 'Permission Denied');
+      return;
+    }
 
     this.deletingGalleryImagePath.set(imagePath);
     this.eventsService.removeEventGalleryImage(eventId, imagePath).subscribe({
@@ -762,7 +800,7 @@ export class EventDetailsComponent {
           return;
         }
 
-        this.eventGalleryImages.update((images) => images.filter((image) => image.path !== imagePath));
+        this.eventGalleryImages.update((images) => images.filter((image) => image.path !== imagePath && image.url !== imagePath));
         this.gallerySection?.closeGalleryPreview();
         this.toastService.info('Photo removed from gallery.', 'Photo Removed');
       },

@@ -15,7 +15,9 @@ export class EventGallerySectionComponent {
 
   images = input<GalleryImage[]>([]);
   isEventCreator = input(false);
+  canUpload = input(false);
   canDownload = input(false);
+  currentUserId = input('');
   deletingImagePath = input('');
   isUploading = input(false);
 
@@ -32,7 +34,7 @@ export class EventGallerySectionComponent {
   }
 
   triggerUpload() {
-    if (!this.isEventCreator()) return;
+    if (!this.canUpload()) return;
     this.photoUploadInput.nativeElement.click();
   }
 

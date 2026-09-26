@@ -65,7 +65,11 @@
     </div>
 
     <div class="ticket__qr" aria-label="Ticket QR code">
-      <span class="material-symbols-outlined" translate="no">qr_code_2</span>
+      @if (qrDataUrl()) {
+        <img [src]="qrDataUrl()" [alt]="'QR code for ' + ticketCode()" class="ticket__qr-img" />
+      } @else {
+        <span class="material-symbols-outlined" translate="no">qr_code_2</span>
+      }
     </div>
 
     <span class="ticket__status">

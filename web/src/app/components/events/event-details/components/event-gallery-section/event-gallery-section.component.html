@@ -1,29 +1,40 @@
-@if (images().length > 0) {
+@if (images().length > 0 || canUpload()) {
 <section class="ed-section">
-  <h2 class="ed-section-title">Event Gallery</h2>
-  <div class="gallery-scroll">
-    @for (galleryImage of images(); track galleryImage.path; let i = $index) {
-    <button type="button" class="gallery-item" [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'" (click)="openPreview(i)">
-      <img [src]="galleryImage.url" alt="">
+  <div class="ed-section-header">
+    <h2 class="ed-section-title">Event Gallery</h2>
+
+    @if (canUpload()) {
+    <label for="photoUploadInput" class="sr-only">Upload event photos</label>
+    <input #photoUploadInput id="photoUploadInput" type="file" accept="image/*,.heic,.heif" multiple (change)="onFilesSelected($event)" hidden />
+    <button type="button" class="btn-upload" (click)="triggerUpload()" [disabled]="isUploading()">
+      @if (isUploading()) {
+        <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
+      } @else {
+        <i class="fa-solid fa-camera" aria-hidden="true"></i>
+        <span>Upload Photos</span>
+      }
     </button>
     }
   </div>
-  @if (isEventCreator()) {
-  <label for="photoUploadInput" class="sr-only">Upload event photos</label>
-  <input #photoUploadInput id="photoUploadInput" type="file" accept="image/*,.heic,.heif" multiple (change)="onFilesSelected($event)" hidden />
-  <button type="button" class="btn-upload vl-button vl-button--secondary" (click)="triggerUpload()" [disabled]="isUploading()">
-    @if (isUploading()) {
-      <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
-    } @else {
-      <i class="fa-solid fa-camera" aria-hidden="true"></i>
-      <span>Upload Photos</span>
-    }
-  </button>
+
+  @if (images().length > 0) {
+    <div class="gallery-scroll">
+      @for (galleryImage of images(); track galleryImage.path || galleryImage.url; let i = $index) {
+      <button type="button" class="gallery-item" [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'" (click)="openPreview(i)">
+        <img [src]="galleryImage.url" alt="">
+      </button>
+      }
+    </div>
+  } @else {
+    <div class="gallery-empty-state">
+      <i class="fa-solid fa-images gallery-empty-icon" aria-hidden="true"></i>
+      <p class="gallery-empty-text">No photos shared yet. Be the first to upload a moment!</p>
+    </div>
   }
 </section>
 }
 
 <vl-gallery class="event-gallery-preview" [images]="images()" [showHeader]="false" [showGrid]="false"
-  [showArchiveAction]="false" [showActions]="true" [canDownload]="canDownload()" [canDelete]="isEventCreator()"
-  [deletingImagePath]="deletingImagePath()" (deleteImage)="onDeleteImage($event)">
+  [showArchiveAction]="false" [showActions]="true" [canDownload]="canDownload()" [isEventCreator]="isEventCreator()"
+  [currentUserId]="currentUserId()" [deletingImagePath]="deletingImagePath()" (deleteImage)="onDeleteImage($event)">
 </vl-gallery>

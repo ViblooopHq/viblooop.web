@@ -60,7 +60,7 @@
                   <span>Download</span>
                 </a>
               }
-              @if (canDelete()) {
+              @if (canDeleteSelectedImage()) {
                 <button type="button" role="menuitem" class="vl-gallery__menu-item vl-gallery__menu-item--danger" (click)="openDeleteConfirm()">
                   <i class="fa-solid fa-trash" aria-hidden="true"></i>
                   <span>Delete</span>
@@ -78,7 +78,7 @@
         }
       </div>
 
-      @if (canDelete() && isDeleteConfirmOpen()) {
+      @if (canDeleteSelectedImage() && isDeleteConfirmOpen()) {
         <section class="vl-gallery__delete-confirm" role="alertdialog" aria-modal="true" aria-label="Confirm delete photo" (click)="$event.stopPropagation()">
           <div class="vl-gallery__delete-confirm-icon">
             <i class="fa-solid fa-trash" aria-hidden="true"></i>
