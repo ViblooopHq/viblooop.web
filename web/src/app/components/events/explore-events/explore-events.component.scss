@@ -25,17 +25,16 @@
 
 .explore-hero-carousel-wrap {
   width: 100%;
-
-  @media (min-width: 1024px) {
-    width: min(100%, 60rem);
-    margin-inline: auto;
-  }
 }
 
 .explore-hero-carousel {
   position: relative;
   aspect-ratio: 16 / 9;
   height: auto;
+
+  @media (min-width: 1024px) {
+    aspect-ratio: 2 / 1;
+  }
   overflow: hidden;
   border-radius: var(--radius-xl);
   background: var(--color-surface);
@@ -58,6 +57,11 @@
   height: 100%;
   object-fit: contain;
   object-position: center;
+
+  @media (min-width: 1024px) {
+    // Keep the full artwork at navbar width in the shorter desktop hero.
+    object-fit: fill;
+  }
 }
 
 /* Category Vibes Horizontal Scroll */
@@ -209,6 +213,32 @@
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+}
+
+.section-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}
+
+.see-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 4px;
+    border-radius: var(--radius-sm);
+  }
 }
 
 .vl-card-desktop {

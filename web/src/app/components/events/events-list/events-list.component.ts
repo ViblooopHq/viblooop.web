@@ -1,4 +1,6 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { combineLatest } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from "../../../shared/components/event-card/event-card.component";
@@ -93,6 +95,7 @@ export class EventsListComponent implements OnInit, OnDestroy {
   private messageStore = inject(MessageStore);
   private searchTimer?: ReturnType<typeof setTimeout>;
   private eventsRequestId = 0;
+  private destroyRef = inject(DestroyRef);
   private currentCoordinates?: { latitude: number; longitude: number };
 
   timeFilters = [
@@ -142,20 +145,25 @@ export class EventsListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.route.params.subscribe(params => {
+    combineLatest([this.route.params, this.route.queryParams]).pipe(
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(([params, queryParams]) => {
       if (this.searchTimer) clearTimeout(this.searchTimer);
-      this.categoryId = params['categoryId'];
-      this.activeTimeFilter = 'all';
+      this.categoryId = params['categoryId'] || '';
+      this.activeTimeFilter = this.timeFilters.some(filter => filter.id === queryParams['filter'])
+        ? queryParams['filter'] : 'all';
       this.searchTerm = '';
       this.activeCategoryEvents = [];
       this.hasLoaded = false;
       const selectedCategory = this.eventService.selectedCategory;
       this.activeEventCategory.set(
-        selectedCategory?._id === this.categoryId
+        !this.categoryId
+          ? { title: 'All Live Events', description: 'Find your next vibe across all categories.' }
+          : selectedCategory?._id === this.categoryId
           ? this.withCatalogDisplayTitle(selectedCategory)
           : {}
       );
-      this.loadCategoryDetails(this.categoryId);
+      if (this.categoryId) this.loadCategoryDetails(this.categoryId);
       this.loadEventsByCategory();
     });
   }

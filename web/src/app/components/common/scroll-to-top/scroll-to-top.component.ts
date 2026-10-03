@@ -17,6 +17,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
 
   isVisible = signal(false);
   isAboveSticky = signal(false);
+  footerClearance = signal(0);
 
   ngOnInit() {
     this.checkRoute();
@@ -44,6 +45,10 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
       // Show button as soon as user starts scrolling down (180px threshold)
       const scrollOffset = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
       this.isVisible.set(scrollOffset > 180);
+      const footer = document.querySelector('vl-footer')?.getBoundingClientRect();
+      this.footerClearance.set(footer && footer.top < window.innerHeight
+        ? Math.min(window.innerHeight - footer.top + 16, window.innerHeight - 64)
+        : 0);
     }
   }
 

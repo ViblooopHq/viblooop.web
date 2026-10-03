@@ -14,6 +14,7 @@
 
   <main class="vl-main-layout">
     <!-- Full-Width Cinematic Category Hero Banner -->
+    @if (categoryId) {
     <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory()?.image ? 'url(' + activeEventCategory().image + ')' : 'none'">
       @if (activeHeroSlides.length > 0) {
         <div class="vl-category-hero-cover__swiper">
@@ -43,6 +44,7 @@
         </div>
       </div>
     </header>
+    }
 
     <!-- Search & Filter Controls -->
     <vl-event-filters
@@ -50,7 +52,7 @@
       [filters]="timeFilters"
       [activeFilterId]="activeTimeFilter"
       [searchTerm]="searchTerm"
-      searchAriaLabel="Search category events"
+      [searchAriaLabel]="categoryId ? 'Search category events' : 'Search all live events'"
       (searchTermChange)="onSearchChange($event)"
       (filterChange)="setTimeFilter($event)" />
 

@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, take } from 'rxjs/operators';
-import { EventDetails } from '../../../shared/interfaces/event.interface';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -21,7 +20,7 @@ export class MyPlansComponent implements OnInit {
   private readonly routeService = inject(RouteService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly plans = signal<EventDetails[]>([]);
+  readonly plans = signal<any[]>([]);
   readonly isLoading = signal(true);
   readonly hasLoadError = signal(false);
   readonly isSignedIn = signal(false);
@@ -36,8 +35,8 @@ export class MyPlansComponent implements OnInit {
       .subscribe(() => this.loadPlans());
   }
 
-  openPlan(plan: EventDetails): void {
-    const eventId = plan?._id || plan?.['id'];
+  openPlan(plan: any): void {
+    const eventId = plan?.eventId;
     if (eventId) {
       this.routeService.navigate('/events', eventId);
     }
@@ -47,8 +46,8 @@ export class MyPlansComponent implements OnInit {
     this.routeService.navigateByUrl('/login');
   }
 
-  trackPlan(_index: number, plan: EventDetails): string {
-    return String(plan?._id || plan?.['id'] || _index);
+  trackPlan(_index: number, plan: any): string {
+    return String(plan?.ticketId || _index);
   }
 
   private loadPlans(): void {
@@ -60,21 +59,22 @@ export class MyPlansComponent implements OnInit {
       return;
     }
 
-    this.sharedService.getAttendedEvents(userId)
+    this.sharedService.getUserTickets()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (response: any) => {
-          const data = Array.isArray(response)
-            ? response
-            : Array.isArray(response?.data)
-              ? response.data
+          const payload = response?.data?.data ?? response?.data ?? response;
+          const data = Array.isArray(payload)
+            ? payload
+            : payload && typeof payload === 'object'
+              ? Object.values(payload)
               : [];
 
           const plans = data
-            .map((item: any) => this.unwrapEvent(item))
-            .filter((item: EventDetails | null): item is EventDetails => Boolean(item?._id || item?.title))
-            .filter((item: EventDetails) => !this.isEndedPlan(item))
-            .sort((left: EventDetails, right: EventDetails) => this.comparePlans(left, right));
+            .map((ticket: any) => ticket?.ticket || ticket?.pass || ticket)
+            .filter((ticket: any) => Boolean(ticket?.ticketId && ticket?.eventId))
+            .filter((ticket: any) => !this.isEndedPlan(ticket))
+            .sort((left: any, right: any) => this.comparePlans(left, right));
 
           this.plans.set(plans);
           this.isLoading.set(false);
@@ -86,26 +86,19 @@ export class MyPlansComponent implements OnInit {
       });
   }
 
-  private unwrapEvent(item: any): EventDetails | null {
-    if (!item) return null;
-    if (item.event && typeof item.event === 'object') return item.event;
-    if (item.eventId && typeof item.eventId === 'object') return item.eventId;
-    return item;
-  }
-
-  private comparePlans(left: EventDetails, right: EventDetails): number {
+  private comparePlans(left: any, right: any): number {
     const leftTime = this.eventTimestamp(left);
     const rightTime = this.eventTimestamp(right);
     return leftTime - rightTime;
   }
 
-  private isEndedPlan(plan: EventDetails): boolean {
+  private isEndedPlan(plan: any): boolean {
     const status = String(plan?.['status'] || plan?.['eventStatus'] || '').toLowerCase();
     if (status === 'completed' || status === 'ended') return true;
     return this.eventTimestamp(plan) < Date.now();
   }
 
-  private eventTimestamp(plan: EventDetails): number {
+  private eventTimestamp(plan: any): number {
     const rawDate = plan?.endDate || plan?.eventDate;
     if (!rawDate) return Number.MAX_SAFE_INTEGER;
 

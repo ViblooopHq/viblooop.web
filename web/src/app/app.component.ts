@@ -109,11 +109,7 @@ export class AppComponent implements OnInit {
   private updateFooterVisibility(url: string) {
     const routePath = url.split('?')[0].split('#')[0].replace(/\/$/, '');
     this.hideHeader = routePath === '/login' || routePath.startsWith('/login/') || routePath === '/admin';
-    this.hideFooter = routePath === '/login'
-      || routePath.startsWith('/login/')
-      || routePath === '/admin'
-      || routePath === '/notifications'
-      || routePath.startsWith('/notifications/');
+    this.hideFooter = !['', '/explore', '/profile'].includes(routePath);
   }
 
   private scrollToTopOnNavigation(url: string) {

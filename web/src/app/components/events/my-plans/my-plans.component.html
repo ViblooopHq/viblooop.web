@@ -1,7 +1,7 @@
 <main class="my-plans">
   <header class="my-plans__header">
     <div>
-      <p class="my-plans__eyebrow">Viblooop tickets</p>
+      <p class="my-plans__eyebrow">Viblooop passes</p>
       <h1>My Plans</h1>
     </div>
 
@@ -25,7 +25,7 @@
     } @else if (!isSignedIn()) {
       <div class="my-plans__empty">
         <span class="material-symbols-outlined" translate="no">confirmation_number</span>
-        <h2>Your tickets live here</h2>
+        <h2>Your passes live here</h2>
         <p>Sign in to see all the plans you've joined.</p>
         <button type="button" class="my-plans__primary-action" (click)="signIn()">Sign in</button>
       </div>
@@ -33,7 +33,7 @@
       <div class="my-plans__empty">
         <span class="material-symbols-outlined" translate="no">calendar_add_on</span>
         <h2>No plans yet</h2>
-        <p>When you join a hangout, your ticket will appear here.</p>
+        <p>When you join a hangout, your pass will appear here.</p>
       </div>
     } @else {
       <div class="my-plans__list">

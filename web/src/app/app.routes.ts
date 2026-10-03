@@ -25,6 +25,10 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'events',
+    component: EventsListComponent,
+  },
+  {
     path: 'events/:eventId',
     component: EventDetailsComponent,
   },

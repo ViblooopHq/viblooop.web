@@ -27,6 +27,16 @@
   z-index: 1;
 }
 
+.vl-form-drawer:has(vl-my-plans) {
+  scrollbar-width: none;
+  overscroll-behavior-y: contain;
+  background-color: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* ---------------- Desktop Drawer (Side Sheet from right) ---------------- */
 @media (min-width: 768px) {
   .vl-form-drawer {
@@ -116,7 +126,6 @@
     justify-content: center;
     align-items: center;
     padding: 8px 0 4px;
-    background-color: var(--color-surface);
     cursor: pointer;
     flex-shrink: 0;
   }

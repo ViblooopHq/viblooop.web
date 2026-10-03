@@ -1,14 +1,11 @@
 :host {
   display: block;
-  min-height: 100%;
+  flex: 0 0 auto;
 }
 
 .my-plans {
-  min-height: 100%;
   color: var(--color-text-primary);
-  background:
-    radial-gradient(circle at 84% 8%, color-mix(in srgb, var(--color-primary) 10%, transparent), transparent 24rem),
-    var(--color-bg);
+  background: transparent;
 
   &__header {
     position: sticky;
@@ -20,7 +17,7 @@
     min-height: 76px;
     padding: 0.85rem 1.5rem;
     border-bottom: 1px solid var(--color-border);
-    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+    background: transparent;
     backdrop-filter: blur(18px);
 
     h1,
