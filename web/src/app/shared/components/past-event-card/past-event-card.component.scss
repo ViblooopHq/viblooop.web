@@ -14,6 +14,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   height: auto;
+  max-height: 340px;
   overflow: hidden;
   border-radius: 20px;
   background-color: #0b1120;
@@ -137,6 +138,8 @@
     position: relative;
     display: inline-flex;
     align-items: center;
+    transform: rotate(-3deg);
+    transform-origin: center right;
   }
 
   &__date-doodle {
@@ -165,8 +168,8 @@
   /* Scrapbook / Polaroid / Stamp Floating Accents */
   &__scrapbook {
     position: absolute;
-    right: 18px;
-    top: 48%;
+    right: 14px;
+    top: 42%;
     transform: translateY(-50%);
     z-index: 6;
     pointer-events: none;
@@ -190,13 +193,13 @@
   &__polaroid {
     position: relative;
     background: #ffffff;
-    padding: 4px 4px 12px 4px;
+    padding: 5px 5px 15px 5px;
     border-radius: 4px;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.42);
 
     .polaroid-img {
-      width: 62px;
-      height: 62px;
+      width: 78px;
+      height: 78px;
       object-fit: cover;
       border-radius: 2px;
       display: block;
@@ -204,11 +207,11 @@
 
     .polaroid-tape {
       position: absolute;
-      top: -6px;
+      top: -7px;
       left: 50%;
       transform: translateX(-50%) rotate(-2deg);
-      width: 32px;
-      height: 12px;
+      width: 36px;
+      height: 13px;
       background: rgba(255, 255, 255, 0.6);
       backdrop-filter: blur(2px);
       border-left: 1.5px dashed rgba(180, 180, 180, 0.4);
@@ -428,6 +431,11 @@
       .past-icon {
         font-size: 10px;
       }
+    }
+
+    &__date-wrapper {
+      transform: rotate(-2.5deg);
+      transform-origin: center right;
     }
 
     &__date-pill {

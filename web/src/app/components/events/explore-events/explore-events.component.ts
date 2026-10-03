@@ -52,11 +52,12 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
 })
 export class ExploreEventsComponent implements OnInit {
   readonly pastVibeBreakpoints = {
-    320: { slidesPerView: 1.15, spaceBetween: 14 },
-    480: { slidesPerView: 1.5, spaceBetween: 16 },
-    640: { slidesPerView: 2.2, spaceBetween: 16 },
-    1024: { slidesPerView: 3.2, spaceBetween: 18 },
-    1280: { slidesPerView: 4.15, spaceBetween: 20 },
+    320: { slidesPerView: 2.15, spaceBetween: 10 },
+    480: { slidesPerView: 2.25, spaceBetween: 12 },
+    640: { slidesPerView: 3.2, spaceBetween: 14 },
+    1024: { slidesPerView: 4.2, spaceBetween: 16 },
+    1280: { slidesPerView: 4.8, spaceBetween: 18 },
+    1440: { slidesPerView: 5.2, spaceBetween: 20 },
   };
 
   isLoading = signal(true);
