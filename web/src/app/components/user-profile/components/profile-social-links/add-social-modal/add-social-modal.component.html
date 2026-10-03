@@ -88,7 +88,10 @@
             </label>
 
             <div class="vl-handle-input-wrap" [class.vl-handle-input-wrap--error]="errorMessage()">
-              <span class="vl-handle-input-wrap__prefix">{{ selectedPlatform().prefix }}</span>
+              @if (selectedPlatform().prefix) {
+                <span class="vl-handle-input-wrap__prefix">{{ selectedPlatform().prefix }}</span>
+                <span class="vl-handle-input-wrap__divider" aria-hidden="true"></span>
+              }
               <input
                 id="social-handle-input"
                 type="text"
@@ -100,6 +103,7 @@
                 [disabled]="isSaving()" />
 
               @if (handleDraft()) {
+                <span class="vl-handle-input-wrap__divider" aria-hidden="true"></span>
                 <button
                   type="button"
                   class="vl-handle-input-wrap__clear"

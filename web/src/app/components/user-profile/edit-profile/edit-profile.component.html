@@ -320,68 +320,68 @@
       </section>
     </div>
   </form>
-
-  <vl-selfie-verification
-    [isOpen]="isSelfieVerificationOpen"
-    [compareImage]="$any(profilePreview) || defaultProfile"
-    [defaultImage]="defaultProfile"
-    (closed)="closeSelfieVerification()"
-    (verified)="onSelfieVerified()">
-  </vl-selfie-verification>
-
-  @if (showLogoutDialog) {
-    <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title">
-      <section class="vl-edit-profile__dialog vl-edit-profile__dialog--logout" (click)="$event.stopPropagation()">
-        <div class="vl-edit-profile__dialog-handle"></div>
-        <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--logout">
-          <span class="material-symbols-outlined" translate="no">logout</span>
-        </div>
-        <h2 id="logout-confirm-title">Sign out?</h2>
-        <p>You’ll need to sign in again to access your account.</p>
-
-        <div class="vl-edit-profile__dialog-actions">
-          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
-            (click)="closeLogoutDialog()">Cancel</button>
-          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
-            (click)="confirmLogout()">Logout</button>
-        </div>
-      </section>
-    </div>
-  }
-
-  @if (showDeleteDialog) {
-    <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title">
-      <section class="vl-edit-profile__dialog vl-edit-profile__dialog--delete" (click)="$event.stopPropagation()">
-        <div class="vl-edit-profile__dialog-handle"></div>
-        <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--delete">
-          <span class="material-symbols-outlined" translate="no">delete</span>
-        </div>
-        <h2 id="delete-confirm-title">Delete Account</h2>
-        <p>This action cannot be undone.</p>
-
-        <ul class="vl-edit-profile__dialog-list">
-          <li>
-            <span class="material-symbols-outlined" translate="no">person_off</span>
-            Your profile will be removed
-          </li>
-          <li>
-            <span class="material-symbols-outlined" translate="no">event_busy</span>
-            Events you’ve created will be cancelled
-          </li>
-          <li>
-            <span class="material-symbols-outlined" translate="no">chat_bubble</span>
-            Chats, reviews and data will be deleted
-          </li>
-        </ul>
-
-        <div class="vl-edit-profile__dialog-actions">
-          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
-            (click)="closeDeleteDialog()">Keep Account</button>
-          <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary vl-edit-profile__dialog-button--danger"
-            (click)="confirmDeleteAccount()">Delete Forever</button>
-        </div>
-      </section>
-    </div>
-  }
 </main>
 </vl-form-drawer>
+
+<vl-selfie-verification
+  [isOpen]="isSelfieVerificationOpen"
+  [compareImage]="$any(profilePreview) || defaultProfile"
+  [defaultImage]="defaultProfile"
+  (closed)="closeSelfieVerification()"
+  (verified)="onSelfieVerified()">
+</vl-selfie-verification>
+
+@if (showLogoutDialog) {
+  <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="logout-confirm-title" (click)="closeLogoutDialog()">
+    <section class="vl-edit-profile__dialog vl-edit-profile__dialog--logout" (click)="$event.stopPropagation()">
+      <div class="vl-edit-profile__dialog-handle"></div>
+      <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--logout">
+        <span class="material-symbols-outlined" translate="no">logout</span>
+      </div>
+      <h2 id="logout-confirm-title">Sign out?</h2>
+      <p>You’ll need to sign in again to access your account.</p>
+
+      <div class="vl-edit-profile__dialog-actions">
+        <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
+          (click)="closeLogoutDialog()">Cancel</button>
+        <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
+          (click)="confirmLogout()">Logout</button>
+      </div>
+    </section>
+  </div>
+}
+
+@if (showDeleteDialog) {
+  <div class="vl-edit-profile__overlay" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title" (click)="closeDeleteDialog()">
+    <section class="vl-edit-profile__dialog vl-edit-profile__dialog--delete" (click)="$event.stopPropagation()">
+      <div class="vl-edit-profile__dialog-handle"></div>
+      <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--delete">
+        <span class="material-symbols-outlined" translate="no">delete</span>
+      </div>
+      <h2 id="delete-confirm-title">Delete Account</h2>
+      <p>This action cannot be undone.</p>
+
+      <ul class="vl-edit-profile__dialog-list">
+        <li>
+          <span class="material-symbols-outlined" translate="no">person_off</span>
+          Your profile will be removed
+        </li>
+        <li>
+          <span class="material-symbols-outlined" translate="no">event_busy</span>
+          Events you’ve created will be cancelled
+        </li>
+        <li>
+          <span class="material-symbols-outlined" translate="no">chat_bubble</span>
+          Chats, reviews and data will be deleted
+        </li>
+      </ul>
+
+      <div class="vl-edit-profile__dialog-actions">
+        <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
+          (click)="closeDeleteDialog()">Keep Account</button>
+        <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary vl-edit-profile__dialog-button--danger"
+          (click)="confirmDeleteAccount()">Delete Forever</button>
+      </div>
+    </section>
+  </div>
+}

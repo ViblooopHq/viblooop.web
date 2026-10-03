@@ -1,24 +1,20 @@
 <article class="empty-state">
   <div class="empty-state__art">
     @if (artImage; as image) {
-      <img
-        class="empty-state__image"
-        [src]="image"
-        [alt]="artImageAlt"
-        loading="lazy"
-        decoding="async" />
+    <img class="empty-state__image" [src]="image" [alt]="artImageAlt" loading="lazy" decoding="async" />
     } @else {
-      <div class="empty-state__fallback-art" aria-hidden="true">
-        <span class="empty-state__blob"></span>
-        <span class="empty-state__icon empty-state__icon--primary material-symbols-outlined" translate="no">
-          {{ presentation.primaryIcon }}
-        </span>
-        <span class="empty-state__icon empty-state__icon--secondary material-symbols-outlined" translate="no">
-          {{ presentation.secondaryIcon }}
-        </span>
-        <span class="empty-state__sparkle empty-state__sparkle--one material-symbols-outlined" translate="no">auto_awesome</span>
-        <span class="empty-state__sparkle empty-state__sparkle--two"></span>
-      </div>
+    <div class="empty-state__fallback-art" aria-hidden="true">
+      <span class="empty-state__blob"></span>
+      <span class="empty-state__icon empty-state__icon--primary material-symbols-outlined" translate="no">
+        {{ presentation.primaryIcon }}
+      </span>
+      <span class="empty-state__icon empty-state__icon--secondary material-symbols-outlined" translate="no">
+        {{ presentation.secondaryIcon }}
+      </span>
+      <span class="empty-state__sparkle empty-state__sparkle--one material-symbols-outlined"
+        translate="no">auto_awesome</span>
+      <span class="empty-state__sparkle empty-state__sparkle--two"></span>
+    </div>
     }
   </div>
 
@@ -31,8 +27,5 @@
       <span class="material-symbols-outlined" translate="no">add</span>
       {{ presentation.action }}
     </a>
-    <button class="empty-state__button empty-state__button--secondary" type="button" (click)="exploreAll.emit()">
-      Explore All Vibes
-    </button>
   </div>
 </article>

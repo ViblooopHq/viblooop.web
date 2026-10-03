@@ -3,7 +3,7 @@
 .vl-selfie-verification {
   position: fixed;
   inset: 0;
-  z-index: 1000;
+  z-index: 10050;
   display: none;
   place-items: center;
   padding: 1.25rem;
@@ -15,8 +15,9 @@
   }
 
   &__dialog {
-    width: min(100%, 28rem);
-    overflow: hidden;
+    width: min(100%, 26rem);
+    max-height: calc(100dvh - 2rem);
+    overflow-y: auto;
     padding: clamp(0.85rem, 2vw, 1.2rem);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-xl);
@@ -246,8 +247,10 @@
 
   &__frame {
     position: relative;
-    aspect-ratio: 4 / 3;
-    max-height: 22rem;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    max-height: min(28rem, 62dvh);
+    margin: 0 auto;
     overflow: hidden;
     border-radius: var(--radius-lg);
     background: var(--color-surface-canvas);
@@ -300,10 +303,10 @@
   &__oval {
     position: absolute;
     z-index: 2;
-    top: 19%;
+    top: 18%;
     left: 50%;
-    width: min(54%, 16rem);
-    height: 60%;
+    width: 54%;
+    height: 62%;
     border: 2px solid color-mix(in srgb, var(--color-accent) 82%, transparent);
     border-radius: var(--radius-full);
     transform: translateX(-50%);
@@ -540,8 +543,8 @@
 
     &__oval {
       top: 18%;
-      width: min(54%, 15rem);
-      height: 60%;
+      width: 54%;
+      height: 62%;
     }
 
     &__actions {
