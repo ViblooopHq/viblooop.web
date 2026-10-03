@@ -52,11 +52,11 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
 })
 export class ExploreEventsComponent implements OnInit {
   readonly pastVibeBreakpoints = {
-    320: { slidesPerView: 1.2, spaceBetween: 12 },
-    480: { slidesPerView: 1.6, spaceBetween: 12 },
-    640: { slidesPerView: 2, spaceBetween: 16 },
-    1024: { slidesPerView: 3, spaceBetween: 20 },
-    1280: { slidesPerView: 3.5, spaceBetween: 20 },
+    320: { slidesPerView: 1.15, spaceBetween: 14 },
+    480: { slidesPerView: 1.5, spaceBetween: 16 },
+    640: { slidesPerView: 2.2, spaceBetween: 16 },
+    1024: { slidesPerView: 3.2, spaceBetween: 18 },
+    1280: { slidesPerView: 4.15, spaceBetween: 20 },
   };
 
   isLoading = signal(true);
@@ -209,6 +209,12 @@ export class ExploreEventsComponent implements OnInit {
     const locString = typeof rawLoc === 'string' && rawLoc && !rawLoc.includes('[object') ? rawLoc : null;
     const location = locString || [area || city, pinCode || state].filter(Boolean).join(', ') || 'Location';
 
+    const memoryPhoto = Array.isArray(event?.photos) && event.photos.length > 0
+      ? event.photos[0]
+      : Array.isArray(event?.gallery) && event.gallery.length > 0
+        ? event.gallery[0]
+        : event?.memoryImage || null;
+
     return {
       title: event?.title,
       category: event?.category,
@@ -226,6 +232,7 @@ export class ExploreEventsComponent implements OnInit {
       rating: averageRating,
       reviewCount: reviews,
       photoCount: photos,
+      memoryImage: memoryPhoto,
     };
   }
 

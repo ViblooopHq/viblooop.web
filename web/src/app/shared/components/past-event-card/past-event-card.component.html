@@ -1,40 +1,127 @@
-<article class="vl-past-card">
-  <img class="vl-past-card__img" [src]="(config.image | imageUrl) || 'assets/images/default-cover.jpg'"
-    (error)="onImageError($event, 'assets/images/default-cover.jpg')" alt="" loading="lazy" />
-  <span class="vl-past-card__date-pill">{{ fullDate }}</span>
+<article class="vl-past-card" (click)="onViewMemories()" role="button" tabindex="0"
+  (keydown.enter)="onViewMemories()" (keydown.space)="onViewMemories(); $event.preventDefault()">
+  
+  <!-- Background Media & Scenic Gradients -->
+  <div class="vl-past-card__media">
+    <img class="vl-past-card__bg-img" [src]="(config.image | imageUrl) || defaultCover"
+      (error)="onImageError($event, defaultCover)" alt="" loading="lazy" />
+    <div class="vl-past-card__overlay-top" aria-hidden="true"></div>
+    <div class="vl-past-card__overlay-bottom" aria-hidden="true"></div>
+  </div>
 
-  <div class="vl-past-card__content">
-    <span class="vl-past-card__category">{{ categoryLabel }}</span>
-    <h3 class="vl-past-card__title" [title]="config.title || ''">{{ config.title || 'Past Vibe' }}</h3>
-    <div class="vl-past-card__location" [title]="locationLabel">
-      <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
-      <span>{{ locationLabel }}</span>
+  <!-- Top Bar: PAST VIBES Frosted Pill & White Date Pill -->
+  <header class="vl-past-card__topbar">
+    <div class="vl-past-card__badge-past">
+      <span class="material-symbols-outlined past-icon" aria-hidden="true">history</span>
+      <span class="past-text">PAST VIBES</span>
     </div>
 
-    <div class="vl-past-card__footer">
-      <div class="vl-past-card__stat">
-        @if (attendeeImages.length) {
-          <div class="vl-past-card__avatars" aria-hidden="true">
-            @for (avatar of attendeeImages; track $index) {
-              <img [src]="avatar | imageUrl" alt="" loading="lazy"
-                (error)="onImageError($event, 'assets/images/default-profile.png')" />
-            }
-          </div>
-        } @else {
-          <span class="material-symbols-outlined" aria-hidden="true">group</span>
+    <div class="vl-past-card__date-wrapper">
+      @if (hasDateBurst) {
+        <svg class="vl-past-card__date-doodle" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 19C16 15 13 10 16 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M11 20C9 16 8 11 11 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M4 21C4 18 5 14 8 10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      }
+      <span class="vl-past-card__date-pill">
+        <span class="date-full">{{ formattedDate }}</span>
+        <span class="date-short">{{ compactDate }}</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- Floating Memory Scrapbook Accent (Polaroid or Vintage Stamp) -->
+  <aside class="vl-past-card__scrapbook" aria-hidden="true">
+    @if (memoryType === 'stamp') {
+      <!-- Vintage Postage / Ticket Stamp -->
+      <div class="vl-past-card__stamp-wrapper">
+        @if (doodleType === 'botanical') {
+          <svg class="vl-past-card__botanical-doodle" viewBox="0 0 45 90" fill="none">
+            <path d="M22 2C24 25 18 55 35 88" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M22 15C16 12 12 15 15 20C18 22 21 19 22 15Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M23 28C29 25 33 28 30 33C27 35 24 32 23 28Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M20 42C14 39 10 43 13 47C16 49 19 46 20 42Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M22 56C28 53 32 57 29 61C26 63 23 60 22 56Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M26 70C21 68 18 73 21 76C24 77 26 74 26 70Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+          </svg>
         }
-        <span>{{ config.attendedCount || 0 }} joined</span>
+        <div class="vl-past-card__stamp">
+          <div class="stamp-inner">
+            <span class="stamp-text">GOOD</span>
+            <span class="stamp-text">TIMES</span>
+            <span class="material-symbols-outlined stamp-icon">sports_soccer</span>
+          </div>
+        </div>
       </div>
-      <div class="vl-past-card__stat vl-past-card__moments">
-        <span class="material-symbols-outlined" aria-hidden="true">photo_library</span>
-        <span>{{ config.photoCount || 0 }} {{ config.photoCount === 1 ? 'moment' : 'moments' }}</span>
+    } @else {
+      <!-- Mini Polaroid Photo -->
+      <div class="vl-past-card__polaroid-wrapper">
+        @if (doodleType === 'botanical') {
+          <svg class="vl-past-card__botanical-doodle" viewBox="0 0 45 90" fill="none">
+            <path d="M22 2C24 25 18 55 35 88" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M22 15C16 12 12 15 15 20C18 22 21 19 22 15Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M23 28C29 25 33 28 30 33C27 35 24 32 23 28Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M20 42C14 39 10 43 13 47C16 49 19 46 20 42Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M22 56C28 53 32 57 29 61C26 63 23 60 22 56Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+            <path d="M26 70C21 68 18 73 21 76C24 77 26 74 26 70Z" stroke="rgba(255,255,255,0.7)" stroke-width="1.2"/>
+          </svg>
+        }
+        <div class="vl-past-card__polaroid">
+          @if (hasTape) {
+            <div class="polaroid-tape"></div>
+          }
+          <img class="polaroid-img" [src]="(memoryPhoto | imageUrl) || defaultCover"
+            (error)="onImageError($event, defaultCover)" alt="" loading="lazy" />
+        </div>
+        @if (doodleType === 'heart') {
+          <svg class="vl-past-card__heart-doodle" viewBox="0 0 28 28" fill="none">
+            <path d="M14 24C12 22.5 4 16.5 4 10C4 6 7 3.5 10.5 3.5C12.5 3.5 13.5 4.5 14 5.5C14.5 4.5 15.5 3.5 17.5 3.5C21 3.5 24 6 24 10C24 16.5 16 22.5 14 24Z"
+              stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        }
       </div>
-      <button class="vl-past-card__cta" type="button" (click)="onViewMemories()"
+    }
+  </aside>
+
+  <!-- Bottom Content Area -->
+  <div class="vl-past-card__content">
+    <!-- Category -->
+    <div class="vl-past-card__category">
+      <span class="material-symbols-outlined cat-icon" aria-hidden="true">{{ categoryIcon }}</span>
+      <span class="cat-label">{{ categoryLabel }}</span>
+    </div>
+
+    <!-- Title -->
+    <h3 class="vl-past-card__title" [title]="config.title || ''">
+      {{ config.title || 'Past Vibe' }}
+    </h3>
+
+    <!-- Location -->
+    <div class="vl-past-card__location" [title]="locationLabel">
+      <span class="material-symbols-outlined loc-icon" aria-hidden="true">location_on</span>
+      <span class="loc-text">{{ locationLabel }}</span>
+    </div>
+
+    <!-- Footer Stats & CTA Button -->
+    <div class="vl-past-card__footer">
+      <div class="vl-past-card__stats">
+        <div class="vl-past-card__stat">
+          <span class="material-symbols-outlined stat-icon" aria-hidden="true">group</span>
+          <span class="stat-count">{{ config.attendedCount || 0 }}</span>
+          <span class="stat-unit">joined</span>
+        </div>
+        <span class="vl-past-card__stat-divider" aria-hidden="true"></span>
+        <div class="vl-past-card__stat">
+          <span class="material-symbols-outlined stat-icon" aria-hidden="true">photo_library</span>
+          <span class="stat-count">{{ config.photoCount || 0 }}</span>
+          <span class="stat-unit">{{ config.photoCount === 1 ? 'moment' : 'moments' }}</span>
+        </div>
+      </div>
+
+      <button class="vl-past-card__cta" type="button" (click)="onViewMemories(); $event.stopPropagation()"
         [attr.aria-label]="ctaLabel + ' for ' + (config.title || 'this past vibe')">
-        <span class="vl-past-card__cta-circle" aria-hidden="true">
-          <span class="material-symbols-outlined">arrow_forward</span>
-        </span>
-        <span>{{ ctaLabel }}</span>
+        <span class="material-symbols-outlined cta-arrow" aria-hidden="true">arrow_forward</span>
       </button>
     </div>
   </div>

@@ -43,7 +43,6 @@ import { EventMapPanelComponent } from './components/event-map-panel/event-map-p
 import { EventChatCardComponent } from './components/event-chat-card/event-chat-card.component';
 import { EventAboutComponent } from './components/event-about/event-about.component';
 import { EventGallerySectionComponent } from './components/event-gallery-section/event-gallery-section.component';
-import { EventRelatedComponent } from './components/event-related/event-related.component';
 import { EventPeopleDrawerComponent, JoinRequestView } from './components/event-people-drawer/event-people-drawer.component';
 import { EventProfileModalComponent } from './components/event-profile-modal/event-profile-modal.component';
 import { ActionModalComponent, ActionModalVariant } from '../../../shared/components/action-modal/action-modal.component';
@@ -95,7 +94,6 @@ const defaultModalState: ActionModalState = {
     ActionModalComponent,
     InlineLoaderComponent,
     EventDetailsSkeletonComponent,
-    EventRelatedComponent,
     MatTooltip,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -517,15 +515,15 @@ export class EventDetailsComponent {
 
         const galleryImages: GalleryImage[] = Array.isArray(details.gallery)
           ? details.gallery.map((image: any) => {
-              if (typeof image === 'object' && image !== null) {
-                return {
-                  path: image.path || image.url,
-                  url: this.sharedService.getImageUrl(image.path || image.url),
-                  uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
-                };
-              }
-              return { path: image, url: this.sharedService.getImageUrl(image) };
-            })
+            if (typeof image === 'object' && image !== null) {
+              return {
+                path: image.path || image.url,
+                url: this.sharedService.getImageUrl(image.path || image.url),
+                uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
+              };
+            }
+            return { path: image, url: this.sharedService.getImageUrl(image) };
+          })
           : [];
         details.gallery = galleryImages.map((image) => image.url);
 
@@ -544,16 +542,11 @@ export class EventDetailsComponent {
           ? this.eventsService.getJoinStatus(eventId, userId).pipe(catchError(() => of(null)))
           : of(null);
 
-        const related$ = this.eventsService.getRelatedNearbyEvents(eventId).pipe(
-          catchError(() => of({ success: false, data: [] }))
-        );
-
         forkJoin({
           attendees: attendees$,
-          joinStatus: joinStatus$,
-          related: related$,
+          joinStatus: joinStatus$
         }).subscribe({
-          next: ({ attendees: attRes, joinStatus: joinRes, related: relRes }: { attendees: any; joinStatus: any; related: any }) => {
+          next: ({ attendees: attRes, joinStatus: joinRes }: { attendees: any; joinStatus: any; }) => {
             if (attRes?.success && Array.isArray(attRes.data)) {
               this.attendeeProfiles.set(attRes.data);
             } else {
@@ -562,10 +555,6 @@ export class EventDetailsComponent {
 
             if (joinRes?.success) {
               this.eventJoinStatusStore.setApiStatus(eventId, joinRes.data?.status);
-            }
-
-            if (relRes?.success && Array.isArray(relRes.data)) {
-              this.relatedEvents.set(relRes.data);
             }
 
             if (showLoader) {

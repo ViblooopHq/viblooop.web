@@ -7,7 +7,18 @@
           <span class="pre-title">{{ preTitle() }}</span>
         }
         @if (title()) {
-          <h2 class="title">{{ title() }}</h2>
+          <h2 class="title" [class.title--past-vibes]="title() === 'Past Vibes'">
+            @if (title() === 'Past Vibes') {
+              <span class="title-accent-wrap">
+                Past
+                <svg class="title-wave" viewBox="0 0 70 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M2 7C14 2 26 11 42 5C54 -0.5 62 4 68 3" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </span> Vibes
+            } @else {
+              {{ title() }}
+            }
+          </h2>
         }
         @if (description()) {
           <p class="description">{{ description() }}</p>

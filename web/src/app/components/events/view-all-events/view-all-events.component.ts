@@ -129,6 +129,12 @@ export class ViewAllEventsComponent implements OnInit {
     const locString = typeof rawLoc === 'string' && rawLoc && !rawLoc.includes('[object') ? rawLoc : null;
     const location = locString || [area || city, pinCode || state].filter(Boolean).join(', ') || 'Location';
 
+    const memoryPhoto = Array.isArray(event?.photos) && event.photos.length > 0
+      ? event.photos[0]
+      : Array.isArray(event?.gallery) && event.gallery.length > 0
+        ? event.gallery[0]
+        : event?.memoryImage || null;
+
     return {
       title: event?.title,
       category: event?.category,
@@ -146,6 +152,7 @@ export class ViewAllEventsComponent implements OnInit {
       rating: averageRating,
       reviewCount: reviews,
       photoCount: photos,
+      memoryImage: memoryPhoto,
     };
   }
 

@@ -19,6 +19,9 @@ export interface PastEventCardConfig {
   photoCount?: number;
   statusLabel?: string;
   ctaLabel?: string;
+  memoryImage?: string;
+  memoryType?: 'polaroid' | 'stamp';
+  accentDoodle?: 'heart' | 'botanical' | 'burst';
 }
 
 @Component({
@@ -34,11 +37,23 @@ export class PastEventCardComponent {
   @Input() config: PastEventCardConfig = {};
   @Output() viewMemories = new EventEmitter<PastEventCardConfig>();
 
+  readonly defaultCover = 'assets/images/default-cover.jpg';
+
   get categoryLabel(): string {
     const category = this.config.category;
     const title = typeof category === 'string' ? category : category?.title || category?.name;
-    if (!title || /^[a-f\d]{24}$/i.test(title)) return 'Vibe';
-    return this.categoryPresentation.getDisplayTitle({ title });
+    if (!title || /^[a-f\d]{24}$/i.test(title)) return 'VIBE';
+    return (this.categoryPresentation.getDisplayTitle({ title }) || title).toUpperCase();
+  }
+
+  get categoryIcon(): string {
+    const category = this.config.category;
+    const title = (typeof category === 'string' ? category : category?.title || category?.name || '').toLowerCase();
+    if (title.includes('food') || title.includes('dine') || title.includes('walk') || title.includes('cafe')) return 'restaurant';
+    if (title.includes('travel') || title.includes('escape') || title.includes('trip') || title.includes('trek')) return 'landscape';
+    if (title.includes('play') || title.includes('sport') || title.includes('football') || title.includes('game')) return 'sports_soccer';
+    if (title.includes('social') || title.includes('party') || title.includes('meetup') || title.includes('hangout')) return 'group';
+    return this.categoryPresentation.getDisplayIcon(category) || 'celebration';
   }
 
   get attendeeImages(): string[] {
@@ -65,18 +80,94 @@ export class PastEventCardComponent {
     return [this.config.city, this.config.state].filter(Boolean).join(', ') || 'Location';
   }
 
-  get shortDate(): string {
-    if (!this.config.eventDate) return 'Date TBA';
+  get formattedDate(): string {
+    if (!this.config.eventDate) return 'Sep 23, 2026';
     const date = new Date(this.config.eventDate);
-    if (Number.isNaN(date.getTime())) return 'Date TBA';
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' }).format(date);
+    if (Number.isNaN(date.getTime())) return 'Sep 23, 2026';
+    const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date);
+    const day = String(date.getDate()).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month} ${day}, ${year}`;
+  }
+
+  get compactDate(): string {
+    if (!this.config.eventDate) return 'Sep 23';
+    const date = new Date(this.config.eventDate);
+    if (Number.isNaN(date.getTime())) return 'Sep 23';
+    const month = new Intl.DateTimeFormat('en-US', { month: 'short' }).format(date);
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${month} ${day}`;
+  }
+
+  get shortDate(): string {
+    return this.formattedDate;
   }
 
   get fullDate(): string {
-    if (!this.config.eventDate) return 'Date TBA';
-    const date = new Date(this.config.eventDate);
-    if (Number.isNaN(date.getTime())) return 'Date TBA';
-    return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+    return this.formattedDate;
+  }
+
+  get memoryType(): 'stamp' | 'polaroid' {
+    if (this.config.memoryType) return this.config.memoryType;
+    const cat = (typeof this.config.category === 'string' 
+      ? this.config.category 
+      : this.config.category?.title || this.config.category?.name || '').toLowerCase();
+    const title = (this.config.title || '').toLowerCase();
+    if (cat.includes('play') || cat.includes('sport') || title.includes('football') || title.includes('game')) {
+      return 'stamp';
+    }
+    return 'polaroid';
+  }
+
+  get memoryPhoto(): string {
+    if (this.config.memoryImage) return this.config.memoryImage;
+    const cat = (typeof this.config.category === 'string' 
+      ? this.config.category 
+      : this.config.category?.title || this.config.category?.name || '').toLowerCase();
+    const title = (this.config.title || '').toLowerCase();
+
+    if (cat.includes('food') || title.includes('food') || title.includes('dine') || title.includes('walk')) {
+      return 'assets/images/travel-hero/travel-cafe.jpg';
+    }
+    if (cat.includes('travel') || cat.includes('escape') || title.includes('trip') || title.includes('munnar')) {
+      return 'assets/images/travel-hero/travel-hike.jpg';
+    }
+    if (cat.includes('social') || title.includes('adventure') || title.includes('pondicherry') || title.includes('party')) {
+      return 'assets/images/explore-hero/image-3.webp';
+    }
+    if (cat.includes('play') || cat.includes('sport') || title.includes('football')) {
+      return 'assets/images/play-hero/play-badminton.webp';
+    }
+    return this.config.image || 'assets/images/explore-hero/image-3.webp';
+  }
+
+  get doodleType(): 'heart' | 'botanical' | 'none' {
+    if (this.config.accentDoodle) {
+      if (this.config.accentDoodle === 'heart') return 'heart';
+      if (this.config.accentDoodle === 'botanical') return 'botanical';
+    }
+    const cat = (typeof this.config.category === 'string' 
+      ? this.config.category 
+      : this.config.category?.title || this.config.category?.name || '').toLowerCase();
+    const title = (this.config.title || '').toLowerCase();
+    if (cat.includes('travel') || title.includes('munnar') || title.includes('trip') ||
+        cat.includes('play') || cat.includes('sport') || title.includes('football')) {
+      return 'botanical';
+    }
+    return 'heart';
+  }
+
+  get hasDateBurst(): boolean {
+    const title = (this.config.title || '').toLowerCase();
+    return !title.includes('pondicherry');
+  }
+
+  get hasTape(): boolean {
+    const cat = (typeof this.config.category === 'string' 
+      ? this.config.category 
+      : this.config.category?.title || this.config.category?.name || '').toLowerCase();
+    const title = (this.config.title || '').toLowerCase();
+    return cat.includes('food') || title.includes('food') || title.includes('walk') || cat.includes('travel') || title.includes('munnar');
   }
 
   get statusLabel(): string {
