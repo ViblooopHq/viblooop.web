@@ -11,7 +11,7 @@ export class ThemeService {
   isDarkTheme = computed(() => this._theme() === 'dark');
 
   // Dynamic logo SVG based on current theme
-  logoSrc = computed(() => (this._theme() === 'light' ? 'logo-light.svg' : 'logo-dark.svg'));
+  logoSrc = computed(() => (this._theme() === 'light' ? '/logo-light.svg' : '/logo-dark.svg'));
 
   constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
 

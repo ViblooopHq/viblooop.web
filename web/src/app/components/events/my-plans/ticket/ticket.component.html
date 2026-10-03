@@ -2,8 +2,8 @@
   <section class="ticket__main">
     <div class="ticket__media">
       <img
-        [src]="eventImage() | imageUrl"
-        [alt]="plan().title || 'Plan cover image'"
+        [src]="plan().eventImage | imageUrl"
+        [alt]="plan().eventTitle + ' cover image'"
         (error)="onImageError($event, 'assets/images/default-cover.jpg')" />
     </div>
 
@@ -11,23 +11,22 @@
       <div class="ticket__topline">
         <img class="ticket__logo" [src]="themeService.logoSrc()" alt="Viblooop" />
         <span class="ticket__category">
-          <span class="material-symbols-outlined" translate="no">{{ categoryIcon() }}</span>
-          {{ categoryTitle() }}
+          <span class="material-symbols-outlined" translate="no">{{ plan().eventCategoryIcon }}</span>
+          {{ plan().eventCategory }}
         </span>
       </div>
 
-      <h2>{{ plan().title || 'Your Viblooop plan' }}</h2>
-      <p class="ticket__description">{{ plan().description || 'Good plans, great people and a vibe worth showing up for ✨' }}</p>
+      <h2>{{ plan().eventTitle }}</h2>
+      <p class="ticket__description">{{ plan().eventDescription }}</p>
 
       <div class="ticket__info">
         <div class="ticket__schedule">
           <div class="ticket__fact">
             <span class="ticket__fact-icon material-symbols-outlined" translate="no">calendar_month</span>
             <div>
-              <strong>{{ plan().eventDate ? (plan().eventDate | date:'EEE, d MMM y') : 'Date TBA' }}</strong>
+              <strong>{{ plan().formattedDate }}</strong>
               <small>
-                {{ plan().eventTime ? (plan().eventTime | time) : 'Time TBA' }}
-                @if (plan().endTime) { – {{ plan().endTime | time }} }
+                {{ plan().formattedTime }}
               </small>
             </div>
           </div>
@@ -36,20 +35,20 @@
         <div class="ticket__detail-row ticket__location">
           <span class="ticket__fact-icon material-symbols-outlined" translate="no">location_on</span>
           <div>
-            <strong>{{ venue() }}</strong>
-            <small>{{ venueNote() }}</small>
+            <strong>{{ plan().locationPrimary }}</strong>
+            <small>{{ plan().locationNote }}</small>
           </div>
         </div>
 
         <div class="ticket__detail-row ticket__host">
           <img
             class="ticket__fact-icon ticket__host-avatar"
-            [src]="(plan().createdBy?.profileImage | imageUrl) || 'assets/images/default-profile.png'"
-            [alt]="hostName()"
+            [src]="plan().hostedBy.profileImage | imageUrl"
+            [alt]="plan().hostedBy.name"
             (error)="onImageError($event, 'assets/images/default-profile.png')" />
           <div>
             <small>Hosted by</small>
-            <strong>{{ hostName() }}</strong>
+            <strong>{{ plan().hostedBy.name }}</strong>
           </div>
         </div>
       </div>
@@ -60,31 +59,31 @@
     <span class="ticket__stub-decoration material-symbols-outlined" aria-hidden="true" translate="no">confirmation_number</span>
 
     <div class="ticket__stub-copy">
-      <h3>Your Ticket</h3>
-      <p>1 × {{ accessLabel() }}</p>
+      <h3>Your Pass</h3>
+      <p>1 × {{ plan().accessLabel }}</p>
     </div>
 
-    <div class="ticket__qr" aria-label="Ticket QR code">
-      @if (qrDataUrl()) {
-        <img [src]="qrDataUrl()" [alt]="'QR code for ' + ticketCode()" class="ticket__qr-img" />
+    <div class="ticket__qr" aria-label="Pass QR code">
+      @if (plan().qrCodeUrl) {
+        <img [src]="plan().qrCodeUrl" [alt]="'QR code for ' + plan().ticketId" class="ticket__qr-img" />
       } @else {
         <span class="material-symbols-outlined" translate="no">qr_code_2</span>
       }
     </div>
 
     <span class="ticket__status">
-      <span class="material-symbols-outlined" translate="no">{{ statusIcon() }}</span>
-      {{ statusLabel() }}
+      <span class="material-symbols-outlined" translate="no">{{ plan().statusIcon }}</span>
+      {{ plan().status }}
     </span>
 
     <div class="ticket__stub-footer">
       <div class="ticket__id">
-        <small>Ticket ID</small>
-        <code>{{ ticketCode() }}</code>
+        <small>Pass ID</small>
+        <code>{{ plan().ticketId }}</code>
       </div>
 
       <span class="ticket__price">
-        {{ priceLabel() }}
+        {{ plan().formattedPrice }}
       </span>
     </div>
   </aside>

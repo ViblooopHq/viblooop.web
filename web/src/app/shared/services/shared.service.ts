@@ -129,6 +129,10 @@ export class SharedService {
     return this.http.post(`${this.authService.baseUrl}/getAllAttendedEvents`, { userId: userId });
   }
 
+  getUserTickets() {
+    return this.http.get(`${this.baseUrl}/getUserTickets`);
+  }
+
   getCreatedEvents(userId: string) {
     return this.http.post(`${this.authService.baseUrl}/getAllEventsByUser`, { userId: userId });
   }

@@ -2,7 +2,7 @@
   <vl-header />
 }
 
-<div class="vl-body-container">
+<div class="vl-body-container" [class.vl-body-container--with-footer]="!hideFooter">
   <router-outlet />
 </div>
 
