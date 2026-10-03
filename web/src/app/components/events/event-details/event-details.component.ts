@@ -12,7 +12,7 @@ import {
 import { toSignal, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
 import { Meta, Title } from '@angular/platform-browser';
-import { catchError, forkJoin, map, of } from 'rxjs';
+import { map } from 'rxjs';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
@@ -44,7 +44,6 @@ import { EventChatCardComponent } from './components/event-chat-card/event-chat-
 import { EventAboutComponent } from './components/event-about/event-about.component';
 import { EventGallerySectionComponent } from './components/event-gallery-section/event-gallery-section.component';
 import { EventPeopleDrawerComponent, JoinRequestView } from './components/event-people-drawer/event-people-drawer.component';
-import { EventProfileModalComponent } from './components/event-profile-modal/event-profile-modal.component';
 import { ActionModalComponent, ActionModalVariant } from '../../../shared/components/action-modal/action-modal.component';
 
 export interface ActionModalState {
@@ -88,7 +87,6 @@ const defaultModalState: ActionModalState = {
     EventAboutComponent,
     EventGallerySectionComponent,
     EventPeopleDrawerComponent,
-    EventProfileModalComponent,
     ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
@@ -144,7 +142,6 @@ export class EventDetailsComponent {
   isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
-  profileModal = signal<{ open: boolean; userId: string }>({ open: false, userId: '' });
   requestActionStates = signal<Record<string, RequestActionState>>({});
   deletingGalleryImagePath = signal('');
   actionModal = signal<ActionModalState>({ ...defaultModalState });
@@ -153,7 +150,12 @@ export class EventDetailsComponent {
   // ── Derived data ──
   attendees = computed(() => this.eventDetails()?.attendees ?? []);
   totalAttendeesCount = computed(() => this.attendees().length + 1); // +1 includes the creator
-  attendeePreviewProfiles = computed(() => this.attendeeProfiles().slice(0, 5));
+  nonHostAttendeeProfiles = computed(() => {
+    const creator = this.eventDetails()?.createdBy as any;
+    const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
+    return this.attendeeProfiles().filter((attendee) => attendee.userId !== creatorId);
+  });
+  attendeePreviewProfiles = computed(() => this.nonHostAttendeeProfiles().slice(0, 5));
 
   currentUserId = computed(() => this.currentUser()?.id || this.currentUser()?._id || '');
 
@@ -167,7 +169,9 @@ export class EventDetailsComponent {
     const userId = this.currentUser()?.id || this.currentUser()?._id;
     const creator = details?.createdBy as any;
     const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
-    const isMember = this.isLoggedIn() && !!userId && (this.attendees().includes(userId) || userId === creatorId);
+    const isAttendee = this.attendees().some((attendee: any) =>
+      (typeof attendee === 'string' ? attendee : attendee?._id || attendee?.id) === userId);
+    const isMember = this.isLoggedIn() && !!userId && (isAttendee || userId === creatorId);
 
     return isMember;
   });
@@ -261,16 +265,21 @@ export class EventDetailsComponent {
   isUrgent = computed(() => this.remainingSpots() > 0 && this.remainingSpots() <= 5);
 
   attendanceSummaryLabel = computed(() => {
-    const total = this.totalAttendeesCount();
-    const status = this.isEventEnded() ? 'attended' : 'going';
+    const attendees = this.nonHostAttendeeProfiles();
+    const total = attendees.length;
+    const userId = this.currentUserId();
+    const isListedAttendee = !!userId && attendees.some((attendee) => attendee.userId === userId);
+    const status = this.isEventEnded() ? 'Attended' : 'Going';
 
-    if (this.isUserAttendee()) {
-      const others = Math.max(total - 1, 0);
-      if (others === 0) return `You ${status}`;
-      return `You and ${others} ${others === 1 ? 'other' : 'others'} ${status}`;
+    if (total === 0) return '';
+    if (total === 1) return status;
+
+    if (isListedAttendee) {
+      const others = total - 1;
+      return `You + ${others} ${others === 1 ? 'other' : 'others'}`;
     }
 
-    return `${total} ${total === 1 ? 'person' : 'people'} ${status}`;
+    return `${total} ${total === 1 ? 'person' : 'people'} ${this.isEventEnded() ? 'attended' : 'going'}`;
   });
 
   eventPriceLabel = computed(() => {
@@ -372,20 +381,12 @@ export class EventDetailsComponent {
     return `${total} ${total === 1 ? 'person' : 'people'} ${this.isEventEnded() ? 'attended' : 'going'}`;
   });
   eventDrawerAttendees = computed<EventDrawerPerson[]>(() => {
-    const host = this.eventDetails()?.createdBy;
-    const attendees = this.attendeeProfiles().map((attendee) => ({
+    return this.nonHostAttendeeProfiles().map((attendee) => ({
       userId: attendee.userId,
       userName: attendee.userName,
       profileImage: attendee.profileImage,
       role: 'Attendee' as const,
     }));
-
-    if (!host?._id) return attendees;
-
-    return [
-      { userId: host._id, userName: host.username || 'Host', profileImage: host.profileImage || '', role: 'Host' as const },
-      ...attendees,
-    ];
   });
 
   constructor() {
@@ -404,7 +405,7 @@ export class EventDetailsComponent {
     });
 
     effect(() => {
-      const userId = this.currentUser()?.id;
+      const userId = this.currentUser()?.id || this.currentUser()?._id;
       if (userId && !this.isLoadingEvent()) this.syncJoinStatusForCurrentUser();
       if (!this.canAccessPrivateEventData()) this.isChatOpen.set(false);
     });
@@ -530,43 +531,13 @@ export class EventDetailsComponent {
         this.eventDetails.set(details);
         this.eventGalleryImages.set(galleryImages);
 
-        // Coordinate secondary calls in parallel to eliminate change detection layout shift
-        const userId = this.currentUser()?.id;
         const attendees = Array.isArray(details.attendees) ? details.attendees : [];
-
-        const attendees$ = attendees.length > 0
-          ? this.eventsService.getAttendeeDetails(attendees).pipe(catchError(() => of({ success: false, data: [] })))
-          : of({ success: true, data: [] });
-
-        const joinStatus$ = (userId && this.authService.isLoggedIn())
-          ? this.eventsService.getJoinStatus(eventId, userId).pipe(catchError(() => of(null)))
-          : of(null);
-
-        forkJoin({
-          attendees: attendees$,
-          joinStatus: joinStatus$
-        }).subscribe({
-          next: ({ attendees: attRes, joinStatus: joinRes }: { attendees: any; joinStatus: any; }) => {
-            if (attRes?.success && Array.isArray(attRes.data)) {
-              this.attendeeProfiles.set(attRes.data);
-            } else {
-              this.attendeeProfiles.set([]);
-            }
-
-            if (joinRes?.success) {
-              this.eventJoinStatusStore.setApiStatus(eventId, joinRes.data?.status);
-            }
-
-            if (showLoader) {
-              this.isLoadingEvent.set(false);
-            }
-          },
-          error: () => {
-            if (showLoader) {
-              this.isLoadingEvent.set(false);
-            }
-          }
-        });
+        this.attendeeProfiles.set(attendees.map((attendee: any) => ({
+          userId: attendee?._id || attendee?.id || attendee,
+          userName: attendee?.username || '',
+          profileImage: attendee?.profileImage || '',
+        })));
+        if (showLoader) this.isLoadingEvent.set(false);
       },
       error: (err) => {
         console.error('Error fetching event details:', err);
@@ -581,8 +552,8 @@ export class EventDetailsComponent {
 
   private syncJoinStatusForCurrentUser(): void {
     const eventId = this.eventId();
-    const userId = this.currentUser()?.id;
-    if (!eventId || !userId) return;
+    const userId = this.currentUser()?.id || this.currentUser()?._id;
+    if (!eventId || !userId || this.isEventCreator() || !this.authService.isLoggedIn()) return;
 
     const fetchKey = `${eventId}:${userId}`;
     if (this.fetchedJoinStatusKey === fetchKey) return;
@@ -692,11 +663,7 @@ export class EventDetailsComponent {
 
   openPersonProfile(userId: string): void {
     if (!userId) return;
-    this.profileModal.set({ open: true, userId });
-  }
-
-  closeProfileModal(): void {
-    this.profileModal.set({ open: false, userId: '' });
+    this.routeService.navigateByUrl(`/profile?userId=${encodeURIComponent(userId)}`);
   }
 
   redirectToHostProfile(): void {

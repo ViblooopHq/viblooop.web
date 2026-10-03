@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Location } from '@angular/common';
 import { GalleryComponent, GalleryImage } from '../../shared/components/gallery/gallery.component';
 import { RouteService } from '../../shared/services/route/route.service';
@@ -8,7 +9,7 @@ import { AuthService } from '../../shared/services/auth/auth.service';
 import { ReviewsComponent } from './reviews/reviews.component';
 import { SelfieVerificationComponent } from './selfie-verification/selfie-verification.component';
 import { ActivatedRoute } from '@angular/router';
-import { filter, take } from 'rxjs/operators';
+import { filter, pairwise, take } from 'rxjs/operators';
 import { BrowserService } from '../../shared/services/browser/browser.service';
 import { ProfileHeroComponent } from './components/profile-hero/profile-hero.component';
 import { ProfileVerificationBannerComponent } from './components/profile-verification-banner/profile-verification-banner.component';
@@ -49,6 +50,7 @@ export class UserProfileComponent implements OnInit {
   authSerivice = inject(AuthService);
   platform = inject(BrowserService);
   private location = inject(Location);
+  private destroyRef = inject(DestroyRef);
 
   goBack(): void {
     if (window.history.length > 1) {
@@ -139,11 +141,13 @@ export class UserProfileComponent implements OnInit {
         this.initProfile(currentUserId);
       });
 
-    this.appDrawerService.drawer$.subscribe((drawerState) => {
-      if (!drawerState && this.userId) {
-        this.loadProfile();
-      }
-    });
+    this.appDrawerService.drawer$
+      .pipe(pairwise(), takeUntilDestroyed(this.destroyRef))
+      .subscribe(([previousDrawer, drawerState]) => {
+        if (previousDrawer && !drawerState && this.userId) {
+          this.loadProfile();
+        }
+      });
   }
 
   setActiveTab(tab: string) {

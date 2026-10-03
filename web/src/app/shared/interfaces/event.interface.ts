@@ -34,7 +34,7 @@ export interface EventDetails {
   description?: string;
   image?: string;
   gallery?: string[];
-  attendees?: string[];
+  attendees?: Array<string | { _id: string; username?: string; profileImage?: string }>;
   attendeeLimit?: number;
   attendeeMix?: number;
   audiencePreference?: string;

@@ -28,7 +28,7 @@
         [isCancelled]="isCancelled()" [isLoggedIn]="isLoggedIn()" [isAuthInitialized]="isAuthInitialized()"
         [isJoinRequestPending]="isJoinRequestPending()" [eventDate]="eventDetails()?.eventDate"
         [timeLeftLabel]="timeLeftLabel()" [locationLabel]="locationLabel()"
-        [attendeePreviewProfiles]="attendeePreviewProfiles()" [totalAttendeesCount]="totalAttendeesCount()"
+        [attendeePreviewProfiles]="attendeePreviewProfiles()" [totalAttendeesCount]="nonHostAttendeeProfiles().length"
         [attendanceSummaryLabel]="attendanceSummaryLabel()" [joinRequestStatus]="joinRequestStatus()"
         [canRequestJoin]="canRequestJoin()" [eventPriceLabel]="eventPriceLabel()"
         [pendingJoinRequestCount]="pendingJoinRequestCount()" (goBack)="goBack()" (shareEvent)="shareCurrentEvent()"
@@ -163,8 +163,6 @@
   </div>
   }
 </div>
-
-<vl-event-profile-modal [isOpen]="profileModal().open" [userId]="profileModal().userId" (close)="closeProfileModal()" />
 
 @if (isChatOpen()) {
 <vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>

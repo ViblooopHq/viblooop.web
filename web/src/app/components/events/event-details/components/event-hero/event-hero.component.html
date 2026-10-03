@@ -50,21 +50,17 @@
 
     <div class="hero-action-row">
       <div class="hero-attendance-group">
+        @if (totalAttendeesCount() > 0) {
         <button type="button" class="hero-attendance" [class.hero-attendance--past]="isEventEnded()"
           (click)="openAttendees.emit()"
           [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
           <div class="avatar-stack">
-            <img
-              [src]="event()?.createdBy?.profileImage ? (event()!.createdBy!.profileImage! | imageUrl) : 'assets/images/default-profile.png'"
-              (error)="$any($event.target).src = 'assets/images/default-profile.png'"
-              alt=""
-              [matTooltip]="'Creator: ' + event()?.createdBy?.username">
             @for (attendee of attendeePreviewProfiles(); track attendee.userId) {
             <img [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
               (error)="$any($event.target).src = 'assets/images/default-profile.png'" alt="">
             }
-            @if (totalAttendeesCount() > 6) {
-            <span class="more-count">+{{ totalAttendeesCount() - 6 }}</span>
+            @if (totalAttendeesCount() > 5) {
+            <span class="more-count">+{{ totalAttendeesCount() - 5 }}</span>
             }
           </div>
           <span class="hero-attendance-label">
@@ -72,6 +68,7 @@
             <span class="material-symbols-outlined hero-attendance__arrow" translate="no" aria-hidden="true">chevron_right</span>
           </span>
         </button>
+        }
 
         @if (isCancelled()) {
         <span class="event-status-pill event-status-pill--cancelled">
