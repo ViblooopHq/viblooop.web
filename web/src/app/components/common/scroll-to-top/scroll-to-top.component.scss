@@ -68,12 +68,6 @@
       font-size: 1.35rem;
     }
 
-    /* Elevated stack when sticky join bar is present on Event Details */
-    &.vl-scroll-top--above-sticky {
-      bottom: max(calc(9.05rem + env(safe-area-inset-bottom, 0.85rem)), var(--footer-clearance, 0px));
-      right: 1.25rem;
-      z-index: 95;
-    }
   }
 }
 

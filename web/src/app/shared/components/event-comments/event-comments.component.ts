@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, HostListener, inject, input, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../services/auth/auth.service';
 import { EventsService } from '../../services/events/events.service';
@@ -32,6 +32,7 @@ export class EventCommentsComponent {
   showAllReviews = signal(false);
   editingReview = signal<any>(null);
   openReviewMenuId = signal('');
+  reviewMenuPlacement = signal<'above' | 'below'>('below');
   deletingReviewId = signal('');
   hoverRating = signal(0);
   readonly stars = [1, 2, 3, 4, 5];
@@ -235,7 +236,40 @@ export class EventCommentsComponent {
     if (!this.isOwnReview(review)) return;
 
     const reviewId = review?._id || '';
-    this.openReviewMenuId.set(this.openReviewMenuId() === reviewId ? '' : reviewId);
+    const isOpen = this.openReviewMenuId() === reviewId;
+    this.openReviewMenuId.set(isOpen ? '' : reviewId);
+    this.reviewMenuPlacement.set('below');
+
+    if (isOpen || typeof document === 'undefined') return;
+
+    setTimeout(() => {
+      const menu = document.querySelector<HTMLElement>('.comment-menu');
+      if (!menu) return;
+
+      const anchorBounds = menu.parentElement?.getBoundingClientRect();
+      if (!anchorBounds) return;
+
+      const spaceBelow = window.innerHeight - anchorBounds.bottom;
+      const spaceAbove = anchorBounds.top;
+      if (spaceBelow < menu.getBoundingClientRect().height && spaceAbove > spaceBelow) {
+        this.reviewMenuPlacement.set('above');
+      }
+    });
+  }
+
+  @HostListener('document:click', ['$event'])
+  closeReviewMenuOnOutsideClick(event: MouseEvent): void {
+    if (!this.openReviewMenuId()) return;
+
+    const target = event.target;
+    if (target instanceof Element && target.closest('.review-item__actions')) return;
+
+    this.openReviewMenuId.set('');
+  }
+
+  @HostListener('window:scroll')
+  closeReviewMenuOnScroll(): void {
+    if (this.openReviewMenuId()) this.openReviewMenuId.set('');
   }
 
   isReviewMenuOpen(review: any): boolean {

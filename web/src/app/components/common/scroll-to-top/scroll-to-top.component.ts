@@ -16,7 +16,7 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   private routerSub?: Subscription;
 
   isVisible = signal(false);
-  isAboveSticky = signal(false);
+  isEventDetailsRoute = signal(false);
   footerClearance = signal(0);
 
   ngOnInit() {
@@ -33,10 +33,9 @@ export class ScrollToTopComponent implements OnInit, OnDestroy {
   }
 
   private checkRoute() {
-    const url = this.router.url;
-    // When on Event Details where the sticky join bar is present, elevate above it
-    const isEventDetails = /\/events\/[^/?#]+/.test(url) || url.includes('/events/');
-    this.isAboveSticky.set(isEventDetails);
+    const path = this.router.url.split(/[?#]/, 1)[0].replace(/\/$/, '');
+    const isEventDetails = /^\/events\/[^/]+$/.test(path) && !path.startsWith('/events/view-all/');
+    this.isEventDetailsRoute.set(isEventDetails);
   }
 
   @HostListener('window:scroll', [])

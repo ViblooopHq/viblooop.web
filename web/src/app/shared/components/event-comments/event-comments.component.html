@@ -136,15 +136,6 @@
             </div>
 
             <div class="review-item__header-right">
-              <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
-                @for (star of stars; track star) {
-                  <span class="material-symbols-outlined star-icon"
-                    [class.filled]="star <= (review.score || 0)"
-                    [style.font-variation-settings]="star <= (review.score || 0) ? '\'FILL\' 1' : '\'FILL\' 0'"
-                    translate="no">star</span>
-                }
-              </div>
-
               @if (isOwnReview(review)) {
                 <div class="review-item__actions">
                   <button
@@ -157,7 +148,7 @@
                   </button>
 
                   @if (isReviewMenuOpen(review)) {
-                    <div class="comment-menu" role="menu">
+                    <div class="comment-menu" [class.comment-menu--above]="reviewMenuPlacement() === 'above'" role="menu">
                       <button type="button" role="menuitem" (click)="editReview(review)">
                         <span class="material-symbols-outlined" translate="no">edit</span>
                         <span>Edit Review</span>
@@ -173,6 +164,17 @@
                     </div>
                   }
                 </div>
+              }
+            </div>
+          </div>
+
+          <div class="review-item__rating">
+            <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
+              @for (star of stars; track star) {
+                <span class="material-symbols-outlined star-icon"
+                  [class.filled]="star <= (review.score || 0)"
+                  [style.font-variation-settings]="star <= (review.score || 0) ? '\'FILL\' 1' : '\'FILL\' 0'"
+                  translate="no">star</span>
               }
             </div>
           </div>

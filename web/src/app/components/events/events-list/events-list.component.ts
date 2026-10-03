@@ -85,9 +85,6 @@ export class EventsListComponent implements OnInit, OnDestroy {
 
   private readonly noHeroSlides: any[] = [];
 
-  breadcrumbs = [
-    { label: 'Home', url: '/' },
-  ];
   route: ActivatedRoute = inject(ActivatedRoute);
   eventService = inject(EventsService);
   private location = inject(Location);

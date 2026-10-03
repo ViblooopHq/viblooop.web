@@ -242,11 +242,11 @@
   .btn-leave-hero {
     border-color: var(--color-warning);
     color: var(--color-warning);
-    background-color: var(--color-surface);
+    background-color: transparent;
     font-weight: 700;
 
     &:hover {
-      background-color: var(--color-warning-soft);
+      background-color: transparent;
     }
   }
 
