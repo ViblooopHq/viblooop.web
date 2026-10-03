@@ -224,9 +224,6 @@ export class CreateEventComponent implements OnInit {
     this.creationState.set('loading');
     this.creationErrorMessage.set('');
 
-    const startTime = Date.now();
-    const minLoaderTimeMs = 10000; // 10 seconds engaging animation for user preview
-
     const formData = this.formService.buildFormData();
 
     if (isEditMode && editEventId) {
@@ -267,48 +264,38 @@ export class CreateEventComponent implements OnInit {
 
     request$.subscribe({
       next: res => {
-        const elapsed = Date.now() - startTime;
-        const delayRemaining = Math.max(0, minLoaderTimeMs - elapsed);
+        this.isSubmittingEvent.set(false);
+        const eventId = res?.data?.event?._id;
 
-        setTimeout(() => {
-          this.isSubmittingEvent.set(false);
-          const eventId = res?.data?.event?._id;
+        if (isEditMode && res?.success && (res.statusCode === 200 || res.statusCode === 201) && eventId) {
+          this.formService.eventForm.markAsPristine();
+          this.appDrawerService.close();
+          this.drawerClosed.emit();
+          this.router.navigateByUrl(`/events/${eventId}`);
+          return;
+        }
 
-          if (isEditMode && res?.success && (res.statusCode === 200 || res.statusCode === 201) && eventId) {
-            this.formService.eventForm.markAsPristine();
-            this.appDrawerService.close();
-            this.drawerClosed.emit();
-            this.router.navigateByUrl(`/events/${eventId}`);
-            return;
-          }
+        if (!isEditMode && res?.success && res.statusCode === 201 && eventId) {
+          this.createdEventId = eventId;
+          this.creationState.set('success');
+          return;
+        }
 
-          if (!isEditMode && res?.success && res.statusCode === 201 && eventId) {
-            this.createdEventId = eventId;
-            this.creationState.set('success');
-            return;
-          }
+        if (res?.success && eventId) {
+          this.createdEventId = eventId;
+          this.creationState.set('success');
+          return;
+        }
 
-          if (res?.success && eventId) {
-            this.createdEventId = eventId;
-            this.creationState.set('success');
-            return;
-          }
-
-          this.creationErrorMessage.set(res?.message || 'Event creation could not be completed.');
-          this.creationState.set('error');
-        }, delayRemaining);
+        this.creationErrorMessage.set(res?.message || 'Event creation could not be completed.');
+        this.creationState.set('error');
       },
       error: err => {
-        const elapsed = Date.now() - startTime;
-        const delayRemaining = Math.max(0, 800 - elapsed);
-
-        setTimeout(() => {
-          this.isSubmittingEvent.set(false);
-          const errMsg = err?.error?.message || err?.message || 'Could not launch event. Please check your connection and try again.';
-          this.creationErrorMessage.set(errMsg);
-          this.creationState.set('error');
-          console.error(`Error ${isEditMode ? 'updating' : 'creating'} event:`, err);
-        }, delayRemaining);
+        this.isSubmittingEvent.set(false);
+        const errMsg = err?.error?.message || err?.message || 'Could not launch event. Please check your connection and try again.';
+        this.creationErrorMessage.set(errMsg);
+        this.creationState.set('error');
+        console.error(`Error ${isEditMode ? 'updating' : 'creating'} event:`, err);
       }
     });
   }
