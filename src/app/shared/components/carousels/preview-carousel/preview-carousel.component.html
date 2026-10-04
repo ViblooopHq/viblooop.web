@@ -1,0 +1,78 @@
+@if (!isServer) {
+<div class="vl-preview-wrapper">
+  <!-- Main Background Slider -->
+  <swiper-container init="false" #mainSwiper class="main-swiper">
+    @for (item of items(); track item.url) {
+      <swiper-slide>
+        <div class="slide-media">
+          @if (item.type === 'image') {
+            <img src="{{item.url}}" alt="{{item.title}}" loading="lazy" />
+          } @else if (item.type === 'video') {
+            <video src="{{item.url}}" loop muted playsinline></video>
+          }
+        </div>
+        <div class="slide-overlay-gradient"></div>
+        
+        <div class="slide-content-container">
+          <div class="slide-content">
+            @if (item.preTitle) {
+              <div class="pre-title">{{ item.preTitle }}</div>
+            }
+            <h1 class="main-title">{{ item.title }}</h1>
+            @if (item.description) {
+              <p class="description">{{ item.description }}</p>
+            }
+          </div>
+        </div>
+      </swiper-slide>
+    }
+  </swiper-container>
+
+  <!-- Absolute Positioned Overlay Container -->
+  <div class="slider-overlay-container">
+    <div class="bottom-right-container">
+      <!-- Thumbnail Slider -->
+      <div class="thumb-container">
+        <swiper-container init="false" #thumbSwiper class="thumb-swiper">
+          @for (item of items(); track item.url) {
+            <swiper-slide class="thumb-slide">
+              <div class="thumb-card">
+                @if (item.type === 'image') {
+                  <img src="{{item.url}}" alt="{{item.title}}" loading="lazy" />
+                } @else if (item.type === 'video') {
+                  <!-- Thumbnail video is paused -->
+                  <video src="{{item.url}}" muted playsinline></video>
+                }
+                <div class="thumb-info">
+                  <div class="thumb-title">{{ item.title }}</div>
+                  @if (item.subtitle) {
+                    <div class="thumb-subtitle">{{ item.subtitle }}</div>
+                  }
+                </div>
+              </div>
+            </swiper-slide>
+          }
+        </swiper-container>
+      </div>
+
+      <!-- Controls Row: Navigation + Pagination -->
+      <div class="bottom-controls">
+        <div class="nav-controls">
+          <button class="vl-nav-prev"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="vl-nav-next"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="vl-custom-pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+} @else {
+<!-- SSR Fallback -->
+<div class="vl-preview-ssr-fallback">
+  <div class="main-image-fallback">
+    @if (items().length > 0) {
+      <img [src]="items()[0].url" [alt]="items()[0].title" />
+    }
+  </div>
+</div>
+}

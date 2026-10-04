@@ -1,0 +1,202 @@
+@use "../../../../../../styles/index" as *;
+@use "../../create-event-shared" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+.time-field {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  cursor: pointer;
+}
+
+/* ── Material Customization ── */
+::ng-deep {
+  .material-input-custom {
+    width: 100%;
+    min-width: 0;
+
+    .mat-mdc-text-field-wrapper {
+      padding: 0 0.5rem 0 0.75rem !important;
+      background-color: var(--color-surface) !important;
+      border: 1px solid var(--color-border) !important;
+      border-radius: var(--radius-md, 12px) !important;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+      min-height: 46px !important;
+      height: 46px !important;
+      align-items: center;
+
+      &:hover {
+        border-color: var(--color-border-hover, var(--color-primary)) !important;
+      }
+    }
+
+    .mat-mdc-form-field-flex {
+      min-height: 46px !important;
+      height: 46px !important;
+      align-items: center !important;
+    }
+
+    .mdc-notched-outline,
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      display: none !important;
+      border: 0 !important;
+      border-color: transparent !important;
+    }
+
+    .mat-mdc-form-field-focus-overlay {
+      display: none !important;
+    }
+
+    .mat-mdc-form-field-infix {
+      width: auto !important;
+      min-width: 0 !important;
+      padding: 0 !important;
+      min-height: 0 !important;
+      display: flex;
+      align-items: center;
+      border: 0 !important;
+      outline: none !important;
+    }
+
+    .mat-mdc-input-element {
+      min-width: 0 !important;
+      text-overflow: ellipsis;
+      color: var(--color-text-primary) !important;
+      font-family: inherit !important;
+      font-size: 0.85rem !important;
+      font-weight: 500 !important;
+      caret-color: var(--color-primary) !important;
+      cursor: pointer;
+      border: 0 !important;
+      outline: 0 !important;
+      outline: none !important;
+      box-shadow: none !important;
+      background: transparent !important;
+
+      &:focus,
+      &:focus-visible {
+        border: 0 !important;
+        outline: 0 !important;
+        outline: none !important;
+        box-shadow: none !important;
+      }
+
+      &::placeholder {
+        color: var(--color-text-muted) !important;
+      }
+    }
+
+    .mat-mdc-form-field-subscript-wrapper {
+      display: none !important;
+    }
+
+    .time-icon {
+      color: var(--color-primary) !important;
+      font-size: 1.25rem !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      margin-right: -0.25rem;
+      cursor: pointer;
+    }
+
+    &.mat-focused .mat-mdc-text-field-wrapper {
+      border-color: var(--color-primary) !important;
+      box-shadow: var(--focus-ring, 0 0 0 3px rgba(124, 58, 237, 0.18)) !important;
+    }
+  }
+}
+
+/* ── Custom Time Picker Overlay ── */
+.custom-time-picker {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 6px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 12px);
+  box-shadow: var(--shadow-modal, 0 10px 25px -5px rgba(0, 0, 0, 0.2));
+  display: flex;
+  height: 160px;
+  width: 172px;
+  z-index: 1000;
+  overflow: hidden;
+  pointer-events: auto !important;
+
+  @media (max-width: 480px) {
+    width: 154px;
+    height: 144px;
+  }
+}
+
+.picker-col {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  border-right: 1px solid var(--color-border);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:last-child {
+    border-right: none;
+  }
+}
+
+.picker-col-period {
+  flex: 0.86;
+}
+
+.picker-item {
+  width: 100%;
+  min-height: 34px;
+  padding: 0 6px;
+  text-align: center;
+  background: transparent;
+  border: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 34px;
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+
+  &:hover {
+    background: var(--color-surface-interactive);
+    color: var(--color-text-primary);
+  }
+
+  &.active {
+    background: var(--color-primary);
+    color: #ffffff;
+    font-weight: 700;
+  }
+
+  @media (max-width: 480px) {
+    min-height: 32px;
+    padding: 0 4px;
+    font-size: 0.78rem;
+    line-height: 32px;
+  }
+}
+
+.picker-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: transparent;
+  border: 0;
+  cursor: default;
+}

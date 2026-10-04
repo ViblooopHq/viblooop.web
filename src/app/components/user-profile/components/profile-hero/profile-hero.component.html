@@ -1,0 +1,56 @@
+<div class="vl-user-profile__hero" [style.--profile-banner]="'url(' + profileBanner() + ')'">
+  <div class="vl-user-profile__avatar-wrap">
+    <img class="vl-user-profile__avatar" [src]="profileImage()" alt="Profile" referrerpolicy="no-referrer"
+      (error)="imageError.emit($event)" />
+
+    @if (isCurrentUser()) {
+      <button class="vl-icon-button vl-user-profile__edit-avatar" type="button" (click)="editAvatar.emit()" aria-label="Update profile picture">
+        <span class="material-symbols-outlined" translate="no">photo_camera</span>
+      </button>
+    }
+  </div>
+
+  <div class="vl-user-profile__identity">
+    <h1 class="vl-title-lg">
+      <span>{{ displayName() }}</span>
+      @if (isVerified()) {
+        <span class="vl-user-profile__verified-badge" aria-label="Verified profile">
+          <span class="material-symbols-outlined" translate="no">verified</span>
+          <span>Verified</span>
+        </span>
+      }
+    </h1>
+    <p class="vl-meta vl-user-profile__handle">{{ handle() }}</p>
+    <p class="vl-body vl-user-profile__bio">{{ bio() }}</p>
+
+    <div class="vl-user-profile__vibes">
+      <vl-interest-pill-list [interests]="previewInterests()"></vl-interest-pill-list>
+    </div>
+  </div>
+
+  @if (photoPreviewItems().length > 0) {
+    <section class="vl-user-profile__photo-strip" aria-label="Profile photos">
+      <header class="vl-user-profile__photo-strip-header">
+        <h2 class="vl-title-md">
+          <span class="material-symbols-outlined" translate="no">photo_camera</span>
+          Photos
+        </h2>
+      </header>
+
+      <div class="vl-user-profile__photo-preview-list">
+        @for (photo of photoPreviewItems(); track photo.url; let last = $last) {
+          <button
+            class="vl-user-profile__photo-preview"
+            type="button"
+            (click)="photoSelected.emit(photo.index)"
+            [attr.aria-label]="'Open profile photo ' + (photo.index + 1)">
+            <img [src]="photo.url" [alt]="photo.label || 'Profile photo'" />
+            @if (last && hiddenPhotoCount() > 0) {
+              <span>+{{ hiddenPhotoCount() }}</span>
+            }
+          </button>
+        }
+      </div>
+    </section>
+  }
+</div>

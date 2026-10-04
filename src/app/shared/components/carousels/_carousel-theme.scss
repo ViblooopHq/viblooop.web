@@ -1,0 +1,81 @@
+/* 
+ * Global Swiper Theme & Customization for Viblooop
+ * Maps standard Swiper CSS variables to Viblooop design tokens.
+ */
+
+:root {
+  /* Core colors */
+  --swiper-theme-color: var(--color-action-primary);
+  
+  /* Navigation (Arrows) */
+  --swiper-navigation-size: 20px;
+  --swiper-navigation-color: var(--color-text-primary);
+  --swiper-navigation-bg-color: var(--color-surface-raised);
+  
+  /* Pagination (Dots) */
+  --swiper-pagination-color: var(--color-action-primary);
+  --swiper-pagination-bullet-inactive-color: var(--color-text-muted);
+  --swiper-pagination-bullet-inactive-opacity: 0.4;
+  --swiper-pagination-bullet-size: 8px;
+  --swiper-pagination-bullet-horizontal-gap: 6px;
+  --swiper-pagination-bottom: 12px;
+}
+
+/* Base styles for all swiper instances to ensure layout stability */
+swiper-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  
+  /* Customizing Shadow DOM parts exposed by Swiper Web Components */
+  &::part(button-prev),
+  &::part(button-next) {
+    background-color: var(--swiper-navigation-bg-color);
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease-in-out;
+  }
+  
+  &::part(button-prev):hover,
+  &::part(button-next):hover {
+    background-color: var(--color-action-primary);
+    color: var(--color-on-primary);
+    transform: scale(1.05);
+  }
+
+  &::part(button-prev):active,
+  &::part(button-next):active {
+    transform: scale(0.95);
+  }
+  
+  &::part(bullet) {
+    transition: all 0.3s ease;
+  }
+  
+  &::part(bullet-active) {
+    width: 24px;
+    border-radius: var(--radius-full);
+    background-color: var(--swiper-theme-color);
+  }
+}
+
+/* Skeleton Loading State for SSR */
+.swiper-skeleton-wrapper {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.swiper-skeleton-slide {
+  flex-shrink: 0;
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-raised) 50%, transparent);
+  animation: skeletonPulse 1.5s infinite ease-in-out;
+}

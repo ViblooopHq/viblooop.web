@@ -1,0 +1,76 @@
+:host {
+  display: block;
+  position: absolute;
+  top: 3.5rem;
+  right: 0;
+  width: 280px;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.vl-notification-toast {
+  animation: toast-pop-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  .toast-content {
+    background: var(--color-surface-glass-strong);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    box-shadow: var(--shadow-floating);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--highlight-color, var(--color-action-secondary));
+    }
+
+    .toast-indicator {
+      width: 8px;
+      height: 8px;
+      background: var(--highlight-color, var(--color-action-secondary));
+      border-radius: var(--radius-full);
+      flex-shrink: 0;
+      animation: pulse 2s infinite;
+    }
+
+    p {
+      margin: 0;
+      text-align: left;
+      white-space: normal;
+    }
+  }
+}
+
+@keyframes toast-pop-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-action-secondary) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 10px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}

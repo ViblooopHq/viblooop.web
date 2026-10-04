@@ -1,0 +1,401 @@
+@use '../../../../styles/index' as *;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.vl-compact-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-xl, 16px);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease;
+
+  &:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+    box-shadow: 0 8px 20px -6px rgba(124, 58, 237, 0.15), 0 2px 6px rgba(0, 0, 0, 0.04);
+  }
+
+  &:active {
+    transform: scale(0.985);
+  }
+
+  /* ── Media Header with Title Overlay ── */
+  &__media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 12;
+    overflow: hidden;
+    background-color: var(--color-surface-raised);
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+
+    .vl-compact-card:hover & {
+      transform: scale(1.05);
+    }
+  }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(15, 23, 42, 0.35) 0%,
+      transparent 35%,
+      rgba(15, 23, 42, 0.6) 60%,
+      rgba(15, 23, 42, 0.92) 100%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Top Left Badges Row ── */
+  &__badges {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    z-index: 2;
+    max-width: calc(100% - 2.5rem);
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.18rem;
+    padding: 0.15rem 0.45rem;
+    border-radius: var(--radius-pill);
+    font-size: 0.62rem;
+    font-weight: 750;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+
+    .material-symbols-outlined {
+      font-size: 0.72rem;
+    }
+
+    &--schedule {
+      .material-symbols-outlined {
+        color: var(--color-primary);
+      }
+    }
+
+    &--aud {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+
+      &[data-type="women"] {
+        .material-symbols-outlined {
+          color: #fb5b8d;
+        }
+      }
+
+      &[data-type="men"] {
+        .material-symbols-outlined {
+          color: #60a5fa;
+        }
+      }
+
+      &[data-type="open"] {
+        .material-symbols-outlined {
+          color: #9b6cff;
+        }
+      }
+    }
+
+    &--ended {
+      background: var(--color-overlay-scrim);
+      border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+      color: var(--color-on-primary);
+      box-shadow: var(--shadow-sm);
+
+      .material-symbols-outlined {
+        color: var(--color-primary);
+      }
+    }
+  }
+
+  &__audience-pill {
+    align-self: flex-end;
+  }
+
+  /* ── Top Right Wishlist ── */
+  &__wishlist-btn {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.4rem;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-full);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    padding: 0;
+    color: #ffffff;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+
+    &:hover {
+      background: rgba(15, 23, 42, 0.85);
+      transform: scale(1.1);
+    }
+
+    .material-symbols-outlined {
+      font-size: 0.95rem;
+      color: rgba(255, 255, 255, 0.9);
+      transition: all 0.2s ease;
+
+      &.active {
+        color: #f43f5e;
+        transform: scale(1.12);
+      }
+    }
+  }
+
+  /* ── Title on Top of Image ── */
+  &__title-overlay {
+    position: absolute;
+    bottom: 0.45rem;
+    left: 0.45rem;
+    right: 0.45rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  &__title {
+    font-size: 0.8125rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1.25;
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+  }
+
+  /* ── Card Body ── */
+  &__body {
+    padding: 0.5rem 0.55rem 0.55rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-width: 0;
+    gap: 0.35rem;
+  }
+
+  &__top {
+    display: flex;
+    flex-direction: column;
+    gap: 0.22rem;
+    min-width: 0;
+  }
+
+  &__datetime {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--color-text-secondary);
+    line-height: 1.4;
+
+    .material-symbols-outlined {
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+  }
+
+  &__location {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    font-size: 0.68rem;
+    color: var(--color-text-secondary);
+    min-width: 0;
+    line-height: 1.2;
+
+    .material-symbols-outlined {
+      font-size: 0.8rem;
+      color: var(--color-primary);
+      flex-shrink: 0;
+    }
+  }
+
+  &__location-text {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Hosted By Row ── */
+  &__host {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.67rem;
+    color: var(--color-text-secondary);
+    min-width: 0;
+    line-height: 1.2;
+    margin-top: 0.05rem;
+  }
+
+  &__host-avatar-wrap {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--color-border);
+  }
+
+  &__host-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__host-icon {
+    font-size: 0.8rem !important;
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  &__host-text {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__host-name {
+    color: var(--color-text-primary);
+    font-weight: 650;
+    margin-left: 0.15rem;
+  }
+
+  /* ── Footer ── */
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.32rem;
+    border-top: 1px solid var(--color-border);
+    gap: 0.25rem;
+    min-width: 0;
+
+    &--ended {
+      justify-content: flex-start;
+    }
+  }
+
+  &__attendance-summary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    color: var(--color-text-secondary);
+    font-size: 0.67rem;
+    font-weight: 700;
+    white-space: nowrap;
+
+    > .material-symbols-outlined {
+      font-size: 0.9rem;
+      color: var(--color-text-tertiary);
+    }
+  }
+
+  &__attendee-avatars {
+    display: flex;
+    align-items: center;
+    padding-left: 0.15rem;
+
+    img {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-left: -0.22rem;
+      border: 1px solid var(--color-surface);
+      border-radius: var(--radius-full);
+      background-color: var(--color-surface-raised);
+      object-fit: cover;
+    }
+  }
+
+  &__price {
+    font-size: 0.8125rem;
+    font-weight: 850;
+    color: var(--color-text-primary);
+    white-space: nowrap;
+
+    &--free {
+      color: #10b981;
+      font-weight: 800;
+    }
+  }
+
+  &__attendees {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--color-text-tertiary);
+    white-space: nowrap;
+
+    .material-symbols-outlined {
+      font-size: 0.78rem;
+      color: var(--color-primary);
+    }
+  }
+
+  &__spots {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #f59e0b;
+    white-space: nowrap;
+
+    .material-symbols-outlined {
+      font-size: 0.78rem;
+    }
+  }
+}

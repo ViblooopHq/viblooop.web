@@ -1,0 +1,103 @@
+@if (mode()) {
+<div class="event-detail-drawer-backdrop" (click)="close.emit()">
+  <aside class="event-detail-drawer" role="dialog" aria-modal="true" aria-labelledby="event-people-drawer-heading"
+    cdkTrapFocus cdkTrapFocusAutoCapture (click)="$event.stopPropagation()" (keydown.escape)="close.emit()">
+    <header class="event-detail-drawer__header">
+      <div class="event-detail-drawer__header-main">
+        <div class="event-detail-drawer__title-row">
+          <h2 id="event-people-drawer-heading" class="event-detail-drawer__title">{{ title() }}</h2>
+          @if (mode() === 'requests' && pendingRequests().length > 0) {
+            <span class="event-detail-drawer__badge">{{ pendingRequests().length }}</span>
+          } @else if (mode() === 'attendees' && attendees().length > 0) {
+            <span class="event-detail-drawer__badge">{{ attendees().length }}</span>
+          }
+        </div>
+        <div class="event-detail-drawer__meta-row">
+          <span class="event-detail-drawer__event-chip">
+            <span class="material-symbols-outlined" translate="no">event</span>
+            <span>{{ eventTitle() }}</span>
+          </span>
+          <span class="event-detail-drawer__subtitle">{{ subtitle() }}</span>
+        </div>
+      </div>
+      <button type="button" class="event-detail-drawer__close" aria-label="Close drawer" (click)="close.emit()">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
+      </button>
+    </header>
+
+    @if (mode() === 'requests') {
+      @if (pendingRequests().length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (request of pendingRequests(); track request.id) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity"
+                (click)="viewPerson.emit(request.senderId)">
+                <img
+                  [src]="request.senderImage ? (request.senderImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ request.senderName }}</strong>
+                  <small>Requested to join</small>
+                </span>
+              </button>
+
+              <div class="event-request-actions">
+                @if (request.state === 'processing') {
+                  <span class="event-request-status">
+                    <vl-inline-loader size="sm" color="primary" text="Updating..."></vl-inline-loader>
+                  </span>
+                } @else {
+                  <button type="button" class="event-request-action event-request-action--primary vl-button vl-button--primary"
+                    (click)="accept.emit(request)">
+                    Accept
+                  </button>
+                  <button type="button" class="event-request-action event-request-action--secondary vl-button vl-button--secondary"
+                    (click)="reject.emit(request)">
+                    Decline
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <span class="event-detail-drawer__empty-icon">
+            <span class="material-symbols-outlined" translate="no">notifications_none</span>
+          </span>
+          <h3>No pending requests</h3>
+          <p>New join requests will show up here.</p>
+        </div>
+      }
+    } @else {
+      @if (attendees().length > 0) {
+        <div class="event-detail-drawer__list">
+          @for (attendee of attendees(); track attendee.role + attendee.userId) {
+            <article class="event-detail-person-card">
+              <button type="button" class="event-detail-person-card__identity" (click)="viewPerson.emit(attendee.userId)">
+                <img
+                  [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                  (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                  alt="">
+                <span>
+                  <strong>{{ attendee.userName }}</strong>
+                  <small>{{ attendee.role }}</small>
+                </span>
+              </button>
+            </article>
+          }
+        </div>
+      } @else {
+        <div class="event-detail-drawer__empty">
+          <span class="event-detail-drawer__empty-icon">
+            <span class="material-symbols-outlined" translate="no">group</span>
+          </span>
+          <h3>No attendees yet</h3>
+          <p>People who join this event will show up here.</p>
+        </div>
+      }
+    }
+  </aside>
+</div>
+}

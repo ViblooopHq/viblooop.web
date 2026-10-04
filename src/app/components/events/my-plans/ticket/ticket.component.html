@@ -1,0 +1,90 @@
+<article class="ticket" (click)="selectPlan()">
+  <section class="ticket__main">
+    <div class="ticket__media">
+      <img
+        [src]="plan().eventImage | imageUrl"
+        [alt]="plan().eventTitle + ' cover image'"
+        (error)="onImageError($event, 'assets/images/default-cover.jpg')" />
+    </div>
+
+    <div class="ticket__body">
+      <div class="ticket__topline">
+        <img class="ticket__logo" [src]="themeService.logoSrc()" alt="Viblooop" />
+        <span class="ticket__category">
+          <span class="material-symbols-outlined" translate="no">{{ plan().eventCategoryIcon }}</span>
+          {{ plan().eventCategory }}
+        </span>
+      </div>
+
+      <h2>{{ plan().eventTitle }}</h2>
+      <p class="ticket__description">{{ plan().eventDescription }}</p>
+
+      <div class="ticket__info">
+        <div class="ticket__schedule">
+          <div class="ticket__fact">
+            <span class="ticket__fact-icon material-symbols-outlined" translate="no">calendar_month</span>
+            <div>
+              <strong>{{ plan().formattedDate }}</strong>
+              <small>
+                {{ plan().formattedTime }}
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="ticket__detail-row ticket__location">
+          <span class="ticket__fact-icon material-symbols-outlined" translate="no">location_on</span>
+          <div>
+            <strong>{{ plan().locationPrimary }}</strong>
+            <small>{{ plan().locationNote }}</small>
+          </div>
+        </div>
+
+        <div class="ticket__detail-row ticket__host">
+          <img
+            class="ticket__fact-icon ticket__host-avatar"
+            [src]="plan().hostedBy.profileImage | imageUrl"
+            [alt]="plan().hostedBy.name"
+            (error)="onImageError($event, 'assets/images/default-profile.png')" />
+          <div>
+            <small>Hosted by</small>
+            <strong>{{ plan().hostedBy.name }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <aside class="ticket__stub">
+    <span class="ticket__stub-decoration material-symbols-outlined" aria-hidden="true" translate="no">confirmation_number</span>
+
+    <div class="ticket__stub-copy">
+      <h3>Your Pass</h3>
+      <p>1 × {{ plan().accessLabel }}</p>
+    </div>
+
+    <div class="ticket__qr" aria-label="Pass QR code">
+      @if (plan().qrCodeUrl) {
+        <img [src]="plan().qrCodeUrl" [alt]="'QR code for ' + plan().ticketId" class="ticket__qr-img" />
+      } @else {
+        <span class="material-symbols-outlined" translate="no">qr_code_2</span>
+      }
+    </div>
+
+    <span class="ticket__status">
+      <span class="material-symbols-outlined" translate="no">{{ plan().statusIcon }}</span>
+      {{ plan().status }}
+    </span>
+
+    <div class="ticket__stub-footer">
+      <div class="ticket__id">
+        <small>Pass ID</small>
+        <code>{{ plan().ticketId }}</code>
+      </div>
+
+      <span class="ticket__price">
+        {{ plan().formattedPrice }}
+      </span>
+    </div>
+  </aside>
+</article>

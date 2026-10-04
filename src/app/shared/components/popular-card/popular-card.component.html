@@ -1,0 +1,19 @@
+<div class="popular-card">
+  <img [src]="config().image" [alt]="config().title" class="card-bg">
+  <div class="card-overlay"></div>
+  
+  <div class="card-header">
+    <div class="badge" [ngClass]="'badge-' + config().badgeType">
+      {{ config().badgeText }}
+    </div>
+    <div class="view-count">
+      <i class="fa-regular fa-eye" *ngIf="config().badgeType === 'live'"></i>
+      <i class="fa-solid fa-fire" *ngIf="config().badgeType === 'premier'"></i>
+      <span>{{ config().viewCount }}</span>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <h3 class="card-title">{{ config().title }}</h3>
+  </div>
+</div>

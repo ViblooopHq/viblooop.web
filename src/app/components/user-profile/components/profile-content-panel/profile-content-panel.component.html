@@ -1,0 +1,139 @@
+<section class="vl-user-profile__panel">
+  <div class="vl-user-profile__tabs" role="tablist">
+    @for(tab of tabs(); track tab) {
+      <button type="button" role="tab" [class.active]="activeTab() === tab" (click)="tabChange.emit(tab)">
+        <span class="material-symbols-outlined" translate="no">{{ getTabIcon(tab) }}</span>
+        {{ tab }}
+      </button>
+    }
+  </div>
+
+  <div class="vl-user-profile__tab-content">
+    @switch (activeTab()) {
+      @case ('Joined') {
+        @if (isJoinedLoading()) {
+          <div class="vl-user-profile__event-list">
+            <vl-event-card-skeleton [count]="3"></vl-event-card-skeleton>
+          </div>
+        } @else if (visibleJoinedEvents().length > 0) {
+          <div class="vl-user-profile__event-list">
+            @for (event of visibleJoinedEvents(); track event?._id || $index) {
+              <div class="vl-user-profile__event-card-wrap">
+                <div class="vl-card-desktop">
+                  <vl-event-card [config]="event" profileStatus="attended" class="block w-full h-full"></vl-event-card>
+                </div>
+                <div class="vl-card-mobile">
+                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                </div>
+              </div>
+            }
+          </div>
+          @if (totalJoinedCount() > visibleJoinedEvents().length) {
+            <button class="vl-user-profile__view-all" type="button" (click)="showMoreJoined.emit()">
+              Show more
+              <span class="material-symbols-outlined" translate="no">chevron_right</span>
+            </button>
+          }
+        } @else {
+          <div class="vl-user-profile__empty">
+            <div class="vl-user-profile__empty-icon">
+              <span class="material-symbols-outlined" translate="no">event_available</span>
+            </div>
+            <div class="vl-user-profile__empty-text">
+              <p class="vl-user-profile__empty-title">No joined events yet</p>
+              <p class="vl-user-profile__empty-desc">
+                {{ isCurrentUser() ? 'You haven’t joined any events yet. Explore upcoming experiences and RSVP to connect with others.' : 'This user hasn’t joined any events yet.' }}
+              </p>
+            </div>
+            @if (isCurrentUser()) {
+              <button type="button" class="vl-button vl-button--secondary vl-user-profile__empty-action" (click)="exploreEvents()">
+                <span class="material-symbols-outlined" translate="no">explore</span>
+                <span>Explore Events</span>
+              </button>
+            }
+          </div>
+        }
+      }
+      @case ('Hosted') {
+        @if (isHostedLoading()) {
+          <div class="vl-user-profile__event-list">
+            <vl-event-card-skeleton [count]="3"></vl-event-card-skeleton>
+          </div>
+        } @else if (visibleHostedEvents().length > 0) {
+          <div class="vl-user-profile__event-list">
+            @for (event of visibleHostedEvents(); track event?._id || $index) {
+              <div class="vl-user-profile__event-card-wrap">
+                <div class="vl-card-desktop">
+                  <vl-event-card [config]="event" profileStatus="hosted" class="block w-full h-full"></vl-event-card>
+                </div>
+                <div class="vl-card-mobile">
+                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                </div>
+              </div>
+            }
+          </div>
+          @if (totalHostedCount() > visibleHostedEvents().length) {
+            <button class="vl-user-profile__view-all" type="button" (click)="showMoreHosted.emit()">
+              Show more
+              <span class="material-symbols-outlined" translate="no">chevron_right</span>
+            </button>
+          }
+        } @else {
+          <div class="vl-user-profile__empty">
+            <div class="vl-user-profile__empty-icon">
+              <span class="material-symbols-outlined" translate="no">edit_calendar</span>
+            </div>
+            <div class="vl-user-profile__empty-text">
+              <p class="vl-user-profile__empty-title">No hosted events yet</p>
+              <p class="vl-user-profile__empty-desc">
+                {{ isCurrentUser() ? 'You haven’t hosted any events yet. Bring people together by organizing your own experience.' : 'This user hasn’t hosted any events yet.' }}
+              </p>
+            </div>
+            @if (isCurrentUser()) {
+              <button type="button" class="vl-button vl-button--secondary vl-user-profile__empty-action" (click)="createEvent()">
+                <span class="material-symbols-outlined" translate="no">add</span>
+                <span>Host an Event</span>
+              </button>
+            }
+          </div>
+        }
+      }
+      @case ('Gallery') {
+        @if (isGalleryLoading()) {
+          <div class="vl-user-profile__gallery-skeleton">
+            @for (item of [0, 1, 2, 3, 4, 5]; track item) {
+              <div class="vl-gallery-skeleton-item vl-shimmer"></div>
+            }
+          </div>
+        } @else if (userGallery().length > 0) {
+          <vl-gallery [images]="userGallery()"></vl-gallery>
+        } @else {
+          <div class="vl-user-profile__empty">
+            <div class="vl-user-profile__empty-icon">
+              <span class="material-symbols-outlined" translate="no">photo_library</span>
+            </div>
+            <div class="vl-user-profile__empty-text">
+              <p class="vl-user-profile__empty-title">No event gallery yet</p>
+              <p class="vl-user-profile__empty-desc">
+                {{ isCurrentUser() ? 'Photos from events you attend or host will appear here as visual memories.' : 'This user hasn’t shared any event photos yet.' }}
+              </p>
+            </div>
+            @if (isCurrentUser()) {
+              <button type="button" class="vl-button vl-button--secondary vl-user-profile__empty-action" (click)="exploreEvents()">
+                <span class="material-symbols-outlined" translate="no">explore</span>
+                <span>Explore Events</span>
+              </button>
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+
+  <div class="vl-user-profile__interests">
+    <h2 class="vl-title-md">Interests</h2>
+    <div class="vl-user-profile__interest-list">
+      <vl-interest-pill-list [interests]="visibleInterests()" [extraCount]="hiddenInterestCount()"></vl-interest-pill-list>
+    </div>
+  </div>
+</section>

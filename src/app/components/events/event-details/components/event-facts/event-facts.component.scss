@@ -1,0 +1,79 @@
+@use "../../_tokens" as *;
+
+.event-facts {
+  @include ed-panel;
+  padding: var(--space-4);
+
+  .info-rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-sm);
+    line-height: 1.4;
+
+    &--schedule { gap: var(--space-3); }
+
+    .schedule-copy {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
+      strong { font-weight: 700; }
+      small { color: var(--color-text-secondary); font-size: inherit; }
+    }
+
+    .duration-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+      color: var(--color-primary);
+      font-size: var(--text-caption);
+      font-weight: 700;
+      flex-shrink: 0;
+      .material-symbols-outlined { font-size: 1rem; }
+    }
+
+    &__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      min-width: 2rem;
+      border-radius: var(--radius-md);
+      background-color: var(--color-surface-interactive);
+      border: 1px solid var(--color-border);
+      color: var(--color-primary);
+      flex-shrink: 0;
+
+      .material-symbols-outlined {
+        font-size: 1.125rem;
+        line-height: 1;
+      }
+    }
+
+    span {
+      min-width: 0;
+    }
+
+    strong {
+      color: var(--color-text-primary);
+      font-weight: 700;
+    }
+
+    .dot {
+      color: var(--color-text-tertiary);
+      margin: 0 var(--space-1);
+    }
+  }
+}

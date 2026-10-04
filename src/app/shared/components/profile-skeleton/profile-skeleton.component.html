@@ -1,0 +1,106 @@
+<div class="vl-profile-skeleton" aria-busy="true" aria-label="Loading profile details">
+  <!-- 1. Header Navigation Skeleton -->
+  <div class="vl-profile-skeleton__nav">
+    <div class="vl-profile-skeleton__back-circle vl-shimmer"></div>
+    <div class="vl-profile-skeleton__line vl-profile-skeleton__line--back-label vl-shimmer"></div>
+  </div>
+
+  <!-- 2. Profile Hero Skeleton -->
+  <section class="vl-profile-skeleton__hero">
+    <div class="vl-profile-skeleton__avatar-wrap">
+      <div class="vl-profile-skeleton__avatar vl-shimmer"></div>
+      <div class="vl-profile-skeleton__avatar-badge vl-shimmer"></div>
+    </div>
+
+    <div class="vl-profile-skeleton__identity">
+      <div class="vl-profile-skeleton__name-row">
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--name vl-shimmer"></div>
+        <div class="vl-profile-skeleton__verified-badge vl-shimmer"></div>
+      </div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--handle vl-shimmer"></div>
+      
+      <div class="vl-profile-skeleton__bio-lines">
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--bio-1 vl-shimmer"></div>
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--bio-2 vl-shimmer"></div>
+      </div>
+
+      <div class="vl-profile-skeleton__vibes">
+        @for (item of interestPlaceholders; track item) {
+          <div class="vl-profile-skeleton__pill vl-shimmer"></div>
+        }
+      </div>
+    </div>
+
+    <!-- Photo Strip Preview -->
+    <div class="vl-profile-skeleton__photo-strip">
+      <div class="vl-profile-skeleton__photo-strip-header">
+        <div class="vl-profile-skeleton__icon-box vl-shimmer"></div>
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--strip-title vl-shimmer"></div>
+      </div>
+      <div class="vl-profile-skeleton__photo-grid">
+        @for (item of photoPlaceholders; track item) {
+          <div class="vl-profile-skeleton__photo-item vl-shimmer"></div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Profile Stats Skeleton -->
+  <section class="vl-profile-skeleton__stats">
+    <div class="vl-profile-skeleton__stat">
+      <div class="vl-profile-skeleton__stat-icon vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-num vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-lbl vl-shimmer"></div>
+    </div>
+    <div class="vl-profile-skeleton__stat">
+      <div class="vl-profile-skeleton__stat-icon vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-num vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-lbl vl-shimmer"></div>
+    </div>
+    <div class="vl-profile-skeleton__stat">
+      <div class="vl-profile-skeleton__stat-icon vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-num vl-shimmer"></div>
+      <div class="vl-profile-skeleton__line vl-profile-skeleton__line--stat-lbl vl-shimmer"></div>
+    </div>
+  </section>
+
+  <!-- 4. Content Panel Skeleton (Tabs + Event Cards) -->
+  <section class="vl-profile-skeleton__panel">
+    <div class="vl-profile-skeleton__tabs">
+      <div class="vl-profile-skeleton__tab active">
+        <div class="vl-profile-skeleton__tab-icon vl-shimmer"></div>
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--tab-text vl-shimmer"></div>
+      </div>
+      <div class="vl-profile-skeleton__tab">
+        <div class="vl-profile-skeleton__tab-icon vl-shimmer"></div>
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--tab-text vl-shimmer"></div>
+      </div>
+      <div class="vl-profile-skeleton__tab">
+        <div class="vl-profile-skeleton__tab-icon vl-shimmer"></div>
+        <div class="vl-profile-skeleton__line vl-profile-skeleton__line--tab-text vl-shimmer"></div>
+      </div>
+    </div>
+
+    <div class="vl-profile-skeleton__tab-content">
+      <div class="vl-profile-skeleton__event-list">
+        @for (item of eventCardPlaceholders; track item) {
+          <div class="vl-profile-skeleton__event-card">
+            <div class="vl-profile-skeleton__card-media vl-shimmer"></div>
+            <div class="vl-profile-skeleton__card-body">
+              <div class="vl-profile-skeleton__card-pills">
+                <div class="vl-profile-skeleton__pill vl-profile-skeleton__pill--sm vl-shimmer"></div>
+                <div class="vl-profile-skeleton__pill vl-profile-skeleton__pill--sm vl-shimmer"></div>
+              </div>
+              <div class="vl-profile-skeleton__line vl-profile-skeleton__line--card-title vl-shimmer"></div>
+              <div class="vl-profile-skeleton__line vl-profile-skeleton__line--card-meta vl-shimmer"></div>
+              <div class="vl-profile-skeleton__card-host">
+                <div class="vl-profile-skeleton__host-avatar vl-shimmer"></div>
+                <div class="vl-profile-skeleton__line vl-profile-skeleton__line--host-name vl-shimmer"></div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,11 @@
+@use "../../../../styles/index" as *;
+
+:host {
+  display: contents;
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+}
+
+.create-form {
+  display: block;
+}

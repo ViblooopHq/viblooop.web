@@ -1,0 +1,47 @@
+<section class="vl-event-filters" aria-label="Search and filter events">
+  <div class="vl-event-filters__search">
+    <span class="material-symbols-outlined vl-event-filters__search-icon" translate="no">search</span>
+    <input
+      type="search"
+      class="vl-event-filters__search-input"
+      [value]="searchTerm()"
+      (input)="updateSearch($event)"
+      [placeholder]="placeholder()"
+      [attr.aria-label]="searchAriaLabel()" />
+
+    @if (searchTerm()) {
+      <button
+        type="button"
+        class="vl-event-filters__search-clear"
+        (click)="clearSearch()"
+        aria-label="Clear search">
+        <span class="material-symbols-outlined" translate="no">close</span>
+      </button>
+    }
+
+    <button
+      type="button"
+      class="vl-event-filters__location"
+      [class.active]="activeFilterId() === 'nearby'"
+      [attr.aria-pressed]="activeFilterId() === 'nearby'"
+      (click)="selectFilter('nearby')">
+      <span class="material-symbols-outlined" translate="no">near_me</span>
+      <span>Near You</span>
+    </button>
+  </div>
+
+  <div class="vl-event-filters__scroll">
+    <div class="vl-event-filters__options" aria-label="Time filters">
+      @for (filter of filters(); track filter.id) {
+        <button
+          type="button"
+          class="vl-event-filters__option"
+          [class.active]="activeFilterId() === filter.id"
+          [attr.aria-pressed]="activeFilterId() === filter.id"
+          (click)="selectFilter(filter.id)">
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+@if (events().length > 0) {
+<section class="ed-section">
+  <h2 class="ed-section-title">
+    <i class="fa-solid fa-location-crosshairs" aria-hidden="true"></i>
+    Related Nearby Events
+  </h2>
+  <div class="related-scroll-container hide-scrollbar">
+    @for (event of events(); track event._id) {
+    <div class="related-card-item">
+      <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+    </div>
+    }
+  </div>
+</section>
+}

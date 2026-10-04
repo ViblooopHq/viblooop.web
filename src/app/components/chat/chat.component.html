@@ -1,0 +1,99 @@
+<section class="chat-box" [class.embedded]="isEmbedded()" role="region" [attr.aria-label]="chatTitle()">
+  <header class="chat-header">
+    @if (showBackButton()) {
+      <vl-back-button
+        class="chat-back-btn"
+        ariaLabel="Back to chats"
+        title="Back"
+        (action)="backToInbox.emit()"
+      ></vl-back-button>
+    }
+
+    <div class="chat-avatar" aria-hidden="true">
+      <span class="material-symbols-outlined" translate="no">groups</span>
+    </div>
+
+    <div class="chat-heading">
+      <h1 class="vl-title-md">{{ chatTitle() }}</h1>
+      @if (chatSubtitle()) {
+        <p class="vl-body-sm">{{ chatSubtitle() }}</p>
+      }
+    </div>
+
+    @if (!isEmbedded()) {
+      <div class="chat-actions">
+        <vl-back-button
+          icon="close"
+          ariaLabel="Close chat"
+          title="Close"
+          (action)="closeChat.emit()"
+        ></vl-back-button>
+      </div>
+    }
+  </header>
+
+  <div class="chat-messages" #messagesContainer role="log" aria-live="polite">
+    @if (messages().length === 0) {
+      <div class="chat-empty">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">forum</span>
+        <h2 class="vl-title-md">No messages yet</h2>
+        <p class="vl-body-sm">
+          {{ canSendMessages() === false ? 'Host updates will appear here.' : 'Start the conversation with this group.' }}
+        </p>
+      </div>
+    } @else {
+      <div class="timeline-chip">Today</div>
+
+      <div class="system-note">
+        <strong>You joined "{{ chatTitle() }}"</strong>
+        <span>{{ canSendMessages() === false ? 'Only the host can post updates in this chat.' : 'You can now start chatting with the group.' }}</span>
+      </div>
+
+      <div class="new-messages-divider">
+        <span>New Messages</span>
+      </div>
+
+      @for (msg of messages(); track msg._id || $index; let i = $index) {
+        <article class="message-row" [class.own]="isOwnMessage(msg)">
+          @if (!isOwnMessage(msg)) {
+            <div class="message-avatar" aria-hidden="true">
+              {{ getSenderInitial(msg) }}
+            </div>
+          }
+
+          <div class="message-content">
+            @if (shouldShowSenderName(i, msg)) {
+              <span class="sender-name">{{ msg.senderName }}</span>
+            }
+            <p class="text">{{ msg.text }}</p>
+            <time class="timestamp">{{ msg.createdAt | date: 'shortTime' }}</time>
+          </div>
+        </article>
+      }
+    }
+  </div>
+
+  @if (canSendMessages() === false) {
+    <div class="chat-read-only" role="status">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">lock</span>
+      <span>Only the host can send messages in this chat.</span>
+    </div>
+  } @else {
+    <form class="chat-input" (ngSubmit)="sendMessage()">
+      <label for="chat-message-input" class="sr-only">Type a message</label>
+      <input
+        id="chat-message-input"
+        type="text"
+        name="newMessage"
+        [ngModel]="newMessage()"
+        (ngModelChange)="newMessage.set($event)"
+        [placeholder]="canSendMessages() === null ? 'Loading chat permissions…' : 'Type a message...'"
+        [disabled]="canSendMessages() !== true"
+        autocomplete="off"
+      />
+      <button type="submit" aria-label="Send message" [disabled]="canSendMessages() !== true || !newMessage().trim()">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">send</span>
+      </button>
+    </form>
+  }
+</section>

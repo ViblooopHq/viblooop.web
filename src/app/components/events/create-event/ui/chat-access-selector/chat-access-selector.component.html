@@ -1,0 +1,77 @@
+<div class="form-card chat-access-card">
+  <div class="chat-access-heading">
+    <div class="chat-access-heading-icon">
+      <span class="material-symbols-outlined" aria-hidden="true">chat_bubble</span>
+    </div>
+    <div>
+      <h3 class="chat-access-title">Chat Access</h3>
+      <p class="chat-access-subtitle">{{ subtitle() }}</p>
+    </div>
+  </div>
+
+  <div class="chat-access-options" role="group" aria-label="Chat access">
+    <button type="button" class="chat-access-option"
+      [class.chat-access-option--selected]="!hostOnlyChat()" [attr.aria-pressed]="!hostOnlyChat()"
+      (click)="hostOnlyChatChange.emit(false)">
+      <span class="chat-access-selection">
+        @if (!hostOnlyChat()) {
+          <span class="material-symbols-outlined" aria-hidden="true">check</span>
+        }
+      </span>
+
+      <span class="chat-access-option-top">
+        <span class="chat-access-option-icon">
+          <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+        </span>
+        <span class="chat-access-option-copy">
+          <span class="chat-access-option-title-row">
+            <span class="chat-access-option-title">Everyone</span>
+            <span class="chat-access-badge">Recommended</span>
+          </span>
+          <span class="chat-access-option-mobile-description">
+            {{ everyoneDescription() }}
+          </span>
+        </span>
+      </span>
+
+      <span class="chat-access-option-footnote">
+        <span class="material-symbols-outlined" aria-hidden="true">group</span>
+        Best for social events and group coordination.
+      </span>
+    </button>
+
+    <button type="button" class="chat-access-option"
+      [class.chat-access-option--selected]="hostOnlyChat()" [attr.aria-pressed]="hostOnlyChat()"
+      (click)="hostOnlyChatChange.emit(true)">
+      <span class="chat-access-selection">
+        @if (hostOnlyChat()) {
+          <span class="material-symbols-outlined" aria-hidden="true">check</span>
+        }
+      </span>
+
+      <span class="chat-access-option-top">
+        <span class="chat-access-option-icon">
+          <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+        </span>
+        <span class="chat-access-option-copy">
+          <span class="chat-access-option-title-row">
+            <span class="chat-access-option-title">Host Only</span>
+          </span>
+          <span class="chat-access-option-mobile-description">
+            {{ hostOnlyDescription() }}
+          </span>
+        </span>
+      </span>
+
+      <span class="chat-access-option-footnote">
+        <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+        Best for organized events and important updates.
+      </span>
+    </button>
+  </div>
+
+  <div class="chat-access-mobile-note">
+    <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+    <span>Chat is visible only to joined attendees.</span>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.vl-full-page-carousel-wrapper,
+swiper-container {
+  width: 100%;
+  height: 100%;
+  display: block;
+
+  ::ng-deep swiper-slide {
+    height: 100%;
+    width: 100%;
+  }
+
+  /* Custom Pagination Indicator matching screenshot */
+  &::part(pagination) {
+    bottom: 24px;
+    right: 32px;
+    left: auto;
+    width: auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    /* Prevent width jumping during transitions */
+    transform: translateZ(0);
+  }
+
+  &::part(bullet) {
+    width: 8px;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.35);
+    opacity: 1;
+    margin: 0 !important;
+    transition: width 0.3s linear, background-color 0.3s ease;
+    flex-shrink: 0;
+  }
+
+  &::part(bullet-active) {
+    width: 24px;
+    border-radius: 999px;
+    background: #ffffff;
+  }
+}
+
+.vl-full-page-ssr-fallback {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  ::ng-deep swiper-slide,
+  .ssr-slide {
+    display: none;
+
+    &:first-child {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

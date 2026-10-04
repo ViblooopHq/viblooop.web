@@ -1,0 +1,187 @@
+<!-- Desktop Floating Navbar -->
+<nav
+  class="vl-app-header vl-app-header--desktop hidden md:flex fixed top-6 left-0 right-0 mx-auto w-[95%] max-w-7xl z-[100] items-center justify-between px-8 py-3 rounded-full transition-all duration-300">
+
+  <!-- Logo -->
+  <div class="flex items-center cursor-pointer transition-transform" routerLink="/">
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="header-logo">
+  </div>
+
+  <!-- Links -->
+  <div class="flex items-center gap-8">
+    @for (item of desktopMenu; track $index) {
+    @if (item.title) {
+    <a class="relative text-on-surface-variant dark:text-on-surface hover:text-primary dark:hover:text-primary font-medium text-sm transition-colors duration-300 group"
+      [routerLink]="item.url" routerLinkActive="!text-primary font-semibold" [routerLinkActiveOptions]="{ exact: true }"
+      (isActiveChange)="getActiveLink($event)">
+      <span i18n>{{ item.title }}</span>
+      <div
+        class="absolute -bottom-1.5 left-1/2 w-0 h-1 bg-primary rounded-full transition-all duration-300 group-hover:w-1/2 group-hover:-translate-x-1/2 group-[.active-link]:w-full group-[.active-link]:-translate-x-1/2">
+      </div>
+    </a>
+    }
+    }
+  </div>
+
+  <!-- Right Actions -->
+  <div class="flex items-center gap-4">
+    <button type="button" (click)="openCreateDrawer()" class="vl-app-header__create-pill group"
+      aria-label="Create Event">
+      <span class="material-symbols-outlined create-icon group-hover:rotate-90 transition-transform duration-300"
+        translate="no">add</span>
+      <span class="create-text" i18n>Create Event</span>
+    </button>
+
+    <button class="vl-icon-button" (click)="toggleTheme()" [matTooltip]="isLightTheme() ? 'Dark Mode' : 'Light Mode'">
+      <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
+    </button>
+
+    @if (userDetails) {
+    <!-- Desktop My Plans Button -->
+    <button type="button" [matTooltip]="'My Plans'" (click)="openMyPlans($event)" class="vl-icon-button relative"
+      aria-label="My Plans">
+      <span class="material-symbols-outlined" translate="no">event_available</span>
+    </button>
+
+    <div class="notification-anchor relative flex items-center">
+      <button type="button" [matTooltip]="'Notifications'" (click)="$event.stopPropagation(); toggleNotification()"
+        class="vl-icon-button relative"
+        [attr.aria-label]="sharedService.notificationCount() > 0 ? 'Notifications, ' + sharedService.notificationCount() + ' unread' : 'Notifications'">
+        <span class="material-symbols-outlined" translate="no">notifications</span>
+        @if (sharedService.notificationCount() > 0) {
+        <span class="vl-header-badge" aria-hidden="true">
+          {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
+        </span>
+        }
+      </button>
+      @if (isNotificationVisible) {
+      <vl-notification presentation="popover" (panelClosed)="closeNotification()"></vl-notification>
+      }
+    </div>
+
+    <button class="vl-icon-button relative" aria-label="Chats">
+      <a [matTooltip]="'Chats'" routerLink="/chats">
+        <span class="material-symbols-outlined" translate="no">chat</span>
+      </a>
+      @if (socketService.unreadCount$ | async; as total) {
+      @if (total > 0) {
+      <span class="vl-header-badge" aria-label="Unread chats count">
+        {{ total > 99 ? '99+' : total }}
+      </span>
+      }
+      }
+    </button>
+
+    <div class="relative">
+      <!-- Desktop Profile Trigger -->
+      <button type="button" [matTooltip]="'Profile'" class="header-profile-trigger" aria-label="Open profile menu"
+        [attr.aria-expanded]="isUserProfileVisible" (click)="$event.stopPropagation(); toggleUserProfile()">
+        <div class="header-profile-avatar">
+          <img [src]="getMobileProfileImage()" alt="Your profile" />
+        </div>
+      </button>
+
+      @if (isUserProfileVisible) {
+      <!-- Desktop profile menu -->
+      <div class="absolute top-[80%] right-0 pt-6 z-50">
+
+        <ul
+          class="min-w-[220px] py-2 rounded-2xl bg-white/95 dark:bg-surface/95 backdrop-blur-2xl dark:text-on-surface border border-gray-200/50 dark:border-outline-variant/15 shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col gap-1 overflow-hidden animate-fade-in"
+          vibOutsideClick (onOutsideClick)="closeDropDown()">
+
+          <li
+            class="px-4 py-2.5 hover:bg-primary/10 dark:hover:bg-primary/20 cursor-pointer flex items-center gap-3 transition-all group/item"
+            (click)="navigateTo('/profile')">
+            <span
+              class="material-symbols-outlined w-5 text-center text-primary-dim group-hover/item:scale-110 transition-transform"
+              translate="no">person</span>
+            <span class="font-medium">View Profile</span>
+          </li>
+
+          <li
+            class="px-4 py-2.5 hover:bg-primary/10 dark:hover:bg-primary/20 cursor-pointer flex items-center gap-3 transition-all group/item"
+            (click)="navigateTo('/my-wishlist')">
+            <span
+              class="material-symbols-outlined w-5 text-center text-error group-hover/item:scale-110 transition-transform"
+              translate="no">favorite</span>
+            <span class="font-medium">My Wishlist</span>
+          </li>
+        </ul>
+      </div>
+      }
+    </div>
+    } @else {
+    <button
+      class="flex items-center gap-2 px-6 py-2.5 rounded-full bg-primary text-white font-semibold hover:bg-primary-hover active:scale-95 transition-all shadow-sm"
+      (click)="redirectToLogin()">
+      <span class="material-symbols-outlined" translate="no">login</span>
+      <span>Sign In</span>
+    </button>
+    }
+  </div>
+</nav>
+
+<!-- Mobile Top Header (Logo on Left & Actions on Right) -->
+<header
+  class="vl-app-header vl-app-header--mobile md:hidden fixed top-0 left-0 w-full z-50 flex items-center justify-between px-6 py-4">
+  <!-- Left: Logo -->
+  <div class="flex items-center cursor-pointer" routerLink="/">
+    <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 28px; width: auto;">
+  </div>
+
+  <!-- Right: Actions (Theme Toggle & Notifications) -->
+  <div class="flex items-center gap-3">
+    <button class="vl-icon-button vl-mobile-header-icon w-9 min-w-9 h-9 active:scale-95" (click)="toggleTheme()"
+      [attr.aria-label]="isLightTheme() ? 'Switch to dark mode' : 'Switch to light mode'">
+      <span class="material-symbols-outlined" translate="no">{{ getThemeIcon() }}</span>
+    </button>
+
+    @if (userDetails) {
+    <button type="button" class="vl-icon-button vl-mobile-header-icon w-9 min-w-9 h-9 active:scale-95"
+      (click)="openMyPlans($event)" aria-label="My Plans" [matTooltip]="'My Plans'">
+      <span class="material-symbols-outlined" translate="no">event_available</span>
+    </button>
+
+    <div class="notification-anchor relative flex items-center">
+      <button type="button" class="vl-icon-button vl-mobile-header-icon relative w-9 min-w-9 h-9 active:scale-95"
+        (click)="navigateTo('/notifications')"
+        [attr.aria-label]="sharedService.notificationCount() > 0 ? 'Notifications, ' + sharedService.notificationCount() + ' unread' : 'Notifications'">
+        <span class="material-symbols-outlined" translate="no">notifications</span>
+        @if (sharedService.notificationCount() > 0) {
+        <span class="vl-header-badge" aria-hidden="true">
+          {{ sharedService.notificationCount() > 99 ? '99+' : sharedService.notificationCount() }}
+        </span>
+        }
+      </button>
+    </div>
+    }
+  </div>
+</header>
+
+<!-- Mobile Profile Dropdown (Handled separately for mobile) -->
+@if (isUserProfileVisible && userDetails) {
+<div
+  class="md:hidden fixed top-[72px] right-4 min-w-[220px] py-2 rounded-2xl bg-white/80 dark:bg-surface-container-highest/80 backdrop-blur-xl dark:text-on-surface border border-gray-200/50 dark:border-outline-variant/15 shadow-2xl dark:shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col gap-1 z-[60] animate-fade-in"
+  vibOutsideClick (onOutsideClick)="closeDropDown()">
+  <div class="px-4 py-3 border-b border-gray-200 dark:border-outline-variant/20 mb-1">
+    <p class="font-bold text-sm">{{ userName }}</p>
+    <p class="text-xs opacity-70">Logged in</p>
+  </div>
+  <li
+    class="px-4 py-2.5 hover:bg-primary/10 dark:hover:bg-primary/20 active:bg-primary/20 cursor-pointer flex items-center gap-3 transition-colors"
+    (click)="navigateTo('/profile')">
+    <span class="material-symbols-outlined w-5 text-center text-primary-dim" translate="no">person</span> <span
+      class="font-medium text-sm">View
+      Profile</span>
+  </li>
+  <li
+    class="px-4 py-2.5 hover:bg-primary/10 dark:hover:bg-primary/20 active:bg-primary/20 cursor-pointer flex items-center gap-3 transition-colors"
+    (click)="navigateTo('/my-wishlist')">
+    <span class="material-symbols-outlined w-5 text-center text-error" translate="no">favorite</span> <span
+      class="font-medium text-sm">My Wishlist</span>
+  </li>
+</div>
+}
+
+<!-- Mobile Bottom Sticky App-Like Navbar -->
+<vl-bottom-nav />

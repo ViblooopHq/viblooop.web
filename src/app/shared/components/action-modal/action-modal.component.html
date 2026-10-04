@@ -1,0 +1,81 @@
+@if (isOpen()) {
+<div
+  class="vl-modal-backdrop"
+  [class.vl-modal-backdrop--sheet]="presentation() === 'sheet'"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-label]="title()"
+  (click)="onBackdropClick($event)"
+  (keydown.escape)="onCancel()">
+
+  <div class="vl-modal" [class]="'vl-modal--' + variant()" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
+    @if (presentation() === 'sheet') {
+      <div class="vl-modal__handle" aria-hidden="true"></div>
+      <button type="button" class="vl-modal__close" aria-label="Close confirmation" [disabled]="isLoading()" (click)="onCancel()">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </button>
+    }
+    <!-- Icon header -->
+    <div class="vl-modal__icon-ring">
+      @if (icon()) {
+        <span class="material-symbols-outlined" aria-hidden="true">{{ icon() }}</span>
+      } @else {
+        <i [class]="variantIcon" aria-hidden="true"></i>
+      }
+    </div>
+
+    <!-- Title -->
+    <h2 class="vl-modal__title">{{ title() }}</h2>
+
+    <!-- Message -->
+    @if (message()) {
+      <p class="vl-modal__message">{{ message() }}</p>
+    }
+
+    @if (impactMessage()) {
+      <div class="vl-modal__impact">
+        <span class="material-symbols-outlined" aria-hidden="true">group</span>
+        <span>{{ impactMessage() }}</span>
+      </div>
+    }
+
+    <!-- Optional textarea -->
+    @if (showInput()) {
+      <textarea
+        class="vl-modal__input"
+        [placeholder]="inputPlaceholder()"
+        [attr.aria-label]="inputPlaceholder()"
+        [required]="inputRequired()"
+        [value]="inputValue()"
+        (input)="onInputChange($any($event.target).value)"
+        rows="3"
+        [disabled]="isLoading()"></textarea>
+    }
+
+    <!-- Action buttons -->
+    <div class="vl-modal__actions">
+      @if (showCancelButton()) {
+        <button
+          type="button"
+          class="vl-modal__btn vl-modal__btn--cancel"
+          (click)="onCancel()"
+          [disabled]="isLoading()">
+          {{ cancelLabel() }}
+        </button>
+      }
+      <button
+        type="button"
+        class="vl-modal__btn vl-modal__btn--confirm vl-modal__btn--{{ variant() }}"
+        [class.vl-modal__btn--destructive]="destructive()"
+        (click)="onConfirm()"
+        [disabled]="isConfirmDisabled">
+        @if (isLoading()) {
+          <vl-inline-loader size="sm" color="white" [text]="confirmLabel() + '...'"></vl-inline-loader>
+        } @else {
+          <span>{{ confirmLabel() }}</span>
+        }
+      </button>
+    </div>
+  </div>
+</div>
+}

@@ -1,0 +1,57 @@
+<div class="form-card">
+  <label class="field-label-white" id="pricing-label">Pricing</label>
+
+  <div class="pricing-grid-new" role="group" aria-labelledby="pricing-label">
+    <button type="button" class="pricing-card-new" [class.pricing-card-new--selected]="cost() === 'Free'" [attr.aria-pressed]="cost() === 'Free'" (click)="costChange.emit('Free')">
+      <div class="selection-check">
+        @if (cost() === 'Free') {
+          <span class="material-symbols-outlined" aria-hidden="true">check</span>
+        }
+      </div>
+
+      <div class="pricing-card-flex">
+        <div class="pricing-icon-circle free">
+          <span class="material-symbols-outlined" aria-hidden="true">redeem</span>
+        </div>
+        <div class="pricing-info-stack">
+          <p class="pricing-title-text">Free Entry</p>
+          <p class="pricing-sub-text">Open for everyone to join</p>
+          <div class="pricing-badge-pill free">No payment required</div>
+        </div>
+      </div>
+    </button>
+
+    <button type="button" class="pricing-card-new" [class.pricing-card-new--selected]="cost() === 'Paid'" [attr.aria-pressed]="cost() === 'Paid'" (click)="costChange.emit('Paid')">
+      <div class="selection-check">
+        @if (cost() === 'Paid') {
+          <span class="material-symbols-outlined" aria-hidden="true">check</span>
+        }
+      </div>
+
+      <div class="pricing-card-flex">
+        <div class="pricing-icon-circle paid">
+          <span class="material-symbols-outlined" aria-hidden="true">diamond</span>
+        </div>
+        <div class="pricing-info-stack">
+          <p class="pricing-title-text">Paid Access</p>
+          <p class="pricing-sub-text">Exclusive experience with a price tag</p>
+          <div class="pricing-badge-pill paid">Set any price</div>
+        </div>
+      </div>
+    </button>
+  </div>
+
+  @if (cost() === 'Paid') {
+    <div class="price-input-container" animate-fade-in>
+      <div class="price-field-wrap">
+        <label class="price-currency" for="event-price-input">Rs.</label>
+        <input id="event-price-input" class="price-field-input" type="number" [value]="price()" placeholder="0" min="0" (input)="onPriceInput($event)" />
+      </div>
+    </div>
+  }
+
+  <div class="pricing-footer-note">
+    <span class="material-symbols-outlined info-icon" aria-hidden="true">info</span>
+    <p>You can add a price later or keep it free.</p>
+  </div>
+</div>

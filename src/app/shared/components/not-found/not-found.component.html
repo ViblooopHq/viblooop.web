@@ -1,0 +1,90 @@
+<main class="vl-404" role="main">
+  <!-- Subtle Atmospheric Backdrop -->
+  <div class="vl-404__backdrop" aria-hidden="true">
+    <div class="vl-404__glow vl-404__glow--primary"></div>
+    <div class="vl-404__glow vl-404__glow--secondary"></div>
+    <div class="vl-404__grid"></div>
+  </div>
+
+  <div class="vl-404__container">
+    <!-- Architectural Blueprint Watermark (Provides depth without clip-art clutter) -->
+    <div class="vl-404__watermark" aria-hidden="true">404</div>
+
+    <!-- Main Hero Card -->
+    <div class="vl-404__hero">
+      <!-- Status Badge -->
+      <div class="vl-404__badge">
+        <span class="vl-404__badge-dot" aria-hidden="true"></span>
+        <span class="vl-404__badge-text">Page Not Found</span>
+      </div>
+
+      <!-- Main Headline & Subtitle -->
+      <h1 class="vl-404__title">This Vibe Has Left The Building</h1>
+      <p class="vl-404__subtitle">
+        The link you followed may be broken, expired, or the event might have already wrapped up.
+        Let’s get you back to the action.
+      </p>
+
+      <!-- Integrated Discovery Search Bar -->
+      <form class="vl-404__search-form" (ngSubmit)="onSearch()">
+        <span class="material-symbols-outlined vl-404__search-icon" translate="no">search</span>
+        <input type="text" class="vl-404__search-input" placeholder="Search vibes, venues, or categories..."
+          [(ngModel)]="searchQuery" name="searchQuery" autocomplete="off" />
+        <button type="submit" class="vl-404__search-btn" aria-label="Search events">
+          <span class="material-symbols-outlined" translate="no">arrow_forward</span>
+        </button>
+      </form>
+
+      <!-- Direct Primary Actions -->
+      <div class="vl-404__actions">
+        <a routerLink="/events" class="vl-404__btn vl-404__btn--primary">
+          <span class="material-symbols-outlined" translate="no">explore</span>
+          <span>Explore Live Vibes</span>
+        </a>
+        <button type="button" class="vl-404__btn vl-404__btn--secondary" (click)="goBack()">
+          <span class="material-symbols-outlined" translate="no">arrow_back</span>
+          <span>Go Back</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Purposeful Destinations Section -->
+    <section class="vl-404__destinations" aria-label="Helpful links">
+      <span class="vl-404__destinations-label">Popular Destinations</span>
+      <div class="vl-404__destinations-grid">
+        <a routerLink="/" class="vl-404__dest-card">
+          <div class="vl-404__dest-icon vl-404__dest-icon--home">
+            <span class="material-symbols-outlined" translate="no">home</span>
+          </div>
+          <div class="vl-404__dest-text">
+            <strong class="vl-404__dest-heading">Home Feed</strong>
+            <span class="vl-404__dest-sub">Return to your personalized feed</span>
+          </div>
+          <span class="material-symbols-outlined vl-404__dest-chevron" translate="no">chevron_right</span>
+        </a>
+
+        <a routerLink="/events" class="vl-404__dest-card">
+          <div class="vl-404__dest-icon vl-404__dest-icon--events">
+            <span class="material-symbols-outlined" translate="no">local_activity</span>
+          </div>
+          <div class="vl-404__dest-text">
+            <strong class="vl-404__dest-heading">Browse All Events</strong>
+            <span class="vl-404__dest-sub">Find upcoming hangouts and vibes</span>
+          </div>
+          <span class="material-symbols-outlined vl-404__dest-chevron" translate="no">chevron_right</span>
+        </a>
+
+        <button type="button" class="vl-404__dest-card" (click)="hostEvent()">
+          <div class="vl-404__dest-icon vl-404__dest-icon--host">
+            <span class="material-symbols-outlined" translate="no">add_circle</span>
+          </div>
+          <div class="vl-404__dest-text">
+            <strong class="vl-404__dest-heading">Host a Vibe</strong>
+            <span class="vl-404__dest-sub">Create your own gathering</span>
+          </div>
+          <span class="material-symbols-outlined vl-404__dest-chevron" translate="no">chevron_right</span>
+        </button>
+      </div>
+    </section>
+  </div>
+</main>

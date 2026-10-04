@@ -1,0 +1,156 @@
+<div class="explore-skeleton-container vl-section-wrapper vl-section-top-padding" aria-busy="true" aria-label="Loading explore events">
+  <!-- 1. Hero Discovery Carousel Skeleton -->
+  <header class="explore-skeleton__header">
+    <div class="explore-skeleton__hero vl-shimmer">
+    </div>
+
+    <!-- 2. Search & Filter Controls Skeleton -->
+    <div class="explore-skeleton__controls" aria-hidden="true">
+      <div class="explore-skeleton__search-bar">
+        <div class="explore-skeleton__search-icon vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__search-text vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__location-pill vl-shimmer-subtle"></div>
+      </div>
+
+      <div class="explore-skeleton__filter-tags">
+        <div class="explore-skeleton__chip explore-skeleton__chip--all vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__chip explore-skeleton__chip--tonight vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__chip explore-skeleton__chip--weekend vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__chip explore-skeleton__chip--free vl-shimmer-subtle"></div>
+        <div class="explore-skeleton__chip explore-skeleton__chip--nearby vl-shimmer-subtle"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 3. Categories Skeleton -->
+  <section class="explore-skeleton__section">
+    <div class="explore-skeleton__section-header">
+      <div class="explore-skeleton__section-title explore-skeleton__section-title--md vl-shimmer"></div>
+    </div>
+    <div class="explore-skeleton__categories-scroll">
+      @for (item of categoryPlaceholders; track item) {
+        <div class="explore-skeleton__category-item">
+          <div class="explore-skeleton__category-avatar vl-shimmer"></div>
+          <div class="explore-skeleton__category-label vl-shimmer"></div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 4. Trending Events ("Upcoming Vibes") Skeleton -->
+  <section class="explore-skeleton__section">
+    <div class="explore-skeleton__section-header explore-skeleton__section-header--between">
+      <div class="explore-skeleton__section-title explore-skeleton__section-title--lg vl-shimmer"></div>
+      <div class="explore-skeleton__see-all vl-shimmer"></div>
+    </div>
+
+    <div class="explore-skeleton__cards-scroll">
+      @for (item of trendingCardPlaceholders; track item) {
+        <div class="explore-skeleton__card-wrapper">
+          <!-- Desktop Event Card Skeleton (>= 641px) -->
+          <div class="vl-card-desktop">
+            <div class="explore-skeleton__event-card">
+              <div class="explore-skeleton__card-media vl-shimmer"></div>
+              <div class="explore-skeleton__card-body">
+                <div class="explore-skeleton__line explore-skeleton__line--title vl-shimmer"></div>
+                <div class="explore-skeleton__line explore-skeleton__line--subtitle vl-shimmer"></div>
+                <div class="explore-skeleton__line explore-skeleton__line--host vl-shimmer"></div>
+                <div class="explore-skeleton__card-footer">
+                  <div class="explore-skeleton__line explore-skeleton__line--price vl-shimmer"></div>
+                  <div class="explore-skeleton__line explore-skeleton__line--meta vl-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Compact Card Skeleton (<= 640px) -->
+          <div class="vl-card-mobile">
+            <div class="explore-skeleton__compact-card">
+              <div class="explore-skeleton__compact-media vl-shimmer">
+                <div class="explore-skeleton__compact-title-overlay vl-shimmer-subtle"></div>
+              </div>
+              <div class="explore-skeleton__compact-body">
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--date vl-shimmer"></div>
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--loc vl-shimmer"></div>
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--host vl-shimmer"></div>
+                <div class="explore-skeleton__compact-footer">
+                  <div class="explore-skeleton__compact-line explore-skeleton__compact-line--price vl-shimmer"></div>
+                  <div class="explore-skeleton__compact-line explore-skeleton__compact-line--spots vl-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 5. Just for You Grid Skeleton -->
+  <section class="explore-skeleton__section">
+    <div class="explore-skeleton__section-header explore-skeleton__section-header--between">
+      <div class="explore-skeleton__section-title explore-skeleton__section-title--sm vl-shimmer"></div>
+      <div class="explore-skeleton__see-all vl-shimmer"></div>
+    </div>
+
+    <div class="explore-skeleton__cards-scroll">
+      @for (item of forYouCardPlaceholders; track item) {
+        <div class="explore-skeleton__card-wrapper">
+          <!-- Desktop Event Card Skeleton (>= 641px) -->
+          <div class="vl-card-desktop">
+            <div class="explore-skeleton__event-card">
+              <div class="explore-skeleton__card-media vl-shimmer"></div>
+              <div class="explore-skeleton__card-body">
+                <div class="explore-skeleton__line explore-skeleton__line--title vl-shimmer"></div>
+                <div class="explore-skeleton__line explore-skeleton__line--subtitle vl-shimmer"></div>
+                <div class="explore-skeleton__line explore-skeleton__line--host vl-shimmer"></div>
+                <div class="explore-skeleton__card-footer">
+                  <div class="explore-skeleton__line explore-skeleton__line--price vl-shimmer"></div>
+                  <div class="explore-skeleton__line explore-skeleton__line--meta vl-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile Compact Card Skeleton (<= 640px) -->
+          <div class="vl-card-mobile">
+            <div class="explore-skeleton__compact-card">
+              <div class="explore-skeleton__compact-media vl-shimmer">
+                <div class="explore-skeleton__compact-title-overlay vl-shimmer-subtle"></div>
+              </div>
+              <div class="explore-skeleton__compact-body">
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--date vl-shimmer"></div>
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--loc vl-shimmer"></div>
+                <div class="explore-skeleton__compact-line explore-skeleton__compact-line--host vl-shimmer"></div>
+                <div class="explore-skeleton__compact-footer">
+                  <div class="explore-skeleton__compact-line explore-skeleton__compact-line--price vl-shimmer"></div>
+                  <div class="explore-skeleton__compact-line explore-skeleton__compact-line--spots vl-shimmer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- 6. Past Vibes Section Skeleton -->
+  <section class="explore-skeleton__section">
+    <div class="explore-skeleton__section-header">
+      <div class="explore-skeleton__pre-title vl-shimmer"></div>
+      <div class="explore-skeleton__section-title explore-skeleton__section-title--md vl-shimmer"></div>
+    </div>
+
+    <div class="explore-skeleton__past-scroll">
+      @for (item of pastCardPlaceholders; track item) {
+        <div class="explore-skeleton__past-card">
+          <div class="explore-skeleton__past-media vl-shimmer"></div>
+          <div class="explore-skeleton__past-body">
+            <div class="explore-skeleton__line explore-skeleton__line--title vl-shimmer"></div>
+            <div class="explore-skeleton__line explore-skeleton__line--subtitle vl-shimmer"></div>
+            <div class="explore-skeleton__line explore-skeleton__line--host vl-shimmer"></div>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</div>

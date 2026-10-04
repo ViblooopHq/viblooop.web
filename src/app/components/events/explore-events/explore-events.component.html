@@ -1,0 +1,140 @@
+@if (isLoading()) {
+<vl-explore-skeleton />
+} @else {
+<div class="explore-container vl-section-wrapper vl-section-top-padding">
+  <!-- Header & Search -->
+  <header class="explore-header">
+
+    <div class="explore-hero-carousel-wrap">
+      <div class="explore-hero-carousel">
+        <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="marketingSlides">
+          <ng-template let-item>
+            <div class="full-page-slide">
+              <img class="slide-image" [src]="item.image" [alt]="item.alt">
+            </div>
+          </ng-template>
+        </vl-full-page-carousel>
+      </div>
+    </div>
+
+    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId" (filterChange)="setActiveFilter($event)" />
+  </header>
+
+  <!-- Categories -->
+  @if (categories().length > 0) {
+  <section class="categories-section">
+    <div class="section-header flex items-center justify-between mb-3 sm:mb-4">
+      <h2 class="section-title text-lg sm:text-xl font-bold text-on-surface">Browse by Category</h2>
+    </div>
+
+    <div class="categories-scroll flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none snap-x">
+      @for (cat of categories(); track cat.id) {
+      <button
+        class="category-item flex-shrink-0 flex flex-col items-center gap-2 p-2 rounded-xl bg-transparent border-0 cursor-pointer group snap-start transition-transform hover:-translate-y-0.5 focus:outline-none"
+        type="button" [class.active]="activeCategoryId === cat.id" (click)="setActiveCategory(cat.id)">
+        <div class="image-wrapper relative w-14 h-14 sm:w-16 sm:h-16">
+          <img [src]="cat.cover" [alt]="cat.label"
+            class="category-image w-full h-full rounded-full object-cover border-2 border-border group-hover:border-primary transition-all">
+          <div
+            class="icon-badge absolute -bottom-1 -right-1 w-6 h-6 rounded-full flex items-center justify-center bg-surface border border-border text-on-surface-variant text-[11px] shadow-xs group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-colors">
+            <i [class]="cat.icon"></i>
+          </div>
+        </div>
+        <span
+          class="category-name text-xs sm:text-sm font-semibold text-on-surface text-center max-w-[80px] truncate group-hover:text-primary transition-colors">{{cat.label}}</span>
+      </button>
+      }
+    </div>
+  </section>
+  }
+
+  <!-- Trending Events -->
+  <section class="trending-section">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 class="section-title" style="margin: 0;">Upcoming Vibes</h2>
+    </div>
+    <div class="trending-scroll" [class.single-result]="trendingEvents().length === 1"
+      [class.empty-result]="trendingEvents().length === 0">
+      @for (event of trendingEvents().slice(0, 4); track event._id || $index) {
+      <div class="trending-card">
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        </div>
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+        </div>
+      </div>
+      }
+      @if (trendingEvents().length === 0) {
+      <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
+        [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+      }
+    </div>
+    @if (trendingEvents().length > 4) {
+    <div class="section-footer">
+      <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: activeFilterId }">
+        See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+    }
+  </section>
+
+  <!-- Just for You Grid -->
+  <section class="just-for-you-section">
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
+      <h2 class="section-title" style="margin: 0;">Just for you</h2>
+    </div>
+    <div class="trending-scroll" [class.single-result]="justForYouEvents().length === 1"
+      [class.empty-result]="justForYouEvents().length === 0">
+      @for (event of justForYouEvents().slice(0, 4); track event._id || $index) {
+      <div class="trending-card">
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+        </div>
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+        </div>
+      </div>
+      }
+      @if (justForYouEvents().length === 0) {
+      <vl-empty-state subject="events" context="near you" contextPrefix=""
+        image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+      }
+    </div>
+    @if (justForYouEvents().length > 4) {
+    <div class="section-footer">
+      <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: 'all' }">
+        See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+    </div>
+    }
+  </section>
+
+  <section class="past-vibes-section">
+    <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
+      @if (pastEvents().length > 0) {
+      <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
+        [breakpoints]="pastVibeBreakpoints"
+        preTitle="Memories" title="Past Vibes" headerActionLabel="See More"
+        headerActionLink="/events/view-all/past-vibes"
+        [showHeaderAction]="hasMorePastEvents() && showPastEventsSeeMore()"
+        (endVisibilityChange)="showPastEventsSeeMore.set($event)">
+        <ng-template let-event>
+          <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewPastEvent(event)">
+          </vl-past-event-card>
+        </ng-template>
+      </vl-multi-carousel>
+      }
+
+      @if (pastEvents().length === 0) {
+      <vl-empty-state subject="past vibes" context="yet" contextPrefix="" (exploreAll)="resetFilters()">
+      </vl-empty-state>
+      }
+    </div>
+  </section>
+</div>
+}

@@ -1,0 +1,240 @@
+@use '../../../../styles/index' as *;
+
+.vl-toast-container {
+  position: fixed;
+  top: max(1.25rem, env(safe-area-inset-top, 1.25rem));
+  right: max(1.25rem, env(safe-area-inset-right, 1.25rem));
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  pointer-events: none;
+  max-width: calc(100vw - 2.5rem);
+  width: 380px;
+}
+
+.vl-toast-card {
+  --toast-accent: var(--color-primary, #7c3aed);
+  --toast-glow: rgba(124, 58, 237, 0.35);
+
+  position: relative;
+  pointer-events: auto;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: flex-start;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 0.9375rem 1.0625rem 1.0625rem;
+  border-radius: var(--radius-xl, 1.125rem);
+  background: color-mix(in srgb, var(--color-surface) 88%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid color-mix(in srgb, var(--toast-accent) 30%, var(--color-border));
+  box-shadow:
+    0 20px 42px -10px rgba(0, 0, 0, 0.38),
+    0 8px 18px -4px rgba(0, 0, 0, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
+  color: var(--color-text-primary);
+  overflow: hidden;
+  animation: vl-toast-enter 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  will-change: transform, opacity;
+
+  &--leaving {
+    animation: vl-toast-exit 0.24s cubic-bezier(0.4, 0, 1, 1) forwards;
+  }
+
+  // ── Types with Ambient Radial Glow ──
+  &--success {
+    --toast-accent: #10b981;
+    --toast-glow: rgba(16, 185, 129, 0.35);
+    background-image: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.12) 0%, transparent 65%);
+    border-color: color-mix(in srgb, #10b981 32%, var(--color-border));
+
+    .vl-toast-card__icon-wrap {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.08));
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: #10b981;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+    }
+  }
+
+  &--error {
+    --toast-accent: #f43f5e;
+    --toast-glow: rgba(244, 63, 94, 0.35);
+    background-image: radial-gradient(circle at 10% 20%, rgba(244, 63, 94, 0.12) 0%, transparent 65%);
+    border-color: color-mix(in srgb, #f43f5e 32%, var(--color-border));
+
+    .vl-toast-card__icon-wrap {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.22), rgba(244, 63, 94, 0.08));
+      border: 1px solid rgba(244, 63, 94, 0.3);
+      color: #f43f5e;
+      box-shadow: 0 4px 14px rgba(244, 63, 94, 0.25);
+    }
+  }
+
+  &--warning {
+    --toast-accent: #f59e0b;
+    --toast-glow: rgba(245, 158, 11, 0.35);
+    background-image: radial-gradient(circle at 10% 20%, rgba(245, 158, 11, 0.12) 0%, transparent 65%);
+    border-color: color-mix(in srgb, #f59e0b 32%, var(--color-border));
+
+    .vl-toast-card__icon-wrap {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.22), rgba(245, 158, 11, 0.08));
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #f59e0b;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.25);
+    }
+  }
+
+  &--info {
+    --toast-accent: var(--color-primary, #7c3aed);
+    --toast-glow: rgba(124, 58, 237, 0.35);
+    background-image: radial-gradient(circle at 10% 20%, rgba(124, 58, 237, 0.14) 0%, transparent 65%);
+    border-color: color-mix(in srgb, var(--color-primary, #7c3aed) 32%, var(--color-border));
+
+    .vl-toast-card__icon-wrap {
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.22), rgba(124, 58, 237, 0.08));
+      border: 1px solid rgba(124, 58, 237, 0.3);
+      color: var(--color-primary, #7c3aed);
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.25);
+    }
+  }
+
+  // ── Elements ──
+  &__icon-wrap {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+  }
+
+  &__message {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-secondary);
+    line-height: 1.45;
+    word-break: break-word;
+  }
+
+  &__action-btn {
+    align-self: flex-start;
+    margin-top: 0.375rem;
+    padding: 0.3rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--toast-accent);
+    background-color: color-mix(in srgb, var(--toast-accent) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--toast-accent) 30%, transparent);
+    border-radius: var(--radius-pill, 9999px);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+
+    &:hover {
+      background-color: color-mix(in srgb, var(--toast-accent) 22%, transparent);
+      transform: translateY(-1px);
+    }
+  }
+
+  &__close-btn {
+    width: 1.85rem;
+    height: 1.85rem;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    cursor: pointer;
+    padding: 0;
+    transition: all var(--transition-fast);
+    margin-top: -2px;
+    margin-right: -4px;
+
+    &:hover {
+      color: var(--color-text-primary);
+      background-color: color-mix(in srgb, var(--color-text-primary) 10%, transparent);
+    }
+  }
+
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--toast-accent));
+    box-shadow: 0 0 6px var(--toast-accent);
+    transform-origin: left center;
+    animation: vl-toast-progress linear forwards;
+  }
+}
+
+@keyframes vl-toast-enter {
+  0% {
+    opacity: 0;
+    transform: translate3d(24px, -6px, 0) scale(0.94);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes vl-toast-exit {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(24px, 0, 0) scale(0.92);
+  }
+}
+
+@keyframes vl-toast-progress {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@media (max-width: 640px) {
+  .vl-toast-container {
+    top: max(0.75rem, env(safe-area-inset-top, 0.75rem));
+    right: 0.75rem;
+    left: 0.75rem;
+    max-width: calc(100vw - 1.5rem);
+    width: auto;
+    align-items: stretch;
+  }
+
+  .vl-toast-card {
+    padding: 0.8125rem 0.9375rem 0.9375rem;
+  }
+}
+

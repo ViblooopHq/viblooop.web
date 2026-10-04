@@ -1,0 +1,172 @@
+:host {
+  display: block;
+  flex: 0 0 auto;
+}
+
+.my-plans {
+  color: var(--color-text-primary);
+  background: transparent;
+
+  &__header {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 76px;
+    padding: 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--color-border);
+    background: transparent;
+    backdrop-filter: blur(18px);
+
+    h1,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      margin-top: 0.08rem;
+      font-size: clamp(1.35rem, 3vw, 1.75rem);
+      line-height: 1.05;
+      letter-spacing: -0.035em;
+    }
+  }
+
+  &__eyebrow {
+    color: var(--color-primary);
+    font-size: 0.66rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  &__count {
+    padding: 0.42rem 0.7rem;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+    border-radius: 999px;
+    color: var(--color-primary);
+    background: color-mix(in srgb, var(--color-primary) 9%, var(--color-surface));
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  &__content {
+    padding: 1.4rem;
+  }
+
+  &__list {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: min(65dvh, 500px);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+
+    > .material-symbols-outlined {
+      display: grid;
+      place-items: center;
+      width: 70px;
+      height: 70px;
+      margin-bottom: 1rem;
+      border-radius: 22px;
+      color: var(--color-primary);
+      background: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+      font-size: 2.1rem;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      letter-spacing: -0.025em;
+    }
+
+    p {
+      max-width: 300px;
+      margin: 0.5rem 0 0;
+      color: var(--color-text-secondary);
+      line-height: 1.5;
+    }
+  }
+
+  &__primary-action {
+    margin-top: 1.2rem;
+    padding: 0.72rem 1.25rem;
+    border: 0;
+    border-radius: 999px;
+    color: var(--color-on-primary);
+    background: linear-gradient(135deg, color-mix(in srgb, var(--color-primary) 76%, var(--color-on-primary)), var(--color-primary-active));
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--color-primary) 24%, transparent);
+  }
+
+  &__loading {
+    display: grid;
+    grid-template-columns: minmax(0, 1.72fr) minmax(210px, 0.88fr);
+    min-height: 240px;
+    overflow: hidden;
+    border-radius: 16px;
+    background: var(--color-surface);
+    filter: drop-shadow(0 8px 18px color-mix(in srgb, var(--color-primary-active) 12%, transparent));
+  }
+
+  &__loading-section {
+    min-height: 240px;
+    background: linear-gradient(
+      105deg,
+      color-mix(in srgb, var(--color-border) 55%, var(--color-surface)) 30%,
+      color-mix(in srgb, var(--color-border) 20%, var(--color-surface)) 48%,
+      color-mix(in srgb, var(--color-border) 55%, var(--color-surface)) 66%
+    );
+    background-size: 220% 100%;
+    animation: ticket-loading 1.3s ease-in-out infinite;
+
+    &--stub {
+      filter: hue-rotate(235deg) saturate(1.7);
+    }
+  }
+}
+
+@keyframes ticket-loading {
+  to { background-position-x: -220%; }
+}
+
+@media (max-width: 620px) {
+  .my-plans {
+    &__header {
+      min-height: 64px;
+      padding: 0.7rem 1rem;
+    }
+
+    &__content {
+      padding: 1rem 0.85rem 1.6rem;
+    }
+
+    &__loading {
+      grid-template-columns: 1fr;
+      min-height: 380px;
+    }
+
+    &__loading-section {
+      min-height: 220px;
+
+      &--stub {
+        min-height: 160px;
+      }
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .my-plans__loading-section {
+    animation: none;
+  }
+}

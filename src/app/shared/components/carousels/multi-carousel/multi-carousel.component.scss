@@ -1,0 +1,167 @@
+:host {
+  display: block;
+  width: 100%;
+  position: relative;
+}
+
+.vl-multi-carousel-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.carousel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 16px;
+  margin-bottom: 8px;
+
+  .header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .pre-title {
+    display: inline-block;
+    padding: 4px 14px;
+    background-color: #ede9fe;
+    color: #6d28d9;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+    width: fit-content;
+    letter-spacing: 0.01em;
+  }
+
+  .title {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 800;
+    color: var(--on-surface, #0f172a);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+
+    .title-accent-wrap {
+      position: relative;
+      display: inline-block;
+
+      .title-wave {
+        position: absolute;
+        left: 0;
+        bottom: -6px;
+        width: 100%;
+        height: 10px;
+        pointer-events: none;
+      }
+    }
+  }
+
+  .description {
+    font-size: 15px;
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .header-action {
+    color: var(--color-primary);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .custom-nav {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding-bottom: 4px;
+
+    .nav-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      font-size: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+
+      &:hover {
+        border-color: rgba(0, 0, 0, 0.25);
+        background-color: #f8fafc;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      }
+      
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+}
+
+swiper-container {
+  display: block;
+  width: 100%;
+  padding-bottom: 12px;
+  
+  /* Overrides for this specific variant */
+  &::part(button-prev),
+  &::part(button-next) {
+    display: none; /* We use custom navigation now */
+  }
+}
+
+::ng-deep swiper-slide {
+  display: block;
+  height: auto;
+}
+
+.vl-multi-carousel-ssr-fallback {
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+  width: 100%;
+  padding-bottom: 40px;
+  
+  ::ng-deep swiper-slide {
+    flex-shrink: 0;
+    width: 80%; /* Default mobile view width (1.2 slides per view) */
+    display: block;
+  }
+  
+  @media (min-width: 640px) {
+    ::ng-deep swiper-slide {
+      width: calc(45% - 16px); /* Roughly 2.2 slides */
+    }
+  }
+
+  @media (min-width: 1024px) {
+    ::ng-deep swiper-slide {
+      width: calc(31% - 24px); /* Roughly 3.2 slides */
+    }
+  }
+
+  @media (min-width: 1280px) {
+    ::ng-deep swiper-slide {
+      width: calc(25% - 24px); /* 4 slides */
+    }
+  }
+}

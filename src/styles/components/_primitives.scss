@@ -1,0 +1,763 @@
+/*
+ * Viblooop Design System — Component Primitives
+ * Comprehensive UI foundation for buttons, fields, avatars, chips,
+ * tabs, segmented controls, switches, cards, and modal surfaces.
+ */
+
+@use '../tokens' as *;
+
+/* ==========================================================================
+   LAYOUT HELPER MIXINS
+   ========================================================================== */
+@mixin stack($gap: var(--space-3)) {
+  display: flex;
+  flex-direction: column;
+  gap: $gap;
+}
+
+@mixin action-row($gap: var(--space-2)) {
+  display: flex;
+  align-items: center;
+  gap: $gap;
+}
+
+/* ==========================================================================
+   INTERACTIVE BASE MIXIN
+   ========================================================================== */
+@mixin interactive-base {
+  transition:
+    background-color var(--transition-base),
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    color var(--transition-base),
+    transform var(--transition-fast),
+    opacity var(--transition-base);
+
+  &:disabled,
+  &[aria-disabled='true'],
+  &.is-disabled {
+    cursor: not-allowed !important;
+    opacity: 0.5 !important;
+    pointer-events: none !important;
+    transform: none !important;
+  }
+}
+
+/* ==========================================================================
+   BUTTONS (48px standard, 44px min touch target, 12px radius)
+   ========================================================================== */
+@mixin button-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 2.75rem;
+  /* 44px WCAG touch target */
+  height: 3rem;
+  /* 48px standard height */
+  padding: 0 var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-primary);
+  font-size: var(--text-body);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+
+  @include interactive-base;
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+.vl-button {
+  @include button-base;
+
+  /* Primary action: refined purple brand accent with controlled glow */
+  &--primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    box-shadow: var(--shadow-sm);
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+      box-shadow: var(--shadow-brand-glow);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Secondary action: neutral surface with subtle border */
+  &--secondary {
+    border-color: var(--color-border);
+    background-color: var(--color-surface);
+    color: var(--color-text-primary);
+    box-shadow: var(--shadow-xs);
+
+    &:hover {
+      background-color: var(--color-surface-interactive);
+      border-color: var(--color-border-strong);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Ghost / Subtle action */
+  &--ghost {
+    background-color: transparent;
+    color: var(--color-text-secondary);
+
+    &:hover {
+      background-color: var(--color-surface-interactive);
+      color: var(--color-text-primary);
+    }
+  }
+
+  /* Tertiary / Inline link style action */
+  &--tertiary {
+    min-height: auto;
+    height: auto;
+    padding: var(--space-1) 0;
+    background-color: transparent;
+    color: var(--color-primary);
+    font-weight: 600;
+
+    &:hover {
+      color: var(--color-primary-hover);
+      text-decoration: underline;
+    }
+  }
+
+  /* Destructive action */
+  &--destructive {
+    background-color: var(--color-error);
+    color: var(--color-on-error);
+
+    &:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+  }
+
+  /* Full-width block modifier */
+  &--block {
+    width: 100%;
+  }
+
+  /* Size modifiers */
+  &--sm {
+    height: 2.25rem;
+    /* 36px */
+    padding: 0 var(--space-3);
+    font-size: var(--text-body-sm);
+    border-radius: var(--radius-sm);
+  }
+
+  &--lg {
+    height: 3.25rem;
+    /* 52px */
+    padding: 0 var(--space-6);
+    font-size: var(--text-body-lg);
+    border-radius: var(--radius-md);
+  }
+
+  /* Loading state */
+  &.is-loading {
+    color: transparent !important;
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 1.25rem;
+      height: 1.25rem;
+      top: 50%;
+      left: 50%;
+      margin: -0.625rem 0 0 -0.625rem;
+      border: 2px solid currentColor;
+      border-right-color: transparent;
+      border-radius: 50%;
+      animation: vl-spin 0.6s linear infinite;
+    }
+  }
+}
+
+/* Circular & square icon button (44px min touch target) */
+.vl-icon-button {
+  @include button-base;
+  overflow: visible;
+
+  width: 2.75rem;
+  min-width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+    background-color: var(--color-surface-interactive);
+    color: var(--color-text-primary);
+    transform: translateY(-1px);
+  }
+
+  &--sm {
+    width: 2.25rem;
+    min-width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  &--primary {
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    border-color: transparent;
+
+    &:hover {
+      background-color: var(--color-primary-hover);
+      color: var(--color-on-primary);
+    }
+  }
+
+  &--ghost {
+    border-color: transparent;
+    background-color: transparent;
+
+    &:hover {
+      background-color: var(--color-surface-interactive);
+    }
+  }
+}
+
+/* Legacy .vl-btn compatibility */
+.vl-btn {
+  @include button-base;
+  height: 2.5rem;
+  padding: 0 var(--space-3);
+  background-color: var(--color-surface-interactive);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-sm);
+}
+
+/* Menu items for dropdowns and popovers */
+.vl-menu-item {
+  @include button-base;
+
+  width: 100%;
+  height: 2.75rem;
+  justify-content: flex-start;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-weight: 500;
+  text-align: left;
+
+  &:hover {
+    background-color: var(--color-surface-interactive);
+    color: var(--color-primary);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+    color: var(--color-text-tertiary);
+    margin-right: var(--space-2);
+  }
+
+  &:hover .material-symbols-outlined {
+    color: var(--color-primary);
+  }
+
+  &--danger {
+    color: var(--color-error);
+
+    &:hover {
+      background-color: var(--color-error-soft);
+      color: var(--color-error);
+    }
+
+    .material-symbols-outlined {
+      color: var(--color-error);
+    }
+  }
+}
+
+/* ==========================================================================
+   INPUTS & FORM CONTROLS (48px height, 12px radius, 14px padding)
+   ========================================================================== */
+@mixin field-base {
+  width: 100%;
+  height: 3rem;
+  /* 48px standard */
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-primary);
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base), background-color var(--transition-base);
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+    opacity: 1;
+  }
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  &:focus {
+    border-color: var(--color-primary);
+    outline: none;
+    box-shadow: var(--focus-ring);
+    background-color: var(--color-surface);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    cursor: not-allowed;
+    opacity: 0.55;
+    background-color: var(--color-surface-interactive);
+  }
+}
+
+.vl-field {
+  @include field-base;
+
+  &--invalid,
+  &[aria-invalid='true'],
+  &.ng-invalid.ng-touched {
+    border-color: var(--color-error) !important;
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25) !important;
+    }
+  }
+}
+
+.vl-textarea {
+  @include field-base;
+  height: auto;
+  min-height: 5.5rem;
+  padding: var(--space-3);
+  resize: vertical;
+}
+
+.vl-field-label {
+  display: block;
+  margin-bottom: var(--space-1);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+
+  .required-star {
+    color: var(--color-error);
+    margin-left: 2px;
+  }
+}
+
+.vl-field-error {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
+  color: var(--color-error);
+  font-size: var(--text-caption);
+  font-weight: 500;
+}
+
+/* Switch / Toggle Switch */
+.vl-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+
+  input[type='checkbox'] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  &__track {
+    width: 2.75rem;
+    height: 1.5rem;
+    background-color: var(--color-surface-interactive);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-pill);
+    position: relative;
+    transition: background-color var(--transition-base), border-color var(--transition-base);
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 1.125rem;
+      height: 1.125rem;
+      background-color: var(--color-surface);
+      border-radius: 50%;
+      box-shadow: var(--shadow-xs);
+      transition: transform var(--transition-base);
+    }
+  }
+
+  input[type='checkbox']:checked+&__track {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+
+    &::after {
+      transform: translateX(1.25rem);
+      background-color: #ffffff;
+    }
+  }
+
+  input[type='checkbox']:focus-visible+&__track {
+    box-shadow: var(--focus-ring);
+  }
+}
+
+/* ==========================================================================
+   CHIPS & BADGES (Pills 999px)
+   ========================================================================== */
+.vl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 2.25rem;
+  /* 36px */
+  padding: 0 var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+
+  @include interactive-base;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+  }
+
+  &[aria-pressed='true'],
+  &.is-selected,
+  &.active {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary);
+    color: var(--color-on-primary);
+    font-weight: 600;
+
+    .material-symbols-outlined,
+    i {
+      color: var(--color-on-primary) !important;
+    }
+  }
+}
+
+.vl-status,
+.vl-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  line-height: 1.3;
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+
+  &--success {
+    background-color: var(--color-success-soft);
+    color: var(--color-success);
+  }
+
+  &--warning {
+    background-color: var(--color-warning-soft);
+    color: var(--color-warning);
+  }
+
+  &--error {
+    background-color: var(--color-error-soft);
+    color: var(--color-error);
+  }
+
+  &--info {
+    background-color: var(--color-info-soft);
+    color: var(--color-info);
+  }
+}
+
+/* ==========================================================================
+   AVATARS & AVATAR GROUPS
+   ========================================================================== */
+.vl-avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  background-color: var(--color-surface-interactive);
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Sizes */
+  &--xs {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  /* 24px */
+  &--sm {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  /* 32px */
+  &--md {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  /* 40px */
+  &--lg {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  /* 56px */
+  &--xl {
+    width: 5rem;
+    height: 5rem;
+  }
+
+  /* 80px */
+  &--2xl {
+    width: 6.5rem;
+    height: 6.5rem;
+  }
+
+  /* 104px */
+
+  &--square {
+    border-radius: var(--radius-md);
+  }
+}
+
+.vl-avatar-group {
+  display: flex;
+  align-items: center;
+
+  .vl-avatar {
+    margin-left: -0.5rem;
+    border: 2px solid var(--color-surface);
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+
+  .vl-avatar-overflow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: -0.5rem;
+    width: 2rem;
+    height: 2rem;
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-interactive);
+    border: 2px solid var(--color-surface);
+    color: var(--color-text-secondary);
+    font-size: var(--text-caption);
+    font-weight: 700;
+  }
+}
+
+/* ==========================================================================
+   TABS & SEGMENTED CONTROLS
+   ========================================================================== */
+.vl-tabs {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &__tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-1);
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-family: var(--font-family-primary);
+    font-size: var(--text-body);
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color var(--transition-base), border-color var(--transition-base);
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+
+    &.is-active,
+    &[aria-selected='true'] {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+      font-weight: 600;
+    }
+  }
+}
+
+.vl-segmented-control {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  background-color: var(--color-surface-interactive);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  gap: 2px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 14px;
+    border: 0;
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color var(--transition-base), color var(--transition-base), box-shadow var(--transition-base);
+
+    &:hover {
+      color: var(--color-text-primary);
+    }
+
+    &.is-active,
+    &[aria-selected='true'] {
+      background-color: var(--color-surface);
+      color: var(--color-text-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-xs);
+    }
+  }
+}
+
+/* ==========================================================================
+   SURFACES & CARDS (16px radius for cards, 20px for media cards)
+   ========================================================================== */
+@mixin surface-base {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-card);
+}
+
+.vl-surface {
+  @include surface-base;
+
+  &--interactive {
+    @include interactive-base;
+    cursor: pointer;
+
+    &:hover {
+      border-color: var(--color-border-strong);
+      box-shadow: var(--shadow-card-hover);
+      transform: translateY(-2px);
+    }
+  }
+
+  &--elevated {
+    background-color: var(--color-surface-elevated);
+    box-shadow: var(--shadow-md);
+  }
+
+  &--glass {
+    background-color: var(--color-surface-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-color: var(--color-border);
+  }
+}
+
+/* ==========================================================================
+   SKELETON LOADERS
+   ========================================================================== */
+.vl-skeleton {
+  background: linear-gradient(90deg,
+      var(--color-surface-interactive) 25%,
+      var(--color-surface) 37%,
+      var(--color-surface-interactive) 63%);
+  background-size: 400% 100%;
+  animation: vl-skeleton-loading 1.4s ease infinite;
+  border-radius: var(--radius-sm);
+
+  &--circle {
+    border-radius: 50%;
+  }
+
+  &--card {
+    border-radius: var(--radius-lg);
+    height: 16rem;
+  }
+}
+
+@keyframes vl-skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+@keyframes vl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

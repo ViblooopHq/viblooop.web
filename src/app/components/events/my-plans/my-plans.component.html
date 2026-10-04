@@ -1,0 +1,46 @@
+<main class="my-plans">
+  <header class="my-plans__header">
+    <div>
+      <p class="my-plans__eyebrow">Viblooop passes</p>
+      <h1>My Plans</h1>
+    </div>
+
+    @if (!isLoading() && plans().length) {
+      <span class="my-plans__count">{{ plans().length }} {{ plans().length === 1 ? 'plan' : 'plans' }}</span>
+    }
+  </header>
+
+  <section class="my-plans__content" aria-live="polite">
+    @if (isLoading()) {
+      <article class="my-plans__loading" aria-label="Loading your plans">
+        <div class="my-plans__loading-section my-plans__loading-section--main"></div>
+        <div class="my-plans__loading-section my-plans__loading-section--stub"></div>
+      </article>
+    } @else if (hasLoadError()) {
+      <div class="my-plans__empty">
+        <span class="material-symbols-outlined" translate="no">event_busy</span>
+        <h2>We couldn't load your plans</h2>
+        <p>Please close the drawer and try again in a moment.</p>
+      </div>
+    } @else if (!isSignedIn()) {
+      <div class="my-plans__empty">
+        <span class="material-symbols-outlined" translate="no">confirmation_number</span>
+        <h2>Your passes live here</h2>
+        <p>Sign in to see all the plans you've joined.</p>
+        <button type="button" class="my-plans__primary-action" (click)="signIn()">Sign in</button>
+      </div>
+    } @else if (!plans().length) {
+      <div class="my-plans__empty">
+        <span class="material-symbols-outlined" translate="no">calendar_add_on</span>
+        <h2>No plans yet</h2>
+        <p>When you join a hangout, your pass will appear here.</p>
+      </div>
+    } @else {
+      <div class="my-plans__list">
+        @for (plan of plans(); track trackPlan($index, plan)) {
+          <vl-ticket [plan]="plan" (selected)="openPlan($event)" />
+        }
+      </div>
+    }
+  </section>
+</main>

@@ -1,0 +1,11 @@
+@for (interest of interests(); track interest) {
+  <vl-pill
+    [label]="getInterestLabel(interest)"
+    [size]="size()">
+  </vl-pill>
+}
+
+@if (extraCount() > 0) {
+  <span class="vl-pill-extra">+{{ extraCount() }} more</span>
+}
+

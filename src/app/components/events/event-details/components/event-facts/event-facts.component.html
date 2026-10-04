@@ -1,0 +1,58 @@
+<section class="ed-section event-facts">
+  <h2 class="sr-only">Event details</h2>
+  <div class="info-rows">
+    @if (isSocialEvent()) {
+    <div class="info-row info-row--schedule">
+      <span class="info-row__icon">
+        <span class="material-symbols-outlined" translate="no">calendar_today</span>
+      </span>
+      <span class="schedule-copy"><strong>{{ eventDate() | date:'EEEE, d MMMM y' }}</strong>@if (eventTime()) {<small>{{ eventTime() | time }}@if (endTime()) { – {{ endTime() | time }} }</small>}</span>
+      @if (durationLabel()) { <span class="duration-pill"><span class="material-symbols-outlined" translate="no">schedule</span>{{ durationLabel() }}</span> }
+    </div>
+    } @else {
+    <div class="info-row">
+      <span class="info-row__icon"><span class="material-symbols-outlined" translate="no">calendar_today</span></span>
+      <span>{{ eventDate() | date:'EEEE, d MMMM y' }}@if (isMultiDay() && eventTime()) { · {{ eventTime() | time }} }</span>
+    </div>
+    @if (isMultiDay()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">event</span>
+        </span>
+        <span>{{ endDate() | date:'EEEE, d MMMM y' }}@if (endTime()) { · {{ endTime() | time }} }</span>
+      </div>
+    } @else if (eventTime() || endTime()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">schedule</span>
+        </span>
+        <span>{{ eventTime() | time }}@if (eventTime() && endTime()) { – }{{ endTime() | time }}</span>
+      </div>
+    }
+    }
+    @if (eventPriceLabel()) {
+      <div class="info-row">
+        <span class="info-row__icon">
+          <span class="material-symbols-outlined" translate="no">confirmation_number</span>
+        </span>
+        <span><strong>{{ eventPriceLabel() }}</strong> per person</span>
+      </div>
+    }
+    <div class="info-row">
+      <span class="info-row__icon">
+        <span class="material-symbols-outlined" translate="no">{{ audiencePreferenceIcon() }}</span>
+      </span>
+      <span>{{ audiencePreferenceLabel() }}</span>
+    </div>
+    <div class="info-row">
+      <span class="info-row__icon">
+        <span class="material-symbols-outlined" translate="no">group</span>
+      </span>
+      @if (isEventEnded()) {
+        <span>{{ totalAttendeesCount() }} {{ totalAttendeesCount() === 1 ? 'person attended' : 'people attended' }}</span>
+      } @else {
+        <span>{{ totalAttendeesCount() }} spots booked <span class="dot" aria-hidden="true">•</span> {{ remainingSpotsLabel() }}</span>
+      }
+    </div>
+  </div>
+</section>

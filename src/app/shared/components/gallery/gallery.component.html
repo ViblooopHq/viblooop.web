@@ -1,0 +1,106 @@
+<div class="vl-gallery">
+  @if(showHeader()) {
+    <div class="vl-gallery__header">
+      <h3 class="vl-title-md">Gallery</h3>
+    </div>
+  }
+
+  @if(showGrid()) {
+    <div class="vl-gallery__grid">
+      @for(img of images(); track img) {
+      <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
+        <button type="button" class="vl-gallery__item-trigger" [attr.aria-label]="'Open ' + (img.title || 'gallery photo')" (click)="onImageSelect(img)">
+          <img [src]="img.url" [alt]="img.title || 'Gallery photo'" />
+        </button>
+
+        @if(showArchiveAction()) {
+          <div class="vl-gallery__overlay">
+            <button type="button" (click)="toggleArchive(img)">
+              {{ img.archived ? 'Unarchive' : 'Archive' }}
+            </button>
+          </div>
+        }
+      </div>
+      }
+    </div>
+  }
+
+  <!-- Modal Preview -->
+@if(selectedImage(); as image) {
+    <div class="vl-gallery__modal" role="dialog" aria-modal="true" [attr.aria-label]="image.title || 'Photo preview'">
+      <div class="vl-gallery__modal-content">
+        <!-- Close Button -->
+        <button class="close" type="button" aria-label="Close preview" (click)="closePreview()">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
+
+        <!-- Left Arrow (hide if at first image) -->
+        @if(currentIndex() > 0) {
+          <button class="vl-gallery__nav vl-gallery__nav--left" type="button" aria-label="Previous image" (click)="showPrevImage()">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
+          </button>
+        }
+
+        <!-- Image -->
+        <img [src]="image.url" [alt]="image.title || 'Gallery photo preview'" />
+        @if (image.title) {
+          <p class="vl-body-sm">{{ image.title }}</p>
+        }
+
+        @if (shouldShowActions) {
+          <button type="button" class="vl-gallery__menu-trigger" aria-haspopup="menu" [attr.aria-expanded]="isActionsOpen()" aria-label="Photo options" (click)="toggleActions()">
+            <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
+          </button>
+
+          @if (isActionsOpen()) {
+            <div class="vl-gallery__menu" role="menu">
+              @if (canDownload()) {
+                <a class="vl-gallery__menu-item" role="menuitem" [href]="image.url" download>
+                  <i class="fa-solid fa-download" aria-hidden="true"></i>
+                  <span>Download</span>
+                </a>
+              }
+              @if (canDeleteSelectedImage()) {
+                <button type="button" role="menuitem" class="vl-gallery__menu-item vl-gallery__menu-item--danger" (click)="openDeleteConfirm()">
+                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
+                  <span>Delete</span>
+                </button>
+              }
+            </div>
+          }
+        }
+
+        <!-- Right Arrow (hide if at last image) -->
+        @if(currentIndex() < images().length - 1) {
+          <button class="vl-gallery__nav vl-gallery__nav--right" type="button" aria-label="Next image" (click)="showNextImage()">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
+          </button>
+        }
+      </div>
+
+      @if (canDeleteSelectedImage() && isDeleteConfirmOpen()) {
+        <section class="vl-gallery__delete-confirm" role="alertdialog" aria-modal="true" aria-label="Confirm delete photo" (click)="$event.stopPropagation()">
+          <div class="vl-gallery__delete-confirm-icon">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          </div>
+          <h3 class="vl-title-md">Delete this photo?</h3>
+          <p class="vl-body">This photo will be permanently deleted and cannot be recovered.</p>
+          <div class="vl-gallery__delete-confirm-actions">
+            <button type="button" class="vl-gallery__delete-confirm-cancel" (click)="closeDeleteConfirm()">Cancel</button>
+            <button type="button"
+              class="vl-gallery__delete-confirm-delete"
+              [disabled]="deletingImagePath() === selectedImageKey"
+              (click)="requestDelete()">
+              @if (deletingImagePath() === selectedImageKey) {
+                <vl-inline-loader size="sm" color="white" text="Deleting..."></vl-inline-loader>
+              } @else {
+                <span>Delete</span>
+              }
+            </button>
+          </div>
+        </section>
+      }
+    </div>
+  }
+
+</div>

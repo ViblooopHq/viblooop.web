@@ -1,0 +1,155 @@
+<main class="step-content" [formGroup]="formService.eventForm">
+  <div class="form-stack">
+
+    <!-- Category-aware title -->
+    <div class="form-card">
+      <div class="card-header">
+        <span class="material-symbols-outlined header-icon" aria-hidden="true">edit</span>
+        <span>
+          <label class="header-label" for="event-title-input">{{ formService.titleFieldLabel() }}</label>
+          <small>{{ formService.titleFieldHint() }}</small>
+        </span>
+      </div>
+      <div class="input-wrapper">
+        <input id="event-title-input" class="field-input" type="text" formControlName="title" [placeholder]="formService.titleFieldPlaceholder()" maxlength="60" />
+        <span class="char-count">{{ formService.eventForm.get('title')?.value?.length || 0 }}/60</span>
+      </div>
+    </div>
+
+    <!-- Date & Time -->
+    <div class="form-card">
+      <div class="card-header">
+        <span class="material-symbols-outlined header-icon" aria-hidden="true">calendar_month</span>
+        <span>
+          <span class="header-label">{{ formService.timingTitle() }}</span>
+          <small>{{ formService.timingHint() }}</small>
+        </span>
+      </div>
+      @if (formService.usesDuration()) {
+        <div class="duration-timing-fields">
+          <div class="date-time-row duration-date-time-row">
+            <div class="date-field">
+              <vl-datepicker
+                formControlName="eventDate"
+                [min]="formService.datePickerMinDate()"
+                placeholder="Select Date"
+                outputType="date">
+              </vl-datepicker>
+            </div>
+            <div class="time-range-field">
+              <vl-time-picker-dropdown
+                placeholder="Start Time"
+                [value]="formService.eventTimeValue()"
+                (valueChange)="setEventTime($event)" />
+            </div>
+            <label class="time-range-field duration-field">
+              <span>Duration</span>
+              <vl-duration-picker-dropdown
+                [options]="hangoutDurations"
+                [value]="formService.eventForm.get('durationHours')?.value"
+                (valueChange)="setDuration($event)" />
+            </label>
+          </div>
+        </div>
+      } @else {
+        <div class="date-time-row">
+          <div class="date-field">
+            <vl-datepicker
+              formControlName="eventDate"
+              [min]="formService.datePickerMinDate()"
+              [placeholder]="formService.isEscapeCreation() ? 'From' : 'Select Date'"
+              outputType="date">
+            </vl-datepicker>
+          </div>
+          @if (formService.isEscapeCreation()) {
+            <div class="date-field">
+              <vl-datepicker
+                formControlName="endDate"
+                [min]="formService.minEndDate()"
+                placeholder="To"
+                outputType="date">
+              </vl-datepicker>
+            </div>
+          } @else {
+            <vl-time-picker-dropdown [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Location -->
+    <div class="form-card" formGroupName="address">
+      <div class="card-header">
+        <span class="material-symbols-outlined header-icon" aria-hidden="true">location_on</span>
+        <span>
+          <span class="header-label">Location</span>
+          <small>{{ formService.locationHint() }}</small>
+        </span>
+      </div>
+
+      <div class="location-address-card">
+        <label class="location-line" for="address-street-input">
+          <span class="material-symbols-outlined location-line__icon" aria-hidden="true">home</span>
+          <span class="location-line__copy">
+            <span class="location-line__label">{{ formService.addressFieldLabel() }} <strong>*</strong></span>
+            <span class="location-line__hint">{{ formService.addressFieldHint() }}</span>
+          </span>
+          <input id="address-street-input" class="location-input" type="text" formControlName="street" [placeholder]="formService.addressFieldPlaceholder()">
+        </label>
+
+        <label class="location-line" for="address-area-input">
+          <span class="material-symbols-outlined location-line__icon" aria-hidden="true">home</span>
+          <span class="location-line__copy">
+            <span class="location-line__label">Area / Locality <strong>*</strong></span>
+            <span class="location-line__hint">{{ formService.areaFieldHint() }}</span>
+          </span>
+          <input id="address-area-input" class="location-input" type="text" formControlName="area" [placeholder]="formService.areaFieldPlaceholder()">
+        </label>
+
+        <label class="location-stack-field" for="address-pincode-input">
+          <span class="location-stack-field__label">Pincode <strong>*</strong></span>
+          <input id="address-pincode-input" class="location-input" type="text" formControlName="pinCode" placeholder="e.g. 560095">
+        </label>
+      </div>
+    </div>
+
+    <!-- Capacity Selector -->
+    <div class="form-card" id="capacity-section">
+      <div class="card-header">
+        <span class="material-symbols-outlined header-icon" aria-hidden="true">groups</span>
+        <span>
+          <span class="header-label">Capacity</span>
+          <small>Set the number of people for your event</small>
+        </span>
+      </div>
+
+      <vl-capacity-selector
+        [limited]="formService.isCapacityLimited()"
+        [value]="formService.attendeeLimitValue()"
+        [min]="formService.capacityMin"
+        [max]="formService.capacityMax"
+        [quickOptions]="formService.quickCapacityOptions"
+        (limitedChange)="formService.setCapacityType($event)"
+        (increment)="formService.adjustCapacity(1)"
+        (decrement)="formService.adjustCapacity(-1)"
+        (valueInput)="formService.setCapacityFromInput($event)"
+        (valueBlur)="formService.clampCapacity()"
+        (quickPick)="formService.setAttendeeLimit($event)" />
+    </div>
+
+    <!-- Audience Preference (Attendee Mix) -->
+    @if (!formService.isCapacityLimited() || (formService.isCapacityLimited() && formService.attendeeLimitValue() > 0)) {
+      <vl-audience-preference-selector
+        [mixType]="formService.mixType()"
+        (mixTypeChange)="formService.setMixType($event)" />
+    }
+
+  </div>
+
+  <!-- Navigation Footer -->
+  <div class="step-footer">
+    <button type="button" class="btn-next" (click)="next.emit()">
+      Next: Set the scene <span class="material-symbols-outlined" aria-hidden="true">east</span>
+    </button>
+  </div>
+</main>

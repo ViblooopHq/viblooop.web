@@ -1,0 +1,183 @@
+@if (isLoadingEvent()) {
+<vl-event-details-skeleton />
+} @else if (hasLoadingError()) {
+<div class="vl-ed-error-view">
+  <div class="vl-ed-error-card">
+    <div class="vl-ed-error-badge">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+    <h2 class="vl-ed-error-title">Couldn't Load Event</h2>
+    <p class="vl-ed-error-subtitle">{{ loadingErrorMessage() }}</p>
+    <div class="vl-ed-error-actions">
+      <button type="button" class="vl-btn vl-btn--secondary" (click)="goBack()">
+        Go Back
+      </button>
+      <button type="button" class="vl-btn vl-btn--primary" (click)="retryLoadEvent()">
+        <i class="fa-solid fa-rotate-right mr-1.5 text-xs"></i>
+        <span>Retry</span>
+      </button>
+    </div>
+  </div>
+</div>
+} @else {
+<div class="vl-ed">
+  <div class="vl-ed__layout">
+    <main class="vl-ed__main">
+      <vl-event-hero [event]="eventDetails()" [isEventCreator]="isEventCreator()" [isEventMenuOpen]="isEventMenuOpen()"
+        [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()" [isUserAttendee]="isUserAttendee()"
+        [isCancelled]="isCancelled()" [isLoggedIn]="isLoggedIn()" [isAuthInitialized]="isAuthInitialized()"
+        [isJoinRequestPending]="isJoinRequestPending()" [eventDate]="eventDetails()?.eventDate"
+        [timeLeftLabel]="timeLeftLabel()" [locationLabel]="locationLabel()"
+        [attendeePreviewProfiles]="attendeePreviewProfiles()" [totalAttendeesCount]="nonHostAttendeeProfiles().length"
+        [attendanceSummaryLabel]="attendanceSummaryLabel()" [joinRequestStatus]="joinRequestStatus()"
+        [canRequestJoin]="canRequestJoin()" [eventPriceLabel]="eventPriceLabel()"
+        [pendingJoinRequestCount]="pendingJoinRequestCount()" (goBack)="goBack()" (shareEvent)="shareCurrentEvent()"
+        (toggleMenu)="toggleEventMenu()" (editEvent)="openEditEvent()" (closeMenu)="closeEventMenu()"
+        (requestJoin)="requestJoinEvent()" (openAttendees)="openAttendeesDrawer()" (openRequests)="openRequestsDrawer()"
+        (deleteEvent)="openDeleteConfirmation()" (cancelEvent)="openCancelConfirmation()"
+        (leaveEvent)="openLeaveConfirmation()" (cancelJoinRequest)="openCancelRequestConfirmation()" />
+
+      <div class="mobile-event-overview">
+        <vl-event-host-card class="host-panel--mobile" [host]="eventDetails()?.createdBy"
+          [hostEventCount]="hostEventCount()" [isNewHost]="isNewHost()" [shouldShowRating]="shouldShowHostRating()"
+          [hostRating]="hostRating()" (viewProfile)="redirectToHostProfile()" />
+
+        <vl-event-facts class="event-facts--mobile" [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()"
+          [tripDateRangeLabel]="tripDateRangeLabel()" [eventDate]="eventDetails()?.eventDate"
+          [endDate]="eventDetails()?.endDate" [eventTime]="eventDetails()?.eventTime" [isSocialEvent]="isSocialEvent()"
+          [endTime]="eventDetails()?.endTime" [eventPriceLabel]="eventPriceLabel()"
+          [audiencePreferenceIcon]="audiencePreferenceIcon()" [audiencePreferenceLabel]="audiencePreferenceLabel()"
+          [totalAttendeesCount]="totalAttendeesCount()" [remainingSpotsLabel]="remainingSpotsLabel()" />
+      </div>
+
+      <vl-event-about [description]="eventDetails()?.description ?? ''"
+        [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
+        [attendeeLimit]="eventDetails()?.attendeeLimit" [tags]="eventDetails()?.tags"
+        [expectations]="eventDetails()?.expectations" [audiencePreferenceLabel]="audiencePreferenceLabel()"
+        [audiencePreferenceIcon]="audiencePreferenceIcon()" [eventPriceLabel]="eventPriceLabel()" />
+
+      @if (eventGalleryImages().length > 0 || isUserAttendee()) {
+      @defer (on viewport) {
+      <vl-event-gallery-section [images]="eventGalleryImages()" [isEventCreator]="isEventCreator()"
+        [canUpload]="isUserAttendee()" [canDownload]="canDownloadGalleryImage()" [currentUserId]="currentUserId()"
+        [deletingImagePath]="deletingGalleryImagePath()" [isUploading]="isUploadingGallery()"
+        (uploadPhotos)="onUploadPhotos($event)" (deleteImage)="onDeleteGalleryImage($event)" />
+      } @placeholder {
+      <div class="ed-section-placeholder" aria-hidden="true"></div>
+      } @loading (minimum 100ms) {
+      <div class="ed-section-placeholder" aria-hidden="true"></div>
+      }
+      }
+
+      <vl-event-map-panel class="map-panel--mobile" [locationLabel]="locationLabel()"
+        [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
+        (openInMaps)="openInGoogleMaps()" />
+
+      @if (isUserAttendee()) {
+      <vl-event-chat-card class="chat-card--mobile" [totalAttendeesCount]="totalAttendeesCount()"
+        [isChatOpen]="isChatOpen()" (toggleChat)="toggleChat()" />
+      }
+
+      @defer (on viewport) {
+      <vl-event-comments [eventId]="eventId()" [eventAverageRating]="eventDetails()?.averageRating ?? 0"
+        [canLeaveReview]="canLeaveReview()" />
+      } @placeholder {
+      <div class="ed-section-placeholder" aria-hidden="true"></div>
+      } @loading (minimum 100ms) {
+      <div class="ed-section-placeholder" aria-hidden="true"></div>
+      }
+
+    </main>
+
+    <aside class="vl-ed__sidebar">
+      <vl-event-host-card class="host-panel--desktop" [host]="eventDetails()?.createdBy"
+        [hostEventCount]="hostEventCount()" [isNewHost]="isNewHost()" [shouldShowRating]="shouldShowHostRating()"
+        [hostRating]="hostRating()" (viewProfile)="redirectToHostProfile()" />
+
+      <vl-event-facts class="event-facts--desktop" [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()"
+        [tripDateRangeLabel]="tripDateRangeLabel()" [eventDate]="eventDetails()?.eventDate"
+        [endDate]="eventDetails()?.endDate" [eventTime]="eventDetails()?.eventTime" [isSocialEvent]="isSocialEvent()" [endTime]="eventDetails()?.endTime"
+        [eventPriceLabel]="eventPriceLabel()" [audiencePreferenceIcon]="audiencePreferenceIcon()"
+        [audiencePreferenceLabel]="audiencePreferenceLabel()" [totalAttendeesCount]="totalAttendeesCount()"
+        [remainingSpotsLabel]="remainingSpotsLabel()" />
+
+      <vl-event-map-panel class="map-panel--desktop" [locationLabel]="locationLabel()"
+        [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
+        (openInMaps)="openInGoogleMaps()" />
+
+      @if (isUserAttendee()) {
+      <vl-event-chat-card class="chat-card--desktop" [totalAttendeesCount]="totalAttendeesCount()"
+        [isChatOpen]="isChatOpen()" (toggleChat)="toggleChat()" />
+      }
+    </aside>
+  </div>
+
+  @if (!isCancelled() && !isEventEnded()) {
+  @if (!isUserAttendee()) {
+  <div class="mobile-sticky-join-bar" [class.mobile-sticky-join-bar--visible]="!isHeroCtaVisible()">
+    <div class="mobile-sticky-join-bar__info">
+      <span class="mobile-sticky-join-bar__price">{{ eventPriceLabel() }}</span>
+      <span class="mobile-sticky-join-bar__spots">{{ remainingSpotsLabel() }}</span>
+    </div>
+
+    <div class="mobile-sticky-join-bar__actions">
+      <button type="button" class="vl-icon-button mobile-sticky-join-bar__share-btn" (click)="shareCurrentEvent()"
+        aria-label="Share Event" matTooltip="Share Event">
+        <span class="material-symbols-outlined" translate="no">share</span>
+      </button>
+
+      @if (isEventCreator()) {
+      <button type="button" class="vl-button vl-button--secondary mobile-sticky-join-bar__btn"
+        (click)="openRequestsDrawer()">
+        <span class="material-symbols-outlined" translate="no">group</span>
+        <span>Requests {{ pendingJoinRequestCount() > 0 ? '(' + pendingJoinRequestCount() + ')' : '' }}</span>
+      </button>
+      } @else if (joinRequestStatus() === 'Requested') {
+      <button type="button"
+        class="vl-button vl-button--danger-subtle mobile-sticky-join-bar__btn mobile-sticky-join-bar__btn--cancel"
+        (click)="openCancelRequestConfirmation()">
+        <span class="material-symbols-outlined" translate="no">undo</span>
+        <span>Cancel Request</span>
+      </button>
+      } @else {
+      <button type="button" class="vl-button vl-button--primary mobile-sticky-join-bar__btn"
+        (click)="requestJoinEvent()" [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+        [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''" matTooltipPosition="above">
+        @if (isJoinRequestPending()) {
+        <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+        } @else {
+        <span class="material-symbols-outlined" translate="no">local_fire_department</span>
+        <span>{{ joinRequestStatus() === 'Request Join' ? 'Join' : joinRequestStatus() }}</span>
+        }
+      </button>
+      }
+    </div>
+  </div>
+  }
+  }
+</div>
+
+@if (isChatOpen()) {
+<vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>
+}
+
+<vl-event-people-drawer [mode]="activeDrawer()" [eventTitle]="eventDetails()?.title ?? 'Event'"
+  [title]="eventDrawerTitle()" [subtitle]="eventDrawerSubtitle()" [pendingRequests]="pendingJoinRequestsView()"
+  [attendees]="eventDrawerAttendees()" (close)="closeEventDrawer()" (accept)="acceptJoinRequest($event)"
+  (reject)="rejectJoinRequest($event)" (viewPerson)="openPersonProfile($event)" />
+
+<vl-action-modal
+  [presentation]="actionModal().action === 'cancel' || actionModal().action === 'delete' ? 'sheet' : 'dialog'"
+  [destructive]="actionModal().action === 'cancel' || actionModal().action === 'delete'"
+  [icon]="actionModal().action === 'delete' ? 'delete' : actionModal().action === 'cancel' ? 'error_outline' : ''"
+  [impactMessage]="actionModal().action === 'cancel' ? 'All attendees will be notified.' : ''"
+  [isOpen]="actionModal().isOpen" [variant]="actionModal().variant" [title]="actionModal().title"
+  [message]="actionModal().message" [confirmLabel]="actionModal().confirmLabel"
+  [cancelLabel]="actionModal().cancelLabel" [showCancelButton]="actionModal().showCancelButton"
+  [showInput]="actionModal().showInput" [inputPlaceholder]="actionModal().inputPlaceholder"
+  [inputRequired]="actionModal().inputRequired" [isLoading]="actionModal().isLoading"
+  (confirmed)="actionModal().action ? onModalConfirmed($event) : onResultModalDismissed()"
+  (cancelled)="onModalCancelled()" />
+}

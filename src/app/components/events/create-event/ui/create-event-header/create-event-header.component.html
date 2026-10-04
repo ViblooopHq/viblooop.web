@@ -1,0 +1,22 @@
+<header class="create-header">
+  <div class="header-inner">
+    @if (showBack()) {
+      <button type="button" class="vl-icon-button back-icon-btn" aria-label="Go back to previous step" (click)="back.emit()">
+        <span class="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+      </button>
+    }
+    <div class="header-copy">
+      <h1 class="header-title" #stepHeading tabindex="-1">{{ title() }}</h1>
+      <p>{{ subtitle() }}</p>
+    </div>
+    <span class="step-label">{{ currentStep() + 1 }} / {{ steps().length }}</span>
+  </div>
+  <div class="create-progress" aria-hidden="true">
+    @for (step of steps(); track step; let i = $index) {
+      <span [class.create-progress__bar--active]="i <= currentStep()"></span>
+    }
+  </div>
+  <div class="sr-only-live" aria-live="polite" role="status">
+    Step {{ currentStep() + 1 }} of {{ steps().length }}: {{ title() }}
+  </div>
+</header>

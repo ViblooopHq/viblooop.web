@@ -1,0 +1,34 @@
+<button
+  type="button"
+  class="vl-pill"
+  [class.vl-pill--sm]="size === 'sm'"
+  [class.vl-pill--lg]="size === 'lg'"
+  [class.vl-pill--selected]="selected"
+  [class.vl-pill--selectable]="selectable"
+  [class.vl-pill--interactive]="interactive"
+  [class.vl-pill--disabled]="disabled"
+  [attr.aria-pressed]="selectable ? selected : null"
+  [disabled]="disabled"
+  (click)="onPillClick($event)">
+
+  @if (selected && selectable) {
+    <span class="material-symbols-outlined vl-pill__check" translate="no">check</span>
+  } @else if (resolvedIcon) {
+    <span class="material-symbols-outlined vl-pill__icon" translate="no">{{ resolvedIcon }}</span>
+  }
+
+  <span class="vl-pill__label">{{ label }}</span>
+
+  @if (removable) {
+    <span
+      class="material-symbols-outlined vl-pill__remove"
+      translate="no"
+      role="button"
+      tabindex="0"
+      aria-label="Remove"
+      (click)="onRemoveClick($event)"
+      (keydown.enter)="onRemoveClick($event)">
+      close
+    </span>
+  }
+</button>

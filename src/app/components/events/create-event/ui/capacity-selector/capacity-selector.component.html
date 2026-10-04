@@ -1,0 +1,60 @@
+<div class="capacity-selector">
+  <div class="capacity-options">
+    <button type="button" class="capacity-card" [class.capacity-card--selected]="limited()" [attr.aria-pressed]="limited()" (click)="limitedChange.emit(true)">
+      <div class="capacity-icon-ring">
+        <span class="material-symbols-outlined" aria-hidden="true">diversity_3</span>
+      </div>
+      <div class="capacity-info">
+        <span class="capacity-title">Limited spots</span>
+        <span class="capacity-desc">Keep it personal and cozy</span>
+      </div>
+    </button>
+
+    <button type="button" class="capacity-card" [class.capacity-card--selected]="!limited()" [attr.aria-pressed]="!limited()" (click)="limitedChange.emit(false)">
+      <div class="capacity-icon-ring">
+        <span class="material-symbols-outlined" aria-hidden="true">all_inclusive</span>
+      </div>
+      <div class="capacity-info">
+        <span class="capacity-title">Open event</span>
+        <span class="capacity-desc">No limit on attendees</span>
+      </div>
+    </button>
+  </div>
+
+  @if (limited()) {
+    <div class="capacity-stepper-wrap" animate-fade-in>
+      @if (quickOptions().length) {
+        <div class="capacity-quick-options">
+          @for (option of quickOptions(); track option) {
+            <button type="button" class="capacity-quick-option" [class.capacity-quick-option--active]="value() === option" (click)="quickPick.emit(option)">
+              {{ option }}
+            </button>
+          }
+        </div>
+      }
+
+      <div class="capacity-stepper">
+        <button type="button" class="capacity-step-btn" aria-label="Decrease capacity" [disabled]="value() <= min()" (click)="decrement.emit()">
+          <span class="material-symbols-outlined" aria-hidden="true">remove</span>
+        </button>
+        <span class="capacity-step-value-wrap">
+          <label class="sr-only-label" for="capacity-step-input">Number of attendees</label>
+          <input id="capacity-step-input" class="capacity-step-value capacity-step-input" type="number" inputmode="numeric"
+            [value]="value()"
+            [min]="min()"
+            [max]="max()"
+            (input)="onInput($event)"
+            (blur)="valueBlur.emit()" />
+          <span class="capacity-step-unit">People</span>
+        </span>
+        <button type="button" class="capacity-step-btn" aria-label="Increase capacity" [disabled]="value() >= max()" (click)="increment.emit()">
+          <span class="material-symbols-outlined" aria-hidden="true">add</span>
+        </button>
+      </div>
+      <div class="capacity-range-labels">
+        <span>Minimum {{ min() }} including host</span>
+        <span>Max {{ max() }} spots</span>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,191 @@
+@use "../../create-event-shared" as *;
+
+/* ── PRICING ── */
+.pricing-grid-new {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.pricing-card-new {
+  @include selectable-card-base;
+
+  padding: 10px 12px;
+  position: relative;
+  text-align: left;
+  overflow: hidden;
+  min-height: 88px;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  &:hover {
+    background-color: var(--color-surface-interactive);
+    border-color: var(--color-primary);
+  }
+
+  &--selected {
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 2px var(--color-primary);
+
+    .selection-check {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+    }
+  }
+}
+
+.selection-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+
+  .material-symbols-outlined {
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+}
+
+.pricing-card-flex {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  width: 100%;
+}
+
+.pricing-icon-circle {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
+
+  &.free {
+    background-color: var(--color-success-soft);
+    color: var(--color-success);
+  }
+
+  &.paid {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+}
+
+.pricing-info-stack {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  gap: 2px;
+}
+
+.pricing-title-text {
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin: 0;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.pricing-sub-text {
+  font-size: var(--text-caption);
+  color: var(--color-text-secondary);
+  margin: 0;
+  line-height: 1.25;
+}
+
+.pricing-badge-pill {
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-top: 4px;
+  white-space: nowrap;
+
+  &.free {
+    background-color: var(--color-success-soft);
+    color: var(--color-success);
+  }
+
+  &.paid {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+  }
+}
+
+.price-input-container {
+  margin-top: var(--space-3);
+}
+
+.price-field-wrap {
+  position: relative;
+  background-color: var(--color-surface-interactive);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border);
+}
+
+.price-currency {
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-right: var(--space-2);
+}
+
+.price-field-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 10px 0;
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-weight: 600;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.pricing-footer-note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-top: var(--space-2);
+  padding: 0 var(--space-1);
+
+  .info-icon {
+    font-size: var(--text-caption);
+    color: var(--color-text-secondary);
+  }
+
+  p {
+    font-size: var(--text-caption);
+    color: var(--color-text-secondary);
+    margin: 0;
+  }
+}

@@ -1,0 +1,10 @@
+@if (isVisible() && !isEventDetailsRoute()) {
+  <button
+    class="vl-scroll-top vl-icon-button"
+    [style.--footer-clearance]="footerClearance() + 'px'"
+    (click)="scrollToTop()"
+    aria-label="Scroll to top"
+    type="button">
+    <span class="material-symbols-outlined" translate="no">north</span>
+  </button>
+}

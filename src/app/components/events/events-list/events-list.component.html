@@ -1,0 +1,87 @@
+<section class="vl-events-list vl-section-wrapper vl-section-top-padding">
+  <div class="vl-page-header-nav">
+    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+      <span class="material-symbols-outlined" translate="no">arrow_back</span>
+    </button>
+  </div>
+
+  <main class="vl-main-layout">
+    <!-- Full-Width Cinematic Category Hero Banner -->
+    @if (categoryId) {
+    <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory()?.image ? 'url(' + activeEventCategory().image + ')' : 'none'">
+      @if (activeHeroSlides.length > 0) {
+        <div class="vl-category-hero-cover__swiper">
+          <vl-full-page-carousel
+            direction="horizontal"
+            [items]="activeHeroSlides"
+            [autoplay]="true"
+            [loop]="true"
+            [showPagination]="true">
+            <ng-template let-slide>
+              <img
+                class="vl-category-hero-cover__slide-image"
+                [src]="slide.src"
+                [alt]="slide.alt"
+                [style.object-position]="slide.position"
+                decoding="async" />
+            </ng-template>
+          </vl-full-page-carousel>
+        </div>
+      } @else {
+        <div class="vl-category-hero-cover__bg" aria-hidden="true"></div>
+      }
+      <div class="vl-category-hero-cover__content">
+        <div class="vl-category-hero-cover__text-group">
+          <h1 class="vl-category-hero-cover__title">{{ activeEventCategory()?.title }}</h1>
+          <p class="vl-category-hero-cover__description">{{ activeEventCategory()?.description }}</p>
+        </div>
+      </div>
+    </header>
+    }
+
+    <!-- Search & Filter Controls -->
+    <vl-event-filters
+      class="category-event-controls"
+      [filters]="timeFilters"
+      [activeFilterId]="activeTimeFilter"
+      [searchTerm]="searchTerm"
+      [searchAriaLabel]="categoryId ? 'Search category events' : 'Search all live events'"
+      (searchTermChange)="onSearchChange($event)"
+      (filterChange)="setTimeFilter($event)" />
+
+    <!-- Section Controls Header -->
+    <div class="vl-section-controls">
+      <div class="vl-section-controls__title-group">
+        <span class="vl-section-controls__dot"></span>
+        <h2 class="vl-section-controls__title">Upcoming Events</h2>
+      </div>
+      @if (!isLoading && hasLoaded) {
+        <span class="vl-section-controls__count">{{ activeCategoryEvents.length }} {{ activeCategoryEvents.length === 1 ? 'event' : 'events' }} found</span>
+      }
+    </div>
+  </main>
+
+  <!-- Events Cards Grid -->
+  <div class="vl-events-list__cards">
+    @if (isLoading && !hasLoaded) {
+      <vl-event-card-skeleton [count]="8"></vl-event-card-skeleton>
+    } @else {
+      @for (event of activeCategoryEvents; track event._id || $index) {
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event"></vl-event-card>
+        </div>
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event"></vl-compact-event-card>
+        </div>
+      } @empty {
+        <div class="vl-events-list__status">
+          <vl-empty-state
+            [subject]="activeEventCategory()?.title || 'events'"
+            [context]="emptyStateContext"
+            contextPrefix="">
+          </vl-empty-state>
+        </div>
+      }
+    }
+  </div>
+</section>

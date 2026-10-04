@@ -1,0 +1,455 @@
+@use './styles/index' as *;
+@use './app/shared/components/carousels/carousel-theme';
+/* Tailwind core */
+@use 'tailwindcss';
+
+/* Plugins */
+@plugin "@tailwindcss/forms";
+@plugin "@tailwindcss/container-queries";
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+// Photo overlays retain the same contrast in either theme.
+:root {
+  --color-media-background: #080809;
+  --color-media-foreground: #ffffff;
+}
+
+@theme {
+  /* Tailwind consumes canonical semantic design tokens */
+  --color-primary: var(--color-primary);
+  --color-primary-hover: var(--color-primary-hover);
+  --color-primary-soft: var(--color-primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-dim: var(--secondary-dim);
+  --color-tertiary: var(--tertiary);
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-elevated: var(--color-surface-elevated);
+  --color-surface-interactive: var(--color-surface-interactive);
+  --color-surface-container: var(--color-surface-elevated);
+  --color-surface-container-low: var(--color-bg);
+  --color-surface-container-highest: var(--color-surface-interactive);
+  --color-surface-variant: var(--color-border);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-tertiary: var(--color-text-tertiary);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-on-background: var(--color-text-primary);
+  --color-on-surface: var(--color-text-primary);
+  --color-on-surface-variant: var(--color-text-secondary);
+  --color-on-primary: var(--color-on-primary);
+  --color-outline-variant: var(--color-border);
+  --color-error: var(--color-error);
+  --color-on-error: var(--color-on-error);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-info: var(--color-info);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-2xl: var(--radius-2xl);
+  --radius-pill: var(--radius-pill);
+  --font-inter: var(--font-family-primary);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+.cdk-overlay-container,
+.cdk-global-overlay-wrapper,
+.cdk-overlay-pane {
+  z-index: 10000 !important;
+}
+
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-text-primary);
+  line-height: var(--line-height-normal);
+  font-size: var(--text-body);
+  background-color: var(--color-bg);
+  transition: background-color var(--transition-base), color var(--transition-base);
+  font-family: var(--font-family-primary);
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Accessible focus rings across all interactive elements */
+:where(button, a, input, select, textarea, [tabindex], .vl-chip):focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.vl-section-top-padding {
+  padding-top: var(--header-clearance-desktop, 7.75rem);
+
+  @media (max-width: 768px) {
+    padding-top: var(--header-clearance-mobile, 5.25rem);
+  }
+}
+
+.tags {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+
+  .tag {
+    padding: var(--space-1) var(--space-3);
+    background: var(--color-surface-interactive);
+    border-radius: var(--radius-pill);
+    color: var(--color-text-secondary);
+    font-size: var(--text-body-sm);
+    font-weight: 500;
+  }
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.has-section-height {
+  min-height: 90dvh;
+}
+
+.vl-section-wrapper {
+  width: min(95%, 1280px);
+  max-width: 1280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 0;
+  padding-right: 0;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    padding-left: var(--page-padding-x);
+    padding-right: var(--page-padding-x);
+  }
+}
+
+/* Premium Back Button & Header Nav Utility */
+.vl-back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  min-width: 2.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), transform var(--transition-fast), color var(--transition-fast), box-shadow var(--transition-fast);
+
+  .material-symbols-outlined,
+  i {
+    font-size: 1.25rem;
+    transition: transform var(--transition-fast);
+  }
+
+  &:hover {
+    background-color: var(--color-surface-raised);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    transform: translateX(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.vl-page-header-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+
+  .vl-page-header-nav__title {
+    font-size: var(--text-h2);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin: 0;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-text-primary);
+  font-weight: 700;
+  margin-top: 0;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.015em;
+}
+
+h1 {
+  font-size: var(--text-h1);
+  line-height: var(--text-h1-line);
+}
+
+h2 {
+  font-size: var(--text-h2);
+  line-height: var(--text-h2-line);
+}
+
+h3 {
+  font-size: var(--text-h3);
+  line-height: var(--text-h3-line);
+}
+
+h4 {
+  font-size: var(--text-h4);
+  line-height: var(--text-h4-line);
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body);
+  line-height: var(--line-height-normal);
+}
+
+.page-title {
+  font-size: var(--text-display);
+  font-weight: 700;
+  line-height: var(--text-display-line);
+}
+
+.card-title {
+  font-size: var(--text-h3);
+  font-weight: 600;
+}
+
+.responsive-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-6);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+}
+
+.typography-h1 {
+  font-size: var(--text-h1);
+  font-weight: 700;
+}
+
+.typography-body {
+  font-size: var(--text-body);
+  color: var(--color-text-secondary);
+}
+
+select,
+textarea,
+input {
+  width: 100%;
+  border-color: var(--color-border);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  outline: transparent;
+  border-width: 1px;
+  border-style: solid;
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  font-size: var(--text-body);
+  font-family: inherit;
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+
+  &:focus {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+  }
+}
+
+/* Image loading state */
+img[ngSrc].blur-up {
+  filter: blur(20px);
+  transform: scale(1.03);
+  transition: filter 0.5s ease, transform 0.5s ease;
+}
+
+img[ngSrc].blur-up[data-loaded="true"] {
+  filter: blur(0);
+  transform: scale(1);
+}
+
+.disabled {
+  background-color: var(--color-bg) !important;
+  color: var(--color-text-secondary) !important;
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Angular Material system-token bridge */
+:root {
+  --mat-sys-primary: var(--color-primary);
+  --mat-sys-on-primary: var(--color-on-primary);
+  --mat-sys-primary-container: var(--color-primary-soft);
+  --mat-sys-on-primary-container: var(--color-text-primary);
+  --mat-sys-secondary: var(--secondary);
+  --mat-sys-on-secondary: var(--color-on-primary);
+  --mat-sys-secondary-container: var(--color-surface-interactive);
+  --mat-sys-on-secondary-container: var(--color-text-primary);
+  --mat-sys-tertiary: var(--tertiary);
+  --mat-sys-on-tertiary: var(--color-on-primary);
+  --mat-sys-tertiary-container: var(--color-surface-interactive);
+  --mat-sys-on-tertiary-container: var(--color-text-primary);
+  --mat-sys-error: var(--color-error);
+  --mat-sys-on-error: var(--color-on-error);
+  --mat-sys-error-container: var(--color-error-soft);
+  --mat-sys-on-error-container: var(--color-error);
+  --mat-sys-background: var(--color-bg);
+  --mat-sys-on-background: var(--color-text-primary);
+  --mat-sys-surface: var(--color-surface);
+  --mat-sys-on-surface: var(--color-text-primary);
+  --mat-sys-surface-variant: var(--color-surface-elevated);
+  --mat-sys-on-surface-variant: var(--color-text-secondary);
+  --mat-sys-surface-dim: var(--color-bg);
+  --mat-sys-surface-bright: var(--color-surface-elevated);
+  --mat-sys-surface-container-lowest: var(--color-bg);
+  --mat-sys-surface-container-low: var(--color-surface);
+  --mat-sys-surface-container: var(--color-surface);
+  --mat-sys-surface-container-high: var(--color-surface-elevated);
+  --mat-sys-surface-container-highest: var(--color-surface-interactive);
+  --mat-sys-surface-tint: var(--color-primary);
+  --mat-sys-outline: var(--color-border-strong);
+  --mat-sys-outline-variant: var(--color-border);
+  --mat-sys-inverse-surface: var(--color-text-primary);
+  --mat-sys-inverse-on-surface: var(--color-bg);
+  --mat-sys-inverse-primary: var(--color-primary-soft);
+  --mat-sys-corner-extra-small: var(--radius-xs);
+  --mat-sys-corner-small: var(--radius-sm);
+  --mat-sys-corner-medium: var(--radius-md);
+  --mat-sys-corner-large: var(--radius-lg);
+  --mat-sys-corner-extra-large: var(--radius-xl);
+  --mat-sys-body-large-font: var(--font-family-primary);
+  --mat-sys-body-medium-font: var(--font-family-primary);
+  --mat-sys-body-small-font: var(--font-family-primary);
+  --mat-sys-label-large-font: var(--font-family-primary);
+  --mat-sys-label-medium-font: var(--font-family-primary);
+  --mat-sys-label-small-font: var(--font-family-primary);
+  --mat-sys-headline-large-font: var(--font-family-heading);
+  --mat-sys-headline-medium-font: var(--font-family-heading);
+  --mat-sys-headline-small-font: var(--font-family-heading);
+}
+
+/* Angular Material Datepicker Global Overlay Styling */
+.mat-datepicker-content {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-xl, 16px) !important;
+  box-shadow: var(--shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.25)) !important;
+  overflow: hidden;
+
+  .mat-calendar-header {
+    padding: 0.5rem 0.5rem 0 !important;
+  }
+
+  .mat-calendar-controls {
+    margin: 0 !important;
+  }
+
+  .mat-calendar-period-button,
+  .mat-calendar-previous-button,
+  .mat-calendar-next-button {
+    color: var(--color-text-primary) !important;
+  }
+
+  .mat-calendar-table-header th {
+    color: var(--color-text-muted) !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+  }
+
+  .mat-calendar-body-cell-content {
+    color: var(--color-text-primary) !important;
+    border-radius: var(--radius-pill, 9999px) !important;
+    font-size: 0.8125rem !important;
+    font-weight: 500 !important;
+
+    &:hover:not(.mat-calendar-body-disabled):not(.mat-calendar-body-selected) {
+      background-color: var(--color-surface-hover, rgba(124, 58, 237, 0.08)) !important;
+    }
+  }
+
+  .mat-calendar-body-today:not(.mat-calendar-body-selected) {
+    border-color: var(--color-primary) !important;
+    color: var(--color-primary) !important;
+  }
+
+  .mat-calendar-body-selected {
+    background-color: var(--color-primary) !important;
+    color: #ffffff !important;
+    font-weight: 700 !important;
+  }
+
+  .mat-calendar-body-disabled>.mat-calendar-body-cell-content {
+    color: var(--color-text-muted) !important;
+    opacity: 0.35 !important;
+  }
+}
+
+/* ==========================================================================
+   GLOBAL PRINT STYLES
+   Ensures clean document print without leaking fixed headers, bottom navigation docks, or floating buttons
+   ========================================================================== */
+@media print {
+  vl-header,
+  .vl-app-header,
+  vl-bottom-nav,
+  .vl-bottom-dock-wrapper,
+  vl-scroll-to-top,
+  .vl-scroll-top,
+  vl-toast-container,
+  vl-global-loader,
+  .cdk-overlay-container {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    pointer-events: none !important;
+  }
+
+  body,
+  .vl-body-container {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  @page {
+    margin: 1.5cm 1.2cm 1.5cm 1.2cm;
+    size: auto;
+  }
+}

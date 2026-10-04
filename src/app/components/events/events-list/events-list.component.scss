@@ -1,0 +1,244 @@
+@use '../../../../styles/index' as *;
+
+:host {
+  display: block;
+  background-color: var(--color-bg);
+}
+
+.vl-events-list {
+  padding-bottom: var(--section-gap);
+}
+
+/* ── Breadcrumb ── */
+.vl-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-caption);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+
+  &__link {
+    color: inherit;
+    text-decoration: none;
+    transition: color var(--transition-fast);
+
+    &:hover {
+      color: var(--color-primary);
+    }
+  }
+
+  &__separator {
+    font-size: 0.875rem;
+  }
+
+  &__current {
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+}
+
+/* ── Full-Width Cinematic Category Hero Cover Banner ── */
+.vl-category-hero-cover {
+  position: relative;
+  min-height: 280px;
+  margin: var(--space-4) 0 var(--space-6);
+  border-radius: var(--radius-2xl, 24px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: clamp(1.5rem, 3.5vw, 2.75rem);
+  box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
+
+  @media (min-width: 768px) {
+    min-height: 330px;
+  }
+
+  @media (min-width: 1200px) {
+    min-height: 360px;
+  }
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    background-image: var(--hero-bg, none);
+    background-size: cover;
+    background-position: center;
+    background-color: #0f172a;
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 0;
+
+    .vl-category-hero-cover:hover & {
+      transform: scale(1.03);
+    }
+  }
+
+  &__swiper {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+
+    vl-full-page-carousel {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__slide-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    max-width: 52rem;
+  }
+
+  &__text-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  &__title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin: 0;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+  }
+
+  &__description {
+    font-size: clamp(0.9375rem, 1.5vw, 1.0625rem);
+    color: rgba(241, 245, 249, 0.92);
+    line-height: 1.6;
+    max-width: 46rem;
+    margin: 0.1rem 0 0;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  }
+
+}
+
+.category-event-controls {
+  margin-bottom: var(--space-6);
+}
+
+/* ── Section Controls ── */
+.vl-section-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-5, 1.25rem);
+
+  &__title-group {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    background-color: var(--color-primary);
+    box-shadow: 0 0 8px var(--color-primary);
+  }
+
+  &__title {
+    font-size: var(--text-h2, 1.35rem);
+    color: var(--color-text-primary);
+    letter-spacing: -0.015em;
+    margin: 0;
+  }
+
+  &__count {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-pill);
+    background-color: var(--color-surface-raised);
+    border: 1px solid var(--color-border);
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+}
+
+/* ── Events Cards Grid ── */
+.vl-events-list__cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.5rem;
+
+  @media (min-width: 1440px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  @media (max-width: 1024px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.65rem;
+  }
+}
+
+.vl-card-desktop {
+  display: block;
+  height: 100%;
+}
+
+.vl-card-mobile {
+  display: none;
+  height: 100%;
+}
+
+@media (max-width: 640px) {
+  .vl-card-desktop {
+    display: none;
+  }
+
+  .vl-card-mobile {
+    display: block;
+  }
+}
+
+.vl-events-list__status {
+  grid-column: 1 / -1;
+  min-height: 14rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.vl-spinner {
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  border: 3px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+  border-top-color: var(--color-primary);
+  border-radius: 50%;
+  animation: vl-spin 0.7s linear infinite;
+}
+
+@keyframes vl-spin {
+  to { transform: rotate(360deg); }
+}

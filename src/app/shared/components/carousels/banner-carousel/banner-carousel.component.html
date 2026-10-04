@@ -1,0 +1,10 @@
+@if (!isServer) {
+<swiper-container init="false" #swiperContainer class="vl-banner-carousel">
+  <ng-content></ng-content>
+</swiper-container>
+} @else {
+<!-- SSR Fallback -->
+<div class="vl-banner-carousel-ssr-fallback">
+  <ng-content></ng-content>
+</div>
+}

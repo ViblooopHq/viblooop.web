@@ -1,0 +1,43 @@
+<!-- Overlay -->
+<div
+  class="fixed inset-0 flex items-center justify-center bg-black/60 z-[1000] transition-opacity p-4"
+  style="pointer-events: all; overflow: hidden;"
+>
+  <!-- Modal Card -->
+  <div
+    class="vl-surface rounded-2xl p-6 text-center shadow-xl max-w-md w-full border border-border"
+    (click)="$event.stopPropagation()"
+  >
+    <!-- Illustration -->
+    <div class="flex justify-center mb-4">
+      <ng-lottie [options]="options"></ng-lottie>
+    </div>
+
+    <!-- Heading -->
+    <h2 class="text-2xl font-bold text-on-surface mb-2">
+      {{ title }}
+    </h2>
+
+    <!-- Description -->
+    <p class="text-sm text-on-surface-variant mb-6">
+      {{ description }}
+    </p>
+
+    <!-- Buttons -->
+    <div class="flex flex-col sm:flex-row justify-center gap-3">
+      <button
+        class="vl-button vl-button--secondary sm:flex-1"
+        (click)="later()"
+      >
+        Later
+      </button>
+
+      <button
+        class="vl-button vl-button--primary sm:flex-1"
+        (click)="completeNow()"
+      >
+        Complete Now
+      </button>
+    </div>
+  </div>
+</div>

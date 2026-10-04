@@ -1,0 +1,196 @@
+<div class="review-grid" [class.review-grid--single]="!shouldShowReviewForm() || isEditingReview">
+  @if (shouldShowReviewForm()) {
+    <section class="ed-section review-card review-card--compose" id="add-comment">
+      <div class="review-card__header">
+        <span class="review-card__icon">
+          <span class="material-symbols-outlined" translate="no">rate_review</span>
+        </span>
+        <div>
+          <h2 class="vl-title-md">{{ reviewFormTitle }}</h2>
+          <p class="vl-body-sm">{{ isEditingReview ? 'Update your rating and comment for this vibe.' : 'Share your vibe! Attendees can rate and review after the event.' }}</p>
+        </div>
+      </div>
+
+      <form class="review-form" [formGroup]="reviewForm" (ngSubmit)="addReviewComment()">
+        <div class="review-rating-panel">
+          <div class="stars-row">
+            @for (star of stars; track $index) {
+              @let starValue = $index + 1;
+              <input type="radio" [id]="'rating-' + starValue" formControlName="rating" [value]="starValue" hidden />
+              <label [for]="'rating-' + starValue"
+                (mouseenter)="hoverRating.set(starValue)"
+                (mouseleave)="hoverRating.set(0)"
+                [class.is-active]="hoverRating() >= starValue || selectedRating >= starValue">
+                <span class="material-symbols-outlined"
+                  [style.font-variation-settings]="(hoverRating() >= starValue || selectedRating >= starValue) ? '\'FILL\' 1' : '\'FILL\' 0'"
+                  translate="no">star</span>
+                <span class="sr-only">{{ starValue }} star{{ starValue === 1 ? '' : 's' }}</span>
+              </label>
+            }
+          </div>
+          <div class="tap-to-rate">
+            <span></span>
+            Tap to rate
+            <span></span>
+          </div>
+        </div>
+
+        <div class="review-text-panel">
+          <div class="review-textarea-wrap">
+            <label for="review-comment" class="sr-only">Your review comment</label>
+            <textarea id="review-comment" class="review-textarea" formControlName="comment" maxlength="250" placeholder="Share your experience..."></textarea>
+            <span class="review-char-count">{{ reviewCommentLength }}/250</span>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-post" [disabled]="reviewForm.invalid || isSubmitting()">
+          @if (isSubmitting()) {
+            <vl-inline-loader size="sm" color="white" [text]="isEditingReview ? 'Updating Review...' : 'Posting Review...'"></vl-inline-loader>
+          } @else {
+            <span class="material-symbols-outlined" translate="no">send</span>
+            <span>{{ reviewSubmitLabel }}</span>
+          }
+        </button>
+
+        @if (isEditingReview) {
+          <button type="button" class="btn-cancel-review" (click)="cancelReviewEdit()" [disabled]="isSubmitting()">
+            Cancel Edit
+          </button>
+        }
+
+        <p class="review-privacy">
+          <span class="material-symbols-outlined" translate="no">lock</span>
+          Your review is public and will help others.
+        </p>
+      </form>
+    </section>
+  }
+
+  @if (!isEditingReview) {
+  <section class="ed-section reviews-panel" id="reviews-comments">
+    <div class="reviews-panel__header">
+      <div class="reviews-panel__title">
+        <span class="review-card__icon">
+          <span class="material-symbols-outlined" translate="no">forum</span>
+        </span>
+        <div>
+          <h2 class="vl-title-md">Reviews &amp; Comments</h2>
+          <p class="vl-body-sm">See what other attendees thought about this event.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="reviews-panel__stats">
+      <div class="review-stat">
+        <span class="review-stat__icon review-stat__icon--rating">
+          <span class="material-symbols-outlined" [style.font-variation-settings]="'\'FILL\' 1'" translate="no">star</span>
+        </span>
+        <span class="review-stat__copy">
+          <strong>{{ displayAverageRating | number:'1.1-1' }}</strong>
+          <small>Average rating</small>
+        </span>
+      </div>
+      <div class="review-stat">
+        <span class="review-stat__icon">
+          <span class="material-symbols-outlined" translate="no">chat_bubble</span>
+        </span>
+        <span class="review-stat__copy">
+          <strong>{{ reviewCount }}</strong>
+          <small>{{ reviewCount === 1 ? 'Comment' : 'Comments' }}</small>
+        </span>
+      </div>
+    </div>
+
+    @if (reviewCount === 0) {
+      <div class="reviews-empty">
+        <span class="reviews-empty__icon">
+          <span class="material-symbols-outlined" translate="no">chat</span>
+        </span>
+        <h3 class="vl-title-sm">No reviews yet</h3>
+        <p class="vl-body-sm">Be the first to share your thoughts about this event!</p>
+      </div>
+    } @else {
+      <div class="review-list">
+      @for (review of visibleReviews; track review._id) {
+        <article class="review-item" [class.review-item--highlight]="isOwnReview(review)">
+          <div class="review-item__header">
+            <div class="review-author">
+              <img
+                [src]="review?.raterUserId?.profileImage ? (review.raterUserId.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+                (error)="$any($event.target).src = 'assets/images/default-profile.png'"
+                class="review-avatar"
+                alt="{{ review?.raterUserId?.username || 'Attendee' }}">
+              <div class="review-author__info">
+                <div class="review-author__name-row">
+                  <span class="review-author__name">
+                    {{ review?.raterUserId?.username || 'Attendee' }}
+                  </span>
+                  @if (isOwnReview(review)) {
+                    <span class="review-author__badge">You</span>
+                  }
+                </div>
+                <span class="review-author__meta">
+                  {{ getTimeAgo(review.createdAt) }}
+                </span>
+              </div>
+            </div>
+
+            <div class="review-item__header-right">
+              @if (isOwnReview(review)) {
+                <div class="review-item__actions">
+                  <button
+                    type="button"
+                    class="review-menu-trigger"
+                    aria-label="Review options"
+                    [attr.aria-expanded]="isReviewMenuOpen(review)"
+                    (click)="toggleReviewMenu(review)">
+                    <span class="material-symbols-outlined" translate="no">more_vert</span>
+                  </button>
+
+                  @if (isReviewMenuOpen(review)) {
+                    <div class="comment-menu" [class.comment-menu--above]="reviewMenuPlacement() === 'above'" role="menu">
+                      <button type="button" role="menuitem" (click)="editReview(review)">
+                        <span class="material-symbols-outlined" translate="no">edit</span>
+                        <span>Edit Review</span>
+                      </button>
+                      <button type="button" role="menuitem" class="comment-menu__danger" (click)="deleteReview(review)" [disabled]="deletingReviewId() === review._id">
+                        @if (deletingReviewId() === review._id) {
+                          <vl-inline-loader size="xs" color="light" text="Deleting..."></vl-inline-loader>
+                        } @else {
+                          <span class="material-symbols-outlined" translate="no">delete</span>
+                          <span>Delete Review</span>
+                        }
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <div class="review-item__rating">
+            <div class="review-stars" [attr.aria-label]="review.score + ' out of 5 stars'">
+              @for (star of stars; track star) {
+                <span class="material-symbols-outlined star-icon"
+                  [class.filled]="star <= (review.score || 0)"
+                  [style.font-variation-settings]="star <= (review.score || 0) ? '\'FILL\' 1' : '\'FILL\' 0'"
+                  translate="no">star</span>
+              }
+            </div>
+          </div>
+
+          <p class="review-item__body">{{ review.comment }}</p>
+        </article>
+      }
+      </div>
+
+      @if (shouldShowReviewToggle) {
+        <button type="button" class="btn-view-comments" [attr.aria-expanded]="showAllReviews()" (click)="toggleReviews()">
+          {{ showAllReviews() ? 'Show fewer comments' : 'View all comments' }}
+          <i [class]="showAllReviews() ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" aria-hidden="true"></i>
+        </button>
+      }
+    }
+  </section>
+  }
+</div>

@@ -1,0 +1,24 @@
+.vl-user-profile-container {
+  width: 100%;
+  padding-bottom: 2rem;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+
+  @media (max-width: 768px) {
+    padding-bottom: 1rem;
+  }
+}
+
+.vl-user-profile {
+  width: 100%;
+  margin: 0;
+
+  &__profile-photo-gallery {
+    display: contents;
+  }
+}
+
+::ng-deep .vl-user-profile__profile-photo-gallery .vl-gallery {
+  margin-top: 0;
+}
+

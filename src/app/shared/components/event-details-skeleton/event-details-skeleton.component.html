@@ -1,0 +1,217 @@
+<div class="vl-ed-skeleton" aria-busy="true" aria-label="Loading event details">
+  <div class="vl-ed-skeleton__layout">
+    <!-- Main Column (Left) -->
+    <main class="vl-ed-skeleton__main">
+      <!-- 1. Hero Banner Skeleton -->
+      <section class="vl-ed-skeleton__hero vl-shimmer">
+        <div class="vl-ed-skeleton__hero-gradient"></div>
+
+        <!-- Back button circle placeholder -->
+        <div class="vl-ed-skeleton__hero-back vl-shimmer-subtle"></div>
+
+        <!-- Bottom details overlay -->
+        <div class="vl-ed-skeleton__hero-bottom">
+          <div class="vl-ed-skeleton__hero-title vl-shimmer-subtle"></div>
+          <div class="vl-ed-skeleton__hero-title vl-ed-skeleton__hero-title--short vl-shimmer-subtle"></div>
+
+          <div class="vl-ed-skeleton__hero-meta">
+            <div class="vl-ed-skeleton__meta-badge vl-shimmer-subtle"></div>
+            <div class="vl-ed-skeleton__meta-badge vl-shimmer-subtle"></div>
+          </div>
+
+          <div class="vl-ed-skeleton__hero-action-row">
+            <div class="vl-ed-skeleton__hero-attendance">
+              <div class="vl-ed-skeleton__avatar-stack">
+                <span class="vl-ed-skeleton__avatar vl-shimmer-subtle"></span>
+                <span class="vl-ed-skeleton__avatar vl-shimmer-subtle"></span>
+                <span class="vl-ed-skeleton__avatar vl-shimmer-subtle"></span>
+              </div>
+              <div class="vl-ed-skeleton__attendance-summary vl-shimmer-subtle"></div>
+            </div>
+            <div class="vl-ed-skeleton__hero-cta vl-shimmer-subtle"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Mobile Event Overview (Host + Facts on mobile <= 980px) -->
+      <div class="mobile-event-overview">
+        <!-- Mobile Host Card Skeleton -->
+        <section class="ed-section host-panel--mobile">
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--heading vl-shimmer"></div>
+          <div class="vl-ed-skeleton__host-summary">
+            <div class="vl-ed-skeleton__host-avatar vl-shimmer"></div>
+            <div class="vl-ed-skeleton__host-content">
+              <div class="vl-ed-skeleton__pills-row">
+                <div class="vl-ed-skeleton__pill vl-shimmer"></div>
+                <div class="vl-ed-skeleton__pill vl-shimmer"></div>
+              </div>
+              <div class="vl-ed-skeleton__line vl-ed-skeleton__line--sm vl-shimmer"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Mobile Facts Card Skeleton -->
+        <section class="ed-section event-facts--mobile">
+          <div class="vl-ed-skeleton__info-rows">
+            @for (item of factPlaceholders; track item) {
+              <div class="vl-ed-skeleton__info-row">
+                <div class="vl-ed-skeleton__icon-box vl-shimmer"></div>
+                <div class="vl-ed-skeleton__line vl-ed-skeleton__line--info vl-shimmer"></div>
+              </div>
+            }
+          </div>
+        </section>
+      </div>
+
+      <!-- 3. About Section Skeleton -->
+      <section class="ed-section vl-ed-skeleton__about">
+        <div class="vl-ed-skeleton__section-header">
+          <div class="vl-ed-skeleton__icon-badge vl-shimmer"></div>
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--title vl-shimmer"></div>
+        </div>
+
+        <div class="vl-ed-skeleton__body-lines">
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--full vl-shimmer"></div>
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--full vl-shimmer"></div>
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--desc-mid vl-shimmer"></div>
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--desc-short vl-shimmer"></div>
+        </div>
+
+        <div class="vl-ed-skeleton__highlights-row">
+          <div class="vl-ed-skeleton__pill vl-ed-skeleton__pill--highlight vl-shimmer"></div>
+          <div class="vl-ed-skeleton__pill vl-ed-skeleton__pill--highlight vl-shimmer"></div>
+          <div class="vl-ed-skeleton__pill vl-ed-skeleton__pill--highlight vl-shimmer"></div>
+          <div class="vl-ed-skeleton__pill vl-ed-skeleton__pill--highlight vl-shimmer"></div>
+        </div>
+
+        <div class="vl-ed-skeleton__sub-block">
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--subheading vl-shimmer"></div>
+          <div class="vl-ed-skeleton__expectations-list">
+            @for (item of expectationPlaceholders; track item) {
+              <div class="vl-ed-skeleton__bullet-row">
+                <div class="vl-ed-skeleton__bullet-icon vl-shimmer"></div>
+                <div class="vl-ed-skeleton__line vl-ed-skeleton__line--bullet vl-shimmer"></div>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="vl-ed-skeleton__sub-block">
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--subheading vl-shimmer"></div>
+          <div class="vl-ed-skeleton__tags-row">
+            @for (item of tagPlaceholders; track item) {
+              <div class="vl-ed-skeleton__tag-chip vl-shimmer"></div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. Mobile Map Panel Skeleton (<= 980px) -->
+      <section class="ed-section map-panel--mobile">
+        <div class="vl-ed-skeleton__section-header">
+          <div class="vl-ed-skeleton__icon-badge vl-shimmer"></div>
+          <div>
+            <div class="vl-ed-skeleton__line vl-ed-skeleton__line--title vl-shimmer"></div>
+            <div class="vl-ed-skeleton__line vl-ed-skeleton__line--subtitle vl-shimmer"></div>
+          </div>
+        </div>
+        <div class="vl-ed-skeleton__location-card vl-shimmer"></div>
+        <div class="vl-ed-skeleton__map-preview vl-shimmer"></div>
+      </section>
+
+      <!-- 5. Comments / Reviews Skeleton -->
+      <section class="ed-section vl-ed-skeleton__comments">
+        <div class="vl-ed-skeleton__section-header vl-ed-skeleton__section-header--between">
+          <div class="vl-ed-skeleton__line vl-ed-skeleton__line--title vl-shimmer"></div>
+          <div class="vl-ed-skeleton__pill vl-shimmer"></div>
+        </div>
+
+        <div class="vl-ed-skeleton__reviews-list">
+          @for (item of reviewPlaceholders; track item) {
+            <div class="vl-ed-skeleton__review-item">
+              <div class="vl-ed-skeleton__review-header">
+                <div class="vl-ed-skeleton__review-avatar vl-shimmer"></div>
+                <div class="vl-ed-skeleton__review-meta">
+                  <div class="vl-ed-skeleton__line vl-ed-skeleton__line--name vl-shimmer"></div>
+                  <div class="vl-ed-skeleton__line vl-ed-skeleton__line--date vl-shimmer"></div>
+                </div>
+                <div class="vl-ed-skeleton__review-rating vl-shimmer"></div>
+              </div>
+              <div class="vl-ed-skeleton__line vl-ed-skeleton__line--full vl-shimmer"></div>
+              <div class="vl-ed-skeleton__line vl-ed-skeleton__line--desc-mid vl-shimmer"></div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- 6. Related Events Skeleton -->
+      <section class="vl-ed-skeleton__related">
+        <div class="vl-ed-skeleton__line vl-ed-skeleton__line--heading vl-shimmer"></div>
+        <div class="vl-ed-skeleton__related-cards">
+          @for (item of relatedCardPlaceholders; track item) {
+            <div class="vl-ed-skeleton__related-card">
+              <div class="vl-ed-skeleton__related-media vl-shimmer"></div>
+              <div class="vl-ed-skeleton__related-body">
+                <div class="vl-ed-skeleton__line vl-ed-skeleton__line--title vl-shimmer"></div>
+                <div class="vl-ed-skeleton__line vl-ed-skeleton__line--subtitle vl-shimmer"></div>
+                <div class="vl-ed-skeleton__line vl-ed-skeleton__line--host vl-shimmer"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    </main>
+
+    <!-- Sidebar Column (Right, desktop > 980px) -->
+    <aside class="vl-ed-skeleton__sidebar">
+      <!-- 1. Desktop Host Card Skeleton -->
+      <section class="ed-section host-panel--desktop">
+        <div class="vl-ed-skeleton__line vl-ed-skeleton__line--heading vl-shimmer"></div>
+        <div class="vl-ed-skeleton__host-summary">
+          <div class="vl-ed-skeleton__host-avatar vl-shimmer"></div>
+          <div class="vl-ed-skeleton__host-content">
+            <div class="vl-ed-skeleton__pills-row">
+              <div class="vl-ed-skeleton__pill vl-shimmer"></div>
+              <div class="vl-ed-skeleton__pill vl-shimmer"></div>
+            </div>
+            <div class="vl-ed-skeleton__line vl-ed-skeleton__line--sm vl-shimmer"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Desktop Facts Card Skeleton -->
+      <section class="ed-section event-facts--desktop">
+        <div class="vl-ed-skeleton__info-rows">
+          @for (item of factPlaceholders; track item) {
+            <div class="vl-ed-skeleton__info-row">
+              <div class="vl-ed-skeleton__icon-box vl-shimmer"></div>
+              <div class="vl-ed-skeleton__line vl-ed-skeleton__line--info vl-shimmer"></div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <!-- 3. Desktop Map Panel Skeleton -->
+      <section class="ed-section map-panel--desktop">
+        <div class="vl-ed-skeleton__section-header">
+          <div class="vl-ed-skeleton__icon-badge vl-shimmer"></div>
+          <div>
+            <div class="vl-ed-skeleton__line vl-ed-skeleton__line--title vl-shimmer"></div>
+            <div class="vl-ed-skeleton__line vl-ed-skeleton__line--subtitle vl-shimmer"></div>
+          </div>
+        </div>
+        <div class="vl-ed-skeleton__location-card vl-shimmer"></div>
+        <div class="vl-ed-skeleton__map-preview vl-shimmer"></div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Mobile Sticky Join Bar Skeleton -->
+  <div class="mobile-sticky-join-bar-skeleton">
+    <div class="mobile-sticky-join-bar-skeleton__info">
+      <div class="vl-ed-skeleton__line vl-ed-skeleton__line--price vl-shimmer"></div>
+      <div class="vl-ed-skeleton__line vl-ed-skeleton__line--spots vl-shimmer"></div>
+    </div>
+    <div class="mobile-sticky-join-bar-skeleton__btn vl-shimmer"></div>
+  </div>
+</div>

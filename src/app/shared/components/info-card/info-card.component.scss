@@ -1,0 +1,36 @@
+@use "../../../../styles/index" as *;
+
+.vl-info-card {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  color: var(--color-text-primary);
+  text-align: center;
+  transition: 0.3s ease;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+
+  @include flex($justify: center, $align: center, $direction: column);
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  &__icon-wrapper {
+    margin-bottom: 16px;
+
+    i {
+      font-size: var(--font-size-3xl);
+    }
+  }
+
+  h2 {
+    color: var(--color-text-primary);
+    font-size: 1.3rem;
+  }
+
+  p {
+    color: var(--color-text-secondary);
+  }
+}

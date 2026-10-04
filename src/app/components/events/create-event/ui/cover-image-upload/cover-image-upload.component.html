@@ -1,0 +1,59 @@
+<label class="upload-card"
+  [class.upload-card--loading]="isImageLoading()"
+  [class.upload-card--empty]="!mainImagePreview()"
+  [style.--default-cover-image]="'url(' + defaultCoverImage() + ')'"
+  [attr.aria-busy]="isImageLoading()"
+  [attr.tabindex]="isImageLoading() ? -1 : 0"
+  role="button"
+  aria-label="Choose an event cover image"
+  (keydown.enter)="fileInput.click()"
+  (keydown.space)="$event.preventDefault(); fileInput.click()">
+
+  @if (isImageLoading()) {
+    <div class="upload-loading-overlay">
+      <div class="loader-vibe" aria-hidden="true"></div>
+      <p>Optimizing your photo...</p>
+    </div>
+  }
+
+  @if (mainImagePreview()) {
+    <img [src]="mainImagePreview()" class="upload-preview" alt="Event cover preview" />
+    @if (canRemoveMainImage()) {
+      <button type="button" class="remove-image-btn" aria-label="Remove cover image" (click)="removeImage($event)">
+        <span class="material-symbols-outlined" aria-hidden="true">close</span>
+      </button>
+    }
+  } @else {
+    <div class="upload-placeholder-new">
+      <div class="photo-stack" aria-hidden="true">
+        <img src="assets/vibe-previews/event_concert_vibe_1778313011332.png" class="vibe-photo photo-1" alt="" />
+        <img src="assets/vibe-previews/event_drinks_vibe_1778313033072.png" class="vibe-photo photo-2" alt="" />
+        <img src="assets/vibe-previews/event_outdoor_vibe_1778313054968.png" class="vibe-photo photo-3" alt="" />
+      </div>
+
+      <div class="upload-actions-wrap">
+        <div class="upload-icon-ring-large">
+          <span class="material-symbols-outlined upload-camera-icon" aria-hidden="true">add_a_photo</span>
+        </div>
+        <div class="upload-text-content">
+          <span class="upload-kicker">
+            <span class="material-symbols-outlined" aria-hidden="true">auto_awesome</span>
+            Recommended
+          </span>
+          <p class="upload-title-new">Add a cover image</p>
+          <p class="upload-sub-new">Show the vibe at a glance · 16:9 works best</p>
+          <span class="upload-cta">
+            <span class="material-symbols-outlined" aria-hidden="true">upload</span>
+            Choose photo
+          </span>
+          <div class="joins-note">
+            <span class="material-symbols-outlined" aria-hidden="true">trending_up</span>
+            <span class="note-text">Great covers get more joins ✨</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <input #fileInput type="file" class="sr-only" [disabled]="isImageLoading()" (change)="onFileChange($event)" accept="image/*,.heic,.heif" />
+</label>

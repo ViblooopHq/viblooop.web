@@ -1,0 +1,146 @@
+<div class="w-full min-h-screen bg-white">
+  <div class="max-w-7xl mx-auto">
+    <div class="relative">
+      <div class="w-full h-64 bg-[var(--secondary-color)] rounded-b-lg overflow-hidden">
+        <img alt="Profile banner" class="w-full h-full object-cover" [src]="userProfile()?.profileBanner" />
+      </div>
+      <div class="absolute -bottom-24 left-10">
+        <div class="w-48 h-48 rounded-full overflow-hidden border-8 border-white shadow-lg bg-gray-200">
+          <img alt="{{ userProfile()?.name || 'User' }}'s profile photo" class="w-full h-full object-cover" [src]="userProfile()?.profileImage" />
+        </div>
+      </div>
+    </div>
+
+    <div class="p-10 pt-28">
+      <div class="flex flex-col md:flex-row justify-between items-start">
+        <div>
+          <h1 class="text-4xl font-bold text-[var(--text-primary)]">{{ userProfile()?.name }}</h1>
+          <p class="text-sm text-[var(--text-secondary)] mt-2">Joined in {{ userProfile()?.joinedIn | date: "longDate" }}
+          </p>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-[var(--border-color)] pt-8">
+        <h2 class="text-md font-semibold text-[var(--text-primary)] mb-6">About</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-6 text-base">
+          <div class="flex items-start space-x-3">
+            <span class="material-symbols-outlined text-md text-[var(--accent-color)] mt-1" aria-hidden="true">
+              <i class="fa-solid fa-envelope"></i>
+            </span>
+            <div>
+              <p class="font-medium text-[var(--text-primary)]">Email</p>
+              <p class="text-[var(--text-secondary)]">{{ userProfile()?.email }}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="material-symbols-outlined text-md text-[var(--accent-color)] mt-1" aria-hidden="true">
+              <i class="fa-solid fa-transgender"></i>
+            </span>
+            <div>
+              <p class="font-medium text-[var(--text-primary)]">Pronoun</p>
+              <p class="text-[var(--text-secondary)]">{{ userProfile()?.pronoun }}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="material-symbols-outlined text-md text-[var(--accent-color)] mt-1" aria-hidden="true">
+              <i class="fa-solid fa-venus-mars"></i>
+            </span>
+            <div>
+              <p class="font-medium text-[var(--text-primary)]">Gender</p>
+              <p class="text-[var(--text-secondary)]">{{ userProfile()?.gender }}</p>
+            </div>
+          </div>
+          <div class="flex items-start space-x-3">
+            <span class="material-symbols-outlined text-md text-[var(--accent-color)] mt-1" aria-hidden="true">
+              <i class="fa-solid fa-star"></i>
+            </span>
+            <div>
+              <p class="font-medium text-[var(--text-primary)]">Average Rating</p>
+              <p class="text-[var(--text-secondary)]">{{ userProfile()?.averageRating }} / 5 (from {{
+                userProfile()?.totalRatings }} ratings)</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 flex items-start space-x-3">
+          <span class="material-symbols-outlined text-md text-[var(--accent-color)] mt-1" aria-hidden="true">
+            <i class="fa-solid fa-user"></i>
+          </span>
+          <div>
+            <p class="font-medium text-[var(--text-primary)]">Bio</p>
+            <p class="text-[var(--text-secondary)] max-w-3xl leading-relaxed">{{ userProfile()?.bio }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="mt-10 border-t border-[var(--border-color)] pt-8">
+        <h2 class="text-md font-semibold text-[var(--text-primary)] mb-6">Interests</h2>
+        <div class="flex flex-wrap gap-3">
+          @for (interest of userProfile()?.interests; track $index) {
+          <span
+            class="inline-flex items-center px-4 py-2 rounded-full text-base font-medium bg-[var(--secondary-color)] text-[var(--primary-color)]">{{
+            interest }}</span>
+          }
+        </div>
+      </div>
+
+      <div class="mt-10 border-t border-[var(--border-color)] pt-8">
+        <h2 class="text-md font-semibold text-[var(--text-primary)] mb-6">Events Attended ({{attendedEvents().length}})
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (attendedEvent of attendedEvents(); track $index) {
+          <div
+            class="bg-[var(--background-color)] rounded-lg p-4 border border-[var(--border-color)] flex flex-col hover:shadow-lg transition-shadow duration-200">
+            <img alt="{{ attendedEvent.title || 'Event' }} thumbnail" class="w-full h-40 rounded-md object-cover mb-4" [src]="attendedEvent.image" />
+            <div class="flex-1">
+              <h3 class="font-semibold text-sm text-[var(--text-primary)]">{{attendedEvent.title}}</h3>
+              <p class="text-sm text-[var(--text-secondary)]">{{attendedEvent.location}}</p>
+              <p class="text-sm text-[var(--text-secondary)]">{{attendedEvent.eventDate | date : 'mediumDate'}}</p>
+              <p class="text-sm text-[var(--text-secondary)] mt-2">{{attendedEvent.description}}</p>
+            </div>
+            <a class="text-[var(--primary-color)] hover:underline font-medium mt-4 self-start"
+              routerLink="/events/{{attendedEvent._id}}">View Event</a>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="mt-10 border-t border-[var(--border-color)] pt-8">
+        <h2 class="text-md font-semibold text-[var(--text-primary)] mb-6">Events Created ({{createdEvents().length}})</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @for (createdEvent of createdEvents(); track $index) {
+          <div
+            class="bg-[var(--background-color)] rounded-lg p-4 border border-[var(--border-color)] flex flex-col hover:shadow-lg transition-shadow duration-200">
+            <img alt="{{ createdEvent.title || 'Event' }} thumbnail" class="w-full h-40 rounded-md object-cover mb-4" [src]="createdEvent.image" />
+            <div class="flex-1">
+              <h3 class="font-semibold text-sm text-[var(--text-primary)]">{{createdEvent.title}}</h3>
+              <p class="text-sm text-[var(--text-secondary)]">{{createdEvent.location}}</p>
+              <p class="text-sm text-[var(--text-secondary)]">{{createdEvent.eventDate | date : 'mediumDate'}}</p>
+              <p class="text-sm text-[var(--text-secondary)] mt-2">{{createdEvent.description}}</p>
+            </div>
+            <a class="text-[var(--primary-color)] hover:underline font-medium mt-4 self-start"
+              routerLink="/events/{{createdEvent._id}}">View Event</a>
+          </div>
+          }
+        </div>
+      </div>
+
+      <div class="mt-10 border-t border-[var(--border-color)] pt-8 pb-10">
+        <h2 class="text-md font-semibold text-[var(--text-primary)] mb-6">
+          Event Image Gallery ({{ eventsGallery().length }})
+        </h2>
+
+        <div class="columns-2 sm:columns-3 md:columns-4 lg:columns-5 xl:columns-6 gap-4 space-y-4">
+          @for (event of eventsGallery(); track $index) {
+          @for (image of event.gallery; track $index) {
+          <button type="button" class="break-inside-avoid relative group cursor-pointer block w-full p-0 border-0 bg-transparent" (click)="openGallery(event.gallery, $index)">
+            <img [src]="image" alt="Event gallery photo"
+              class="w-full rounded-lg object-cover transition-transform duration-300 group-hover:scale-105" />
+          </button>
+          }
+          }
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Gallery Modal -->

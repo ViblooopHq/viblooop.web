@@ -1,0 +1,138 @@
+<article
+  class="vl-compact-card"
+  (click)="onViewEventClick()">
+  <!-- Image Header with Title Overlay & Badges -->
+  <div class="vl-compact-card__media">
+    <img
+      [src]="config()?.image | imageUrl"
+      [alt]="config()?.title || 'Event image'"
+      class="vl-compact-card__img"
+      loading="lazy" />
+
+    <div class="vl-compact-card__overlay" aria-hidden="true"></div>
+
+    <!-- Top Left Schedule Badge -->
+    <div class="vl-compact-card__badges">
+      @if (getEventBadge(); as badge) {
+        <div
+          class="vl-compact-card__badge"
+          [class.vl-compact-card__badge--schedule]="!isEventEnded"
+          [class.vl-compact-card__badge--ended]="isEventEnded">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          <span>{{ badge.text }}</span>
+        </div>
+      }
+    </div>
+
+    <!-- Top Right Wishlist Button -->
+    @if (showWishlist() && isLoggedIn() && !isEventEnded) {
+      <button
+        (click)="onWishlistToggle($event)"
+        type="button"
+        [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+        [attr.aria-pressed]="isWishlisted"
+        class="vl-compact-card__wishlist-btn">
+        <span
+          class="material-symbols-outlined"
+          aria-hidden="true"
+          [class.active]="isWishlisted"
+          [style.font-variation-settings]="isWishlisted ? '\'FILL\' 1' : '\'FILL\' 0'">
+          favorite
+        </span>
+      </button>
+    }
+
+    <!-- Event Title On Top of Image (Bottom Overlay) -->
+    <div class="vl-compact-card__title-overlay">
+      @if (!isEventEnded && shouldShowAudiencePreference) {
+        <div
+          class="vl-compact-card__badge vl-compact-card__badge--aud vl-compact-card__audience-pill"
+          [attr.data-type]="audiencePreferenceType"
+          [title]="audiencePreferenceLabel">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+          <span>{{ audiencePreferenceLabel }}</span>
+        </div>
+      }
+
+      <h3 class="vl-compact-card__title" [title]="config()?.title || ''">
+        {{ config()?.title || 'Event Title' }}
+      </h3>
+    </div>
+  </div>
+
+  <!-- Card Body -->
+  <div class="vl-compact-card__body">
+    <div class="vl-compact-card__top">
+        <div class="vl-compact-card__datetime">
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime) { · {{ config()?.eventTime | time }} }</span>
+        </div>
+        @if (isMultiDay) {
+          <div class="vl-compact-card__datetime">
+            <span class="material-symbols-outlined" aria-hidden="true">event</span>
+            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime) { · {{ config()?.endTime | time }} }</span>
+          </div>
+        } @else if (config()?.eventTime || config()?.endTime) {
+          <div class="vl-compact-card__datetime">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <span>{{ config()?.eventTime | time }}@if (config()?.eventTime && config()?.endTime) { – }{{ config()?.endTime | time }}</span>
+          </div>
+        }
+
+      <!-- Location Row -->
+      <div class="vl-compact-card__location" [title]="location">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">location_on</span>
+        <span class="vl-compact-card__location-text">{{ location | truncate:20 }}</span>
+      </div>
+
+      <!-- Hosted By Row -->
+      <div class="vl-compact-card__host" [title]="'Hosted by ' + hostName">
+        <div class="vl-compact-card__host-avatar-wrap">
+          <img
+            class="vl-compact-card__host-avatar"
+            [src]="(hostAvatar | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
+            alt="" />
+        </div>
+        <span class="vl-compact-card__host-text">
+          Hosted by <strong class="vl-compact-card__host-name">{{ hostName | truncate:16 }}</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Bottom Meta -->
+    <div class="vl-compact-card__footer" [class.vl-compact-card__footer--ended]="isEventEnded">
+      @if (isEventEnded) {
+        <div class="vl-compact-card__attendance-summary">
+          @if (attendees.length > 0) {
+            <div class="vl-compact-card__attendee-avatars" aria-hidden="true">
+              @for (attendee of (attendees | slice:0:3); track $index) {
+                <img
+                  [src]="($any(attendee).profileImage | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
+                  alt="" />
+              }
+            </div>
+          } @else {
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+          }
+          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'No attendees' }}</span>
+        </div>
+      } @else {
+        <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
+          {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+        </div>
+
+        @if (attendees.length > 0) {
+          <div class="vl-compact-card__attendees">
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+            <span>{{ attendees.length }} going</span>
+          </div>
+        } @else if (getRemainingSpots() > 0) {
+          <div class="vl-compact-card__spots">
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
+            <span>{{ getRemainingSpots() }} spots</span>
+          </div>
+        }
+      }
+    </div>
+  </div>
+</article>

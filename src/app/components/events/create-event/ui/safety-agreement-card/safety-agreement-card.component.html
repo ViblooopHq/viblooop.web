@@ -1,0 +1,73 @@
+<div class="safety-agreement-card-v2">
+  <div class="agreement-header">
+    <span class="material-symbols-outlined main-shield" aria-hidden="true">verified_user</span>
+    <div class="header-text">
+      <div class="title-row">
+        <span class="agreement-title">Host Safety Agreement</span>
+      </div>
+      <p class="agreement-subtitle">Viblooop is a community-first platform. We have zero tolerance for illegal or harmful activities.</p>
+    </div>
+  </div>
+
+  <div class="agreement-items-box">
+    <button type="button" class="agreement-item intro-item" [attr.aria-expanded]="isExpanded()" (click)="toggleExpanded()">
+      <div class="item-icon-box heart-icon">
+        <span class="material-symbols-outlined" aria-hidden="true">volunteer_activism</span>
+      </div>
+      <p class="item-text purple-text">By launching this event, you agree that:</p>
+      <span class="material-symbols-outlined expand-chevron" [class.rotated]="isExpanded()" aria-hidden="true">
+        expand_more
+      </span>
+    </button>
+
+    @if (isExpanded()) {
+      <div class="collapsible-content">
+        <div class="agreement-item">
+          <div class="item-icon-box leaf-icon">
+            <span class="material-symbols-outlined" aria-hidden="true">eco</span>
+          </div>
+          <p class="item-text">Drugs, illegal substances or their use/offer is strictly prohibited.</p>
+        </div>
+        <div class="agreement-item">
+          <div class="item-icon-box shield-item-icon">
+            <span class="material-symbols-outlined" aria-hidden="true">admin_panel_settings</span>
+          </div>
+          <p class="item-text">Any form of harassment, violence or unsafe behavior is not allowed.</p>
+        </div>
+        <div class="agreement-item">
+          <div class="item-icon-box groups-icon">
+            <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+          </div>
+          <p class="item-text">You will comply with Viblooop's Community Guidelines and local laws.</p>
+        </div>
+        <div class="agreement-item no-border">
+          <div class="item-icon-box gavel-icon">
+            <span class="material-symbols-outlined" aria-hidden="true">gavel</span>
+          </div>
+          <p class="item-text">Violation may result in removal of your event, account suspension and legal action.</p>
+        </div>
+      </div>
+    } @else {
+      <button type="button" class="view-more-trigger" (click)="toggleExpanded()">
+        <span>View all 4 safety guidelines</span>
+        <span class="material-symbols-outlined trigger-chevron" aria-hidden="true">expand_more</span>
+      </button>
+    }
+  </div>
+
+  <div class="agreement-checkbox-box">
+    <label class="custom-checkbox-v2">
+      <input type="checkbox" [checked]="agreed()" (change)="onCheckboxChange($event)" />
+      <span class="checkmark-v2" aria-hidden="true"></span>
+    </label>
+    <div class="checkbox-text-wrap">
+      <p class="checkbox-main">I agree to follow Viblooop's safety guidelines and terms.</p>
+      <p class="checkbox-sub">You must agree to launch your event.</p>
+    </div>
+  </div>
+
+  <div class="agreement-footer-banner">
+    <span class="material-symbols-outlined footer-shield" aria-hidden="true">verified_user</span>
+    <p class="footer-text">We're here to keep Viblooop safe, fun and welcoming for everyone. <span class="sparkle" aria-hidden="true">✨</span></p>
+  </div>
+</div>

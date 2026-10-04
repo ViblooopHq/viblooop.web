@@ -1,0 +1,31 @@
+<footer class="vl-footer">
+  <div class="vl-footer__container">
+    <div class="vl-footer__row">
+      <a routerLink="/" class="vl-footer__logo-wrap" aria-label="Viblooop Home">
+        <img [src]="themeService.logoSrc()" alt="Viblooop" class="vl-footer__logo-img">
+      </a>
+
+      <nav class="vl-footer__legal" aria-label="Legal links">
+        @for (link of usefulLinks; track link.path) {
+          <a [routerLink]="link.path" class="vl-footer__legal-link" i18n>{{ link.label }}</a>
+        }
+      </nav>
+
+      <nav class="vl-footer__social" aria-label="Social media channels">
+        @for (social of socialLinks; track social.name) {
+          <a
+            [href]="social.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="vl-footer__social-link"
+            [attr.aria-label]="social.name"
+            [title]="social.name">
+            <i class="fab" [ngClass]="social.icon" aria-hidden="true"></i>
+          </a>
+        }
+      </nav>
+    </div>
+
+    <p class="vl-footer__copyright">© {{ copyRightInfo }} · v{{ appVersion }}</p>
+  </div>
+</footer>

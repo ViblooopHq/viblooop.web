@@ -1,0 +1,43 @@
+<section class="vl-account-card" aria-label="Accounts and preferences">
+  <div class="vl-account-card__header">
+    <div class="vl-account-card__title-wrap">
+      <span class="material-symbols-outlined vl-account-card__header-icon" translate="no">manage_accounts</span>
+      <div>
+        <h3 class="vl-account-card__title">Accounts &amp; Preferences</h3>
+        <p class="vl-account-card__subtitle">Manage your profile, settings, and session</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="vl-account-card__list">
+    <button
+      type="button"
+      class="vl-account-chip"
+      (click)="editProfile.emit()"
+      aria-label="Edit Profile">
+      <div class="vl-account-chip__icon vl-account-chip__icon--edit">
+        <span class="material-symbols-outlined" translate="no">edit</span>
+      </div>
+      <div class="vl-account-chip__content">
+        <span class="vl-account-chip__title">Edit Profile</span>
+        <span class="vl-account-chip__desc">Update bio, pictures, vibes &amp; personal details</span>
+      </div>
+      <span class="material-symbols-outlined vl-account-chip__arrow" translate="no">chevron_right</span>
+    </button>
+
+    <button
+      type="button"
+      class="vl-account-chip vl-account-chip--logout"
+      (click)="logout.emit()"
+      aria-label="Log Out">
+      <div class="vl-account-chip__icon vl-account-chip__icon--logout">
+        <span class="material-symbols-outlined" translate="no">logout</span>
+      </div>
+      <div class="vl-account-chip__content">
+        <span class="vl-account-chip__title vl-account-chip__title--danger">Log Out</span>
+        <span class="vl-account-chip__desc">Sign out of your account on this device</span>
+      </div>
+      <span class="material-symbols-outlined vl-account-chip__arrow" translate="no">chevron_right</span>
+    </button>
+  </div>
+</section>

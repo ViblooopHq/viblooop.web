@@ -1,0 +1,157 @@
+<article
+  class="vl-event-card vl-surface vl-surface--interactive min-w-0 relative group cursor-pointer w-full h-full flex flex-col"
+  (click)="onViewEventClick()">
+  <!-- Image Header -->
+  <div class="vl-event-card__media relative w-full overflow-hidden">
+    <img [src]="config()?.image | imageUrl" [alt]="config()?.title || 'Event image'"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out" />
+
+    <!-- Top Left Schedule Badge -->
+    <div class="vl-event-card__top-badges">
+      @if (getEventBadge(); as badge) {
+        <div class="event-status-pill"
+          [class.event-status-pill--ended]="isEventEnded">
+          <span class="material-symbols-outlined event-status-pill__icon" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          {{ badge.text }}
+        </div>
+      }
+    </div>
+
+    <!-- Bottom Right Audience / Crowd Gender Badge -->
+    @if (!isEventEnded && shouldShowAudiencePreference) {
+      <div
+        class="vl-event-card__pill vl-event-card__pill--aud vl-event-card__audience-pill"
+        [attr.data-type]="audiencePreferenceType"
+        [title]="audiencePreferenceLabel">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
+        <span>{{ audiencePreferenceLabel }}</span>
+      </div>
+    }
+
+    <!-- Top Right Wishlist Button -->
+    @if (showWishlist() && isLoggedIn() && !isEventEnded) {
+    <button
+      (click)="onWishlistToggle($event)"
+      type="button"
+      [attr.aria-label]="isWishlisted ? 'Remove from wishlist' : 'Add to wishlist'"
+      [attr.aria-pressed]="isWishlisted"
+      class="vl-event-card__wishlist-btn">
+      <span
+        class="material-symbols-outlined"
+        aria-hidden="true"
+        [class.active]="isWishlisted"
+        [style.font-variation-settings]="isWishlisted ? '\'FILL\' 1' : '\'FILL\' 0'">
+        favorite
+      </span>
+    </button>
+    }
+  </div>
+
+  <!-- Card Body -->
+  <div class="p-3.5 sm:p-4 flex-1 flex flex-col justify-between min-w-0">
+    <div class="min-w-0">
+      <!-- Title -->
+      <h3
+        class="!text-[15px] sm:!text-[16px] font-bold text-on-surface mb-1.5 leading-snug group-hover:text-primary transition-colors duration-200 line-clamp-2"
+        [title]="config()?.title || ''">
+        {{ config()?.title || 'Event Title' }}
+      </h3>
+
+      <div class="vl-event-card__schedule">
+        <div class="vl-event-card__schedule-row">
+          <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime) { · {{ config()?.eventTime | time }} }</span>
+        </div>
+        @if (isMultiDay) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">event</span>
+            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime) { · {{ config()?.endTime | time }} }</span>
+          </div>
+        } @else if (config()?.eventTime || config()?.endTime) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <span>{{ config()?.eventTime | time }}@if (config()?.eventTime && config()?.endTime) { – }{{ config()?.endTime | time }}</span>
+          </div>
+        }
+        <div class="vl-event-card__schedule-row" [title]="location">
+          <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+          <span class="truncate">{{ location | truncate:24 }}</span>
+        </div>
+      </div>
+
+      <!-- Host Row -->
+      <div class="flex items-center gap-2 min-w-0" [title]="'Hosted by ' + hostName">
+        <div
+          class="w-6 h-6 sm:w-6.5 sm:h-6.5 aspect-square rounded-full flex-shrink-0 overflow-hidden border border-border">
+          <img class="w-full h-full object-cover"
+            [src]="(config()?.createdBy?.profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="{{ hostName }}'s profile photo" />
+        </div>
+        <span class="text-[12px] sm:text-[13px] text-on-surface-variant font-medium truncate min-w-0">
+          Hosted by <span class="text-on-surface font-semibold ml-0.5">{{ hostName | truncate:22 }}</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Separator & Footer Row -->
+    <div class="pt-3 mt-3 border-t border-border flex items-center justify-between">
+      @if (isEventEnded) {
+        <div class="vl-event-card__attendance-summary">
+          @if ((attendees?.length || 0) > 0) {
+            <div class="vl-event-card__attendee-avatars" aria-hidden="true">
+              @for (attendee of (attendees | slice:0:3); track $index) {
+                <img
+                  [style.z-index]="3 - $index"
+                  [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'"
+                  alt="" />
+              }
+            </div>
+          } @else {
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
+          }
+          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'No attendees' }}</span>
+        </div>
+      } @else {
+        <!-- Attendees (Left) -->
+        @if ((attendees?.length || 0) > 0) {
+        <div class="flex items-center gap-1.5">
+          <div class="flex -space-x-1.5">
+            @for (attendee of (attendees | slice:0:3); track $index) {
+            <div
+              class="w-5 h-5 sm:w-5.5 sm:h-5.5 rounded-full flex-shrink-0 overflow-hidden border border-surface relative"
+              [style.z-index]="3 - $index">
+              <img class="w-full h-full object-cover"
+                [src]="($any(attendee).profileImage | imageUrl) || 'assets/images/default-profile.png'" alt="" />
+            </div>
+            }
+          </div>
+          <span class="text-on-surface-variant text-[11px] sm:text-[12px] font-medium whitespace-nowrap">{{
+            attendees.length }} going</span>
+        </div>
+        }
+
+        <!-- Footer Right Section (Spots & Price) -->
+        <div class="flex items-center ml-auto" [ngClass]="{'w-full justify-between': (attendees?.length || 0) === 0 && getRemainingSpots() > 0}">
+          @if (getRemainingSpots() > 0) {
+          <div class="flex items-center gap-1 pl-2 sm:pl-3">
+            <span class="material-symbols-outlined text-amber-500 !text-[15px]" aria-hidden="true"
+              style="font-variation-settings: 'FILL' 1;">bolt</span>
+            <span class="text-amber-600 dark:text-amber-400 font-semibold text-[11px] sm:text-[12px] whitespace-nowrap">{{
+              getRemainingSpots() }} spots</span>
+          </div>
+          }
+
+          <div class="flex items-center gap-1"
+            [ngClass]="{
+              'border-l border-border pl-2 sm:pl-3 ml-2 sm:ml-3': getRemainingSpots() > 0,
+              'ml-auto': (attendees?.length || 0) > 0 || getRemainingSpots() <= 0
+            }">
+            <span class="text-on-surface font-extrabold text-[13px] sm:text-[15px] whitespace-nowrap"
+              [class.text-emerald-500]="isFree">
+              {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</article>

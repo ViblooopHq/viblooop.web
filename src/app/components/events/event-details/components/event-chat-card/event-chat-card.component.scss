@@ -1,0 +1,105 @@
+@use "../../_tokens" as *;
+
+.chat-card {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+
+  .btn-chat {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    min-height: 4.5rem;
+    background: transparent;
+    color: var(--color-text-primary);
+    padding: var(--space-2);
+    text-align: left;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+
+    > i:first-child {
+      color: var(--color-primary);
+      font-size: 2rem;
+    }
+
+    .chat-copy {
+      display: grid;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .chat-title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+
+    strong {
+      color: var(--color-text-primary);
+      font-size: var(--text-body);
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    small {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.5rem;
+      min-height: 1.25rem;
+      padding: 0 6px;
+      border-radius: var(--radius-pill);
+      background-color: var(--color-primary-soft);
+      color: var(--color-primary);
+      font-size: var(--text-caption);
+      font-weight: 700;
+    }
+
+    .chat-subtitle {
+      color: var(--color-text-secondary);
+      font-size: var(--text-caption);
+      font-weight: 400;
+      line-height: 1.25;
+    }
+
+    .chat-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.5rem;
+      padding: 0 var(--space-4);
+      border-radius: var(--radius-sm);
+      background-color: var(--color-primary);
+      color: #ffffff;
+      font-size: var(--text-body-sm);
+      font-weight: 700;
+      white-space: nowrap;
+      transition: background-color var(--transition-fast);
+
+      &:hover {
+        background-color: var(--color-primary-hover);
+      }
+    }
+  }
+}
+
+@media (max-width: 560px) {
+  .chat-card {
+    padding: var(--space-2);
+
+    .btn-chat {
+      gap: var(--space-2);
+      min-height: 3.75rem;
+
+      > i:first-child {
+        font-size: 1.75rem;
+      }
+    }
+  }
+}

@@ -1,0 +1,397 @@
+/* ──────────────────────────────────────────────────────────
+ * Vibloop Floating Island Tab Bar (Dual-Capsule Dock)
+ * Modeled after Image 1: Concentric inner active pill radius,
+ * premium typography, gradient action button & satellite pill.
+ * ────────────────────────────────────────────────────────── */
+
+:host {
+  display: block;
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+
+  @media print {
+    display: none !important;
+  }
+}
+
+/* ── Floating Dock Wrapper ── */
+.vl-bottom-dock-wrapper {
+  position: fixed;
+  bottom: max(0.85rem, env(safe-area-inset-bottom, 0.85rem));
+  left: 0;
+  right: 0;
+  z-index: 999;
+  padding: 0 0.65rem;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+
+  @media (min-width: 768px) {
+    display: none !important;
+  }
+}
+
+/* ── Dual-Capsule Layout Container ── */
+.vl-bottom-dock-container {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: 100%;
+  max-width: 425px;
+  min-width: 0;
+
+  /* Constrain guest dock width so 3 items (Home, Create, Sign-In) remain balanced and compact */
+  &--guest {
+    max-width: 300px;
+  }
+}
+
+/* ── 1. Main Navigation Capsule ── */
+.vl-dock-capsule {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1;
+  min-width: 0;
+  height: 3.75rem;
+  padding: 4px;
+  border-radius: var(--radius-pill, 9999px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+
+  &--guest {
+    .vl-dock-item {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+
+    .vl-dock-action-wrap {
+      flex: 1 1 0;
+      min-width: 0;
+      justify-content: flex-end;
+    }
+  }
+
+  :host-context([data-theme='dark']) &,
+  [data-theme='dark'] & {
+    background-color: rgba(17, 22, 37, 0.94);
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ── Navigation Items ── */
+.vl-dock-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  /* Inner Pill Container: Height is 100% of parent's inner content area */
+  &__pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 0 6px;
+    border-radius: var(--radius-pill, 9999px);
+    color: #475569;
+    transition: background-color 0.18s ease, color 0.15s ease;
+
+    :host-context([data-theme='dark']) &,
+    [data-theme='dark'] & {
+      color: #94A3B8;
+    }
+  }
+
+  /* Active Pill Highlight (Concentric with Outer Capsule, matching Image 1) */
+  &--active {
+    .vl-dock-item__pill {
+      background-color: #F1F4F9;
+      color: var(--color-primary, #7C3AED);
+
+      :host-context([data-theme='dark']) &,
+      [data-theme='dark'] & {
+        background-color: rgba(255, 255, 255, 0.11);
+        color: #C084FC;
+      }
+    }
+
+    .vl-dock-item__label {
+      font-weight: 750;
+      color: var(--color-primary, #7C3AED);
+
+      :host-context([data-theme='dark']) &,
+      [data-theme='dark'] & {
+        color: #C084FC;
+      }
+    }
+
+    .vl-dock-item__icon {
+      color: var(--color-primary, #7C3AED);
+
+      :host-context([data-theme='dark']) &,
+      [data-theme='dark'] & {
+        color: #C084FC;
+      }
+    }
+  }
+
+  /* Icon Wrap & Glyph */
+  &__icon-wrap {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 1.55rem;
+    height: 1.45rem;
+  }
+
+  &__icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform 0.15s ease, color 0.15s ease;
+  }
+
+  /* Micro Label: Crisp, legible typography matching Image 1 */
+  &__label {
+    font-family: var(--font-family-primary, 'Inter', sans-serif);
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    margin-top: 1px;
+    white-space: nowrap;
+    transition: color 0.15s ease;
+  }
+
+  /* Unread Badge Dot */
+  &__badge {
+    position: absolute;
+    top: 0px;
+    right: -2px;
+    width: 7px;
+    height: 7px;
+    border-radius: var(--radius-pill, 9999px);
+    background-color: var(--color-error, #DC2626);
+    border: 1.5px solid var(--color-surface, #FFFFFF);
+  }
+}
+
+/* ── Action Button Slot Wrapper (Ensures Equal Flex Distribution) ── */
+.vl-dock-action-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+}
+
+/* ── Vibrant Theme Action Button (+) ── */
+.vl-dock-action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 3.45rem;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-pill, 9999px);
+  background: linear-gradient(135deg, var(--color-primary, #7C3AED) 0%, #6D28D9 100%);
+  color: #FFFFFF;
+  box-shadow: 0 3px 14px rgba(124, 58, 237, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, filter 0.15s ease;
+
+  :host-context([data-theme='dark']) &,
+  [data-theme='dark'] & {
+    background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+  }
+
+  &:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 6px 18px rgba(124, 58, 237, 0.6);
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &__icon {
+    font-size: 1.55rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+}
+
+/* ── 2. Satellite Capsule (Sign In / Profile) ── */
+.vl-dock-satellite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 3.75rem;
+  padding: 0 1.15rem;
+  border-radius: var(--radius-pill, 9999px);
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: transform 0.15s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.15s ease, border-color 0.15s ease;
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  /* Guest Sign In Capsule (High-contrast, chic standalone pill) */
+  &--signin {
+    background: #0F172A;
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    box-shadow: 0 10px 26px -4px rgba(15, 23, 42, 0.25), 0 3px 10px rgba(15, 23, 42, 0.08);
+
+    .vl-dock-satellite__icon {
+      font-size: 1.2rem;
+      color: #A5B4FC;
+    }
+
+    .vl-dock-satellite__label {
+      font-family: var(--font-family-primary, 'Inter', sans-serif);
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    :host-context([data-theme='dark']) &,
+    [data-theme='dark'] & {
+      background: linear-gradient(135deg, #1E293B, #0F172A);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 12px 30px -4px rgba(0, 0, 0, 0.6);
+    }
+  }
+
+  /* Logged In User Profile Capsule */
+  &--profile {
+    background-color: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(28px) saturate(190%);
+    -webkit-backdrop-filter: blur(28px) saturate(190%);
+    border: 1px solid rgba(0, 0, 0, 0.07);
+    box-shadow: 0 12px 32px -4px rgba(15, 23, 42, 0.12), 0 3px 10px rgba(15, 23, 42, 0.04);
+    color: #334155;
+
+    .vl-dock-satellite__label {
+      font-family: var(--font-family-primary, 'Inter', sans-serif);
+      font-size: 0.76rem;
+      font-weight: 650;
+      color: #334155;
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    :host-context([data-theme='dark']) &,
+    [data-theme='dark'] & {
+      background-color: rgba(17, 22, 37, 0.94);
+      border-color: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 16px 36px -4px rgba(0, 0, 0, 0.65), 0 4px 16px rgba(0, 0, 0, 0.4);
+      color: #CBD5E1;
+
+      .vl-dock-satellite__label {
+        color: #CBD5E1;
+      }
+    }
+
+    &.vl-dock-satellite--active {
+      border-color: var(--color-primary, #7C3AED);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary, #7C3AED) 25%, transparent),
+        0 12px 32px -4px rgba(15, 23, 42, 0.12);
+
+      .vl-dock-satellite__label {
+        font-weight: 750;
+        color: var(--color-primary, #7C3AED);
+      }
+    }
+  }
+
+  /* Profile Avatar */
+  &__avatar-wrap {
+    display: grid;
+    place-items: center;
+    width: 1.65rem;
+    height: 1.65rem;
+    border-radius: var(--radius-pill, 9999px);
+    overflow: hidden;
+    border: 1.5px solid var(--color-primary, #7C3AED);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &--active {
+      border-color: var(--color-primary, #7C3AED);
+    }
+  }
+}
+
+/* ── Screen Width Responsiveness (Narrower viewports) ── */
+@media (max-width: 380px) {
+  .vl-bottom-dock-container {
+    gap: 0.35rem;
+  }
+
+  .vl-dock-capsule {
+    height: 3.55rem;
+    padding: 3px;
+  }
+
+  .vl-dock-item__label {
+    font-size: 0.66rem;
+  }
+
+  .vl-dock-action-btn {
+    width: 3rem;
+  }
+
+  .vl-dock-satellite {
+    height: 3.55rem;
+    padding: 0 0.85rem;
+  }
+
+  .vl-dock-satellite--signin .vl-dock-satellite__label {
+    font-size: 0.72rem;
+  }
+}

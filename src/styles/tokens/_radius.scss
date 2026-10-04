@@ -1,0 +1,15 @@
+/*
+ * Viblooop Design System — Radius Tokens
+ * Strict geometric curvature standards.
+ */
+
+:root {
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;     /* Buttons, Inputs, Menu Items */
+  --radius-lg: 16px;     /* Normal Event Cards, Panels */
+  --radius-xl: 20px;     /* Large Media Cards, Hero Elements */
+  --radius-2xl: 24px;    /* Bottom Sheets, Drawers, Modals */
+  --radius-pill: 999px;  /* Filter Chips, Tags, Badges */
+  --radius-full: 50%;    /* Avatars, Circular Icon Buttons */
+}

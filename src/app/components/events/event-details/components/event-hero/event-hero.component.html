@@ -1,0 +1,175 @@
+<section class="vl-ed__hero">
+  <img [src]="event()?.image || ''" class="hero-img" alt="{{ event()?.title || 'Event' }}">
+  <div class="hero-gradient" aria-hidden="true"></div>
+
+  <button type="button" class="hero-back vl-icon-button" aria-label="Go back" (click)="goBack.emit()">
+    <span class="material-symbols-outlined" translate="no">arrow_back</span>
+  </button>
+
+  <div class="hero-top-actions">
+    <button type="button" class="hero-share-btn vl-icon-button" aria-label="Share Event" [matTooltip]="'Share Event'"
+      (click)="shareEvent.emit()">
+      <span class="material-symbols-outlined" translate="no">share</span>
+    </button>
+
+    @if (isEventCreator() && !isEventEnded()) {
+    <div class="hero-owner-menu">
+      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="dialog" [attr.aria-expanded]="isEventMenuOpen()"
+        aria-label="Event options" (click)="toggleMenu.emit()">
+        <span class="material-symbols-outlined" translate="no">more_horiz</span>
+      </button>
+
+    </div>
+    }
+  </div>
+
+  <div class="hero-bottom">
+    <h1 class="hero-title">{{ event()?.title }}</h1>
+
+    <div class="hero-meta">
+      @if (isSocialEvent()) {
+        <span class="meta-badge meta-badge--schedule">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
+          <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (event()?.eventTime) { &nbsp;|&nbsp; {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} } }</span>
+          @if (durationLabel()) {
+            <span class="duration-pill"><span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>{{ durationLabel() }}</span>
+          }
+        </span>
+      } @else {
+      <span class="meta-badge">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
+        <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if ((isMultiDay() || isSocialEvent()) && event()?.eventTime) { · {{ event()?.eventTime | time }} }</span>
+      </span>
+      @if (isSocialEvent() && durationLabel()) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
+          <span>{{ durationLabel() }}</span>
+        </span>
+      } @else if (isMultiDay() && !isSocialEvent()) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
+          <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime) { · {{ event()?.endTime | time }} }</span>
+        </span>
+      } @else if (event()?.eventTime || event()?.endTime) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
+          <span>{{ event()?.eventTime | time }}@if (event()?.eventTime && event()?.endTime) { – }{{ event()?.endTime | time }}</span>
+        </span>
+      }
+      }
+      <span class="meta-badge">
+        <span class="material-symbols-outlined" translate="no">location_on</span>
+        <span>{{ locationLabel() }}</span>
+      </span>
+    </div>
+
+    <div class="hero-action-row">
+      <div class="hero-attendance-group">
+        @if (totalAttendeesCount() > 0) {
+        <button type="button" class="hero-attendance" [class.hero-attendance--past]="isEventEnded()"
+          (click)="openAttendees.emit()"
+          [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
+          <div class="avatar-stack">
+            @for (attendee of attendeePreviewProfiles(); track attendee.userId) {
+            <img [src]="attendee.profileImage ? (attendee.profileImage | imageUrl) : 'assets/images/default-profile.png'"
+              (error)="$any($event.target).src = 'assets/images/default-profile.png'" alt="">
+            }
+            @if (totalAttendeesCount() > 5) {
+            <span class="more-count">+{{ totalAttendeesCount() - 5 }}</span>
+            }
+          </div>
+          <span class="hero-attendance-label">
+            <span>{{ attendanceSummaryLabel() }}</span>
+            <span class="material-symbols-outlined hero-attendance__arrow" translate="no" aria-hidden="true">chevron_right</span>
+          </span>
+        </button>
+        }
+
+        @if (isCancelled()) {
+        <span class="event-status-pill event-status-pill--cancelled">
+          <span class="material-symbols-outlined event-status-pill__icon" translate="no">block</span>
+          <span>Event cancelled</span>
+        </span>
+        } @else if (isEventEnded()) {
+        <span class="event-status-pill event-status-pill--ended">
+          <span class="event-status-pill__dot" aria-hidden="true"></span>
+          <span>Ended</span>
+        </span>
+        }
+      </div>
+
+      <div #heroActionContainer class="hero-actions-container">
+        @if (!isAuthInitialized()) {
+          <div class="hero-action-skeleton"></div>
+        } @else {
+          @if (!isEventEnded() && !isCancelled()) {
+            @if (!isEventCreator()) {
+              @if (isUserAttendee()) {
+              <button type="button" class="btn-leave-hero vl-button vl-button--secondary" (click)="leaveEvent.emit()">
+                <span class="material-symbols-outlined" translate="no">logout</span>
+                <span>Leave Event</span>
+              </button>
+              } @else if (joinRequestStatus() === 'Requested') {
+              <button type="button" class="btn-cancel-hero vl-button vl-button--danger-subtle"
+                (click)="cancelJoinRequest.emit()"
+                matTooltip="Withdraw your request to join this event"
+                matTooltipPosition="above">
+                <span class="material-symbols-outlined" translate="no">undo</span>
+                <span>Cancel Request</span>
+              </button>
+              } @else {
+              <button #heroCtaBtn type="button" class="btn-join-hero vl-button vl-button--primary"
+                (click)="requestJoin.emit()"
+                [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+                [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''"
+                matTooltipPosition="above">
+                @if (isJoinRequestPending()) {
+                  <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+                } @else {
+                  <span class="material-symbols-outlined" translate="no">local_fire_department</span>
+                  <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
+                  <span class="material-symbols-outlined" translate="no">arrow_forward</span>
+                }
+              </button>
+              }
+            } @else {
+            <button type="button" class="btn-view-requests vl-button vl-button--secondary" (click)="openRequests.emit()">
+              <span class="material-symbols-outlined" translate="no">group</span>
+              <span>View Requests</span>
+              @if (pendingJoinRequestCount() > 0) {
+              <span class="btn-view-requests__count">{{ pendingJoinRequestCount() }}</span>
+              }
+            </button>
+            }
+          }
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<dialog #actionsDialog class="event-actions-sheet" aria-labelledby="event-actions-title"
+  (cancel)="$event.preventDefault(); closeMenu.emit()" (click)="onSheetBackdrop($event)">
+  <div class="event-actions-sheet__content">
+    <div class="event-actions-sheet__handle" aria-hidden="true"></div>
+    <h2 id="event-actions-title">Event actions</h2>
+    <button type="button" class="event-action" (click)="editEvent.emit()">
+      <span class="event-action__icon material-symbols-outlined" aria-hidden="true">edit</span>
+      <span class="event-action__copy"><strong>Edit Event</strong><small>Update event details, time, location etc.</small></span>
+      <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
+    </button>
+    @if (!isEventEnded() && !isCancelled()) {
+      <button type="button" class="event-action event-action--warning" (click)="cancelEvent.emit()">
+        <span class="event-action__icon material-symbols-outlined" aria-hidden="true">block</span>
+        <span class="event-action__copy"><strong>Cancel Event</strong><small>Cancel and notify all attendees</small></span>
+        <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
+      </button>
+    }
+    <div class="event-actions-sheet__divider"></div>
+    <button type="button" class="event-action event-action--danger" (click)="deleteEvent.emit()">
+      <span class="event-action__icon material-symbols-outlined" aria-hidden="true">delete</span>
+      <span class="event-action__copy"><strong>Delete Event</strong><small>Permanently delete this event</small></span>
+    </button>
+    <button type="button" class="event-actions-sheet__cancel" (click)="closeMenu.emit()">Cancel</button>
+  </div>
+</dialog>

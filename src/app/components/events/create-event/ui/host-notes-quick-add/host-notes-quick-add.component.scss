@@ -1,0 +1,225 @@
+@use "../../create-event-shared" as *;
+
+/* ── HOST NOTES ── */
+.host-notes-card {
+  padding: var(--space-4) !important;
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm);
+  gap: var(--space-4);
+  margin-bottom: 0;
+}
+
+.host-notes-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.host-notes-icon {
+  color: var(--color-primary);
+  font-size: 1.5rem;
+  flex: 0 0 auto;
+  margin-top: 2px;
+}
+
+.host-notes-heading-copy {
+  min-width: 0;
+}
+
+.host-notes-title {
+  color: var(--color-text-primary);
+  font-size: var(--text-h3);
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 0;
+}
+
+.host-notes-subtitle {
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 4px 0 0;
+}
+
+.notes-input-wrapper {
+  position: relative;
+  background-color: var(--color-surface-interactive);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: border-color var(--transition-fast);
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+    background-color: var(--color-surface);
+  }
+}
+
+.notes-textarea {
+  width: 100%;
+  min-height: 140px;
+  background: transparent;
+  border: none;
+  box-sizing: border-box;
+  padding: var(--space-3) var(--space-3) var(--space-6);
+  color: var(--color-text-primary);
+  font-size: var(--text-body-sm);
+  font-weight: 400;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+
+  &::placeholder {
+    color: var(--color-text-tertiary);
+  }
+}
+
+.notes-char-count {
+  position: absolute;
+  right: 12px;
+  bottom: 10px;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-caption);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.host-quick-add {
+  @include stack(var(--space-2));
+}
+
+.host-quick-add-toggle {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+.host-quick-add-header {
+  min-width: 0;
+}
+
+.host-quick-add-title {
+  display: block;
+  color: var(--color-text-primary);
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  margin: 0;
+}
+
+.host-quick-add-subtitle {
+  display: block;
+  color: var(--color-text-secondary);
+  font-size: var(--text-caption);
+  margin: 2px 0 0;
+}
+
+.host-quick-add-chevron {
+  color: var(--color-text-secondary);
+  font-size: 1.25rem;
+  transition: transform var(--transition-fast);
+}
+
+.host-quick-add-chevron--expanded {
+  transform: rotate(180deg);
+}
+
+.host-note-pills-shell {
+  position: relative;
+}
+
+.host-note-pills {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.host-note-scroll-btn {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transform: translateY(-50%);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+
+  .material-symbols-outlined {
+    font-size: 1rem;
+  }
+
+  &--left {
+    left: -6px;
+  }
+
+  &--right {
+    right: -6px;
+  }
+}
+
+.host-note-pill {
+  flex: 0 0 auto;
+  min-height: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-surface-interactive);
+  }
+
+  &--selected {
+    border-color: var(--color-primary);
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    font-weight: 700;
+  }
+}
+
+.host-note-pill-emoji {
+  flex: 0 0 auto;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.host-note-pill-label {
+  white-space: nowrap;
+  font-size: var(--text-caption);
+  font-weight: 500;
+}

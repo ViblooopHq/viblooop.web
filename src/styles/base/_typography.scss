@@ -1,0 +1,77 @@
+// Element	              Font Size	    Weight	          Font            Family	Notes
+// -------------------------------------------------------------------------------------------------------
+// Page Title (H1)	      $font-4xl	    $font-bold	      Josefin Sans	  Landing pages, modals
+// Section Title	        $font-3xl	    $font-bold	      Josefin Sans	  "Trips near you", "Top Groups"
+// Card Title	            $font-xl	    $font-semibold	  Josefin Sans	   Inside card components
+// Button	                $font-md	    $font-medium	    Josefin Sans	   CTA, floating buttons
+// Body Text	            $font-md	    $font-regular	    Open Sans	       Default text in most components
+// Caption	              $font-sm	    $font-regular	    Open Sans	       Labels, sub-info, tooltips
+// Tags/Badges	          $font-xs	    $font-medium	    Open Sans	       e.g., "Adventure", "Free"
+// Form Labels	          $font-sm	    $font-semibold	  Open Sans	       Consistency in UI forms
+// Navbar Item	          $font-md	    $font-semibold	  Josefin Sans	   Clear and modern navigation
+
+@use '../abstracts/variables' as *;
+
+@mixin title($size, $weight: $font-bold) {
+  font-family: var(--font);
+  font-size: $size;
+  font-weight: $weight;
+  line-height: 1.2;
+}
+
+@mixin text($size, $weight: $font-regular) {
+  font-family: var(--font);
+  font-size: $size;
+  font-weight: $weight;
+  line-height: 1.5;
+}
+
+/* Semantic typography primitives for component templates. */
+.vl-title-lg,
+.vl-title-md,
+.vl-body,
+.vl-body-sm,
+.vl-meta {
+  margin: 0;
+}
+
+.vl-title-lg {
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-2xl);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+  letter-spacing: -0.02em;
+}
+
+.vl-title-md {
+  color: var(--color-text-primary);
+  font-family: var(--font-heading);
+  font-size: var(--font-size-xl);
+  font-weight: 800;
+  line-height: var(--line-height-tight);
+}
+
+.vl-body {
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-md);
+  font-weight: 400;
+  line-height: var(--line-height-relaxed);
+}
+
+.vl-body-sm {
+  color: var(--color-text-secondary);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  line-height: var(--line-height-normal);
+}
+
+.vl-meta {
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  line-height: var(--line-height-normal);
+}

@@ -1,0 +1,143 @@
+@if (isDrawer) {
+  <vl-form-drawer ariaLabel="Chats">
+    <div class="inbox-drawer" [class.has-selection]="selectedEventId">
+      @if (!selectedEventId) {
+        <header class="inbox-drawer__header">
+          <vl-back-button
+            class="inbox-drawer__back-btn"
+            [hideOnDesktop]="true"
+            ariaLabel="Close chats"
+            title="Close"
+            (action)="closeDrawer()"
+          ></vl-back-button>
+          <div class="inbox-drawer__title-wrap">
+            <h1 class="vl-title-md">Chats</h1>
+            @if (unreadTotalCount > 0) {
+              <span class="inbox-drawer__badge">{{ unreadTotalCount }}</span>
+            }
+          </div>
+          <div class="inbox-drawer__spacer"></div>
+        </header>
+      }
+
+      <div class="inbox-drawer__body">
+        <aside class="inbox-sidebar" [class.hidden-on-mobile]="selectedEventId" aria-label="Chat conversations">
+          @if (conversations.length === 0) {
+            <div class="no-chats">
+              <span class="material-symbols-outlined" translate="no">forum</span>
+              <h2 class="vl-title-md">No chats yet</h2>
+              <p class="vl-body-sm">Your event conversations will show up here once you join or host an event.</p>
+            </div>
+          } @else {
+            <div class="section-label">Your Events</div>
+
+            <div class="conversation-list">
+              @for (conv of conversations; track conv.eventId) {
+                <button
+                  class="conversation-item"
+                  type="button"
+                  [class.active]="selectedEventId === conv.eventId"
+                  (click)="selectConversation(conv.eventId)"
+                >
+                  <img [src]="getImageUrl(conv.image)" alt="">
+                  <span class="conv-info">
+                    <span class="conv-header">
+                      <span class="title">{{ conv.title }}</span>
+                      @if (conv.unreadCount > 0) {
+                        <span class="unread-badge">{{ conv.unreadCount }}</span>
+                      } @else if (conv.lastMessage) {
+                        <span class="time">{{ conv.lastMessage.createdAt | date:'shortTime' }}</span>
+                      }
+                    </span>
+                    <span class="last-msg">
+                      {{ conv.lastMessage ? conv.lastMessage.text : 'No messages yet' }}
+                    </span>
+                  </span>
+                </button>
+              }
+            </div>
+          }
+        </aside>
+
+        <main class="chat-detail" [class.active-on-mobile]="selectedEventId">
+          @if (selectedEventId) {
+            <vl-chat
+              [eventId]="selectedEventId"
+              [isEmbedded]="true"
+              [chatTitle]="selectedConversation?.title || 'Event Chat'"
+              [chatSubtitle]="getMemberLabel(selectedConversation)"
+              [showBackButton]="true"
+              (backToInbox)="clearSelection()"
+              (closeChat)="closeDrawer()"
+            ></vl-chat>
+          } @else {
+            <div class="empty-state">
+              <span class="material-symbols-outlined" translate="no">mark_chat_unread</span>
+              <h1 class="vl-title-lg">Your Messages</h1>
+              <p class="vl-body-sm">Select a group to start chatting with other attendees.</p>
+            </div>
+          }
+        </main>
+      </div>
+    </div>
+  </vl-form-drawer>
+} @else {
+  <div class="inbox-container" [class.has-selection]="selectedEventId">
+    <aside class="inbox-sidebar" aria-label="Chat conversations">
+      @if (conversations.length === 0) {
+        <div class="no-chats">
+          <span class="material-symbols-outlined" translate="no">forum</span>
+          <h2 class="vl-title-md">No chats yet</h2>
+          <p class="vl-body-sm">Your event conversations will show up here once you join or host an event.</p>
+        </div>
+      } @else {
+        <div class="section-label">Your Events</div>
+
+        <div class="conversation-list">
+          @for (conv of conversations; track conv.eventId) {
+            <button
+              class="conversation-item"
+              type="button"
+              [class.active]="selectedEventId === conv.eventId"
+              (click)="selectConversation(conv.eventId)"
+            >
+              <img [src]="getImageUrl(conv.image)" alt="">
+              <span class="conv-info">
+                <span class="conv-header">
+                  <span class="title">{{ conv.title }}</span>
+                  @if (conv.unreadCount > 0) {
+                    <span class="unread-badge">{{ conv.unreadCount }}</span>
+                  } @else if (conv.lastMessage) {
+                    <span class="time">{{ conv.lastMessage.createdAt | date:'shortTime' }}</span>
+                  }
+                </span>
+                <span class="last-msg">
+                  {{ conv.lastMessage ? conv.lastMessage.text : 'No messages yet' }}
+                </span>
+              </span>
+            </button>
+          }
+        </div>
+      }
+    </aside>
+
+    <main class="chat-detail">
+      @if (selectedEventId) {
+        <vl-chat
+          [eventId]="selectedEventId"
+          [isEmbedded]="true"
+          [chatTitle]="selectedConversation?.title || 'Event Chat'"
+          [chatSubtitle]="getMemberLabel(selectedConversation)"
+          [showBackButton]="true"
+          (backToInbox)="clearSelection()"
+        ></vl-chat>
+      } @else {
+        <div class="empty-state">
+          <span class="material-symbols-outlined" translate="no">mark_chat_unread</span>
+          <h1 class="vl-title-lg">Your Messages</h1>
+          <p class="vl-body-sm">Select a group to start chatting with other attendees.</p>
+        </div>
+      }
+    </main>
+  </div>
+}

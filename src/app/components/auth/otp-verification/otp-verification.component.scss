@@ -1,0 +1,342 @@
+@use "../../../../styles/index" as *;
+
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100dvh;
+    width: 100%;
+    padding: 7rem 2rem;
+
+    &.verification-screen {
+        .login-card {
+            border-radius: var(--radius-xl);
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--shadow-panel);
+            position: relative;
+        }
+
+        .header-nav {
+            position: absolute;
+            top: 1.5rem;
+            left: 1.5rem;
+
+            .icon-btn {
+                width: 36px;
+                min-width: 36px;
+                height: 36px;
+
+                &:hover:not(:disabled) {
+                    background: var(--color-surface-raised);
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+
+                span {
+                    font-size: 1.2rem;
+                }
+            }
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+
+            .logo-icon img {
+                object-fit: contain;
+            }
+
+            .logo-text {
+                font-size: 1.4rem;
+                font-weight: bold;
+                margin: 0;
+            }
+        }
+
+        .heading-section {
+            text-align: center;
+            margin-bottom: 0.5rem;
+
+            .main-heading {
+                font-size: 1.4rem;
+                margin: 0 0 0.5rem 0;
+                font-weight: 600;
+            }
+
+            .sub-heading {
+                color: var(--color-text-muted);
+                font-size: 0.9rem;
+                margin: 0;
+                line-height: 1.5;
+            }
+
+            .accent-text {
+                color: var(--color-brand-accent);
+                font-weight: 600;
+            }
+        }
+
+        // OTP Input Styling
+        .otp-input-group {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: center;
+            width: 100%;
+            margin-bottom: 0.5rem;
+
+            .otp-input {
+                width: 3.5rem;
+                height: 3.5rem;
+                font-size: 1.5rem;
+                text-align: center;
+                padding: 0;
+                transition: border-color 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+
+                &::placeholder {
+                    color: var(--color-text-muted);
+                }
+
+                &.active,
+                &:focus {
+                    outline: none;
+                    border-color: var(--color-action-primary);
+                    box-shadow: var(--focus-ring);
+                }
+
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+            }
+        }
+
+        .email-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            width: 100%;
+
+            .input-group {
+                position: relative;
+                display: flex;
+                align-items: center;
+
+                .input-icon {
+                    position: absolute;
+                    left: 1rem;
+                    color: var(--color-text-muted);
+                    font-size: 1.2rem;
+                }
+
+                .form-input {
+                    width: 100%;
+                    padding: 0.9rem 1rem 0.9rem 3rem;
+                }
+            }
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+            padding: 0.9rem;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            border: none;
+
+            &:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: #ffffff;
+
+            &:hover:not(:disabled) {
+                background-color: var(--color-primary-hover);
+            }
+        }
+
+        .btn-outlined {
+            background: transparent;
+            border-color: var(--color-border-ghost);
+            color: var(--color-text-primary);
+
+            &:hover:not(:disabled) {
+                background: var(--color-surface-raised);
+            }
+        }
+
+        .change-email-link {
+            color: var(--color-brand-accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
+        // Secure Info Box
+        .secure-info-box {
+            background-color: var(--color-surface-section);
+            border: 1px solid var(--color-border-ghost);
+            border-radius: var(--radius-md);
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+
+            .secure-icon {
+                color: var(--color-text-muted);
+                font-size: 1.2rem;
+            }
+
+            .secure-text {
+                font-size: 0.85rem;
+                color: var(--color-text-muted);
+                margin: 0;
+            }
+        }
+    }
+
+    .footer-section {
+        text-align: center;
+        margin-top: 2rem;
+
+        .footer-text {
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+            line-height: 1.5;
+
+            .footer-link {
+                color: var(--color-brand-accent);
+                text-decoration: none;
+                transition: color 0.3s;
+
+                &:hover {
+                    color: var(--color-brand-tint);
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 560px) {
+    .auth-container {
+        justify-content: center;
+        padding: 1rem;
+
+        &.verification-screen {
+            .login-card {
+                max-width: 100%;
+                border-radius: var(--radius-lg);
+                padding: 1.25rem;
+            }
+
+            .header-nav {
+                top: 1rem;
+                left: 1rem;
+            }
+
+            .content-wrapper {
+                gap: 0.45rem;
+                margin-top: 0.25rem;
+            }
+
+            .logo-section {
+                margin-bottom: 0.25rem;
+
+                .logo-text {
+                    font-size: 1.2rem;
+                }
+            }
+
+            .heading-section {
+                margin-bottom: 0.25rem;
+
+                .main-heading {
+                    font-size: 1.2rem;
+                }
+
+                .sub-heading {
+                    font-size: 0.8rem;
+                }
+            }
+
+            .otp-input-group {
+                gap: 0.45rem;
+
+                .otp-input {
+                    width: clamp(2.45rem, 18vw, 3rem);
+                    height: clamp(2.45rem, 18vw, 3rem);
+                    font-size: 1.25rem;
+                }
+            }
+
+            .btn {
+                padding: 0.78rem;
+                font-size: 0.9rem;
+            }
+
+            .secure-info-box {
+                padding: 0.75rem;
+
+                .secure-text {
+                    font-size: 0.75rem;
+                }
+            }
+        }
+
+        .footer-section {
+            margin-top: 1rem;
+        }
+    }
+}
+
+// Simple CSS Spinner
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid color-mix(in srgb, var(--on-primary) 30%, transparent);
+    border-top: 2px solid var(--on-primary);
+    border-radius: var(--radius-full);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -1,0 +1,75 @@
+<section class="vl-view-all vl-section-wrapper vl-section-top-padding">
+  <!-- Top Navigation -->
+  <div class="vl-page-header-nav">
+    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+      <span class="material-symbols-outlined" translate="no">arrow_back</span>
+    </button>
+  </div>
+
+  <main class="vl-main-layout">
+    <!-- Full-Width Cinematic Hero Cover Banner -->
+    @if (!isPastCollection()) {
+    <header class="vl-category-hero-cover" [style.--hero-bg]="bannerImage() ? 'url(' + bannerImage() + ')' : 'none'">
+      <div class="vl-category-hero-cover__bg" aria-hidden="true"></div>
+      <div class="vl-category-hero-cover__overlay" aria-hidden="true"></div>
+
+      <div class="vl-category-hero-cover__content">
+        <div class="vl-category-hero-cover__badges-row">
+          <span class="vl-category-hero-cover__badge">
+            <span class="material-symbols-outlined" translate="no">{{ isPastCollection() ? 'history' : 'local_activity' }}</span>
+            <span>{{ isPastCollection() ? 'Memories' : 'Collection' }}</span>
+          </span>
+          <span class="vl-category-hero-cover__pill">
+            <span class="vl-category-hero-cover__sparkle">✨</span>
+            <span>{{ isPastCollection() ? 'Relive the Best Moments' : 'Curated Experiences & Vibes' }}</span>
+          </span>
+        </div>
+
+        <div class="vl-category-hero-cover__text-group">
+          <h1 class="vl-category-hero-cover__title">{{ bannerTitle() }}</h1>
+          <p class="vl-category-hero-cover__description">{{ bannerDescription() }}</p>
+        </div>
+      </div>
+    </header>
+    }
+
+    <div class="events-main">
+      <div class="events-grid" [class.events-grid--past]="isPastCollection()">
+        @if (isLoading() && isInitialLoad()) {
+          <vl-event-card-skeleton [count]="8"></vl-event-card-skeleton>
+        } @else if (events().length === 0) {
+          <div class="empty-state-wrapper">
+            <vl-empty-state subject="events" context="found here" contextPrefix="" (exploreAll)="loadEvents()"></vl-empty-state>
+          </div>
+        } @else {
+          @for (event of events(); track event._id || $index) {
+            <div class="grid-card-wrapper">
+              @if (isPastCollection()) {
+                <vl-past-event-card [config]="getPastEventCardConfig(event)" (viewMemories)="viewEvent(event)"></vl-past-event-card>
+              } @else {
+                <div class="vl-card-desktop">
+                  <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+                </div>
+                <div class="vl-card-mobile">
+                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                </div>
+              }
+            </div>
+          }
+        }
+      </div>
+
+      @if (nextCursor()) {
+        <div class="load-more-container">
+          <button class="btn-load-more" (click)="loadMore()" [disabled]="isLoading()">
+            @if (isLoading()) {
+              <i class="fa-solid fa-spinner fa-spin"></i> Loading...
+            } @else {
+              Load More Events
+            }
+          </button>
+        </div>
+      }
+    </div>
+  </main>
+</section>

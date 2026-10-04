@@ -1,0 +1,387 @@
+/* ------------------------
+   Gallery Section (BEM)
+------------------------- */
+@use "../../../../styles/components/primitives" as primitives;
+
+.vl-gallery {
+  margin-top: 20px;
+
+  &__header {
+    margin-bottom: 15px;
+    font-weight: 600;
+    font-size: 1.2rem;
+  }
+
+  /* ------------------------
+     Gallery Grid
+  ------------------------- */
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  &__item {
+    position: relative;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+
+    &-trigger {
+      display: block;
+      width: 100%;
+      padding: 0;
+      border: 0;
+      background: none;
+      cursor: pointer;
+    }
+
+    img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      border-radius: var(--radius-md);
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+
+    &--archived {
+      filter: grayscale(90%);
+      opacity: 0.6;
+    }
+  }
+
+  /* ------------------------
+     Overlay Buttons
+  ------------------------- */
+  &__overlay {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+
+    button {
+      background: var(--color-overlay-soft);
+      color: var(--text-white);
+      border: none;
+      padding: 4px 8px;
+      border-radius: var(--radius-xs);
+      cursor: pointer;
+      font-size: var(--font-size-xs);
+      transition: background 0.2s ease;
+
+      &:hover {
+        background: var(--color-overlay-scrim);
+      }
+    }
+  }
+
+  /* ------------------------
+     Modal Preview
+  ------------------------- */
+
+.vl-gallery__modal {
+    position: fixed;
+    inset: 0;
+    background: var(--color-overlay-scrim);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+
+    &-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      img {
+        width: auto;
+        height: auto;
+        max-width: 800px;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-floating);
+      }
+
+      .vl-body-sm {
+        margin-top: 10px;
+      }
+    }
+
+    /* Close button */
+    .close {
+      @include primitives.button-base;
+
+      position: absolute;
+      top: -3.25rem;
+      right: 0;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-glass);
+      backdrop-filter: blur(16px) saturate(150%);
+      box-shadow: var(--shadow-floating);
+      border-radius: var(--radius-full);
+      width: 2.4rem;
+      height: 2.4rem;
+      min-height: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+
+      &:hover {
+        background: var(--color-surface-glass-strong);
+      }
+    }
+
+    /* Carousel arrows */
+    .vl-gallery__nav {
+      @include primitives.button-base;
+
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+      color: var(--color-text-primary);
+      border: 1px solid var(--color-border-strong);
+      background: var(--color-surface-glass);
+      backdrop-filter: blur(16px) saturate(150%);
+      box-shadow: var(--shadow-floating);
+      border-radius: var(--radius-full);
+      width: 2.75rem;
+      height: 2.75rem;
+      min-height: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+
+      &:hover {
+        background: var(--color-surface-glass-strong);
+        transform: translateY(-50%) scale(1.04);
+      }
+
+      &--left {
+        left: -4rem;
+      }
+
+      &--right {
+        right: -4rem;
+      }
+    }
+
+    .vl-gallery__menu-trigger {
+      @include primitives.button-base;
+
+      position: absolute;
+      top: -3.25rem;
+      right: 3rem;
+      width: 2.8rem;
+      height: 2.8rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border-strong);
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-glass);
+      color: var(--text-white);
+      cursor: pointer;
+      backdrop-filter: blur(16px) saturate(150%);
+      box-shadow: var(--shadow-floating);
+
+      &:hover {
+        background: var(--color-surface-glass-strong);
+      }
+    }
+
+    .vl-gallery__menu {
+      position: absolute;
+      top: -0.25rem;
+      right: 0;
+      display: inline-flex;
+      overflow: hidden;
+      min-height: 0;
+      padding: 0;
+      border: 1px solid color-mix(in srgb, var(--color-action-primary) 75%, transparent);
+      border-radius: 0.75rem;
+      background: var(--color-surface-glass-strong);
+      box-shadow: var(--shadow-overlay);
+      backdrop-filter: blur(18px);
+    }
+
+    .vl-gallery__menu-item {
+      display: inline-flex;
+      min-width: 6.25rem;
+      min-height: 4.2rem;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      padding: 0.65rem 0.9rem;
+      border: 0;
+      background: transparent;
+      color: var(--color-text-primary);
+      font-size: 0.8rem;
+      font-weight: 750;
+      text-decoration: none;
+
+      &:hover {
+        background: var(--color-surface-glass);
+      }
+
+      + .vl-gallery__menu-item {
+        border-left: 1px solid var(--color-border-ghost);
+      }
+
+      i {
+        color: var(--color-brand-accent);
+        font-size: 1.35rem;
+      }
+
+      &--danger {
+        color: var(--error);
+
+        &:hover {
+          background: var(--color-danger-surface);
+        }
+
+        i {
+          color: var(--error);
+        }
+      }
+    }
+
+    .vl-gallery__delete-confirm {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      z-index: 1001;
+      width: min(22rem, calc(100vw - 2rem));
+      padding: 1.5rem;
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--color-border-ghost);
+      border-radius: 1.25rem;
+      background: var(--color-surface-glass-strong);
+      color: var(--color-text-primary);
+      text-align: center;
+      box-shadow: var(--shadow-overlay);
+      backdrop-filter: blur(18px);
+
+      .vl-title-md {
+        margin: 0.75rem 0 0.5rem;
+        font-size: 1.25rem;
+      }
+
+      .vl-body {
+        max-width: 19rem;
+        margin: 0 auto 1.35rem;
+      }
+    }
+
+    .vl-gallery__delete-confirm-icon {
+      display: inline-flex;
+      width: 3.35rem;
+      height: 3.35rem;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-pill);
+      background: var(--color-danger-surface);
+      color: var(--error);
+      font-size: 1.25rem;
+    }
+
+    .vl-gallery__delete-confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .vl-gallery__delete-confirm-cancel,
+    .vl-gallery__delete-confirm-delete {
+      @include primitives.button-base;
+
+      min-height: 3.1rem;
+      border-radius: 0.75rem;
+      color: var(--color-text-primary);
+      font-weight: 900;
+    }
+
+    .vl-gallery__delete-confirm-cancel {
+      border: 1px solid var(--color-border-ghost);
+      background: transparent;
+
+      &:hover {
+        background: var(--color-surface-glass);
+      }
+    }
+
+    .vl-gallery__delete-confirm-delete {
+      background: var(--error);
+
+      &:hover {
+        background: var(--error);
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        cursor: wait;
+        opacity: 0.72;
+        transform: none;
+      }
+    }
+  }
+
+}
+
+@media (max-width: 767px) {
+  .vl-gallery {
+    .vl-gallery__modal {
+      padding: 1rem;
+
+      &-content {
+        max-width: 100%;
+        max-height: 100%;
+
+        img {
+          max-width: 100%;
+          max-height: 72dvh;
+        }
+      }
+
+      .close {
+        top: -3rem;
+        right: 0;
+      }
+
+      .vl-gallery__nav {
+        width: 2.45rem;
+        height: 2.45rem;
+        font-size: 0.9rem;
+
+        &--left {
+          left: 0.55rem;
+        }
+
+        &--right {
+          right: 0.55rem;
+        }
+      }
+
+      .vl-gallery__menu-trigger {
+        top: -3rem;
+        right: 3rem;
+      }
+
+      .vl-gallery__delete-confirm {
+        padding: 1.35rem 1rem 1rem;
+      }
+    }
+  }
+}

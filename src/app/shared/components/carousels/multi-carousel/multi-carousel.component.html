@@ -1,0 +1,72 @@
+@if (!isServer) {
+<div class="vl-multi-carousel-wrapper">
+  @if (title() || preTitle() || description()) {
+    <div class="carousel-header">
+      <div class="header-content">
+        @if (preTitle()) {
+          <span class="pre-title">{{ preTitle() }}</span>
+        }
+        @if (title()) {
+          <h2 class="title" [class.title--past-vibes]="title() === 'Past Vibes'">
+            @if (title() === 'Past Vibes') {
+              <span class="title-accent-wrap">
+                Past
+                <svg class="title-wave" viewBox="0 0 70 12" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <path d="M2 7C14 2 26 11 42 5C54 -0.5 62 4 68 3" stroke="#8b5cf6" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+              </span> Vibes
+            } @else {
+              {{ title() }}
+            }
+          </h2>
+        }
+        @if (description()) {
+          <p class="description">{{ description() }}</p>
+        }
+      </div>
+      <div class="header-actions">
+        @if (showHeaderAction() && headerActionLabel() && headerActionLink()) {
+          <a class="header-action" [routerLink]="headerActionLink()">
+            {{ headerActionLabel() }} <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        }
+      @if (showNavigation()) {
+        <div class="custom-nav">
+          <button class="nav-btn prev-btn" (click)="slidePrev()">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          <button class="nav-btn next-btn" (click)="slideNext()">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      }
+      </div>
+    </div>
+  }
+
+  <swiper-container init="false" #swiperContainer class="vl-multi-carousel">
+    @if (items() && template) {
+      @for (item of items(); track $index) {
+        <swiper-slide>
+          <ng-container *ngTemplateOutlet="template; context: { $implicit: item }"></ng-container>
+        </swiper-slide>
+      }
+    } @else {
+      <ng-content></ng-content>
+    }
+  </swiper-container>
+</div>
+} @else {
+<!-- SSR Fallback grid to prevent layout shift -->
+<div class="vl-multi-carousel-ssr-fallback">
+  @if (items() && template) {
+    @for (item of items(); track $index) {
+      <div class="ssr-slide">
+        <ng-container *ngTemplateOutlet="template; context: { $implicit: item }"></ng-container>
+      </div>
+    }
+  } @else {
+    <ng-content></ng-content>
+  }
+</div>
+}

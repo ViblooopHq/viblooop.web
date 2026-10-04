@@ -1,0 +1,121 @@
+<main class="vl-user-profile-container vl-section-top-padding">
+  <div class="vl-section-wrapper">
+    @if (isLoading()) {
+      <vl-profile-skeleton />
+    } @else {
+      <section class="vl-user-profile">
+        <div class="vl-page-header-nav">
+          <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
+            <span class="material-symbols-outlined" translate="no">arrow_back</span>
+          </button>
+          <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
+        </div>
+        <vl-profile-hero
+          [profileImage]="userProfile?.profileImage || defaultProfileImage"
+          [profileBanner]="userProfile?.profileBanner"
+          [displayName]="displayName"
+          [handle]="handle"
+          [bio]="shortBio"
+          [isVerified]="isVerified"
+          [isCurrentUser]="isCurrentUser"
+          [previewInterests]="previewInterests"
+          [photoPreviewItems]="photoPreviewItems"
+          [hiddenPhotoCount]="hiddenPhotoCount"
+          (editProfile)="editProfile()"
+          (editAvatar)="openUpdateAvatarModal()"
+          (photoSelected)="openProfilePhoto($event)"
+          (imageError)="useDefaultProfileImage($event)">
+        </vl-profile-hero>
+
+        @if (profilePhotoGallery.length > 0) {
+          <vl-gallery
+            #profilePhotoViewer
+            class="vl-user-profile__profile-photo-gallery"
+            [images]="profilePhotoGallery"
+            [showHeader]="false"
+            [showGrid]="false"
+            [showArchiveAction]="false">
+          </vl-gallery>
+        }
+
+        @if (isCurrentUser && !isVerified) {
+          <vl-profile-verification-banner
+            [isVerified]="isVerified"
+            (verify)="verifyGovernmentID()">
+          </vl-profile-verification-banner>
+        }
+
+        <vl-profile-stats
+          [averageRating]="averageRating"
+          [totalRatings]="totalRatings"
+          [joinedCount]="attendedEvents.length"
+          [hostedCount]="hostedEvents.length">
+        </vl-profile-stats>
+
+        <vl-profile-content-panel
+          [tabs]="tabs"
+          [activeTab]="activeTab"
+          [isCurrentUser]="isCurrentUser"
+          [isJoinedLoading]="isJoinedLoading()"
+          [isHostedLoading]="isHostedLoading()"
+          [isGalleryLoading]="isGalleryLoading()"
+          [visibleJoinedEvents]="visibleJoinedEvents"
+          [totalJoinedCount]="attendedEvents.length"
+          [visibleHostedEvents]="visibleHostedEvents"
+          [totalHostedCount]="hostedEvents.length"
+          [userGallery]="userGallery"
+          [visibleInterests]="visibleInterests"
+          [hiddenInterestCount]="hiddenInterestCount"
+          (tabChange)="setActiveTab($event)"
+          (showMoreJoined)="showAllJoined()"
+          (showMoreHosted)="showAllHosted()">
+        </vl-profile-content-panel>
+
+        @if (userReviews.length > 0) {
+          <vl-reviews [reviews]="userReviews"></vl-reviews>
+        }
+
+        @if (visibleSocialLinks.length > 0 || isCurrentUser) {
+          <vl-profile-social-links
+            [links]="visibleSocialLinks"
+            [isCurrentUser]="isCurrentUser"
+            (linksUpdated)="onSocialLinksUpdated($event)">
+          </vl-profile-social-links>
+        }
+
+        @if (isCurrentUser) {
+          <vl-profile-account-preferences
+            (editProfile)="editProfile()"
+            (logout)="openLogoutModal()">
+          </vl-profile-account-preferences>
+        }
+      </section>
+    }
+  </div>
+
+  <vl-selfie-verification
+    [isOpen]="isSelfieVerificationOpen"
+    [compareImage]="userProfile?.profileImage || defaultProfileImage"
+    [defaultImage]="defaultProfileImage"
+    (closed)="closeSelfieVerification()"
+    (verified)="onSelfieVerified()">
+  </vl-selfie-verification>
+
+  <vl-update-avatar-modal
+    [isOpen]="isUpdateAvatarModalOpen"
+    [currentImage]="userProfile?.profileImage || defaultProfileImage"
+    [defaultImage]="defaultProfileImage"
+    (close)="closeUpdateAvatarModal()"
+    (imageUpdated)="onAvatarUpdated($event)">
+  </vl-update-avatar-modal>
+
+  <vl-action-modal
+    [isOpen]="isLogoutModalOpen"
+    variant="error"
+    title="Log Out of Viblooop?"
+    message="Are you sure you want to log out? You will need to sign in again to join events and message attendees."
+    confirmLabel="Log Out"
+    cancelLabel="Cancel"
+    (confirmed)="confirmLogout()"
+    (cancelled)="isLogoutModalOpen = false" />
+</main>

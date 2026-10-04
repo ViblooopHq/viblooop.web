@@ -1,0 +1,163 @@
+@if (state === 'loading') {
+  <!-- Clean Shared Engaging Loader in Fullscreen mode -->
+  <vl-engaging-loader
+    [title]="eventTitle"
+    [tagLabel]="'Creating ' + iconPack().categoryName"
+    [primaryIcon]="iconPack().primaryIcon"
+    [satelliteIcons]="iconPack().satelliteIcons"
+    [enableCyclingText]="true"
+    [cyclingTexts]="iconPack().loaderSteps"
+    [cycleIntervalMs]="1800"
+    [showProgressBar]="true"
+    [isFullscreen]="true">
+  </vl-engaging-loader>
+} @else {
+  <div
+    class="vl-celebration-overlay"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="overlay-title"
+    (click)="onBackdropClick()">
+
+    <!-- Modal Dialog Container -->
+    <div class="vl-celebration-modal" (click)="$event.stopPropagation()">
+      <button
+        type="button"
+        class="vl-celebration-modal__close"
+        aria-label="Close dialog"
+        (click)="handleClose()">
+        <span class="material-symbols-outlined" translate="no">close</span>
+      </button>
+
+      <!-- ==================== 2. SUCCESS CELEBRATION STATE ==================== -->
+      @if (state === 'success') {
+        <div class="vl-celebration-badge-stage">
+          <!-- Ambient Celebration Aura -->
+          <div class="vl-celebration-aura" aria-hidden="true"></div>
+
+          <!-- Contained Pulse Glow Rings -->
+          <div class="vl-badge-ring vl-badge-ring--inner" aria-hidden="true"></div>
+          <div class="vl-badge-ring vl-badge-ring--outer" aria-hidden="true"></div>
+
+          <!-- Category Satellite Badges -->
+          <div class="vl-satellite vl-satellite--top-left" [title]="iconPack().categoryName" aria-hidden="true">
+            <i [class]="iconPack().satelliteIcons[0]"></i>
+          </div>
+          <div class="vl-satellite vl-satellite--top-right" [title]="iconPack().categoryName" aria-hidden="true">
+            <i [class]="iconPack().satelliteIcons[1]"></i>
+          </div>
+          <div class="vl-satellite vl-satellite--bottom-left" [title]="iconPack().categoryName" aria-hidden="true">
+            <i [class]="iconPack().satelliteIcons[2]"></i>
+          </div>
+          <div class="vl-satellite vl-satellite--bottom-right" [title]="iconPack().categoryName" aria-hidden="true">
+            <i [class]="iconPack().satelliteIcons[3]"></i>
+          </div>
+
+          <!-- Central Success Badge with Animated SVG Checkmark -->
+          <div class="vl-celebration-badge">
+            <svg class="vl-checkmark-svg" viewBox="0 0 52 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle class="vl-checkmark-circle" cx="26" cy="26" r="23" stroke="currentColor" stroke-width="3"/>
+              <path class="vl-checkmark-check" d="M16 27L23 34L36 19" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Celebration Status Pill (Consistent Design System) -->
+        <div class="vl-celebration-tag">
+          <i class="fa-solid fa-circle-check vl-celebration-tag__icon" aria-hidden="true"></i>
+          <span>Your Vibe is Live</span>
+        </div>
+
+        <!-- Title & Subtitle -->
+        <h2 id="overlay-title" class="vl-celebration-modal__title">Event Created!</h2>
+        <p class="vl-celebration-modal__subtitle">
+          Your event has been published successfully and is now live across Viblooop.
+        </p>
+
+        <!-- Event Quick Confirmation Card (Consumer Ticket/Pass Style) -->
+        <div class="vl-event-confirmation-card">
+          <div class="vl-event-confirmation-card__icon">
+            <i [class]="iconPack().primaryIcon"></i>
+          </div>
+          <div class="vl-event-confirmation-card__info">
+            <span class="vl-event-confirmation-card__title">{{ eventTitle }}</span>
+            <div class="vl-event-confirmation-card__meta">
+              <span class="vl-event-confirmation-card__badge">{{ iconPack().categoryName }}</span>
+              @if (formattedEventDate()) {
+                <span class="vl-event-confirmation-card__meta-item">
+                  <i class="fa-regular fa-calendar" aria-hidden="true"></i>
+                  <span>{{ formattedEventDate() }}</span>
+                </span>
+              }
+              @if (formattedEventTime()) {
+                <span class="vl-event-confirmation-card__meta-item">
+                  <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                  <span>{{ formattedEventTime() }}</span>
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="vl-celebration-modal__actions">
+          <button
+            type="button"
+            class="vl-btn vl-btn--secondary"
+            (click)="done.emit()">
+            Done
+          </button>
+
+          <button
+            type="button"
+            class="vl-btn vl-btn--primary"
+            (click)="viewEvent.emit()">
+            <span>View Event</span>
+            <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      }
+
+      <!-- ==================== 3. ERROR STATE ==================== -->
+      @if (state === 'error') {
+        <div class="vl-error-badge-stage">
+          <div class="vl-error-ring" aria-hidden="true"></div>
+          <div class="vl-error-badge">
+            <i class="fa-solid fa-triangle-exclamation text-2xl" aria-hidden="true"></i>
+          </div>
+        </div>
+
+        <!-- Error Status Tag -->
+        <div class="vl-error-tag">
+          <i class="fa-solid fa-circle-exclamation text-xs mr-1" aria-hidden="true"></i>
+          <span>Launch Interrupted</span>
+        </div>
+
+        <!-- Title & Explanation -->
+        <h2 id="overlay-title" class="vl-celebration-modal__title">Couldn't Launch Event</h2>
+        <p class="vl-celebration-modal__subtitle">
+          {{ errorMessage || 'Something went wrong while publishing your event. Your event details are safely saved, so you can try again.' }}
+        </p>
+
+        <!-- Action Buttons -->
+        <div class="vl-celebration-modal__actions">
+          <button
+            type="button"
+            class="vl-btn vl-btn--secondary"
+            (click)="backToEdit.emit()">
+            Back to Editor
+          </button>
+
+          <button
+            type="button"
+            class="vl-btn vl-btn--primary"
+            (click)="retry.emit()">
+            <i class="fa-solid fa-rotate-right text-xs mr-1.5" aria-hidden="true"></i>
+            <span>Try Again</span>
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+}

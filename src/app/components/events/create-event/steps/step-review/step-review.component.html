@@ -1,0 +1,133 @@
+<main class="step-content step-content--review">
+  <!-- Event Preview Card -->
+  <div class="review-card-modern">
+    <!-- Cover Image with Badges -->
+    <div class="review-hero">
+      <img [src]="imageUpload.mainImagePreview() || formService.defaultCoverImage()" class="review-hero-img" alt="Event cover" />
+      <div class="hero-badges-overlay">
+        <div class="hero-badge-pill">
+          <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+          <span>{{ formService.isCapacityLimited() ? (formService.attendeeLimitValue() + ' spots max') : 'Unlimited spots' }}</span>
+        </div>
+        @if (formService.getSelectedCategoryTitle()) {
+          <div class="hero-badge-pill">
+            <span class="material-symbols-outlined" aria-hidden="true">{{ formService.getSelectedCategoryIcon() }}</span>
+            <span>{{ formService.getSelectedCategoryTitle() }}</span>
+          </div>
+        }
+        @if (formService.formValue().safetyGuidelines) {
+          <div class="hero-badge-pill">
+            <span class="material-symbols-outlined" aria-hidden="true">no_drinks</span>
+            <span>No substance</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="review-details-section">
+      <!-- Title and Audience Mix -->
+      <div class="review-title-bar">
+        <h2 class="review-event-name">{{ formService.formValue().title || 'Your Event' }}</h2>
+        <div class="audience-preference-badge">
+          <span class="material-symbols-outlined" aria-hidden="true">groups</span>
+          <span>{{ formService.mixLabel() }}</span>
+        </div>
+      </div>
+
+      <div class="review-info-grid">
+        <!-- Date & Time -->
+        <div class="review-info-item">
+          <div class="info-icon-box date-purple">
+            <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
+          </div>
+          <div class="info-content">
+            @if (formService.isEscapeCreation()) {
+              <p class="info-main">
+                {{ (formService.formValue().eventDate | date:'dd MMM') || 'From' }}
+                -
+                {{ (formService.formValue().endDate | date:'dd MMM') || 'To' }}
+              </p>
+            } @else if (formService.usesDuration()) {
+              <p class="info-main">
+                {{ (formService.formValue().eventDate | date:'dd MMM') || 'Start Date' }}
+                {{ (formService.formValue().eventTime | time) || 'Start Time' }} ·
+                {{ formService.formValue().durationHours }} hr
+              </p>
+            } @else {
+              <p class="info-main">{{ (formService.formValue().eventDate | date:'EEEE, dd MMM') || 'Select Date' }} • {{ (formService.formValue().eventTime | time) || 'Select Time' }}</p>
+            }
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="review-info-item">
+          <div class="info-icon-box location-blue">
+            <span class="material-symbols-outlined" aria-hidden="true">location_on</span>
+          </div>
+          <div class="info-content">
+            <p class="info-main">
+              {{ formService.formValue().address?.street || 'Address Line' }},
+              {{ formService.formValue().address?.area || 'Area / Locality' }}
+              @if (formService.formValue().address?.pinCode) {
+                - {{ formService.formValue().address?.pinCode }}
+              }
+            </p>
+            <p class="info-sub">Exact location shared after you join</p>
+          </div>
+        </div>
+
+        <!-- Chat -->
+        <div class="review-info-item">
+          <div class="info-icon-box chat-pink">
+            <span class="material-symbols-outlined" aria-hidden="true">chat_bubble</span>
+          </div>
+          <div class="info-content">
+            <p class="info-main">{{ formService.formValue().hostOnlyChat ? 'Only the host can send messages' : 'Everyone can send messages' }}</p>
+            <p class="info-sub">{{ formService.formValue().hostOnlyChat ? 'Attendees can view host updates' : 'Joined attendees can chat together' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status Card -->
+      <div class="live-status-card">
+        <div class="status-icon-ring">
+          <span class="material-symbols-outlined" aria-hidden="true">rocket_launch</span>
+        </div>
+        <div class="status-text-wrap">
+          <p class="status-title">{{ formService.isEditMode() ? 'Your changes are ready!' : 'Your vibe is ready to go live!' }}</p>
+          <p class="status-desc">{{ formService.isEditMode() ? 'Final check complete. Ready to save.' : 'Final check complete. Ready to publish.' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Host Safety Agreement Card -->
+  <vl-safety-agreement-card
+    [agreed]="formService.formValue().safetyAgreement"
+    (agreedChange)="setSafetyAgreement($event)" />
+
+  <!-- Final Actions -->
+  <div class="review-footer-actions">
+    <button type="button" class="btn-edit-details" (click)="editScene.emit()">
+      <span class="material-symbols-outlined" aria-hidden="true">edit</span>
+      <span>Edit Scene</span>
+    </button>
+    <button type="button" class="btn-launch-event"
+      [disabled]="!formService.formValue().safetyAgreement || isSubmittingEvent()"
+      (click)="launch.emit()">
+      @if (!formService.formValue().safetyAgreement) {
+        <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+      } @else {
+        <span class="material-symbols-outlined" aria-hidden="true">{{ formService.isEditMode() ? 'save' : 'rocket_launch' }}</span>
+      }
+      <span>{{ formService.isEditMode() ? 'Save Changes' : 'Launch Event' }}</span>
+    </button>
+  </div>
+
+  @if (!formService.formValue().safetyAgreement) {
+    <div class="agreement-footer-msg" role="status">
+      <span class="material-symbols-outlined" aria-hidden="true">lock</span>
+      <span>Please accept the safety agreement to continue.</span>
+    </div>
+  }
+</main>

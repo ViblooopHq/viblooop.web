@@ -1,0 +1,248 @@
+/*
+ * Viblooop — Standard Event Card Styles
+ * Clean 16:9 image-first discovery card with subtle elevation and typography.
+ */
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.vl-event-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-border-strong);
+  }
+}
+
+.vl-event-card__top-badges {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  z-index: 5;
+  max-width: calc(100% - 3.8rem);
+}
+
+.vl-event-card__audience-pill {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  z-index: 5;
+}
+
+.vl-event-card__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.22rem;
+  min-height: 26px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: rgba(15, 23, 42, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+
+  .material-symbols-outlined {
+    font-size: 0.82rem;
+  }
+
+  &--aud {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
+
+    &[data-type="women"] {
+      .material-symbols-outlined {
+        color: #fb5b8d;
+      }
+    }
+
+    &[data-type="men"] {
+      .material-symbols-outlined {
+        color: #60a5fa;
+      }
+    }
+
+    &[data-type="open"] {
+      .material-symbols-outlined {
+        color: #9b6cff;
+      }
+    }
+  }
+}
+
+.event-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 26px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface-glass-strong);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  font-size: 0.7rem;
+  font-weight: 650;
+  line-height: 1;
+
+  .event-status-pill__icon {
+    font-size: 0.85rem;
+    color: var(--color-primary);
+  }
+
+  &--ended {
+    background: var(--color-overlay-scrim);
+    border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+    color: var(--color-on-primary);
+    box-shadow: var(--shadow-sm);
+
+    .event-status-pill__icon {
+      color: var(--color-primary);
+    }
+  }
+}
+
+.vl-event-card__attendance-summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+
+  > .material-symbols-outlined {
+    font-size: 1rem;
+    color: var(--color-text-tertiary);
+  }
+}
+
+.vl-event-card__attendee-avatars {
+  display: flex;
+  align-items: center;
+  padding-left: 0.25rem;
+
+  img {
+    position: relative;
+    width: 1.4rem;
+    height: 1.4rem;
+    margin-left: -0.3rem;
+    border: 1px solid var(--color-surface);
+    border-radius: var(--radius-full);
+    background-color: var(--color-surface-raised);
+    object-fit: cover;
+  }
+}
+
+.vl-event-card__wishlist-btn {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--radius-full);
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  padding: 0;
+  color: #ffffff;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    background: rgba(15, 23, 42, 0.85);
+    border-color: rgba(255, 255, 255, 0.45);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+    color: rgba(255, 255, 255, 0.9);
+    transition: transform 0.2s ease, color 0.2s ease;
+
+    &.active {
+      color: #f43f5e !important;
+      transform: scale(1.12);
+    }
+  }
+}
+
+.vl-event-card__media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: var(--color-surface-raised);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.vl-event-card__schedule {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.vl-event-card__schedule-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  line-height: 1.5;
+
+  .material-symbols-outlined {
+    flex-shrink: 0;
+    font-size: 17px;
+    color: var(--color-primary);
+  }
+}

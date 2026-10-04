@@ -1,0 +1,64 @@
+@if (!hideHeader) {
+  <vl-header />
+}
+
+<div class="vl-body-container" [class.vl-body-container--with-footer]="!hideFooter">
+  <router-outlet />
+</div>
+
+@if ((appDrawerService.drawer$ | async); as activeDrawer) {
+  @switch (activeDrawer.type) {
+    @case ('calendar') {
+      <vl-form-drawer ariaLabel="My Plans" (closed)="appDrawerService.close()">
+        <vl-my-plans />
+      </vl-form-drawer>
+    }
+    @case ('edit-profile') {
+      <vl-edit-profile (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('wishlist') {
+      <vl-wishlist (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('notifications') {
+      <vl-notification
+        presentation="page"
+        (panelClosed)="appDrawerService.close()"
+        (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('chats') {
+      <vl-inbox
+        [isDrawer]="true"
+        (drawerClosed)="appDrawerService.close()" />
+    }
+    @case ('create-event') {
+      <vl-create-event
+        [drawerMode]="activeDrawer.mode"
+        [drawerEventId]="activeDrawer.eventId ?? null"
+        (drawerClosed)="appDrawerService.close()" />
+    }
+  }
+}
+
+@if (appSplashService.isVisible()) {
+  <vl-app-splash-loader
+    [isFadingOut]="appSplashService.isFadingOut()"
+    [message]="appSplashService.message()"
+    [subtitle]="appSplashService.subtitle()"
+    [showBrandWatermark]="appSplashService.showBrandWatermark()"
+    [showProgressDots]="appSplashService.showProgressDots()" />
+}
+
+<vl-global-loader />
+
+@if ((completeProfileService.showPopup$ | async)) {
+  <vl-complete-profile
+    >
+  </vl-complete-profile>
+}
+
+
+@if (!hideFooter) {
+  <vl-footer />
+}
+<vl-scroll-to-top />
+<vl-toast-container />

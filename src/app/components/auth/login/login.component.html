@@ -1,0 +1,113 @@
+<div id="tsparticles"></div>
+
+@if (!isOtpSent()) {
+<main class="login-page">
+  <div class="login-layout-container">
+
+    <!-- Left Section: Branding and Features -->
+    <section class="branding-section">
+      <!-- Main Headings -->
+      <h1 class="hero-heading vl-title-lg">
+        Find your <span class="text-accent-vibe">vibe.</span><br>
+        Join the <span class="text-accent-moment">moment.</span>
+      </h1>
+      <p class="hero-subtext vl-body">
+        Discover amazing people and real plans near you. Parties, play, trips or chill moments - Viblooop has it all.
+      </p>
+
+      <!-- Features List -->
+      <ul class="features-list">
+        <li class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-user-group"></i></div>
+          <div class="feature-text">
+            <h3 class="vl-body-sm">Real People</h3>
+            <p class="vl-body-sm">Connect with verified people</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon"><i class="fa-regular fa-calendar-check"></i></div>
+          <div class="feature-text">
+            <h3 class="vl-body-sm">Real Plans</h3>
+            <p class="vl-body-sm">Join events that excite you</p>
+          </div>
+        </li>
+        <li class="feature-item">
+          <div class="feature-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div class="feature-text">
+            <h3 class="vl-body-sm">Near You</h3>
+            <p class="vl-body-sm">Happening around your city</p>
+          </div>
+        </li>
+      </ul>
+
+      <!-- City skyline graphic (could be a background image in CSS) -->
+      <div class="city-skyline"></div>
+    </section>
+
+    <!-- Right Section: Login Card -->
+    <section class="login-section">
+      <div class="login-card vl-surface vl-surface--glass">
+        <button class="login-back-btn vl-icon-button" type="button" aria-label="Go back" (click)="goBack()">
+          <span class="material-symbols-outlined" translate="no">arrow_back_ios_new</span>
+        </button>
+
+        <div class="login-brand">
+          <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="logo-icon">
+        </div>
+
+        <div class="login-card-header">
+          <h2 class="vl-title-md">Welcome back! 👋</h2>
+          <p class="vl-body-sm">Sign in to continue your vibe</p>
+        </div>
+
+        <button class="btn-google vl-button vl-button--secondary vl-button--block" (click)="loginWithGoogle()" aria-label="Continue with Google">
+          <span class="google-icon-wrapper"><i class="fa-brands fa-google"></i></span>
+          <span>Continue with Google</span>
+        </button>
+
+        <div class="separator-section">
+          <span class="separator-line"></span>
+          <span class="separator-text">or</span>
+          <span class="separator-line"></span>
+        </div>
+
+        <form class="email-form" [formGroup]="loginForm" (ngSubmit)="sendOtp()">
+          <div class="input-group">
+            <span class="material-symbols-outlined input-icon">mail</span>
+            <input type="email" formControlName="email" placeholder="Email address" class="form-input vl-field"
+              aria-label="Email address">
+          </div>
+
+          <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isOtpSending()">
+            {{isOtpSending() ? "Sending OTP..." : "Send OTP"}}
+          </button>
+
+          @if (otpError()) {
+          <p class="form-error">{{ otpError() }}</p>
+          }
+        </form>
+
+        <p class="caption-text">
+          We'll send a one-time password to your email
+        </p>
+
+        <div class="card-divider"></div>
+
+        <div class="community-trust">
+          <span class="material-symbols-outlined trust-icon">verified_user</span>
+          <span>Safe, real and respectful community</span>
+        </div>
+
+        <p class="terms-text">
+          By continuing, you agree to our <a routerLink="/terms" class="footer-link">Terms</a> & <a routerLink="/privacy" class="footer-link">Privacy Policy</a>.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+} @else {
+<div class="otp-wrapper">
+  <vl-otp-verification [email]="userEmail" (back)="handleBack()"></vl-otp-verification>
+</div>
+}
