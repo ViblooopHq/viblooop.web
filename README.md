@@ -123,3 +123,8 @@ For more information on using the Angular CLI, including detailed command refere
 | **Date / Time Variables**             | `camelCase` + context                          | `createdAt`, `updatedAt`                   |
 | **Configuration Keys (JSON / TS)**    | `camelCase`                                    | `apiBaseUrl`, `maxRetries`                 |
 
+## License
+
+Copyright (c) 2026 Viblooop. All rights reserved.
+
+This source code is made available for viewing and evaluation purposes only. No reproduction, distribution, modification, or commercial use is permitted without prior written consent. See the [LICENSE](LICENSE) file for complete terms.
