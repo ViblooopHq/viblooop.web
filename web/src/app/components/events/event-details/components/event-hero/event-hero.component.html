@@ -27,11 +27,25 @@
     <h1 class="hero-title">{{ event()?.title }}</h1>
 
     <div class="hero-meta">
+      @if (isSocialEvent()) {
+        <span class="meta-badge meta-badge--schedule">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
+          <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (event()?.eventTime) { &nbsp;|&nbsp; {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} } }</span>
+          @if (durationLabel()) {
+            <span class="duration-pill"><span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>{{ durationLabel() }}</span>
+          }
+        </span>
+      } @else {
       <span class="meta-badge">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
-        <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (isMultiDay() && event()?.eventTime) { · {{ event()?.eventTime | time }} }</span>
+        <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if ((isMultiDay() || isSocialEvent()) && event()?.eventTime) { · {{ event()?.eventTime | time }} }</span>
       </span>
-      @if (isMultiDay()) {
+      @if (isSocialEvent() && durationLabel()) {
+        <span class="meta-badge">
+          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
+          <span>{{ durationLabel() }}</span>
+        </span>
+      } @else if (isMultiDay() && !isSocialEvent()) {
         <span class="meta-badge">
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
           <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime) { · {{ event()?.endTime | time }} }</span>
@@ -41,6 +55,7 @@
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
           <span>{{ event()?.eventTime | time }}@if (event()?.eventTime && event()?.endTime) { – }{{ event()?.endTime | time }}</span>
         </span>
+      }
       }
       <span class="meta-badge">
         <span class="material-symbols-outlined" translate="no">location_on</span>

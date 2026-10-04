@@ -1,14 +1,18 @@
 <section class="ed-section event-facts">
   <h2 class="sr-only">Event details</h2>
   <div class="info-rows">
-    <div class="info-row">
+    @if (isSocialEvent()) {
+    <div class="info-row info-row--schedule">
       <span class="info-row__icon">
         <span class="material-symbols-outlined" translate="no">calendar_today</span>
       </span>
-      <span>
-        {{ eventDate() | date:'EEEE, d MMMM y' }}
-        @if (isMultiDay() && eventTime()) { · {{ eventTime() | time }} }
-      </span>
+      <span class="schedule-copy"><strong>{{ eventDate() | date:'EEEE, d MMMM y' }}</strong>@if (eventTime()) {<small>{{ eventTime() | time }}@if (endTime()) { – {{ endTime() | time }} }</small>}</span>
+      @if (durationLabel()) { <span class="duration-pill"><span class="material-symbols-outlined" translate="no">schedule</span>{{ durationLabel() }}</span> }
+    </div>
+    } @else {
+    <div class="info-row">
+      <span class="info-row__icon"><span class="material-symbols-outlined" translate="no">calendar_today</span></span>
+      <span>{{ eventDate() | date:'EEEE, d MMMM y' }}@if (isMultiDay() && eventTime()) { · {{ eventTime() | time }} }</span>
     </div>
     @if (isMultiDay()) {
       <div class="info-row">
@@ -24,6 +28,7 @@
         </span>
         <span>{{ eventTime() | time }}@if (eventTime() && endTime()) { – }{{ endTime() | time }}</span>
       </div>
+    }
     }
     @if (eventPriceLabel()) {
       <div class="info-row">

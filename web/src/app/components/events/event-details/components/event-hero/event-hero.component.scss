@@ -182,6 +182,22 @@
       font-size: var(--text-body-sm);
       font-weight: 600;
 
+      &--schedule { align-items: center; flex-wrap: wrap; }
+
+      .duration-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: 8px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: rgba(139, 92, 246, 0.48);
+        color: #fff;
+        font-size: var(--text-caption);
+        font-weight: 700;
+        .material-symbols-outlined { color: inherit; font-size: 1rem; }
+      }
+
       .material-symbols-outlined,
       i {
         color: rgba(255, 255, 255, 0.78);

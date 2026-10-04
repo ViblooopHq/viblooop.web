@@ -28,6 +28,7 @@ import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { EventDetailsSkeletonComponent } from '../../../shared/components/event-details-skeleton/event-details-skeleton.component';
+import { isPartyPlayHangout } from './event-schedule.util';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import {
   AttendeeProfile,
@@ -224,6 +225,7 @@ export class EventDetailsComponent {
 
     return (hasEndDate && !details?.endTime) || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
   });
+  isSocialEvent = computed(() => isPartyPlayHangout(this.eventDetails()?.category));
   tripDateRangeLabel = computed(() => {
     const details = this.eventDetails();
     const start = formatTripDate(details?.eventDate);

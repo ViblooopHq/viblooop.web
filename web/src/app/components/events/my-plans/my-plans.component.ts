@@ -106,6 +106,11 @@ export class MyPlansComponent implements OnInit {
     if (Number.isNaN(date.getTime())) return Number.MAX_SAFE_INTEGER;
 
     const rawTime = String(plan?.endTime || (!plan?.endDate ? plan?.eventTime : '') || '').trim();
+    if (!rawTime) {
+      date.setHours(23, 59, 59, 999);
+      return date.getTime();
+    }
+
     const match = rawTime.match(/^(\d{1,2})(?::(\d{2}))?\s*(AM|PM)?/i);
     if (match) {
       let hours = Number(match[1]);
@@ -114,8 +119,6 @@ export class MyPlansComponent implements OnInit {
       if (modifier === 'PM' && hours < 12) hours += 12;
       if (modifier === 'AM' && hours === 12) hours = 0;
       date.setHours(hours, minutes, 0, 0);
-    } else {
-      date.setHours(23, 59, 59, 999);
     }
 
     return date.getTime();

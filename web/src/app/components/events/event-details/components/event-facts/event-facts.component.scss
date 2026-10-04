@@ -18,6 +18,31 @@
     font-size: var(--text-body-sm);
     line-height: 1.4;
 
+    &--schedule { gap: var(--space-3); }
+
+    .schedule-copy {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      gap: 2px;
+      strong { font-weight: 700; }
+      small { color: var(--color-text-secondary); font-size: inherit; }
+    }
+
+    .duration-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-primary) 12%, transparent);
+      color: var(--color-primary);
+      font-size: var(--text-caption);
+      font-weight: 700;
+      flex-shrink: 0;
+      .material-symbols-outlined { font-size: 1rem; }
+    }
+
     &__icon {
       display: flex;
       align-items: center;

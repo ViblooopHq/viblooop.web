@@ -25,42 +25,29 @@
           <small>{{ formService.timingHint() }}</small>
         </span>
       </div>
-      @if (formService.isHangoutCreation()) {
-        <div class="hangout-timing-fields">
-          <div class="date-range-row">
-            <label class="time-range-field">
-              <span>Start date</span>
+      @if (formService.usesDuration()) {
+        <div class="duration-timing-fields">
+          <div class="date-time-row duration-date-time-row">
+            <div class="date-field">
               <vl-datepicker
                 formControlName="eventDate"
                 [min]="formService.datePickerMinDate()"
-                placeholder="Start Date"
+                placeholder="Select Date"
                 outputType="date">
               </vl-datepicker>
-            </label>
-            <label class="time-range-field">
-              <span>End date</span>
-              <vl-datepicker
-                formControlName="endDate"
-                [min]="formService.minEndDate()"
-                placeholder="End Date"
-                outputType="date">
-              </vl-datepicker>
-            </label>
-          </div>
-          <div class="time-range-row">
-            <label class="time-range-field">
-              <span>Start time</span>
+            </div>
+            <div class="time-range-field">
               <vl-time-picker-dropdown
                 placeholder="Start Time"
                 [value]="formService.eventTimeValue()"
                 (valueChange)="setEventTime($event)" />
-            </label>
-            <label class="time-range-field">
-              <span>End time</span>
-              <vl-time-picker-dropdown
-                placeholder="End Time"
-                [value]="formService.endTimeValue()"
-                (valueChange)="setEndTime($event)" />
+            </div>
+            <label class="time-range-field duration-field">
+              <span>Duration</span>
+              <vl-duration-picker-dropdown
+                [options]="hangoutDurations"
+                [value]="formService.eventForm.get('durationHours')?.value"
+                (valueChange)="setDuration($event)" />
             </label>
           </div>
         </div>

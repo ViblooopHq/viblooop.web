@@ -30,6 +30,7 @@ export class CreateEventFormService {
     endDate: [''],
     eventTime: ['', Validators.required],
     endTime: [''],
+    durationHours: [2],
     address: this.fb.group({
       street: ['', Validators.required],
       area: ['', Validators.required],
@@ -82,8 +83,8 @@ export class CreateEventFormService {
   readonly selectedCreationConfig = computed<CreationTypeConfig>(() => CREATE_EVENT_TYPE_CONFIGS[this.creationKind()]);
 
   readonly isEscapeCreation = computed(() => this.selectedCreationConfig().usesDateRange);
-  readonly isHangoutCreation = computed(() => this.selectedCreationConfig().requiresEndTime);
-  readonly requiresEndDate = computed(() => this.isEscapeCreation() || this.isHangoutCreation());
+  readonly usesDuration = computed(() => this.selectedCreationConfig().requiresEndTime);
+  readonly requiresEndDate = computed(() => this.isEscapeCreation() || this.usesDuration());
   readonly createHeaderTitle = computed(() => (this.isEditMode() ? 'Edit Event' : this.selectedCreationConfig().headerTitle));
   readonly createHeaderSubtitle = computed(() => (this.isEditMode() ? 'Update the details for your vibe' : "Let's set up your amazing event"));
   readonly titleFieldLabel = computed(() => this.selectedCreationConfig().titleFieldLabel);
@@ -324,7 +325,7 @@ export class CreateEventFormService {
       eventTime?.setValidators([Validators.required]);
     }
 
-    if (this.isHangoutCreation()) {
+    if (this.usesDuration()) {
       endTime?.setValidators([Validators.required]);
     } else {
       endTime?.clearValidators();
@@ -333,6 +334,34 @@ export class CreateEventFormService {
     eventTime?.updateValueAndValidity({ emitEvent: false });
     endTime?.updateValueAndValidity({ emitEvent: false });
     endDate?.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private updateEndFromDuration(): void {
+    if (!this.usesDuration()) return;
+    const dateValue = this.eventForm.get('eventDate')?.value;
+    const timeValue = this.eventForm.get('eventTime')?.value;
+    const duration = Number(this.eventForm.get('durationHours')?.value);
+    if (!dateValue || !timeValue || !Number.isFinite(duration) || duration <= 0) return;
+
+    const start = new Date(dateValue);
+    const [hours, minutes] = String(timeValue).split(':').map(Number);
+    if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return;
+    start.setHours(hours, minutes, 0, 0);
+    const end = new Date(start.getTime() + duration * 60 * 60 * 1000);
+    const endTime = `${String(end.getHours()).padStart(2, '0')}:${String(end.getMinutes()).padStart(2, '0')}`;
+    this.eventForm.patchValue({ endDate: end, endTime }, { emitEvent: false });
+  }
+
+  private getDurationHours(startDate: any, startTime: string, endDate: any, endTime: string): number {
+    if (!startDate || !startTime || !endDate || !endTime) return 2;
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const [startHours, startMinutes] = startTime.split(':').map(Number);
+    const [endHours, endMinutes] = endTime.split(':').map(Number);
+    start.setHours(startHours, startMinutes, 0, 0);
+    end.setHours(endHours, endMinutes, 0, 0);
+    const hours = (end.getTime() - start.getTime()) / 3600000;
+    return hours > 0 ? hours : 2;
   }
 
   clearLocation(): void {
@@ -344,9 +373,13 @@ export class CreateEventFormService {
     this.eventForm.get('eventDate')?.valueChanges.subscribe(() => {
       this.updateMinTime();
       this.keepEndDateOnOrAfterStartDate();
+      this.updateEndFromDuration();
     });
+    this.eventForm.get('eventTime')?.valueChanges.subscribe(() => this.updateEndFromDuration());
+    this.eventForm.get('durationHours')?.valueChanges.subscribe(() => this.updateEndFromDuration());
     this.eventForm.get('category')?.valueChanges.subscribe(() => {
       this.updateDateValidatorsForCreationKind();
+      this.updateEndFromDuration();
       if (!this.isEditMode()) {
         this.eventForm.patchValue({ expectations: [], tags: '' });
       }
@@ -416,6 +449,12 @@ export class CreateEventFormService {
       endDate: this.toDateControlValue(event.endDate || event.eventDate),
       eventTime: this.toTimeControlValue(event.eventTime),
       endTime: this.toTimeControlValue(event.endTime),
+      durationHours: this.getDurationHours(
+        this.toDateControlValue(event.eventDate),
+        this.toTimeControlValue(event.eventTime),
+        this.toDateControlValue(event.endDate || event.eventDate),
+        this.toTimeControlValue(event.endTime),
+      ),
       address: {
         street: event.address?.street || '',
         area: event.address?.area || '',
@@ -441,6 +480,7 @@ export class CreateEventFormService {
     }
     this.updateMinTime();
     this.updateDateValidatorsForCreationKind();
+    this.updateEndFromDuration();
     this.eventForm.markAsPristine();
     this.eventForm.markAsUntouched();
   }
@@ -498,9 +538,9 @@ export class CreateEventFormService {
     return (
       !f.get('title')?.value ||
       !f.get('eventDate')?.value ||
-      (this.requiresEndDate() && !f.get('endDate')?.value) ||
+      (this.isEscapeCreation() && !f.get('endDate')?.value) ||
       (!this.isEscapeCreation() && !f.get('eventTime')?.value) ||
-      (this.isHangoutCreation() && !f.get('endTime')?.value) ||
+      (this.usesDuration() && (!f.get('endDate')?.value || !f.get('endTime')?.value)) ||
       !addr.get('street')?.value ||
       !addr.get('area')?.value ||
       !addr.get('pinCode')?.value
@@ -520,7 +560,7 @@ export class CreateEventFormService {
       const controls = this.isEscapeCreation()
         ? ['title', 'eventDate', 'endDate']
         : ['title', 'eventDate', 'eventTime'];
-      if (this.isHangoutCreation()) controls.push('endDate', 'endTime');
+      if (this.usesDuration()) controls.push('durationHours');
       if (this.isCapacityLimited()) controls.push('attendeeLimit');
 
       let valid = true;
@@ -544,8 +584,8 @@ export class CreateEventFormService {
         return false;
       }
 
-      if (this.isHangoutCreation() && !this.hasValidHangoutDateTimeRange()) {
-        alert('Hangout end date and time must be after the start date and time.');
+      if (this.usesDuration() && (!this.eventForm.get('durationHours')?.value || !this.hasValidDurationDateTimeRange())) {
+        alert('Choose a valid event duration.');
         return false;
       }
       return valid;
@@ -587,7 +627,7 @@ export class CreateEventFormService {
     if (this.eventForm.get('category')?.invalid) return 0;
     const timingControls = this.isEscapeCreation()
       ? ['eventDate', 'endDate']
-      : ['eventDate', 'eventTime', ...(this.isHangoutCreation() ? ['endDate', 'endTime'] : [])];
+      : ['eventDate', 'eventTime', ...(this.usesDuration() ? ['durationHours'] : [])];
     if (['title', ...timingControls].some(c => this.eventForm.get(c)?.invalid)) return 1;
     return -1;
   }
@@ -599,8 +639,9 @@ export class CreateEventFormService {
 
     Object.keys(this.eventForm.controls).forEach(key => {
       let value = this.eventForm.get(key)?.value;
+      if (key === 'durationHours') return;
       if (key === 'eventTime' && this.isEscapeCreation()) value = value || '00:00';
-      if (key === 'endTime' && !this.isHangoutCreation()) value = '';
+      if (key === 'endTime' && !this.usesDuration()) value = '';
 
       if (key === 'address' || key === 'expectations') {
         formData.append(key, JSON.stringify(value));
@@ -614,7 +655,7 @@ export class CreateEventFormService {
     return formData;
   }
 
-  private hasValidHangoutDateTimeRange(): boolean {
+  private hasValidDurationDateTimeRange(): boolean {
     const startDate = this.eventForm.get('eventDate')?.value;
     const endDate = this.eventForm.get('endDate')?.value;
     const startTime = this.eventForm.get('eventTime')?.value;
