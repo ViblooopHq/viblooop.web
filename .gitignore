@@ -6,23 +6,18 @@
 /tmp
 /out-tsc
 /bazel-out
-/package-lock.json
-/api/package-lock.json
+
+# Angular
+/.angular
 
 # Node
-/web/.angular
-/web/.vscode
-/api/node_modules
-/web/node_modules
-/web/dist
-/web/.angular
-/web/node_modules
-/web/dist
-/web/out-tsc
-/api/uploads
-/api/logs/*
+/node_modules
 npm-debug.log
 yarn-error.log
+
+# Capacitor
+/android
+/ios
 
 # IDEs and editors
 .idea/
@@ -42,7 +37,6 @@ yarn-error.log
 .history/*
 
 # Miscellaneous
-/.angular/cache
 .sass-cache/
 /connect.lock
 /coverage
@@ -53,8 +47,7 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
-
-#logs
-api/logs/*
-api/combined.log
-api/error.log
+desktop.ini
+*.swp
+*.swo
+*~
