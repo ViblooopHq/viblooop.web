@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ThemeService } from '../../../shared/services/theme/theme.service';
+import { Environment } from '../../../../environment';
 
 @Component({
   selector: 'vl-footer',
@@ -13,6 +14,7 @@ export class FooterComponent {
   public themeService = inject(ThemeService);
   currentYear = new Date().getFullYear();
   copyRightInfo = `${this.currentYear} Viblooop. All rights reserved.`;
+  appVersion = Environment.version;
 
   usefulLinks = [
     { label: 'Terms of Service', path: '/terms' },

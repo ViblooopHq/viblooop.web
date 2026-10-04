@@ -1,5 +1,5 @@
 {
-  "name": "vibloop",
+  "name": "viblooop",
   "version": "1.0.0",
   "scripts": {
     "ng": "ng",
@@ -13,7 +13,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "extract-i18n-text": "ng extract-i18n --output-path src/locale --out-file source.xlf",
-    "serve:ssr:vibloop": "node dist/vibloop/server/server.mjs"
+    "serve:ssr:viblooop": "node dist/viblooop/server/server.mjs"
   },
   "private": true,
   "dependencies": {
