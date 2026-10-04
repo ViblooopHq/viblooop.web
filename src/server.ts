@@ -131,4 +131,5 @@ if (isMainModule(import.meta.url)) {
   });
 }
 
+export const reqHandler = app;
 export default app;

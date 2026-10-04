@@ -1,5 +1,5 @@
-const apiHost = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
-const apiServerUrl = `http://${apiHost || 'localhost'}:8000`;
+const apiHost = "https://api.viblooop.com";
+const apiServerUrl = `${apiHost}`;
 
 export const Environment = {
   production: true,
