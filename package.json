@@ -13,7 +13,7 @@
     "start:network": "ng serve --host 0.0.0.0 --port 4200",
     "lint:styles": "stylelint \"src/**/*.scss\"",
     "verify:design": "npm run lint:styles && npm run build",
-    "build": "npm run prebuild && ng build",
+    "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "extract-i18n-text": "ng extract-i18n --output-path src/locale --out-file source.xlf",

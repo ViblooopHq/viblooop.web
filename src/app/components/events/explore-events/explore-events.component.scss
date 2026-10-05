@@ -31,14 +31,14 @@
   position: relative;
   aspect-ratio: 16 / 9;
   height: auto;
-
-  @media (min-width: 1024px) {
-    aspect-ratio: 2 / 1;
-  }
   overflow: hidden;
   border-radius: var(--radius-xl);
   background: var(--color-surface);
   box-shadow: var(--shadow-sm);
+
+  @media (min-width: 1024px) {
+    aspect-ratio: 2 / 1;
+  }
 
   @media (max-width: 768px) {
     border-radius: var(--radius-lg);
@@ -265,4 +265,97 @@
 
 .past-vibes-section {
   width: 100%;
+}
+
+/* ── Shimmer & Section Skeleton Styles ── */
+.vl-shimmer {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
+    color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent) 50%,
+    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 100%
+  );
+  background-size: 250% 100%;
+  animation: vl-shimmer-anim 1.5s infinite ease-in-out;
+}
+
+@keyframes vl-shimmer-anim {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.category-skeleton-title {
+  width: 180px;
+  height: 24px;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.category-skeleton-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  flex-shrink: 0;
+  min-width: 84px;
+  padding: 8px;
+}
+
+.category-skeleton-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border);
+
+  @media (min-width: 640px) {
+    width: 64px;
+    height: 64px;
+  }
+}
+
+.category-skeleton-label {
+  width: 50px;
+  height: 12px;
+  border-radius: var(--radius-sm, 4px);
+}
+
+.past-vibes-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4, 1rem);
+  width: 100%;
+}
+
+.past-skeleton-title {
+  width: 140px;
+  height: 24px;
+  border-radius: var(--radius-sm, 6px);
+}
+
+.past-skeleton-scroll {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.past-skeleton-card {
+  flex-shrink: 0;
+  width: 220px;
+  height: 280px;
+  border-radius: var(--radius-lg, 16px);
+  border: 1px solid var(--color-border);
+
+  @media (max-width: 640px) {
+    width: 160px;
+    height: 220px;
+  }
 }
