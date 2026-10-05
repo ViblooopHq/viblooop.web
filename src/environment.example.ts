@@ -3,7 +3,8 @@ const apiServerUrl = `${apiHost}`;
 
 export const Environment = {
   production: false,
-  version: require('../package.json').version,
+  version: '1.0.0',
+
 
   // API URLs
   serverUrl: apiServerUrl,
