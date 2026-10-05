@@ -1,10 +1,6 @@
-@if (isLoading()) {
-<vl-explore-skeleton />
-} @else {
 <div class="explore-container vl-section-wrapper vl-section-top-padding">
   <!-- Header & Search -->
   <header class="explore-header">
-
     <div class="explore-hero-carousel-wrap">
       <div class="explore-hero-carousel">
         <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="marketingSlides">
@@ -21,7 +17,21 @@
   </header>
 
   <!-- Categories -->
-  @if (categories().length > 0) {
+  @if (isCategoriesLoading()) {
+  <section class="categories-section" aria-busy="true" aria-label="Loading categories">
+    <div class="section-header flex items-center justify-between mb-3 sm:mb-4">
+      <div class="category-skeleton-title vl-shimmer"></div>
+    </div>
+    <div class="categories-scroll flex gap-3 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
+      @for (item of categoryPlaceholders; track item) {
+      <div class="category-skeleton-item">
+        <div class="category-skeleton-avatar vl-shimmer"></div>
+        <div class="category-skeleton-label vl-shimmer"></div>
+      </div>
+      }
+    </div>
+  </section>
+  } @else if (categories().length > 0) {
   <section class="categories-section">
     <div class="section-header flex items-center justify-between mb-3 sm:mb-4">
       <h2 class="section-title text-lg sm:text-xl font-bold text-on-surface">Browse by Category</h2>
@@ -53,26 +63,30 @@
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
       <h2 class="section-title" style="margin: 0;">Upcoming Vibes</h2>
     </div>
-    <div class="trending-scroll" [class.single-result]="trendingEvents().length === 1"
-      [class.empty-result]="trendingEvents().length === 0">
-      @for (event of trendingEvents().slice(0, 4); track event._id || $index) {
-      <div class="trending-card">
-        <div class="vl-card-desktop">
-          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+    <div class="trending-scroll" [class.single-result]="!isTrendingLoading() && trendingEvents().length === 1"
+      [class.empty-result]="!isTrendingLoading() && trendingEvents().length === 0">
+      @if (isTrendingLoading()) {
+      <vl-event-card-skeleton [count]="4" />
+      } @else {
+        @for (event of trendingEvents().slice(0, 4); track event._id || $index) {
+        <div class="trending-card">
+          <div class="vl-card-desktop">
+            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+          </div>
+          <div class="vl-card-mobile">
+            <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+          </div>
         </div>
-        <div class="vl-card-mobile">
-          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
-        </div>
-      </div>
-      }
-      @if (trendingEvents().length === 0) {
-      <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
-        [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
-        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
-      </vl-empty-state>
+        }
+        @if (trendingEvents().length === 0) {
+        <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
+          [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
+          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
+        </vl-empty-state>
+        }
       }
     </div>
-    @if (trendingEvents().length > 4) {
+    @if (!isTrendingLoading() && trendingEvents().length > 4) {
     <div class="section-footer">
       <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: activeFilterId }">
         See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -86,26 +100,30 @@
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
       <h2 class="section-title" style="margin: 0;">Just for you</h2>
     </div>
-    <div class="trending-scroll" [class.single-result]="justForYouEvents().length === 1"
-      [class.empty-result]="justForYouEvents().length === 0">
-      @for (event of justForYouEvents().slice(0, 4); track event._id || $index) {
-      <div class="trending-card">
-        <div class="vl-card-desktop">
-          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+    <div class="trending-scroll" [class.single-result]="!isForYouLoading() && justForYouEvents().length === 1"
+      [class.empty-result]="!isForYouLoading() && justForYouEvents().length === 0">
+      @if (isForYouLoading()) {
+      <vl-event-card-skeleton [count]="4" />
+      } @else {
+        @for (event of justForYouEvents().slice(0, 4); track event._id || $index) {
+        <div class="trending-card">
+          <div class="vl-card-desktop">
+            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+          </div>
+          <div class="vl-card-mobile">
+            <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+          </div>
         </div>
-        <div class="vl-card-mobile">
-          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
-        </div>
-      </div>
-      }
-      @if (justForYouEvents().length === 0) {
-      <vl-empty-state subject="events" context="near you" contextPrefix=""
-        image="assets/images/empty-states/explore.png"
-        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
-      </vl-empty-state>
+        }
+        @if (justForYouEvents().length === 0) {
+        <vl-empty-state subject="events" context="near you" contextPrefix=""
+          image="assets/images/empty-states/explore.png"
+          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
+        </vl-empty-state>
+        }
       }
     </div>
-    @if (justForYouEvents().length > 4) {
+    @if (!isForYouLoading() && justForYouEvents().length > 4) {
     <div class="section-footer">
       <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: 'all' }">
         See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -114,7 +132,20 @@
     }
   </section>
 
+  <!-- Past Vibes Section -->
   <section class="past-vibes-section">
+    @if (isPastEventsLoading()) {
+    <div class="past-vibes-skeleton" aria-busy="true" aria-label="Loading past vibes">
+      <div class="section-header">
+        <div class="past-skeleton-title vl-shimmer"></div>
+      </div>
+      <div class="past-skeleton-scroll">
+        @for (item of pastCardPlaceholders; track item) {
+        <div class="past-skeleton-card vl-shimmer"></div>
+        }
+      </div>
+    </div>
+    } @else {
     <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
       @if (pastEvents().length > 0) {
       <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
@@ -135,6 +166,6 @@
       </vl-empty-state>
       }
     </div>
+    }
   </section>
 </div>
-}

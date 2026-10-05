@@ -503,13 +503,11 @@ export class EventDetailsComponent {
 
     this.eventsService.getEventDetails(eventId).subscribe({
       next: (res: any) => {
-        if (!res?.success || res.statusCode !== 200 || !res.data) {
-          console.warn('Unexpected response format or status code:', res);
-          if (showLoader) {
-            this.hasLoadingError.set(true);
-            this.loadingErrorMessage.set('The requested event could not be found or has been removed.');
-            this.isLoadingEvent.set(false);
-          }
+        if (!res?.success || res.statusCode !== 200 || !res.data || !res.data._id) {
+          console.warn('Unexpected response format or event not found:', res);
+          this.hasLoadingError.set(true);
+          this.loadingErrorMessage.set('The requested event could not be found or has been removed.');
+          this.isLoadingEvent.set(false);
           return;
         }
 
@@ -539,15 +537,13 @@ export class EventDetailsComponent {
           userName: attendee?.username || '',
           profileImage: attendee?.profileImage || '',
         })));
-        if (showLoader) this.isLoadingEvent.set(false);
+        this.isLoadingEvent.set(false);
       },
       error: (err) => {
         console.error('Error fetching event details:', err);
-        if (showLoader) {
-          this.hasLoadingError.set(true);
-          this.loadingErrorMessage.set('Unable to load event details. Please check your internet connection and try again.');
-          this.isLoadingEvent.set(false);
-        }
+        this.hasLoadingError.set(true);
+        this.loadingErrorMessage.set('Unable to load event details. Please check your internet connection and try again.');
+        this.isLoadingEvent.set(false);
       }
     });
   }

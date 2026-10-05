@@ -1,6 +1,6 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { forkJoin, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
@@ -11,7 +11,7 @@ import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
 import { MultiCarouselComponent, FullPageCarouselComponent } from '../../../shared/components/carousels';
 import { RouterModule } from '@angular/router';
-import { ExploreSkeletonComponent } from '../../../shared/components/explore-skeleton/explore-skeleton.component';
+import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
 
 const CATEGORY_FILTER_IMAGES: Record<string, string> = {
@@ -43,7 +43,7 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
     PastEventCardComponent,
     MultiCarouselComponent,
     FullPageCarouselComponent,
-    ExploreSkeletonComponent,
+    EventCardSkeletonComponent,
     EventFiltersComponent,
   ],
   templateUrl: './explore-events.component.html',
@@ -60,7 +60,15 @@ export class ExploreEventsComponent implements OnInit {
     1440: { slidesPerView: 5.2, spaceBetween: 20 },
   };
 
-  isLoading = signal(true);
+  isCategoriesLoading = signal(true);
+  isTrendingLoading = signal(true);
+  isForYouLoading = signal(true);
+  isPastEventsLoading = signal(true);
+  isLoading = computed(() => this.isTrendingLoading() || this.isCategoriesLoading());
+
+  readonly categoryPlaceholders = Array.from({ length: 7 }, (_, i) => i);
+  readonly pastCardPlaceholders = Array.from({ length: 4 }, (_, i) => i);
+
   categories = signal<any[]>([]);
   trendingEvents = signal<any[]>([]);
   justForYouEvents = signal<any[]>([]);
@@ -98,10 +106,6 @@ export class ExploreEventsComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   ngOnInit() {
-    if (!isPlatformBrowser(this.platformId)) {
-      // On the server, keep isLoading(true) so initial SSR HTML is the skeleton loader, avoiding hydration flicker
-      return;
-    }
     this.loadInitialData();
   }
 
@@ -119,6 +123,7 @@ export class ExploreEventsComponent implements OnInit {
 
   requestBrowserLocation() {
     const requestId = ++this.eventsRequestId;
+    this.isTrendingLoading.set(true);
 
     if (!navigator.geolocation) {
       this.messageStore.addMessage('Geolocation is not supported by your browser.', 'error');
@@ -133,7 +138,13 @@ export class ExploreEventsComponent implements OnInit {
 
         const { latitude, longitude } = position.coords;
         const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
-        this.eventsService.getNearbyEvents(latitude, longitude, 50000, category).subscribe({
+        this.eventsService.getNearbyEvents(latitude, longitude, 50000, category).pipe(
+          finalize(() => {
+            if (requestId === this.eventsRequestId) {
+              this.isTrendingLoading.set(false);
+            }
+          })
+        ).subscribe({
           next: (res: any) => {
             if (requestId !== this.eventsRequestId) return;
 
@@ -143,11 +154,13 @@ export class ExploreEventsComponent implements OnInit {
                 this.messageStore.addMessage('No nearby events found.', 'info');
               }
             } else {
+              this.trendingEvents.set([]);
               this.messageStore.addMessage('Failed to load nearby events.', 'error');
             }
           },
           error: () => {
             if (requestId !== this.eventsRequestId) return;
+            this.trendingEvents.set([]);
             this.messageStore.addMessage('Failed to load nearby events.', 'error');
           }
         });
@@ -259,109 +272,90 @@ export class ExploreEventsComponent implements OnInit {
   }
 
   private loadInitialData() {
-    this.isLoading.set(true);
-    const requestId = ++this.eventsRequestId;
-    const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
-
-    forkJoin({
-      categories: this.eventsService.getEventCategories().pipe(
-        catchError((error) => {
-          console.error('Failed to load categories', error);
-          return of({ success: false, data: { categories: [] } });
-        })
-      ),
-      events: this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).pipe(
-        catchError((error) => {
-          console.error('Failed to load events', error);
-          this.messageStore.addMessage('Failed to load events.', 'error');
-          return of({ data: [] });
-        })
-      ),
-      forYouEvents: this.eventsService.getEventForYou('all', undefined, undefined, 8).pipe(
-        catchError((error) => {
-          console.error('Failed to load recommended events', error);
-          return of({ data: [] });
-        })
-      ),
-      pastEvents: this.eventsService.getPastEvents(undefined, 5).pipe(
-        catchError((error) => {
-          console.error('Failed to load past events', error);
-          return of({ data: { events: [], nextCursor: null } });
-        })
-      )
-    }).pipe(
-      finalize(() => {
-        if (requestId === this.eventsRequestId) {
-          this.isLoading.set(false);
-        }
-      })
-    ).subscribe({
-      next: ({ categories, events, forYouEvents, pastEvents }) => {
-        if (requestId !== this.eventsRequestId) return;
-
-        // Populate categories
-        if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
-          this.categories.set(categories.data.categories.map((cat: any) => this.toExploreCategory(cat)));
-        }
-
-        // Populate events
-        const filteredEvents = Array.isArray(events?.data) ? events.data : [];
-        this.trendingEvents.set(filteredEvents);
-        const recommendedEvents = Array.isArray(forYouEvents?.data) ? forYouEvents.data : [];
-        this.justForYouEvents.set(recommendedEvents);
-
-        // Populate past events
-        const pastData = pastEvents?.data;
-        this.pastEvents.set(Array.isArray(pastData?.events) ? pastData.events : []);
-        this.hasMorePastEvents.set(Boolean(pastData?.nextCursor));
-        this.showPastEventsSeeMore.set(false);
-      }
-    });
+    this.loadCategories();
+    this.loadEvents();
+    this.loadForYouEvents();
+    this.loadPastEvents();
   }
 
   private loadCategories() {
-    this.eventsService.getEventCategories().subscribe((categories: any) => {
-      if (categories.success && categories.statusCode === 200) {
+    this.isCategoriesLoading.set(true);
+    this.eventsService.getEventCategories().pipe(
+      catchError((error) => {
+        console.error('Failed to load categories', error);
+        return of({ success: false, data: { categories: [] } });
+      }),
+      finalize(() => {
+        this.isCategoriesLoading.set(false);
+      })
+    ).subscribe((categories: any) => {
+      if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
         this.categories.set(categories.data.categories.map((category: any) => this.toExploreCategory(category)));
+      } else {
+        this.categories.set([]);
       }
-    }, (error: any) => {
-      console.log(error);
     });
   }
 
   private loadEvents() {
     const requestId = ++this.eventsRequestId;
+    this.isTrendingLoading.set(true);
     const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
 
-    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).subscribe({
+    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).pipe(
+      catchError((error) => {
+        console.error('Failed to load events', error);
+        this.messageStore.addMessage('Failed to load events.', 'error');
+        return of({ data: [] });
+      }),
+      finalize(() => {
+        if (requestId === this.eventsRequestId) {
+          this.isTrendingLoading.set(false);
+        }
+      })
+    ).subscribe({
       next: (events: any) => {
         if (requestId !== this.eventsRequestId) return;
-
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
+      }
+    });
+  }
 
-      },
-      error: () => {
-        if (requestId !== this.eventsRequestId) return;
-        this.trendingEvents.set([]);
-        this.messageStore.addMessage('Failed to load events.', 'error');
+  private loadForYouEvents() {
+    this.isForYouLoading.set(true);
+    this.eventsService.getEventForYou('all', undefined, undefined, 8).pipe(
+      catchError((error) => {
+        console.error('Failed to load recommended events', error);
+        return of({ data: [] });
+      }),
+      finalize(() => {
+        this.isForYouLoading.set(false);
+      })
+    ).subscribe({
+      next: (res: any) => {
+        const recommendedEvents = Array.isArray(res?.data) ? res.data : [];
+        this.justForYouEvents.set(recommendedEvents);
       }
     });
   }
 
   private loadPastEvents() {
-    this.eventsService.getPastEvents(undefined, 5).subscribe({
+    this.isPastEventsLoading.set(true);
+    this.eventsService.getPastEvents(undefined, 5).pipe(
+      catchError((error) => {
+        console.error('Failed to load past events', error);
+        return of({ data: { events: [], nextCursor: null } });
+      }),
+      finalize(() => {
+        this.isPastEventsLoading.set(false);
+      })
+    ).subscribe({
       next: (events: any) => {
         const data = events?.data;
         this.pastEvents.set(Array.isArray(data?.events) ? data.events : []);
         this.hasMorePastEvents.set(Boolean(data?.nextCursor));
         this.showPastEventsSeeMore.set(false);
-      },
-      error: () => {
-        this.pastEvents.set([]);
-        this.hasMorePastEvents.set(false);
-        this.showPastEventsSeeMore.set(false);
-        this.messageStore.addMessage('Failed to load past events.', 'error');
       }
     });
   }
