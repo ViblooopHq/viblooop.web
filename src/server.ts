@@ -54,10 +54,14 @@ try {
 
 (global as any).Node = function() {};
 (global as any).HTMLElement = function() {};
-(global as any).URL = {
-  createObjectURL: () => '',
-  revokeObjectURL: () => '',
-};
+if (typeof URL !== 'undefined') {
+  if (!(URL as any).createObjectURL) {
+    (URL as any).createObjectURL = () => '';
+  }
+  if (!(URL as any).revokeObjectURL) {
+    (URL as any).revokeObjectURL = () => '';
+  }
+}
 
 // Also apply to globalThis for Vite SSR compatibility
 (globalThis as any).window = windowMock;
@@ -77,6 +81,7 @@ const browserDistFolder = resolve(serverDistFolder, '../browser');
 const indexHtml = join(serverDistFolder, 'index.server.html');
 
 const app = express();
+app.set('trust proxy', true);
 const commonEngine = new CommonEngine();
 
 /**
@@ -107,17 +112,27 @@ app.get(
  */
 app.get('**', (req, res, next) => {
   const { protocol, originalUrl, baseUrl, headers } = req;
+  const host = headers['x-forwarded-host'] || headers.host || 'localhost';
+  const proto = headers['x-forwarded-proto'] || protocol || 'https';
 
   commonEngine
     .render({
       bootstrap,
       documentFilePath: indexHtml,
-      url: `${protocol}://${headers.host}${originalUrl}`,
+      url: `${proto}://${host}${originalUrl}`,
       publicPath: browserDistFolder,
       providers: [{ provide: APP_BASE_HREF, useValue: baseUrl }],
     })
     .then((html) => res.send(html))
-    .catch((err) => next(err));
+    .catch((err) => {
+      console.error('[SSR Render Error - Falling back to CSR]', err);
+      const csrHtml = join(browserDistFolder, 'index.csr.html');
+      res.sendFile(csrHtml, (sendErr) => {
+        if (sendErr) {
+          next(err);
+        }
+      });
+    });
 });
 
 /**
