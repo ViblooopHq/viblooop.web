@@ -51,3 +51,15 @@ desktop.ini
 *.swp
 *.swo
 *~
+
+# Environment & Vercel
+.env
+.env.*
+!.env.example
+.vercel/
+src/environment.ts
+src/assets/firebase-messaging-sw.js
+
+# Secrets
+vapid.txt
+

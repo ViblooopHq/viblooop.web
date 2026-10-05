@@ -2,7 +2,19 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
 
+## Environment Configuration
+
+Before running the application, set up your local environment file:
+
+```bash
+cp .env.example .env
+npm run env:generate
+```
+
+This generates `src/environment.ts` and `src/assets/firebase-messaging-sw.js` (both are gitignored to keep credentials private).
+
 ## Development server
+
 
 To start a local development server, run:
 
@@ -123,3 +135,8 @@ For more information on using the Angular CLI, including detailed command refere
 | **Date / Time Variables**             | `camelCase` + context                          | `createdAt`, `updatedAt`                   |
 | **Configuration Keys (JSON / TS)**    | `camelCase`                                    | `apiBaseUrl`, `maxRetries`                 |
 
+## License
+
+Copyright (c) 2026 Viblooop. All rights reserved.
+
+This source code is made available for viewing and evaluation purposes only. No reproduction, distribution, modification, or commercial use is permitted without prior written consent. See the [LICENSE](LICENSE) file for complete terms.
