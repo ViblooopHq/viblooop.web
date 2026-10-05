@@ -102,7 +102,7 @@ const commonEngine = new CommonEngine();
 app.get(
   '**',
   express.static(browserDistFolder, {
-    maxAge: '1y',
+    maxAge: '0',
     index: 'index.html'
   }),
 );
