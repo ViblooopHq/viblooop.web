@@ -1,14 +1,15 @@
 importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js');
 
+// Populated via scripts/set-env.js from environment variables
 const firebaseConfig = {
-  apiKey: "AIzaSyDFR44IK6FSl-N8zyrJOOi532C6133Un_Q",
-  authDomain: "rk-delta.firebaseapp.com",
-  projectId: "rk-delta",
-  storageBucket: "rk-delta.firebasestorage.app",
-  messagingSenderId: "428932858018",
-  appId: "1:428932858018:web:8ccca497cccfe186d117fb",
-  measurementId: "G-ZRC6SHW6KN"
+  apiKey: "",
+  authDomain: "",
+  projectId: "",
+  storageBucket: "",
+  messagingSenderId: "",
+  appId: "",
+  measurementId: ""
 };
 
 // Initialize Firebase

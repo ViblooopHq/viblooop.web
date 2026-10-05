@@ -2,7 +2,19 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.12.
 
+## Environment Configuration
+
+Before running the application, set up your local environment file:
+
+```bash
+cp .env.example .env
+npm run env:generate
+```
+
+This generates `src/environment.ts` and `src/assets/firebase-messaging-sw.js` (both are gitignored to keep credentials private).
+
 ## Development server
+
 
 To start a local development server, run:
 
