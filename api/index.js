@@ -12,6 +12,10 @@ export default async (req, res) => {
     console.error('[Vercel SSR Function Error]:', err);
     res.statusCode = 500;
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.end(`<!DOCTYPE html><html><body><h1>Internal Server Error</h1><pre>${err?.stack || err?.message || err}</pre></body></html>`);
+    const detail = process.env.NODE_ENV !== 'production'
+      ? `<pre>${err?.stack || err?.message || err}</pre>`
+      : '';
+    res.end(`<!DOCTYPE html><html><body><h1>Internal Server Error</h1>${detail}</body></html>`);
+
   }
 };
