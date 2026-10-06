@@ -102,8 +102,19 @@ const commonEngine = new CommonEngine();
 app.get(
   '**',
   express.static(browserDistFolder, {
-    maxAge: '0',
-    index: 'index.html'
+    maxAge: '1y',
+    index: 'index.html',
+    setHeaders: (res, path) => {
+      if (
+        path.endsWith('.html') ||
+        path.endsWith('ngsw.json') ||
+        path.endsWith('ngsw-worker.js') ||
+        path.endsWith('manifest.webmanifest') ||
+        path.endsWith('site.webmanifest')
+      ) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+    },
   }),
 );
 
