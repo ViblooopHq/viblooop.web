@@ -202,7 +202,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loginWithGoogle() {
-    window.location.href = "http://localhost:8000/auth/google";
+    window.location.href = "https://api.viblooop.com/auth/google";
   }
 
   goBack() {
