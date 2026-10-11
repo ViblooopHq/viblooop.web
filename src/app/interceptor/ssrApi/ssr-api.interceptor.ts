@@ -2,7 +2,7 @@ import { isPlatformServer } from '@angular/common';
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject, PLATFORM_ID } from '@angular/core';
 import { of } from 'rxjs';
-import { catchError, timeout } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Environment } from '../../../environment';
 
 export const ssrApiInterceptor: HttpInterceptorFn = (req, next) => {
@@ -13,10 +13,8 @@ export const ssrApiInterceptor: HttpInterceptorFn = (req, next) => {
   }
 
   // On the server, attempt the real API call so SSR generates real SEO content.
-  // If the backend fails, is unreachable, or times out (4s), return a clean fallback
-  // so the SSR page render does not crash or hang.
+  // If the backend fails or returns an error, return a clean fallback so SSR does not crash.
   return next(req).pipe(
-    timeout(4000),
     catchError((err) => {
       console.warn(`[SSR API Fallback] Request to ${req.url} failed: ${err?.message || err}`);
       return of(new HttpResponse({ status: 200, body: getSsrFallbackBody(req.url) }));
@@ -26,7 +24,7 @@ export const ssrApiInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 function getSsrFallbackBody(url: string) {
-  if (url.endsWith('/categories')) {
+  if (url.includes('/categories')) {
     return {
       success: true,
       statusCode: 200,
@@ -34,7 +32,7 @@ function getSsrFallbackBody(url: string) {
     };
   }
 
-  if (url.endsWith('/getPastEvents')) {
+  if (url.includes('/getPastEvents')) {
     return {
       success: true,
       statusCode: 200,
@@ -42,7 +40,14 @@ function getSsrFallbackBody(url: string) {
     };
   }
 
-  if (url.endsWith('/getAllEvents') || url.endsWith('/getAllInterests')) {
+  if (
+    url.includes('/getAllEvents') ||
+    url.includes('/getAllInterests') ||
+    url.includes('/getEventForYou') ||
+    url.includes('/getAllEventsByCategory') ||
+    url.includes('/events/nearby') ||
+    url.includes('/events/collection')
+  ) {
     return {
       success: true,
       statusCode: 200,
@@ -50,7 +55,15 @@ function getSsrFallbackBody(url: string) {
     };
   }
 
-  if (url.endsWith('/getUserProfile')) {
+  if (url.includes('/getEventDetails')) {
+    return {
+      success: false,
+      statusCode: 404,
+      data: null,
+    };
+  }
+
+  if (url.includes('/getUserProfile') || url.includes('/getMyProfile')) {
     return {
       success: true,
       statusCode: 200,
@@ -64,3 +77,4 @@ function getSsrFallbackBody(url: string) {
     data: {},
   };
 }
+

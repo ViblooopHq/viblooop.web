@@ -103,7 +103,18 @@ app.get(
   '**',
   express.static(browserDistFolder, {
     maxAge: '1y',
-    index: 'index.html'
+    index: 'index.html',
+    setHeaders: (res, path) => {
+      if (
+        path.endsWith('.html') ||
+        path.endsWith('ngsw.json') ||
+        path.endsWith('ngsw-worker.js') ||
+        path.endsWith('manifest.webmanifest') ||
+        path.endsWith('site.webmanifest')
+      ) {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+    },
   }),
 );
 

@@ -1,20 +1,17 @@
+import { isPlatformBrowser } from '@angular/common';
 import { HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { of, tap } from 'rxjs';
 
 export const apiCashingInterceptor: HttpInterceptorFn = (req, next) => {
+  const platformId = inject(PLATFORM_ID);
 
-  if(req.url.includes('/getUserProfile1')) {
-    const cached = sessionStorage.getItem(req.url);
-    if (cached) {
-      return of(new HttpResponse({ status: 200, body: JSON.parse(cached) }));
-    }
-    return next(req).pipe(
-      tap(event => {
-        if (event instanceof HttpResponse) {
-          sessionStorage.setItem(req.url, JSON.stringify(event.body));
-        }
-      })
-    );
+  // Never run cache logic on the server — sessionStorage is browser-only
+  if (!isPlatformBrowser(platformId)) {
+    return next(req);
   }
+
+  // TODO: wire up real caching routes here
   return next(req);
 };
+

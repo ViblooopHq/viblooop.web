@@ -1,6 +1,7 @@
 {
   "name": "viblooop",
   "version": "1.0.0",
+  "type": "module",
   "license": "UNLICENSED",
   "scripts": {
     "ng": "ng",

@@ -1,5 +1,6 @@
+import { isPlatformBrowser } from '@angular/common';
 import { HttpErrorResponse, HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { catchError, switchMap, throwError } from 'rxjs';
@@ -12,6 +13,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 };
 
 export const authInterceptorWithRefresh: HttpInterceptorFn = (req, next) => {
+  const platformId = inject(PLATFORM_ID);
+  const isBrowser = isPlatformBrowser(platformId);
   const authService = inject(AuthService);
   const loaderService = inject(LoaderService);
 
@@ -19,6 +22,10 @@ export const authInterceptorWithRefresh: HttpInterceptorFn = (req, next) => {
 
   return next(clonedReq).pipe(
     catchError((error) => {
+      if (!isBrowser) {
+        return throwError(() => error);
+      }
+
       if (error.status === 401) {
         // Auth check endpoints, OTP, refresh or logout: do not attempt token refresh or trigger logout splash
         if (

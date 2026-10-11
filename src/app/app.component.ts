@@ -91,17 +91,17 @@ export class AppComponent implements OnInit {
     this.authService.userDetails$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(userData => {
-      if (userData) {
-        if (!this.completeProfileService.timerId) {
-          this.completeProfileService.timerId = setTimeout(() => {
-            this.completeProfileService.checkProfileAndShowPopup().subscribe();
-          }, 10000);
+        if (userData) {
+          if (!this.completeProfileService.timerId) {
+            this.completeProfileService.timerId = setTimeout(() => {
+              this.completeProfileService.checkProfileAndShowPopup().subscribe();
+            }, 10000);
+          }
+          this.socketService.connect();
+        } else {
+          this.socketService.disconnect();
         }
-        this.socketService.connect();
-      } else {
-        this.socketService.disconnect();
-      }
-    });
+      });
 
     this.themeService.loadTheme();
   }
@@ -109,7 +109,7 @@ export class AppComponent implements OnInit {
   private updateFooterVisibility(url: string) {
     const routePath = url.split('?')[0].split('#')[0].replace(/\/$/, '');
     this.hideHeader = routePath === '/login' || routePath.startsWith('/login/') || routePath === '/admin';
-    this.hideFooter = !['', '/explore', '/profile'].includes(routePath);
+    this.hideFooter = !['', '/explore', '/profile', '/safety-guidelines', '/privacy', '/terms'].includes(routePath);
   }
 
   private scrollToTopOnNavigation(url: string) {
