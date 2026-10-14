@@ -127,7 +127,7 @@ app.get('/robots.txt', (req, res) => {
   const filePath = join(browserDistFolder, 'robots.txt');
   res.sendFile(filePath, (err) => {
     if (err) {
-      res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login\nDisallow: /profile/\nSitemap: https://www.viblooop.com/sitemap.xml\n`);
+      res.send(`User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /profile/\nDisallow: /notifications\nDisallow: /chats\nDisallow: /my-wishlist\nDisallow: /create-event\n\nSitemap: https://www.viblooop.com/sitemap.xml\n`);
     }
   });
 });
