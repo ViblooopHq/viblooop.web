@@ -38,6 +38,7 @@ import {
   RequestActionState,
 } from '../../../shared/interfaces/event.interface';
 import { EventHeroComponent } from './components/event-hero/event-hero.component';
+import { SeoService } from '../../../shared/services/seo/seo.service';
 import { EventHostCardComponent } from './components/event-host-card/event-host-card.component';
 import { EventFactsComponent } from './components/event-facts/event-facts.component';
 import { EventMapPanelComponent } from './components/event-map-panel/event-map-panel.component';
@@ -117,6 +118,7 @@ export class EventDetailsComponent {
   private readonly toastService = inject(ToastService);
   private readonly titleService = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly seoService = inject(SeoService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly openCapacityLimit = 999999;
@@ -392,6 +394,9 @@ export class EventDetailsComponent {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.seoService.removeJsonLd('viblooop-event-jsonld');
+    });
 
     this.eventsService.eventUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -530,6 +535,24 @@ export class EventDetailsComponent {
 
         this.eventDetails.set(details);
         this.eventGalleryImages.set(galleryImages);
+
+        // Update Dynamic Event SEO & Schema.org Event JSON-LD
+        const eventTitle = details.title || 'Event Details';
+        const eventDesc = details.description
+          ? (details.description.length > 155 ? `${details.description.slice(0, 152)}...` : details.description)
+          : `Experience ${eventTitle} on Viblooop. Connect with attendees and view details.`;
+        const bannerImg = galleryImages[0]?.url || (details as any).banner || 'https://www.viblooop.com/og.png';
+
+        this.seoService.updateSeo({
+          title: `${eventTitle} | Viblooop`,
+          description: eventDesc,
+          canonicalUrl: `https://www.viblooop.com/events/${details._id || this.eventId()}`,
+          ogTitle: `${eventTitle} | Viblooop`,
+          ogDescription: eventDesc,
+          ogImage: bannerImg,
+          ogType: 'event',
+        });
+        this.seoService.setEventJsonLd(details);
 
         const attendees = Array.isArray(details.attendees) ? details.attendees : [];
         this.attendeeProfiles.set(attendees.map((attendee: any) => ({

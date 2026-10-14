@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /events
+Allow: /eventCategories/
+Allow: /terms
+Allow: /privacy
+Allow: /safety-guidelines
+Disallow: /admin
+Disallow: /login
+Disallow: /profile/
+Disallow: /notifications
+Disallow: /chats
+Disallow: /my-wishlist
+Disallow: /create-event
+
+Sitemap: https://www.viblooop.com/sitemap.xml
