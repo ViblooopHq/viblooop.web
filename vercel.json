@@ -9,7 +9,14 @@
             "dest": "/api"
         },
         {
-            "src": "^/(assets/.+|.+\\.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot))$",
+            "src": "^/(robots\\.txt|sitemap\\.xml)$",
+            "headers": {
+                "cache-control": "public, max-age=3600, must-revalidate"
+            },
+            "dest": "/api"
+        },
+        {
+            "src": "^/(assets/.+|.+\\.(png|jpg|jpeg|gif|webp|svg|ico|woff2?|ttf|eot|txt|xml|webmanifest))$",
             "headers": {
                 "cache-control": "public, max-age=86400"
             },

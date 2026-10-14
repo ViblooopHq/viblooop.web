@@ -119,6 +119,31 @@ app.get(
 );
 
 /**
+ * Serve robots.txt and sitemap.xml explicitly as text/xml so they never render as HTML
+ */
+app.get('/robots.txt', (req, res) => {
+  res.type('text/plain; charset=UTF-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  const filePath = join(browserDistFolder, 'robots.txt');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      res.send(`User-agent: *\nAllow: /\nDisallow: /admin\nDisallow: /login\nDisallow: /profile/\nSitemap: https://www.viblooop.com/sitemap.xml\n`);
+    }
+  });
+});
+
+app.get('/sitemap.xml', (req, res) => {
+  res.type('application/xml; charset=UTF-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
+  const filePath = join(browserDistFolder, 'sitemap.xml');
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      res.status(404).end();
+    }
+  });
+});
+
+/**
  * Handle all other requests by rendering the Angular application.
  */
 app.get('**', (req, res, next) => {
