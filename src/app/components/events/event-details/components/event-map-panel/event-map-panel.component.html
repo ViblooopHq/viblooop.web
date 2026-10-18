@@ -19,7 +19,7 @@
           <strong class="location-card__address">{{ locationLabel() }}</strong>
           @if (isMapVisible()) {
             <small class="location-card__hint">Venue coordinates verified</small>
-          } @else {
+          } @else if (!canAccessPrivateLocation()) {
             <small class="location-card__hint">Full landmark and directions will be unlocked</small>
           }
         </div>
@@ -45,7 +45,7 @@
           <span>View on Google Maps</span>
         </div>
       </div>
-    } @else {
+    } @else if (!canAccessPrivateLocation()) {
       <div class="location-privacy-banner">
         <span class="material-symbols-outlined" translate="no">lock</span>
         <span>Exact directions and interactive map are shared once you join this vibe.</span>

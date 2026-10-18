@@ -83,9 +83,8 @@ export class ExploreEventsComponent implements OnInit {
   filters = [
     { id: 'all', label: 'All', icon: 'celebration' },
     { id: 'tonight', label: 'Tonight', icon: 'sports_tennis' },
-    { id: 'this_weekend', label: 'This weekend', icon: 'self_improvement' },
-    { id: 'free', label: 'Free', icon: 'flight_takeoff' },
-    { id: 'nearby', label: 'Nearby', icon: 'location_on' }
+    { id: 'this_weekend', label: 'Weekend', icon: 'self_improvement' },
+    { id: 'free', label: 'Free', icon: 'flight_takeoff' }
   ];
 
   marketingSlides = [

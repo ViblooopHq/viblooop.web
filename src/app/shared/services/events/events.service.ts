@@ -169,6 +169,10 @@ export class EventsService {
     );
   }
 
+  uploadEventGalleryImages(eventData: FormData): Observable<any> {
+    return this.httpService.http.post(`${this.baseUrl}/uploadEventGalleryImages`, eventData);
+  }
+
   removeEventGalleryImage(eventId: string, imagePath: string): Observable<any> {
     return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath });
   }

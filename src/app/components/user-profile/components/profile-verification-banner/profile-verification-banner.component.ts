@@ -11,4 +11,5 @@ export class ProfileVerificationBannerComponent {
   isVerified = input(false);
 
   verify = output<void>();
+  dismiss = output<void>();
 }

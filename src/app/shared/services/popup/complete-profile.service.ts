@@ -10,7 +10,6 @@ export class CompleteProfileService {
   userService = inject(UserService);
   private _showPopup$ = new BehaviorSubject<boolean>(false);
   showPopup$ = this._showPopup$.asObservable();
-  timerId: any;
 
   hidePopup() {
     this._showPopup$.next(false);
@@ -31,7 +30,6 @@ export class CompleteProfileService {
   }
 
   checkProfileAndShowPopup(): Observable<boolean> {
-    this.clearTimer();
     return this.userService.getMyProfile().pipe(
       map((response) => {
         if (response?.success && response.statusCode === 200) {
@@ -57,11 +55,4 @@ export class CompleteProfileService {
     );
   }
   
-  clearTimer() {
-    if (this.timerId) {
-      clearTimeout(this.timerId);
-      this.timerId = null;
-    }
-  }
-
 }

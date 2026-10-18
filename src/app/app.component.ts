@@ -101,11 +101,6 @@ export class AppComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(userData => {
         if (userData) {
-          if (!this.completeProfileService.timerId) {
-            this.completeProfileService.timerId = setTimeout(() => {
-              this.completeProfileService.checkProfileAndShowPopup().subscribe();
-            }, 10000);
-          }
           this.socketService.connect();
         } else {
           this.socketService.disconnect();

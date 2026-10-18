@@ -71,6 +71,7 @@
 
       <vl-event-map-panel class="map-panel--mobile" [locationLabel]="locationLabel()"
         [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [canAccessPrivateLocation]="canAccessPrivateEventData()"
         [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
         (openInMaps)="openInGoogleMaps()" />
 
@@ -104,6 +105,7 @@
 
       <vl-event-map-panel class="map-panel--desktop" [locationLabel]="locationLabel()"
         [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
+        [canAccessPrivateLocation]="canAccessPrivateEventData()"
         [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
         (openInMaps)="openInGoogleMaps()" />
 

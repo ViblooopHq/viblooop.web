@@ -714,19 +714,15 @@ export class EventDetailsComponent {
 
     this.isUploadingGallery.set(true);
     const eventId = this.eventId();
-    const userId = this.currentUserId();
 
     const formData = new FormData();
     formData.append('eventId', eventId);
-    if (userId) {
-      formData.append('uploaderId', userId);
-    }
     for (const file of files) {
       const finalFile = await this.sharedService.convertHeicToJpg(file);
       formData.append('gallery', finalFile);
     }
 
-    this.eventsService.updateEvent(formData).subscribe({
+    this.eventsService.uploadEventGalleryImages(formData).subscribe({
       next: (res: any) => {
         this.isUploadingGallery.set(false);
         if (!res?.success || res.statusCode !== 200) {
@@ -741,13 +737,13 @@ export class EventDetailsComponent {
             return {
               path: image.path || image.url,
               url: this.sharedService.getImageUrl(image.path || image.url),
-              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy || userId,
+              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
             };
           }
           return {
             path: image,
             url: this.sharedService.getImageUrl(image),
-            uploaderId: userId,
+            uploaderId: '',
           };
         }));
         this.toastService.success('Photos added to event gallery!', 'Photos Uploaded');

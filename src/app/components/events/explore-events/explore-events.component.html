@@ -13,7 +13,8 @@
       </div>
     </div>
 
-    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId" (filterChange)="setActiveFilter($event)" />
+    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId"
+      placeholder="Search events or vibes" (filterChange)="setActiveFilter($event)" />
   </header>
 
   <!-- Categories -->
@@ -81,7 +82,8 @@
         @if (trendingEvents().length === 0) {
         <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
           [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
-          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
+          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" [compact]="true"
+          (exploreAll)="resetFilters()">
         </vl-empty-state>
         }
       }
