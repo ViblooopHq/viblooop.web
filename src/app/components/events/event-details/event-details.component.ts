@@ -541,12 +541,12 @@ export class EventDetailsComponent {
         const eventDesc = details.description
           ? (details.description.length > 155 ? `${details.description.slice(0, 152)}...` : details.description)
           : `Experience ${eventTitle} on Viblooop. Connect with attendees and view details.`;
-        const bannerImg = galleryImages[0]?.url || (details as any).banner || 'https://www.viblooop.com/og.png';
+        const bannerImg = galleryImages[0]?.url || (details as any).banner || Environment.ogImageUrl;
 
         this.seoService.updateSeo({
           title: `${eventTitle} | Viblooop`,
           description: eventDesc,
-          canonicalUrl: `https://www.viblooop.com/events/${details._id || this.eventId()}`,
+          canonicalUrl: `${Environment.ogPageUrl}/events/${details._id || this.eventId()}`,
           ogTitle: `${eventTitle} | Viblooop`,
           ogDescription: eventDesc,
           ogImage: bannerImg,

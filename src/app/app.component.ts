@@ -33,6 +33,7 @@ import { AppSplashService } from './shared/services/app-splash/app-splash.servic
 import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
 import { FormDrawerComponent } from './shared/components/form-drawer/form-drawer.component';
 import { MyPlansComponent } from './components/events/my-plans/my-plans.component';
+import { Environment } from '../environment';
 
 import { inject as injectAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
@@ -127,7 +128,7 @@ export class AppComponent implements OnInit {
     }
     const data = route.snapshot.data;
     const cleanPath = url.split('?')[0].split('#')[0].replace(/\/$/, '');
-    const canonicalUrl = `https://www.viblooop.com${cleanPath || '/'}`;
+    const canonicalUrl = `${Environment.ogPageUrl}${cleanPath || '/'}`;
 
     if (data && (data['description'] || data['robots'])) {
       this.seoService.updateSeo({

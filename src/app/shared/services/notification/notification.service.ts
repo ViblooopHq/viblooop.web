@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { BrowserService } from '../browser/browser.service';
+import { Environment } from '../../../../environment';
 
 
 @Injectable({
@@ -11,7 +12,7 @@ import { BrowserService } from '../browser/browser.service';
 })
 export class NotificationService {
 
-  private VAPID_PUBLIC_KEY = 'BNwtY28kNtbJGclvRNp_w8bDKb30n24FoML-azegKMVIfpR2xa71oGAVnjdUWdmmrmYjZ8J55eYkr-_JgmbF99Y';
+  private VAPID_PUBLIC_KEY = Environment.vapidKey || 'BNwtY28kNtbJGclvRNp_w8bDKb30n24FoML-azegKMVIfpR2xa71oGAVnjdUWdmmrmYjZ8J55eYkr-_JgmbF99Y';
   private messaging = inject(Messaging);
   private authService = inject(AuthService);
   private http = inject(HttpClient);
