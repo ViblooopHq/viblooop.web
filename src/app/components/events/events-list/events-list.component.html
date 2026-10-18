@@ -45,6 +45,7 @@
       [filters]="timeFilters"
       [activeFilterId]="activeTimeFilter"
       [searchTerm]="searchTerm"
+      placeholder="Search events or vibes"
       [searchAriaLabel]="categoryId ? 'Search category events' : 'Search all live events'"
       (searchTermChange)="onSearchChange($event)"
       (filterChange)="setTimeFilter($event)" />

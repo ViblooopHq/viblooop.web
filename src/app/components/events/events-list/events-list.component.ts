@@ -98,9 +98,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
   timeFilters = [
     { id: 'all', label: 'All' },
     { id: 'tonight', label: 'Tonight' },
-    { id: 'this_weekend', label: 'This weekend' },
+    { id: 'this_weekend', label: 'Weekend' },
     { id: 'free', label: 'Free' },
-    { id: 'nearby', label: 'Nearby' },
   ];
 
   goBack(): void {
