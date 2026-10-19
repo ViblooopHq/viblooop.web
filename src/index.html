@@ -6,30 +6,63 @@
   <title>Viblooop — Discover, Experience & Connect</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="description" content="Discover vibrant local events, meet genuine people, and experience real-life social gatherings near you with Viblooop.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://www.viblooop.com/">
+
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#121212">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
 
-  <!-- Open Graph -->
-  <meta property="og:title" content="Viblooop - Discover, Experience & Connect" />
-  <meta property="og:description" content="Discover events, connect with people, and experience real life near you." />
-  <meta property="og:image" content="https://example.com/image.jpg" />
-  <meta property="og:url" content="https://example.com/page" />
+  <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Viblooop" />
+  <meta property="og:title" content="Viblooop — Discover, Experience & Connect" />
+  <meta property="og:description" content="Discover vibrant local events, meet genuine people, and experience real-life social gatherings near you with Viblooop." />
+  <meta property="og:image" content="https://www.viblooop.com/og.png" />
+  <meta property="og:url" content="https://www.viblooop.com/" />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Viblooop - Discover, Experience & Connect" />
-  <meta name="twitter:description" content="Discover events, connect with people, and experience real life near you." />
-  <meta name="twitter:image" content="/assets/images/dark-logo.png" />
+  <meta name="twitter:title" content="Viblooop — Discover, Experience & Connect" />
+  <meta name="twitter:description" content="Discover vibrant local events, meet genuine people, and experience real-life social gatherings near you with Viblooop." />
+  <meta name="twitter:image" content="https://www.viblooop.com/og.png" />
   <meta name="twitter:site" content="@viblooop" />
 
-  <link rel="manifest" href="manifest.webmanifest">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- Structured Data (JSON-LD) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://www.viblooop.com/#website",
+        "url": "https://www.viblooop.com/",
+        "name": "Viblooop",
+        "description": "Discover vibrant local events, meet genuine people, and experience real-life social gatherings near you.",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://www.viblooop.com/events?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://www.viblooop.com/#organization",
+        "name": "Viblooop",
+        "url": "https://www.viblooop.com/",
+        "logo": "https://www.viblooop.com/favicon-32x32.png",
+        "sameAs": [
+          "https://twitter.com/viblooop"
+        ]
+      }
+    ]
+  }
+  </script>
 
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

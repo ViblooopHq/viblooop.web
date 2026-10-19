@@ -12,6 +12,7 @@ export class EventMapPanelComponent {
   locationLabel = input('Location TBA');
   locationSubtitle = input('');
   showLocationSubtitle = input(false);
+  canAccessPrivateLocation = input(false);
   isMapVisible = input(false);
   mapOptions = input<google.maps.MapOptions>({ zoom: 16 });
   mapPosition = input<google.maps.LatLngLiteral>({ lat: 0, lng: 0 });

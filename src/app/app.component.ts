@@ -34,6 +34,11 @@ import { ToastContainerComponent } from './shared/components/toast-container/toa
 import { FormDrawerComponent } from './shared/components/form-drawer/form-drawer.component';
 import { MyPlansComponent } from './components/events/my-plans/my-plans.component';
 
+import { inject as injectAnalytics } from '@vercel/analytics';
+import { injectSpeedInsights } from '@vercel/speed-insights';
+import { SeoService } from './shared/services/seo/seo.service';
+import { ActivatedRoute } from '@angular/router';
+
 @Component({
   selector: 'vl-app-root',
   imports: [
@@ -72,10 +77,13 @@ export class AppComponent implements OnInit {
   appDrawerService = inject(AppDrawerService);
   messageService = inject(MessageService);
   appSplashService = inject(AppSplashService);
+  seoService = inject(SeoService);
+  activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.updateFooterVisibility(this.angularRouter.url);
+    this.updateSeoOnNavigation(this.angularRouter.url);
     this.angularRouter.events
       .pipe(
         filter((event): event is NavigationEnd => event instanceof NavigationEnd),
@@ -84,6 +92,7 @@ export class AppComponent implements OnInit {
       .subscribe((event) => {
         this.updateFooterVisibility(event.urlAfterRedirects);
         this.scrollToTopOnNavigation(event.urlAfterRedirects);
+        this.updateSeoOnNavigation(event.urlAfterRedirects);
       });
 
     this.authService.initAuth();
@@ -92,11 +101,6 @@ export class AppComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(userData => {
         if (userData) {
-          if (!this.completeProfileService.timerId) {
-            this.completeProfileService.timerId = setTimeout(() => {
-              this.completeProfileService.checkProfileAndShowPopup().subscribe();
-            }, 10000);
-          }
           this.socketService.connect();
         } else {
           this.socketService.disconnect();
@@ -104,6 +108,32 @@ export class AppComponent implements OnInit {
       });
 
     this.themeService.loadTheme();
+
+    if (this.browserService.isBrowserPlatform()) {
+      injectAnalytics();
+      injectSpeedInsights();
+    }
+  }
+
+  private updateSeoOnNavigation(url: string) {
+    let route = this.activatedRoute;
+    while (route.firstChild) {
+      route = route.firstChild;
+    }
+    const data = route.snapshot.data;
+    const cleanPath = url.split('?')[0].split('#')[0].replace(/\/$/, '');
+    const canonicalUrl = `https://www.viblooop.com${cleanPath || '/'}`;
+
+    if (data && (data['description'] || data['robots'])) {
+      this.seoService.updateSeo({
+        description: data['description'],
+        canonicalUrl,
+        robots: data['robots'],
+        ogUrl: canonicalUrl,
+      });
+    } else {
+      this.seoService.updateCanonicalUrl(canonicalUrl);
+    }
   }
 
   private updateFooterVisibility(url: string) {

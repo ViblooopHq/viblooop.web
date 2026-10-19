@@ -80,6 +80,7 @@ export class UserProfileComponent implements OnInit {
   showAllHostedEvents = false;
   defaultProfileImage = 'assets/images/default-profile.png';
   isSelfieVerificationOpen = false;
+  showVerificationPrompt = true;
   isLogoutModalOpen = false;
   isUpdateAvatarModalOpen = false;
 

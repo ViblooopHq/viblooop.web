@@ -38,6 +38,7 @@ import {
   RequestActionState,
 } from '../../../shared/interfaces/event.interface';
 import { EventHeroComponent } from './components/event-hero/event-hero.component';
+import { SeoService } from '../../../shared/services/seo/seo.service';
 import { EventHostCardComponent } from './components/event-host-card/event-host-card.component';
 import { EventFactsComponent } from './components/event-facts/event-facts.component';
 import { EventMapPanelComponent } from './components/event-map-panel/event-map-panel.component';
@@ -117,6 +118,7 @@ export class EventDetailsComponent {
   private readonly toastService = inject(ToastService);
   private readonly titleService = inject(Title);
   private readonly meta = inject(Meta);
+  private readonly seoService = inject(SeoService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly openCapacityLimit = 999999;
@@ -392,6 +394,9 @@ export class EventDetailsComponent {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.seoService.removeJsonLd('viblooop-event-jsonld');
+    });
 
     this.eventsService.eventUpdated$
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -530,6 +535,24 @@ export class EventDetailsComponent {
 
         this.eventDetails.set(details);
         this.eventGalleryImages.set(galleryImages);
+
+        // Update Dynamic Event SEO & Schema.org Event JSON-LD
+        const eventTitle = details.title || 'Event Details';
+        const eventDesc = details.description
+          ? (details.description.length > 155 ? `${details.description.slice(0, 152)}...` : details.description)
+          : `Experience ${eventTitle} on Viblooop. Connect with attendees and view details.`;
+        const bannerImg = galleryImages[0]?.url || (details as any).banner || 'https://www.viblooop.com/og.png';
+
+        this.seoService.updateSeo({
+          title: `${eventTitle} | Viblooop`,
+          description: eventDesc,
+          canonicalUrl: `https://www.viblooop.com/events/${details._id || this.eventId()}`,
+          ogTitle: `${eventTitle} | Viblooop`,
+          ogDescription: eventDesc,
+          ogImage: bannerImg,
+          ogType: 'event',
+        });
+        this.seoService.setEventJsonLd(details);
 
         const attendees = Array.isArray(details.attendees) ? details.attendees : [];
         this.attendeeProfiles.set(attendees.map((attendee: any) => ({
@@ -691,19 +714,15 @@ export class EventDetailsComponent {
 
     this.isUploadingGallery.set(true);
     const eventId = this.eventId();
-    const userId = this.currentUserId();
 
     const formData = new FormData();
     formData.append('eventId', eventId);
-    if (userId) {
-      formData.append('uploaderId', userId);
-    }
     for (const file of files) {
       const finalFile = await this.sharedService.convertHeicToJpg(file);
       formData.append('gallery', finalFile);
     }
 
-    this.eventsService.updateEvent(formData).subscribe({
+    this.eventsService.uploadEventGalleryImages(formData).subscribe({
       next: (res: any) => {
         this.isUploadingGallery.set(false);
         if (!res?.success || res.statusCode !== 200) {
@@ -718,13 +737,13 @@ export class EventDetailsComponent {
             return {
               path: image.path || image.url,
               url: this.sharedService.getImageUrl(image.path || image.url),
-              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy || userId,
+              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
             };
           }
           return {
             path: image,
             url: this.sharedService.getImageUrl(image),
-            uploaderId: userId,
+            uploaderId: '',
           };
         }));
         this.toastService.success('Photos added to event gallery!', 'Photos Uploaded');

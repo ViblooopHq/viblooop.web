@@ -1,122 +1,115 @@
 :host {
-  display: contents;
+  display: block;
+  margin-top: var(--space-4);
 }
 
 .vl-user-profile__photo-verification {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: var(--space-4);
-  margin-top: var(--space-4);
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid color-mix(in srgb, var(--color-border) 80%, rgba(255, 255, 255, 0.08));
-  border-radius: var(--radius-xl, 1rem);
-  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.15);
-  transition: all var(--transition-fast);
+  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.75rem 1rem;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, #fff 8%);
+  border-radius: 1.125rem;
+  background: color-mix(in srgb, var(--color-surface) 92%, #080c10);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  color: var(--color-text-primary);
 
   &--verified {
-    border-color: color-mix(in srgb, var(--color-success) 35%, var(--color-border));
-    background: radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
-      color-mix(in srgb, var(--color-surface) 90%, transparent);
+    grid-template-columns: 3.25rem minmax(0, 1fr);
+    align-items: center;
+    border-color: color-mix(in srgb, var(--color-success) 45%, var(--color-border));
 
     .vl-user-profile__photo-verification-icon {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(16, 185, 129, 0.08));
-      border: 1px solid rgba(16, 185, 129, 0.3);
-      color: var(--color-success);
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.2);
-    }
-
-    .vl-user-profile__photo-verification-heading > span {
-      background-color: var(--color-success-soft);
-      border: 1px solid var(--color-success-border);
-      color: var(--color-success);
+      width: 3rem;
+      height: 3rem;
     }
   }
 }
 
 .vl-user-profile__photo-verification-icon {
   display: grid;
+  grid-row: 1 / span 2;
   place-items: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 0.875rem;
-  background: linear-gradient(135deg, rgba(124, 58, 237, 0.2), rgba(124, 58, 237, 0.06));
-  border: 1px solid rgba(124, 58, 237, 0.25);
-  color: var(--color-primary);
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.18);
+  width: 4.25rem;
+  height: 4.25rem;
+  color: #dbeafe;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
 
   .material-symbols-outlined {
-    font-size: 1.5rem;
+    font-size: 4rem;
+    font-variation-settings: 'FILL' 1, 'wght' 500;
+    color: #a7c98d;
+    -webkit-text-stroke: 1px #d1e4ba;
   }
 }
 
 .vl-user-profile__photo-verification-copy {
   display: grid;
-  gap: 3px;
+  justify-items: start;
+  gap: 0.35rem;
   min-width: 0;
+
+  strong {
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
 
   small {
     color: var(--color-text-secondary);
-    font-size: var(--text-body-sm);
+    font-size: 1.05rem;
     line-height: 1.4;
   }
 }
 
-.vl-user-profile__photo-verification-heading {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  min-width: 0;
-
-  strong {
-    color: var(--color-text-primary);
-    font-size: var(--text-body);
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
-  }
-
-  > span {
-    display: inline-flex;
-    align-items: center;
-    padding: 2px 9px;
-    border-radius: var(--radius-pill);
-    background-color: var(--color-primary-soft);
-    border: 1px solid color-mix(in srgb, var(--color-primary) 25%, transparent);
-    color: var(--color-primary);
-    font-size: var(--text-caption);
-    font-weight: 700;
-    line-height: 1;
-  }
-}
-
 .vl-user-profile__photo-verification-action {
-  gap: 6px;
-  min-height: 42px;
-  padding: 0 var(--space-5);
-  border-radius: var(--radius-pill, 9999px);
-  white-space: nowrap;
-  font-weight: 700;
-  box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+  min-height: 2.75rem;
+  margin-top: 0.55rem;
+  padding: 0 1.35rem;
+  border: 2px solid var(--color-info, #38bdf8);
+  border-radius: 9999px;
+  background: transparent;
+  color: var(--color-info, #38bdf8);
+  font-size: 1.1rem;
+  font-weight: 600;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-info) 18%, transparent);
 
-  .material-symbols-outlined {
-    font-size: 1.1rem;
+  &:hover {
+    background: color-mix(in srgb, var(--color-info) 12%, transparent);
   }
 }
 
-@media (max-width: 768px) {
+.vl-user-profile__photo-verification-dismiss {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0.15rem 0.1rem 0 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-text-primary);
+  cursor: pointer;
+
+  .material-symbols-outlined { font-size: 2rem; }
+
+  &:hover { background: color-mix(in srgb, var(--color-text-primary) 10%, transparent); }
+  &:focus-visible { outline: 2px solid var(--color-info); outline-offset: 2px; }
+}
+
+@media (max-width: 600px) {
   .vl-user-profile__photo-verification {
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: var(--space-3);
-    padding: var(--space-3) var(--space-4);
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
+    padding: 1.15rem;
   }
 
-  .vl-user-profile__photo-verification-action {
-    grid-column: 1 / -1;
-    width: 100%;
+  .vl-user-profile__photo-verification-icon {
+    width: 3rem;
+    height: 3rem;
+    .material-symbols-outlined { font-size: 3rem; }
   }
+
+  .vl-user-profile__photo-verification-copy small { font-size: 0.95rem; }
 }

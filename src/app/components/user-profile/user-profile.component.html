@@ -38,10 +38,11 @@
           </vl-gallery>
         }
 
-        @if (isCurrentUser && !isVerified) {
+        @if (isCurrentUser && !isVerified && showVerificationPrompt) {
           <vl-profile-verification-banner
             [isVerified]="isVerified"
-            (verify)="verifyGovernmentID()">
+            (verify)="verifyGovernmentID()"
+            (dismiss)="showVerificationPrompt = false">
           </vl-profile-verification-banner>
         }
 

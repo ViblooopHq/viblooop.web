@@ -60,7 +60,7 @@ const EMPTY_STATE_PRESENTATIONS: Record<EmptyStateKind, EmptyStatePresentation> 
     secondaryIcon: 'history',
   },
   events: {
-    action: 'Create Event Plan',
+    action: 'Create a Vibe',
     primaryIcon: 'celebration',
     secondaryIcon: 'auto_awesome',
   },
@@ -142,6 +142,7 @@ export class EmptyStateComponent {
   @Input() createRoute = '/create-event';
   @Input() image = '';
   @Input() imageAlt = '';
+  @Input() compact = false;
 
   @Output() exploreAll = new EventEmitter<void>();
 

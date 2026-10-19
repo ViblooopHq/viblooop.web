@@ -1,0 +1,10 @@
+User-agent: *
+Disallow: /admin
+Disallow: /login
+Disallow: /profile/
+Disallow: /notifications
+Disallow: /chats
+Disallow: /my-wishlist
+Disallow: /create-event
+
+Sitemap: https://www.viblooop.com/sitemap.xml
