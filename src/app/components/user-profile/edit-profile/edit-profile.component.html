@@ -261,7 +261,7 @@
         <div class="vl-edit-profile__submit-wrap">
           <button type="submit" class="vl-edit-profile__save-btn" [disabled]="!canSaveProfile">
             <span class="material-symbols-outlined" translate="no">check</span>
-            <span>{{ isSaving ? 'Saving Changes...' : 'Save Profile' }}</span>
+            <span>{{ isSaving ? profileConstants.SAVING_PROFILE_BTN : profileConstants.SAVE_PROFILE_BTN }}</span>
           </button>
         </div>
 
@@ -322,14 +322,14 @@
     <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--logout">
       <span class="material-symbols-outlined" translate="no">logout</span>
     </div>
-    <h2 id="logout-confirm-title">Sign out?</h2>
-    <p>You’ll need to sign in again to access your account.</p>
+    <h2 id="logout-confirm-title">{{ profileConstants.LOGOUT_DIALOG_TITLE }}</h2>
+    <p>{{ profileConstants.LOGOUT_DIALOG_MESSAGE }}</p>
 
     <div class="vl-edit-profile__dialog-actions">
       <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
-        (click)="closeLogoutDialog()">Cancel</button>
+        (click)="closeLogoutDialog()">{{ profileConstants.LOGOUT_CANCEL_BTN }}</button>
       <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
-        (click)="confirmLogout()">Logout</button>
+        (click)="confirmLogout()">{{ profileConstants.LOGOUT_CONFIRM_BTN }}</button>
     </div>
   </section>
 </div>
@@ -343,31 +343,31 @@
     <div class="vl-edit-profile__dialog-icon vl-edit-profile__dialog-icon--delete">
       <span class="material-symbols-outlined" translate="no">delete</span>
     </div>
-    <h2 id="delete-confirm-title">Delete Account</h2>
-    <p>This action cannot be undone.</p>
+    <h2 id="delete-confirm-title">{{ profileConstants.DELETE_ACCOUNT_DIALOG_TITLE }}</h2>
+    <p>{{ profileConstants.DELETE_ACCOUNT_DIALOG_SUBTITLE }}</p>
 
     <ul class="vl-edit-profile__dialog-list">
       <li>
         <span class="material-symbols-outlined" translate="no">person_off</span>
-        Your profile will be removed
+        {{ profileConstants.DELETE_ACCOUNT_WARNING_PROFILE }}
       </li>
       <li>
         <span class="material-symbols-outlined" translate="no">event_busy</span>
-        Events you’ve created will be cancelled
+        {{ profileConstants.DELETE_ACCOUNT_WARNING_EVENTS }}
       </li>
       <li>
         <span class="material-symbols-outlined" translate="no">chat_bubble</span>
-        Chats, reviews and data will be deleted
+        {{ profileConstants.DELETE_ACCOUNT_WARNING_DATA }}
       </li>
     </ul>
 
     <div class="vl-edit-profile__dialog-actions">
       <button type="button" class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--secondary"
-        (click)="closeDeleteDialog()" [disabled]="isDeletingAccount">Keep Account</button>
+        (click)="closeDeleteDialog()" [disabled]="isDeletingAccount">{{ profileConstants.DELETE_ACCOUNT_CANCEL_BTN }}</button>
       <button type="button"
         class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary vl-edit-profile__dialog-button--danger"
         (click)="confirmDeleteAccount()" [disabled]="isDeletingAccount">
-        {{ isDeletingAccount ? 'Deleting...' : 'Delete Forever' }}
+        {{ isDeletingAccount ? profileConstants.DELETE_ACCOUNT_DELETING_BTN : profileConstants.DELETE_ACCOUNT_CONFIRM_BTN }}
       </button>
     </div>
   </section>
@@ -416,7 +416,7 @@
         class="vl-edit-profile__dialog-button vl-edit-profile__dialog-button--primary"
         [class.vl-edit-profile__dialog-button--danger]="deleteResultModal.type === 'error'"
         (click)="closeDeleteResultModal()">
-        {{ deleteResultModal.type === 'error' ? 'Close' : 'Okay' }}
+        {{ deleteResultModal.type === 'error' ? profileConstants.DELETE_RESULT_MODAL_CLOSE_BTN : profileConstants.DELETE_RESULT_MODAL_OK_BTN }}
       </button>
     </div>
   </section>

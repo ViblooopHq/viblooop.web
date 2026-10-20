@@ -1,115 +1,262 @@
 :host {
   display: block;
-  margin-top: var(--space-4);
+  margin-top: var(--space-4, 1rem);
 }
 
 .vl-user-profile__photo-verification {
-  display: grid;
-  grid-template-columns: 5.5rem minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 0.75rem 1rem;
-  padding: 1.5rem 1.75rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 70%, #fff 8%);
-  border-radius: 1.125rem;
-  background: color-mix(in srgb, var(--color-surface) 92%, #080c10);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.16);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4, 1rem);
+  padding: clamp(1rem, 2vw, 1.25rem) 3.5rem clamp(1rem, 2vw, 1.25rem) clamp(1.25rem, 2.5vw, 1.75rem);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl, 20px);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-primary-soft) 35%, var(--color-surface)) 0%,
+    var(--color-surface) 60%
+  );
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-sm);
   color: var(--color-text-primary);
+  transition: border-color var(--transition-base, 0.2s ease), box-shadow var(--transition-base, 0.2s ease);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
 
   &--verified {
-    grid-template-columns: 3.25rem minmax(0, 1fr);
-    align-items: center;
-    border-color: color-mix(in srgb, var(--color-success) 45%, var(--color-border));
+    border-color: var(--color-success-border);
+    padding-right: clamp(1.25rem, 2.5vw, 1.75rem);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-success-soft) 35%, var(--color-surface)) 0%,
+      var(--color-surface) 60%
+    );
 
     .vl-user-profile__photo-verification-icon {
-      width: 3rem;
-      height: 3rem;
+      background-color: var(--color-success-soft);
+      color: var(--color-success);
+      border-color: var(--color-success-border);
     }
   }
 }
 
+.vl-user-profile__photo-verification-content {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3, 0.75rem);
+  min-width: 0;
+  flex: 1;
+}
+
 .vl-user-profile__photo-verification-icon {
   display: grid;
-  grid-row: 1 / span 2;
   place-items: center;
-  width: 4.25rem;
-  height: 4.25rem;
-  color: #dbeafe;
-  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.35));
+  width: 3rem;
+  height: 3rem;
+  border-radius: var(--radius-lg, 16px);
+  background-color: var(--color-primary-soft);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+  flex-shrink: 0;
+  transition: transform var(--transition-fast, 0.15s ease);
 
   .material-symbols-outlined {
-    font-size: 4rem;
+    font-size: 1.5rem;
     font-variation-settings: 'FILL' 1, 'wght' 500;
-    color: #a7c98d;
-    -webkit-text-stroke: 1px #d1e4ba;
   }
 }
 
 .vl-user-profile__photo-verification-copy {
-  display: grid;
-  justify-items: start;
-  gap: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
   min-width: 0;
 
-  strong {
-    font-size: clamp(1.25rem, 2vw, 1.65rem);
-    line-height: 1.2;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  small {
+  p {
+    margin: 0;
     color: var(--color-text-secondary);
-    font-size: 1.05rem;
-    line-height: 1.4;
+    font-size: var(--text-body, 0.875rem);
+    line-height: var(--line-height-normal, 1.5);
   }
 }
 
-.vl-user-profile__photo-verification-action {
-  min-height: 2.75rem;
-  margin-top: 0.55rem;
-  padding: 0 1.35rem;
-  border: 2px solid var(--color-info, #38bdf8);
-  border-radius: 9999px;
-  background: transparent;
-  color: var(--color-info, #38bdf8);
-  font-size: 1.1rem;
+.vl-user-profile__photo-verification-title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
+  flex-wrap: wrap;
+
+  strong {
+    font-size: var(--text-h4, 1.125rem);
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+}
+
+.vl-user-profile__photo-verification-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--color-success-soft);
+  color: var(--color-success);
+  font-size: var(--text-caption, 0.75rem);
   font-weight: 600;
-  box-shadow: 0 0 10px color-mix(in srgb, var(--color-info) 18%, transparent);
+  line-height: 1;
+
+  .material-symbols-outlined {
+    font-size: 0.875rem;
+  }
+}
+
+.vl-user-profile__photo-verification-action-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.vl-user-profile__photo-verification-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2, 0.5rem);
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill, 999px);
+  background-color: var(--color-primary);
+  color: var(--color-on-primary, #ffffff);
+  font-family: var(--font-family-primary);
+  font-size: var(--text-body, 0.875rem);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  box-shadow: var(--shadow-sm);
+  transition:
+    background-color var(--transition-base, 0.2s ease),
+    box-shadow var(--transition-base, 0.2s ease),
+    transform var(--transition-fast, 0.15s ease);
+
+  .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
 
   &:hover {
-    background: color-mix(in srgb, var(--color-info) 12%, transparent);
+    background-color: var(--color-primary-hover);
+    box-shadow: 0 4px 14px color-mix(in srgb, var(--color-primary) 32%, transparent);
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 }
 
 .vl-user-profile__photo-verification-dismiss {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin: 0.15rem 0.1rem 0 0;
-  border: 0;
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-text-primary);
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full, 50%);
+  background-color: transparent;
+  color: var(--color-text-tertiary);
   cursor: pointer;
+  user-select: none;
+  z-index: 2;
+  transition:
+    background-color var(--transition-base, 0.2s ease),
+    color var(--transition-base, 0.2s ease),
+    transform var(--transition-fast, 0.15s ease);
 
-  .material-symbols-outlined { font-size: 2rem; }
+  .material-symbols-outlined {
+    font-size: 1.25rem;
+  }
 
-  &:hover { background: color-mix(in srgb, var(--color-text-primary) 10%, transparent); }
-  &:focus-visible { outline: 2px solid var(--color-info); outline-offset: 2px; }
+  &:hover {
+    background-color: var(--color-surface-interactive);
+    color: var(--color-text-primary);
+  }
+
+  &:active {
+    transform: translateY(-50%) scale(0.92);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .vl-user-profile__photo-verification {
-    grid-template-columns: 3.5rem minmax(0, 1fr) auto;
-    padding: 1.15rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3, 0.75rem);
+    padding: 1rem 1rem 1.125rem;
+  }
+
+  .vl-user-profile__photo-verification-content {
+    align-items: flex-start;
+    padding-right: 2.25rem; /* Guarantees copy never overlaps the top-right close icon */
+    gap: var(--space-2, 0.5rem);
   }
 
   .vl-user-profile__photo-verification-icon {
-    width: 3rem;
-    height: 3rem;
-    .material-symbols-outlined { font-size: 3rem; }
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: var(--radius-md, 12px);
+
+    .material-symbols-outlined {
+      font-size: 1.35rem;
+    }
   }
 
-  .vl-user-profile__photo-verification-copy small { font-size: 0.95rem; }
+  .vl-user-profile__photo-verification-copy {
+    p {
+      font-size: var(--text-body-sm, 0.8125rem);
+    }
+  }
+
+  .vl-user-profile__photo-verification-title-row strong {
+    font-size: 1rem;
+  }
+
+  .vl-user-profile__photo-verification-action-wrap {
+    width: 100%;
+  }
+
+  .vl-user-profile__photo-verification-action {
+    width: 100%;
+    height: 2.625rem;
+  }
+
+  .vl-user-profile__photo-verification-dismiss {
+    top: 0.75rem;
+    right: 0.75rem;
+    transform: none;
+
+    &:active {
+      transform: scale(0.92);
+    }
+  }
 }
