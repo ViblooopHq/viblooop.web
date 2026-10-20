@@ -33,7 +33,7 @@ export class AuthService {
       message: 'Connecting to Google...',
       subtitle: 'Redirecting to secure login',
     });
-    const url = this.logInbaseUrl + "/auth/google";
+    const url = `${this.logInbaseUrl}/google`;
     window.location.href = url;
   }
 

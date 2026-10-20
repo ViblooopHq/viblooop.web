@@ -30,7 +30,7 @@
   "dataGroups": [
     {
       "name": "Get APIs",
-      "urls": ["http://localhost:8000/api/categories"],
+      "urls": ["/api/categories", "**/api/categories"],
       "cacheConfig": {
          "maxSize": 100,
          "maxAge": "1h",

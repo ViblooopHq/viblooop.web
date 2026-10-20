@@ -58,6 +58,7 @@ desktop.ini
 !.env.example
 .vercel/
 src/environment.ts
+src/environment.prod.ts
 src/assets/firebase-messaging-sw.js
 
 # Secrets
