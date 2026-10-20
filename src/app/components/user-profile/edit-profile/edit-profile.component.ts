@@ -1,6 +1,5 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { UserService } from '../../../shared/services/user/user.service';
@@ -59,7 +58,6 @@ export class EditProfileComponent implements OnInit {
   private userService = inject(UserService);
   private routeService = inject(RouteService);
   private appDrawerService = inject(AppDrawerService);
-  private router = inject(Router);
 
   profileForm!: FormGroup;
   defaultProfile = 'assets/images/default-profile.png';
@@ -73,6 +71,14 @@ export class EditProfileComponent implements OnInit {
   saveError = '';
   showLogoutDialog = false;
   showDeleteDialog = false;
+  isDeletingAccount = false;
+  isAccountDeleted = false;
+  deleteResultModal: {
+    type: 'success' | 'info' | 'error';
+    title: string;
+    message: string;
+    details?: string[];
+  } | null = null;
   selectedSocialPlatform = 'instagram';
   socialLinkDraft = '';
   socialLinks: SocialLink[] = [];
@@ -177,6 +183,9 @@ export class EditProfileComponent implements OnInit {
   }
 
   canDeactivate(): boolean {
+    if (this.isAccountDeleted) {
+      return true;
+    }
     if (this.profileForm?.dirty && !this.isSaving) {
       return confirm('You have unsaved changes! Are you sure you want to leave this page?');
     }
@@ -213,12 +222,71 @@ export class EditProfileComponent implements OnInit {
   }
 
   closeDeleteDialog(): void {
+    if (this.isDeletingAccount) return;
     this.showDeleteDialog = false;
   }
 
   confirmDeleteAccount(): void {
-    this.showDeleteDialog = false;
-    alert('Delete account is not connected yet.');
+    if (this.isDeletingAccount) return;
+    this.isDeletingAccount = true;
+
+    this.userService.deleteAccount().subscribe({
+      next: (res: any) => {
+        this.isDeletingAccount = false;
+        this.showDeleteDialog = false;
+
+        if (!res?.success) {
+          const errorMessage = res?.message || 'Unable to delete account. Please try again.';
+          this.saveError = errorMessage;
+          this.deleteResultModal = {
+            type: 'error',
+            title: res?.title || 'Unable to Delete Account',
+            message: errorMessage,
+            details: Array.isArray(res?.details) ? res.details : undefined,
+          };
+          return;
+        }
+
+        const message = res?.message || 'Account deletion has been initiated.';
+        const isInfo = res?.type === 'info' ||
+          message.toLowerCase().includes('initiated') ||
+          message.toLowerCase().includes('scheduled') ||
+          message.toLowerCase().includes('pending');
+
+        this.isAccountDeleted = true;
+        this.profileForm.markAsPristine();
+
+        this.deleteResultModal = {
+          type: res?.type === 'info' || res?.type === 'success' ? res.type : (isInfo ? 'info' : 'success'),
+          title: res?.title || (isInfo ? 'Deletion Initiated' : 'Account Deleted'),
+          message,
+          details: Array.isArray(res?.details) ? res.details : undefined,
+        };
+      },
+      error: (err) => {
+        this.isDeletingAccount = false;
+        this.showDeleteDialog = false;
+        const errorMessage = err?.error?.message || err?.message || 'Unable to delete account. Please try again.';
+        this.saveError = errorMessage;
+        this.deleteResultModal = {
+          type: 'error',
+          title: err?.error?.title || 'Unable to Delete Account',
+          message: errorMessage,
+        };
+      }
+    });
+  }
+
+  closeDeleteResultModal(): void {
+    const shouldLogout = this.deleteResultModal?.type === 'success' || this.deleteResultModal?.type === 'info';
+    this.deleteResultModal = null;
+
+    if (shouldLogout) {
+      this.profileForm.markAsPristine();
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
+      this.authService.logout();
+    }
   }
 
   verifySelfie(): void {

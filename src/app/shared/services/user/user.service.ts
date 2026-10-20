@@ -33,4 +33,8 @@ export class UserService {
     return this.httpService.http.get(this.baseUrl + `/getAllInterests`);
   }
 
+  deleteAccount() {
+    return this.httpService.http.delete(this.baseUrl + `/delete-account`);
+  }
+
 }
