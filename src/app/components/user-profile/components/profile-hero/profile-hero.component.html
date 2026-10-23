@@ -23,8 +23,25 @@
     <p class="vl-meta vl-user-profile__handle">{{ handle() }}</p>
     <p class="vl-body vl-user-profile__bio">{{ bio() }}</p>
 
-    <div class="vl-user-profile__vibes">
-      <vl-interest-pill-list [interests]="previewInterests()"></vl-interest-pill-list>
+    <div class="vl-user-profile__demographics">
+      @if (age() !== undefined && age() !== null && age() !== '') {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">cake</span>
+          {{ age() }} years
+        </span>
+      }
+      @if (gender()) {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">person</span>
+          {{ gender() }}
+        </span>
+      }
+      @if (location()) {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">location_on</span>
+          {{ location() }}
+        </span>
+      }
     </div>
   </div>
 

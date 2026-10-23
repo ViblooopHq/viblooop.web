@@ -60,14 +60,19 @@
       <div class="vl-event-card__schedule">
         <div class="vl-event-card__schedule-row">
           <span class="material-symbols-outlined" aria-hidden="true">calendar_today</span>
-          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime) { · {{ config()?.eventTime | time }} }</span>
+          <span>{{ config()?.eventDate | date:'EEE, d MMM y' }}@if (isMultiDay && config()?.eventTime && !isEscapeEvent && !isDurationStyleEvent) { · {{ config()?.eventTime | time }} }</span>
         </div>
-        @if (isMultiDay) {
+        @if (isDurationStyleEvent && config()?.eventTime) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
+            <span>{{ config()?.eventTime | time }}</span>
+          </div>
+        } @else if (isMultiDay) {
           <div class="vl-event-card__schedule-row">
             <span class="material-symbols-outlined" aria-hidden="true">event</span>
-            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime) { · {{ config()?.endTime | time }} }</span>
+            <span>{{ config()?.endDate | date:'EEE, d MMM y' }}@if (config()?.endTime && !isEscapeEvent) { · {{ config()?.endTime | time }} }</span>
           </div>
-        } @else if (config()?.eventTime || config()?.endTime) {
+        } @else if ((config()?.eventTime || config()?.endTime) && !isEscapeEvent) {
           <div class="vl-event-card__schedule-row">
             <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
             <span>{{ config()?.eventTime | time }}@if (config()?.eventTime && config()?.endTime) { – }{{ config()?.endTime | time }}</span>

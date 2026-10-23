@@ -75,7 +75,7 @@
   font-weight: 600;
 
   .material-symbols-outlined {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     color: var(--color-info);
   }
 }
@@ -95,11 +95,32 @@
   color: var(--color-text-secondary);
 }
 
-.vl-user-profile__vibes {
+.vl-user-profile__demographics {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-2);
+  align-items: center;
+  gap: var(--space-2, 0.5rem);
   margin-top: 1rem;
+}
+
+.vl-user-profile__demographic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  max-width: 100%;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+
+  .material-symbols-outlined {
+    flex: 0 0 auto;
+    color: var(--color-primary);
+    font-size: 1.1rem;
+  }
 }
 
 .vl-user-profile__hero-actions {
@@ -219,7 +240,7 @@
     justify-content: center;
   }
 
-  .vl-user-profile__vibes {
+  .vl-user-profile__demographics {
     justify-content: center;
   }
 

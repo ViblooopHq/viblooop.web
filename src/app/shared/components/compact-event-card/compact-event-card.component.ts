@@ -89,6 +89,10 @@ export class CompactEventCardComponent {
       return { text: 'Ended', icon: 'history' };
     }
 
+    if (this.isEventOngoing) {
+      return { text: 'Ongoing', icon: 'schedule' };
+    }
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
@@ -124,20 +128,35 @@ export class CompactEventCardComponent {
 
   get isEventEnded(): boolean {
     const config = this.config();
-    const endDate = config?.endDate;
-    if (endDate) {
-      if (config?.endTime) {
-        const eventEndDateTime = this.getEventDateTime(config.endTime, endDate);
-        return eventEndDateTime ? eventEndDateTime < new Date() : false;
-      }
-      const eventEndDate = new Date(endDate);
+    if (config?.endTime) {
+      const end = this.getEventDateTime(config.endTime, config.endDate || config.eventDate);
+      const start = config.eventTime ? this.getEventDateTime(config.eventTime, config.eventDate) : null;
+      if (!end) return false;
+      if (start && end.getTime() <= start.getTime()) end.setDate(end.getDate() + 1);
+      return end < new Date();
+    }
+    if (config?.endDate) {
+      const eventEndDate = new Date(config.endDate);
       if (Number.isNaN(eventEndDate.getTime())) return false;
       eventEndDate.setHours(23, 59, 59, 999);
       return eventEndDate < new Date();
     }
 
-    const eventDateTime = this.getEventDateTime(this.config()?.endTime || this.config()?.eventTime);
+    const eventDateTime = config?.eventTime ? this.getEventDateTime(config.eventTime, config.eventDate) : null;
     return eventDateTime ? eventDateTime < new Date() : false;
+  }
+
+  private get isEventOngoing(): boolean {
+    const config = this.config();
+    if (!config?.eventDate || !config?.eventTime || !config?.endTime) return false;
+
+    const start = this.getEventDateTime(config.eventTime, config.eventDate);
+    const end = this.getEventDateTime(config.endTime, config.endDate || config.eventDate);
+    if (!start || !end) return false;
+
+    if (end.getTime() <= start.getTime()) end.setDate(end.getDate() + 1);
+    const now = new Date();
+    return start.getTime() <= now.getTime() && now.getTime() < end.getTime();
   }
 
   get location(): string {
@@ -208,6 +227,13 @@ export class CompactEventCardComponent {
     const categoryTitle = String(category?.title || category?.name || category || '').toLowerCase();
 
     return (hasEndDate && !config?.endTime) || categoryTitle.includes('escape') || categoryTitle.includes('travel') || categoryTitle.includes('trip');
+  }
+
+  get isDurationStyleEvent(): boolean {
+    const category = this.config()?.category;
+    const categoryTitle = String(category?.title || category?.name || category || '').toLowerCase();
+    return ['party', 'social', 'meetup', 'play', 'sports', 'gaming', 'fitness', 'hangout', 'events', 'local']
+      .some((name) => categoryTitle.includes(name));
   }
 
   get tripDateRangeLabel(): string {

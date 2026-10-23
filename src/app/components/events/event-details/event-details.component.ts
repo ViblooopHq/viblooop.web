@@ -24,7 +24,6 @@ import { Environment } from '../../../../environment';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { EventJoinStatusStore } from '../../../shared/services/events/event-join-status.store';
 import { GalleryImage } from '../../../shared/components/gallery/gallery.component';
-import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { EventDetailsSkeletonComponent } from '../../../shared/components/event-details-skeleton/event-details-skeleton.component';
@@ -89,7 +88,6 @@ const defaultModalState: ActionModalState = {
     EventAboutComponent,
     EventGallerySectionComponent,
     EventPeopleDrawerComponent,
-    ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
     InlineLoaderComponent,
@@ -142,7 +140,6 @@ export class EventDetailsComponent {
   isAuthInitialized = toSignal(this.authService.isAuthInitialized$, { initialValue: false });
   isJoinRequestPending = signal(false);
   isUploadingGallery = signal(false);
-  isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
   requestActionStates = signal<Record<string, RequestActionState>>({});
@@ -414,7 +411,6 @@ export class EventDetailsComponent {
     effect(() => {
       const userId = this.currentUser()?.id || this.currentUser()?._id;
       if (userId && !this.isLoadingEvent()) this.syncJoinStatusForCurrentUser();
-      if (!this.canAccessPrivateEventData()) this.isChatOpen.set(false);
     });
 
     effect(() => {
@@ -790,9 +786,9 @@ export class EventDetailsComponent {
     });
   }
 
-  toggleChat(): void {
+  openChatDrawer(): void {
     if (!this.isChatVisible()) return;
-    this.isChatOpen.update((isOpen) => !isOpen);
+    this.appDrawerService.openChats(this.eventId());
   }
 
   openInGoogleMaps(): void {

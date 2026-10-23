@@ -30,7 +30,7 @@
       @if (isSocialEvent()) {
         <span class="meta-badge meta-badge--schedule">
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
-          <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (event()?.eventTime) { &nbsp;|&nbsp; {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} } }</span>
+          <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (event()?.eventTime && !isEscapeEvent()) { &nbsp;|&nbsp; {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} } }</span>
           @if (durationLabel()) {
             <span class="duration-pill"><span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>{{ durationLabel() }}</span>
           }
@@ -48,9 +48,9 @@
       } @else if (isMultiDay() && !isSocialEvent()) {
         <span class="meta-badge">
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
-          <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime) { · {{ event()?.endTime | time }} }</span>
+          <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime && !isEscapeEvent()) { · {{ event()?.endTime | time }} }</span>
         </span>
-      } @else if (event()?.eventTime || event()?.endTime) {
+      } @else if ((event()?.eventTime || event()?.endTime) && !isEscapeEvent()) {
         <span class="meta-badge">
           <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
           <span>{{ event()?.eventTime | time }}@if (event()?.eventTime && event()?.endTime) { – }{{ event()?.endTime | time }}</span>

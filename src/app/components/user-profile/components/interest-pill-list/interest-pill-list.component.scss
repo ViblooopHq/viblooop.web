@@ -3,6 +3,9 @@
 }
 
 .vl-pill-extra {
+  appearance: none;
+  font-family: inherit;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   height: 38px;
@@ -15,6 +18,11 @@
   font-weight: 600;
   line-height: 1;
   white-space: nowrap;
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
 }
 
 @media (max-width: 768px) {

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { InterestPillListComponent } from '../interest-pill-list/interest-pill-list.component';
 
 export type PhotoPreviewItem = {
   url: string;
@@ -9,7 +8,7 @@ export type PhotoPreviewItem = {
 
 @Component({
   selector: 'vl-profile-hero',
-  imports: [InterestPillListComponent],
+  imports: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-hero.component.html',
   styleUrl: './profile-hero.component.scss',
@@ -22,7 +21,9 @@ export class ProfileHeroComponent {
   bio = input('');
   isVerified = input(false);
   isCurrentUser = input(false);
-  previewInterests = input<any[]>([]);
+  age = input<number | string | null | undefined>(undefined);
+  gender = input('');
+  location = input('');
   photoPreviewItems = input<PhotoPreviewItem[]>([]);
   hiddenPhotoCount = input(0);
 

@@ -9,7 +9,5 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 })
 export class EventChatCardComponent {
   totalAttendeesCount = input(0);
-  isChatOpen = input(false);
-
-  toggleChat = output<void>();
+  openChat = output<void>();
 }

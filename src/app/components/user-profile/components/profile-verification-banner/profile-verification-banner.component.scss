@@ -23,6 +23,11 @@
     .vl-user-profile__photo-verification-icon {
       width: 3rem;
       height: 3rem;
+
+      .material-symbols-outlined {
+        color: var(--color-info, #38bdf8);
+        -webkit-text-stroke-color: color-mix(in srgb, var(--color-info, #38bdf8) 55%, white);
+      }
     }
   }
 }

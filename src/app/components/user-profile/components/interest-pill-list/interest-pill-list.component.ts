@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, signal } from '@angular/core';
 import { PillComponent } from '../../../../shared/components/pill/pill.component';
 
 @Component({
@@ -13,6 +13,16 @@ export class InterestPillListComponent {
   interests = input<any[]>([]);
   extraCount = input(0);
   size = input<'sm' | 'md' | 'lg'>('md');
+  expanded = signal(false);
+
+  get displayedInterests(): any[] {
+    const interests = this.interests();
+    return this.expanded() ? interests : interests.slice(0, Math.max(0, interests.length - this.extraCount()));
+  }
+
+  toggleExpanded(): void {
+    this.expanded.update((expanded) => !expanded);
+  }
 
   getInterestLabel(interest: any): string {
     return typeof interest === 'string' ? interest : interest?.displayLabel || interest?.label || '';

@@ -18,7 +18,9 @@
           [bio]="shortBio"
           [isVerified]="isVerified"
           [isCurrentUser]="isCurrentUser"
-          [previewInterests]="previewInterests"
+          [age]="userProfile?.age"
+          [gender]="userProfile?.gender || ''"
+          [location]="userProfile?.location || ''"
           [photoPreviewItems]="photoPreviewItems"
           [hiddenPhotoCount]="hiddenPhotoCount"
           (editProfile)="editProfile()"
@@ -71,10 +73,6 @@
           (showMoreJoined)="showAllJoined()"
           (showMoreHosted)="showAllHosted()">
         </vl-profile-content-panel>
-
-        @if (userReviews.length > 0) {
-          <vl-reviews [reviews]="userReviews"></vl-reviews>
-        }
 
         @if (visibleSocialLinks.length > 0 || isCurrentUser) {
           <vl-profile-social-links
