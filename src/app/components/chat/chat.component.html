@@ -42,22 +42,21 @@
         </p>
       </div>
     } @else {
-      <div class="timeline-chip">Today</div>
-
-      <div class="system-note">
-        <strong>You joined "{{ chatTitle() }}"</strong>
-        <span>{{ canSendMessages() === false ? 'Only the host can post updates in this chat.' : 'You can now start chatting with the group.' }}</span>
-      </div>
-
-      <div class="new-messages-divider">
-        <span>New Messages</span>
-      </div>
-
       @for (msg of messages(); track msg._id || $index; let i = $index) {
+        @if (shouldShowDate(i)) {
+          <div class="timeline-chip">{{ getDateLabel(msg.createdAt) }}</div>
+        }
+        @if (isFirstNewMessage(msg)) {
+          <div class="new-messages-divider"><span>New Messages</span></div>
+        }
         <article class="message-row" [class.own]="isOwnMessage(msg)">
           @if (!isOwnMessage(msg)) {
             <div class="message-avatar" aria-hidden="true">
-              {{ getSenderInitial(msg) }}
+              @if (hasSenderImage(msg)) {
+                <img [src]="msg.senderImage | imageUrl" [alt]="msg.senderName || 'Sender'" (error)="onSenderImageError(msg)" />
+              } @else {
+                {{ getSenderInitial(msg) }}
+              }
             </div>
           }
 

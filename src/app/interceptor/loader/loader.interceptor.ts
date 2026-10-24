@@ -14,6 +14,8 @@ export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
   const isExcluded =
     url.includes('createevent') ||
     url.includes('wishlist') ||
+    url.includes('/getalleventsbyuser') ||
+    url.includes('/review/geteventreviews') ||
     req.headers.has('X-Skip-Global-Loader');
 
   const shouldShowLoader = isBrowser && isMutating && !isExcluded;

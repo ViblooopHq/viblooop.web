@@ -39,6 +39,7 @@
             <div class="time-range-field">
               <vl-time-picker-dropdown
                 placeholder="Start Time"
+                [minTime]="formService.timePickerMinTime()"
                 [value]="formService.eventTimeValue()"
                 (valueChange)="setEventTime($event)" />
             </div>
@@ -71,7 +72,7 @@
               </vl-datepicker>
             </div>
           } @else {
-            <vl-time-picker-dropdown [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />
+            <vl-time-picker-dropdown [minTime]="formService.timePickerMinTime()" [value]="formService.eventTimeValue()" (valueChange)="setEventTime($event)" />
           }
         </div>
       }

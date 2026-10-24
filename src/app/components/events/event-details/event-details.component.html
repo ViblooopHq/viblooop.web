@@ -26,8 +26,7 @@
       <vl-event-hero [event]="eventDetails()" [isEventCreator]="isEventCreator()" [isEventMenuOpen]="isEventMenuOpen()"
         [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()" [isUserAttendee]="isUserAttendee()"
         [isCancelled]="isCancelled()" [isLoggedIn]="isLoggedIn()" [isAuthInitialized]="isAuthInitialized()"
-        [isJoinRequestPending]="isJoinRequestPending()" [eventDate]="eventDetails()?.eventDate"
-        [timeLeftLabel]="timeLeftLabel()" [locationLabel]="locationLabel()"
+        [isJoinRequestPending]="isJoinRequestPending()"
         [attendeePreviewProfiles]="attendeePreviewProfiles()" [totalAttendeesCount]="nonHostAttendeeProfiles().length"
         [attendanceSummaryLabel]="attendanceSummaryLabel()" [joinRequestStatus]="joinRequestStatus()"
         [canRequestJoin]="canRequestJoin()" [eventPriceLabel]="eventPriceLabel()"
@@ -51,10 +50,7 @@
       </div>
 
       <vl-event-about [description]="eventDetails()?.description ?? ''"
-        [categoryTitle]="$any(eventDetails()?.category)?.title ?? 'Event'"
-        [attendeeLimit]="eventDetails()?.attendeeLimit" [tags]="eventDetails()?.tags"
-        [expectations]="eventDetails()?.expectations" [audiencePreferenceLabel]="audiencePreferenceLabel()"
-        [audiencePreferenceIcon]="audiencePreferenceIcon()" [eventPriceLabel]="eventPriceLabel()" />
+        [expectations]="eventDetails()?.expectations" />
 
       @if (eventGalleryImages().length > 0 || isUserAttendee()) {
       @defer (on viewport) {
@@ -77,7 +73,7 @@
 
       @if (isUserAttendee()) {
       <vl-event-chat-card class="chat-card--mobile" [totalAttendeesCount]="totalAttendeesCount()"
-        [isChatOpen]="isChatOpen()" (toggleChat)="toggleChat()" />
+        (openChat)="openChatDrawer()" />
       }
 
       @defer (on viewport) {
@@ -111,7 +107,7 @@
 
       @if (isUserAttendee()) {
       <vl-event-chat-card class="chat-card--desktop" [totalAttendeesCount]="totalAttendeesCount()"
-        [isChatOpen]="isChatOpen()" (toggleChat)="toggleChat()" />
+        (openChat)="openChatDrawer()" />
       }
     </aside>
   </div>
@@ -160,10 +156,6 @@
   }
   }
 </div>
-
-@if (isChatOpen()) {
-<vl-chat [eventId]="eventId()" (closeChat)="toggleChat()"></vl-chat>
-}
 
 <vl-event-people-drawer [mode]="activeDrawer()" [eventTitle]="eventDetails()?.title ?? 'Event'"
   [title]="eventDrawerTitle()" [subtitle]="eventDrawerSubtitle()" [pendingRequests]="pendingJoinRequestsView()"

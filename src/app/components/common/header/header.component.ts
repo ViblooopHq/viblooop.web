@@ -7,7 +7,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
-import { CompleteProfileService } from '../../../shared/services/popup/complete-profile.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
@@ -37,7 +36,6 @@ export class HeaderComponent implements OnInit {
   private toastService = inject(ToastService)
   private angularRouter = inject(Router)
   private appDrawerService = inject(AppDrawerService);
-  private completeProfileService = inject(CompleteProfileService);
   defaultProfileImage = 'assets/images/default-profile.png';
 
   // Computed: hide FAB when user is in create-event flow
@@ -185,10 +183,7 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
-      if (!isComplete) return;
-      this.appDrawerService.openCreateEvent();
-    });
+    this.appDrawerService.openCreateEvent();
   }
 
   toggleTheme() {

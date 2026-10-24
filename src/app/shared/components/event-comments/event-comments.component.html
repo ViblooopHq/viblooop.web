@@ -80,6 +80,25 @@
       </div>
     </div>
 
+    @if (!reviewsLoaded()) {
+      <div class="reviews-loading" aria-label="Loading comments" aria-busy="true">
+        <div class="reviews-loading__stats">
+          <span></span>
+          <span></span>
+        </div>
+        @for (item of [0, 1]; track item) {
+          <div class="reviews-loading__item">
+            <div class="reviews-loading__author">
+              <span class="reviews-loading__avatar"></span>
+              <span class="reviews-loading__name"></span>
+            </div>
+            <span class="reviews-loading__rating"></span>
+            <span class="reviews-loading__line"></span>
+            <span class="reviews-loading__line reviews-loading__line--short"></span>
+          </div>
+        }
+      </div>
+    } @else {
     <div class="reviews-panel__stats">
       <div class="review-stat">
         <span class="review-stat__icon review-stat__icon--rating">
@@ -190,6 +209,7 @@
           <i [class]="showAllReviews() ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" aria-hidden="true"></i>
         </button>
       }
+    }
     }
   </section>
   }

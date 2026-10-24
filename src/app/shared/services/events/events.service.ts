@@ -179,7 +179,7 @@ export class EventsService {
 
   getInfoByPostalCode(postalCode: string): Observable<any> {
     const body: any = {
-      postalCode: postalCode
+      pinCode: postalCode
     };
     return this.httpService.http.post(`${this.baseUrl}/getAddressFromPinCode`, body);
   }

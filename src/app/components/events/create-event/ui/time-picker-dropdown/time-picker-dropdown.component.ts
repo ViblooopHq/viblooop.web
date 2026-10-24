@@ -15,6 +15,7 @@ export class TimePickerDropdownComponent {
   /** 24h "HH:mm" value. */
   readonly value = model('');
   readonly placeholder = input('Select Time');
+  readonly minTime = input('');
 
   readonly hours = CREATE_EVENT_TIME_PICKER_CONFIG.hours;
   readonly minutes = CREATE_EVENT_TIME_PICKER_CONFIG.minutes;
@@ -97,6 +98,31 @@ export class TimePickerDropdownComponent {
     if (this.selectedPeriod() === 'AM' && hour === 12) hour = 0;
 
     const formattedHour = String(hour).padStart(2, '0');
-    this.value.set(`${formattedHour}:${this.selectedMinute()}`);
+    const candidate = `${formattedHour}:${this.selectedMinute()}`;
+    if (this.minTime() && candidate < this.minTime()) return;
+    this.value.set(candidate);
+  }
+
+  isMinuteDisabled(minute: string): boolean {
+    return this.isCandidateBeforeMinimum(this.selectedHour(), minute, this.selectedPeriod());
+  }
+
+  isHourDisabled(hour: string): boolean {
+    return this.isCandidateBeforeMinimum(hour, '59', this.selectedPeriod());
+  }
+
+  isPeriodDisabled(period: 'AM' | 'PM'): boolean {
+    return this.isCandidateBeforeMinimum(this.selectedHour(), this.selectedMinute(), period);
+  }
+
+  private isCandidateBeforeMinimum(hourValue: string, minuteValue: string, period: 'AM' | 'PM'): boolean {
+    const minimum = this.minTime();
+    if (!minimum) return false;
+
+    let hour = Number(hourValue);
+    if (period === 'PM' && hour < 12) hour += 12;
+    if (period === 'AM' && hour === 12) hour = 0;
+    const candidate = `${String(hour).padStart(2, '0')}:${minuteValue}`;
+    return candidate < minimum;
   }
 }

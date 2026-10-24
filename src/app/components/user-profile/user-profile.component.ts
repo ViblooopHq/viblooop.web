@@ -6,10 +6,9 @@ import { RouteService } from '../../shared/services/route/route.service';
 import { AppDrawerService } from '../../shared/services/drawer/app-drawer.service';
 import { SharedService } from '../../shared/services/shared.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
-import { ReviewsComponent } from './reviews/reviews.component';
 import { SelfieVerificationComponent } from './selfie-verification/selfie-verification.component';
 import { ActivatedRoute } from '@angular/router';
-import { filter, pairwise, take } from 'rxjs/operators';
+import { filter, take } from 'rxjs/operators';
 import { BrowserService } from '../../shared/services/browser/browser.service';
 import { ProfileHeroComponent } from './components/profile-hero/profile-hero.component';
 import { ProfileVerificationBannerComponent } from './components/profile-verification-banner/profile-verification-banner.component';
@@ -25,7 +24,6 @@ import { ProfileSkeletonComponent } from '../../shared/components/profile-skelet
   selector: 'vl-user-profile',
   imports: [
     GalleryComponent,
-    ReviewsComponent,
     SelfieVerificationComponent,
     ProfileHeroComponent,
     ProfileVerificationBannerComponent,
@@ -73,7 +71,6 @@ export class UserProfileComponent implements OnInit {
   userId: string = '';
   attendedEvents: any[] = [];
   hostedEvents: any[] = [];
-  userReviews: any[] = [];
   averageRating = 0;
   totalRatings = 0;
   showAllJoinedEvents = false;
@@ -142,12 +139,10 @@ export class UserProfileComponent implements OnInit {
         this.initProfile(currentUserId);
       });
 
-    this.appDrawerService.drawer$
-      .pipe(pairwise(), takeUntilDestroyed(this.destroyRef))
-      .subscribe(([previousDrawer, drawerState]) => {
-        if (previousDrawer && !drawerState && this.userId) {
-          this.loadProfile();
-        }
+    this.appDrawerService.profileUpdated$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        if (this.isCurrentUser && this.userId) this.loadProfile();
       });
   }
 
@@ -275,7 +270,6 @@ export class UserProfileComponent implements OnInit {
   setReviewSummary(response: any) {
     const data = response?.success && response.statusCode === 200 ? response.data : null;
 
-    this.userReviews = Array.isArray(data?.reviews) ? data.reviews : [];
     this.averageRating = Number(data?.averageRating ?? this.userProfile?.averageRating ?? 0);
     this.totalRatings = Number(data?.totalRatings ?? this.userProfile?.totalRatings ?? 0);
   }
@@ -310,23 +304,19 @@ export class UserProfileComponent implements OnInit {
   }
 
   get visibleInterests(): any[] {
-    return (this.userProfile?.interests || []).slice(0, 6);
+    return this.userProfile?.interests || [];
   }
 
   get hiddenInterestCount(): number {
-    return Math.max((this.userProfile?.interests?.length || 0) - this.visibleInterests.length, 0);
-  }
-
-  get previewInterests(): any[] {
-    return (this.userProfile?.interests || []).slice(0, 3);
+    return Math.max(this.visibleInterests.length - 6, 0);
   }
 
   get joinedPreviewEvents(): any[] {
-    return this.attendedEvents.slice(0, 3);
+    return this.attendedEvents.slice(0, 4);
   }
 
   get hostedPreviewEvents(): any[] {
-    return this.hostedEvents.slice(0, 3);
+    return this.hostedEvents.slice(0, 4);
   }
 
   get visibleJoinedEvents(): any[] {

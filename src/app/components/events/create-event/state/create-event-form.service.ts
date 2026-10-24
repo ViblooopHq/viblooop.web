@@ -19,8 +19,7 @@ export class CreateEventFormService {
   private readonly eventsService = inject(EventsService);
   private readonly categoryPresentation = inject(EventCategoryPresentationService);
 
-  readonly today = new Date();
-  readonly minDate = new Date();
+  readonly minDate = this.getStartOfToday();
 
   readonly eventForm: FormGroup = this.fb.group({
     title: ['', Validators.required],
@@ -111,7 +110,8 @@ export class CreateEventFormService {
   readonly eventCreatedAnimationPath = computed(() => this.selectedCreationConfig().animationPath);
 
   readonly minEndDate = computed<Date>(() => this.eventDateValue() || this.minDate);
-  readonly datePickerMinDate = computed<Date | null>(() => (this.isEditMode() ? null : this.minDate));
+  readonly datePickerMinDate = computed<Date>(() => this.minDate);
+  readonly timePickerMinTime = computed(() => this.minTime());
 
   getSelectedCategoryTitle(): string {
     const cat = this.selectedCategory();
@@ -282,6 +282,7 @@ export class CreateEventFormService {
 
   private updateMinTime(): void {
     const selectedDate = this.eventForm.get('eventDate')?.value;
+    this.minTime.set('');
     if (!selectedDate) return;
 
     const now = new Date();
@@ -289,12 +290,21 @@ export class CreateEventFormService {
     const isToday = selDate.toDateString() === now.toDateString();
 
     if (isToday) {
+      now.setMinutes(now.getMinutes() + 1, 0, 0);
+      if (now.toDateString() !== selDate.toDateString()) {
+        this.minTime.set('24:00');
+        return;
+      }
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       this.minTime.set(`${hours}:${minutes}`);
-    } else {
-      this.minTime.set('');
     }
+  }
+
+  private getStartOfToday(): Date {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
   }
 
   private keepEndDateOnOrAfterStartDate(): void {
@@ -595,20 +605,29 @@ export class CreateEventFormService {
       const selectedDate = this.eventForm.get('eventDate')?.value;
       const selectedTime = this.eventForm.get('eventTime')?.value;
 
+      if (selectedDate) {
+        const selectedDay = new Date(selectedDate);
+        selectedDay.setHours(0, 0, 0, 0);
+        if (selectedDay < this.getStartOfToday()) {
+          alert('Event date cannot be in the past. Please select today or a future date.');
+          return false;
+        }
+
+        if (!this.isEscapeCreation() && selectedTime) {
+          const [hours, minutes] = selectedTime.split(':').map(Number);
+          const eventDateTime = new Date(selectedDate);
+          eventDateTime.setHours(hours, minutes, 0, 0);
+          if (eventDateTime < new Date()) {
+            alert('Event time cannot be in the past. Please select a future time.');
+            return false;
+          }
+        }
+      }
+
       if (this.isEscapeCreation()) {
         const endDate = this.eventForm.get('endDate')?.value;
         if (selectedDate && endDate && new Date(endDate) < new Date(selectedDate)) {
           alert('Trip end date cannot be before the start date.');
-          return false;
-        }
-      } else if (!this.isEditMode() && selectedDate && selectedTime) {
-        const now = new Date();
-        const [hours, minutes] = selectedTime.split(':');
-        const eventDateTime = new Date(selectedDate);
-        eventDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-        if (eventDateTime < now) {
-          alert('Event cannot be in the past! Please select a future date and time.');
           return false;
         }
       }

@@ -1,11 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, effect, viewChild, input, output } from '@angular/core';
-import { TimePipe } from '../../../../../shared/pipes/time.pipe';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, effect, viewChild, input, output } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
 import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
+import { TimePipe } from '../../../../../shared/pipes/time.pipe';
 import { AttendeeProfile, EventDetails } from '../../../../../shared/interfaces/event.interface';
 import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
-import { eventDurationLabel, isPartyPlayHangout } from '../../event-schedule.util';
 
 @Component({
   selector: 'vl-event-hero',
@@ -27,9 +26,6 @@ export class EventHeroComponent {
   isLoggedIn = input(false);
   isAuthInitialized = input(false);
   isJoinRequestPending = input(false);
-  eventDate = input<string | undefined>(undefined);
-  timeLeftLabel = input('');
-  locationLabel = input('');
   attendeePreviewProfiles = input<AttendeeProfile[]>([]);
   totalAttendeesCount = input(0);
   attendanceSummaryLabel = input('');
@@ -37,14 +33,6 @@ export class EventHeroComponent {
   canRequestJoin = input(true);
   eventPriceLabel = input('Free');
   pendingJoinRequestCount = input(0);
-
-  readonly isMultiDay = computed(() => {
-    const start = this.eventDate() || this.event()?.eventDate;
-    const end = this.event()?.endDate;
-    return !!start && !!end && new Date(start).toDateString() !== new Date(end).toDateString();
-  });
-  readonly isSocialEvent = computed(() => isPartyPlayHangout(this.event()?.category));
-  readonly durationLabel = computed(() => eventDurationLabel(this.eventDate() || this.event()?.eventDate, this.event()?.eventTime, this.event()?.endDate, this.event()?.endTime));
 
   private readonly actionsDialog = viewChild<ElementRef<HTMLDialogElement>>('actionsDialog');
 
