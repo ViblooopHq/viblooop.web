@@ -1020,6 +1020,21 @@
       background-color: color-mix(in srgb, var(--color-danger, #ef4444) 14%, var(--color-surface));
       color: var(--color-danger, #ef4444);
     }
+
+    &--success {
+      background-color: color-mix(in srgb, var(--color-success, #22c55e) 14%, var(--color-surface));
+      color: var(--color-success, #22c55e);
+    }
+
+    &--info {
+      background-color: color-mix(in srgb, var(--color-info, #3b82f6) 14%, var(--color-surface));
+      color: var(--color-info, #3b82f6);
+    }
+
+    &--error {
+      background-color: color-mix(in srgb, var(--color-danger, #ef4444) 14%, var(--color-surface));
+      color: var(--color-danger, #ef4444);
+    }
   }
 
   &__dialog-list {
@@ -1047,6 +1062,14 @@
         color: var(--color-danger, #ef4444);
       }
     }
+
+    .vl-edit-profile__dialog--success & li .material-symbols-outlined {
+      color: var(--color-success, #22c55e);
+    }
+
+    .vl-edit-profile__dialog--info & li .material-symbols-outlined {
+      color: var(--color-info, #3b82f6);
+    }
   }
 
   &__dialog-actions {
@@ -1054,6 +1077,10 @@
     grid-template-columns: 1fr 1fr;
     gap: 0.65rem;
     margin-top: 1.25rem;
+
+    &--single {
+      grid-template-columns: 1fr;
+    }
   }
 
   &__dialog-button {
