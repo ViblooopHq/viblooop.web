@@ -13,6 +13,13 @@
   box-shadow: var(--shadow-sm);
 }
 
+.vl-user-profile__back {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 2;
+}
+
 .vl-user-profile__avatar-wrap {
   position: relative;
   width: clamp(120px, 20vw, 180px);

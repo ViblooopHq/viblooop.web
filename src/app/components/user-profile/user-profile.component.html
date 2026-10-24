@@ -4,12 +4,6 @@
       <vl-profile-skeleton />
     } @else {
       <section class="vl-user-profile">
-        <div class="vl-page-header-nav">
-          <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-            <span class="material-symbols-outlined" translate="no">arrow_back</span>
-          </button>
-          <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
-        </div>
         <vl-profile-hero
           [profileImage]="userProfile?.profileImage || defaultProfileImage"
           [profileBanner]="userProfile?.profileBanner"
@@ -23,6 +17,7 @@
           [location]="userProfile?.location || ''"
           [photoPreviewItems]="photoPreviewItems"
           [hiddenPhotoCount]="hiddenPhotoCount"
+          (goBack)="goBack()"
           (editProfile)="editProfile()"
           (editAvatar)="openUpdateAvatarModal()"
           (photoSelected)="openProfilePhoto($event)"

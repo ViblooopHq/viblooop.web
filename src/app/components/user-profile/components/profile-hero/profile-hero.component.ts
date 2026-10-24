@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { BackButtonComponent } from '../../../../shared/components/back-button/back-button.component';
 
 export type PhotoPreviewItem = {
   url: string;
@@ -8,7 +9,7 @@ export type PhotoPreviewItem = {
 
 @Component({
   selector: 'vl-profile-hero',
-  imports: [],
+  imports: [BackButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-hero.component.html',
   styleUrl: './profile-hero.component.scss',
@@ -31,4 +32,5 @@ export class ProfileHeroComponent {
   editAvatar = output<void>();
   photoSelected = output<number>();
   imageError = output<Event>();
+  goBack = output<void>();
 }

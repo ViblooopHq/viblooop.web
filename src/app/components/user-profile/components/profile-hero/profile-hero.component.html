@@ -1,4 +1,14 @@
 <div class="vl-user-profile__hero" [style.--profile-banner]="'url(' + profileBanner() + ')'">
+  <vl-back-button
+    class="vl-user-profile__back"
+    icon="arrow_back"
+    size="lg"
+    variant="surface"
+    ariaLabel="Go back"
+    title="Back"
+    (action)="goBack.emit()">
+  </vl-back-button>
+
   <div class="vl-user-profile__avatar-wrap">
     <img class="vl-user-profile__avatar" [src]="profileImage()" alt="Profile" referrerpolicy="no-referrer"
       (error)="imageError.emit($event)" />

@@ -1,14 +1,16 @@
 <section class="vl-events-list vl-section-wrapper vl-section-top-padding">
+  @if (!categoryId) {
   <div class="vl-page-header-nav">
-    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-      <span class="material-symbols-outlined" translate="no">arrow_back</span>
-    </button>
+    <vl-back-button icon="arrow_back" (action)="goBack()"></vl-back-button>
   </div>
+  }
 
   <main class="vl-main-layout">
     <!-- Full-Width Cinematic Category Hero Banner -->
     @if (categoryId) {
     <header class="vl-category-hero-cover" [style.--hero-bg]="activeEventCategory()?.image ? 'url(' + activeEventCategory().image + ')' : 'none'">
+      <vl-back-button class="vl-category-hero-cover__back" icon="arrow_back" size="lg" variant="overlay"
+        (action)="goBack()"></vl-back-button>
       @if (activeHeroSlides.length > 0) {
         <div class="vl-category-hero-cover__swiper">
           <vl-full-page-carousel
@@ -54,7 +56,7 @@
     <div class="vl-section-controls">
       <div class="vl-section-controls__title-group">
         <span class="vl-section-controls__dot"></span>
-        <h2 class="vl-section-controls__title">Upcoming Events</h2>
+        <h2 class="vl-section-controls__title">Upcoming Vibes</h2>
       </div>
       @if (!isLoading && hasLoaded) {
         <span class="vl-section-controls__count">{{ activeCategoryEvents.length }} {{ activeCategoryEvents.length === 1 ? 'event' : 'events' }} found</span>
