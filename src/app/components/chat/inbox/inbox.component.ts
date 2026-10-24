@@ -1,4 +1,4 @@
-import { Component, effect, EventEmitter, HostBinding, HostListener, inject, Input, OnInit, OnDestroy, Output } from '@angular/core';
+import { Component, EventEmitter, HostBinding, HostListener, inject, Input, OnInit, OnDestroy, Output } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { ChatComponent } from '../chat.component';
@@ -31,15 +31,9 @@ export class InboxComponent implements OnInit, OnDestroy {
 
   conversations: any[] = [];
   selectedEventId: string | null = null;
+  private requestedEventId: string | null = null;
   isMobileView = false;
   private subs: Subscription[] = [];
-  private chatConversationsEffect = effect(() => {
-    this.sharedService.chatConversationsRequest();
-    if (this.isMobileView) {
-      this.clearSelection();
-    }
-  });
-
   closeDrawer(): void {
     this.appDrawerService.close();
     this.drawerClosed.emit();
@@ -55,6 +49,7 @@ export class InboxComponent implements OnInit, OnDestroy {
 
     const drawerState = this.appDrawerService.currentDrawerState;
     if (drawerState?.type === 'chats' && drawerState.eventId) {
+      this.requestedEventId = drawerState.eventId;
       this.selectedEventId = drawerState.eventId;
     }
     
@@ -63,7 +58,13 @@ export class InboxComponent implements OnInit, OnDestroy {
         this.conversations = inbox;
 
         if (!inbox.length) {
-          this.selectedEventId = null;
+          if (!this.requestedEventId) this.selectedEventId = null;
+          return;
+        }
+
+        if (this.requestedEventId) {
+          this.selectConversation(this.requestedEventId);
+          this.requestedEventId = null;
           return;
         }
 

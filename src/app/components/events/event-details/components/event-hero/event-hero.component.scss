@@ -169,41 +169,49 @@
     line-height: var(--text-h1-line);
   }
 
-  .hero-meta {
-    display: grid;
-    gap: var(--space-2);
+  .hero-cancelled-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     margin-bottom: var(--space-3);
+    padding: 0.45rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-pill);
+    background: linear-gradient(110deg, #d9475d, #b41744);
+    box-shadow: 0 6px 18px rgba(150, 20, 55, 0.28);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1;
+  }
 
-    .meta-badge {
-      display: inline-flex;
-      align-items: flex-start;
-      gap: 6px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: var(--text-body-sm);
-      font-weight: 600;
+  .hero-cancelled-pill__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: var(--radius-full);
+    background: #ffd9cf;
+  }
 
-      &--schedule { align-items: center; flex-wrap: wrap; }
+  .hero-schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-3);
+    color: rgba(255, 255, 255, 0.96);
+    font-size: var(--text-body-sm);
+    font-weight: 650;
 
-      .duration-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        margin-left: 8px;
-        padding: 3px 10px;
-        border-radius: 999px;
-        background: rgba(139, 92, 246, 0.48);
-        color: #fff;
-        font-size: var(--text-caption);
-        font-weight: 700;
-        .material-symbols-outlined { color: inherit; font-size: 1rem; }
-      }
-
-      .material-symbols-outlined,
-      i {
-        color: rgba(255, 255, 255, 0.78);
-        font-size: 1.125rem;
-        flex-shrink: 0;
-      }
+    &__icon {
+      display: grid;
+      width: 1.75rem;
+      height: 1.75rem;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 0.55rem;
+      background: rgba(148, 163, 184, 0.28);
+      color: #ffffff;
+      font-size: 1rem;
     }
   }
 
@@ -211,48 +219,30 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 3px 10px;
+    min-height: 32px;
+    padding: 4px 10px;
     border-radius: var(--radius-pill);
-    background-color: var(--color-surface);
+    background-color: var(--color-surface-glass-strong);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
-    font-size: var(--text-caption);
-    font-weight: 700;
+    font-size: 0.75rem;
+    font-weight: 650;
+    line-height: 1;
 
     &__icon {
+      font-size: 1rem;
       color: var(--color-primary);
     }
 
     &--ended {
-      gap: 0.45rem;
-      min-height: 2.25rem;
-      padding: 0.4rem 0.75rem;
       background: var(--color-overlay-scrim);
       color: var(--color-on-primary);
-      border-color: color-mix(in srgb, var(--color-on-primary) 20%, transparent);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-
-      .event-status-pill__dot {
-        display: block;
-        flex: 0 0 auto;
-        width: 0.45rem;
-        height: 0.45rem;
-        border-radius: var(--radius-full);
-        background-color: var(--color-primary);
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 18%, transparent);
-      }
+      border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
+      box-shadow: var(--shadow-sm);
     }
 
-    &--cancelled {
-      background-color: var(--color-warning-soft);
-      color: var(--color-warning);
-      border-color: var(--color-warning-soft);
-
-      .event-status-pill__icon {
-        color: var(--color-warning);
-      }
-    }
   }
 
   .btn-leave-hero {

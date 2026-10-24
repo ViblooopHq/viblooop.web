@@ -172,6 +172,7 @@ export class EditProfileComponent implements OnInit {
         }
 
         this.profileForm.markAsPristine();
+        this.appDrawerService.notifyProfileUpdated();
         this.appDrawerService.close();
         this.drawerClosed.emit();
       },
@@ -548,6 +549,7 @@ export class EditProfileComponent implements OnInit {
           return;
         }
 
+        this.appDrawerService.notifyProfileUpdated();
         this.refreshProfilePhotos();
       },
       error: (err) => {

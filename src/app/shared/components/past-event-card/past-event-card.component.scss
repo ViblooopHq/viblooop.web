@@ -14,7 +14,7 @@
   width: 100%;
   aspect-ratio: 3 / 4;
   height: auto;
-  max-height: 340px;
+  max-height: 420px;
   overflow: hidden;
   border-radius: 20px;
   background-color: #0b1120;
@@ -193,13 +193,13 @@
   &__polaroid {
     position: relative;
     background: #ffffff;
-    padding: 5px 5px 15px 5px;
+    padding: 6px 6px 18px 6px;
     border-radius: 4px;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.42);
 
     .polaroid-img {
-      width: 78px;
-      height: 78px;
+      width: 96px;
+      height: 96px;
       object-fit: cover;
       border-radius: 2px;
       display: block;
@@ -223,7 +223,7 @@
   &__stamp {
     position: relative;
     background: #f8fafc;
-    padding: 8px 10px;
+    padding: 10px 12px;
     border-radius: 6px;
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
     /* Serrated stamp effect with border outline */
@@ -404,8 +404,9 @@
 /* 2 Cards in a Row on Mobile / Compact Container (Width <= 275px) */
 @container (max-width: 275px) {
   .vl-past-card {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 0.72;
     height: auto;
+    max-height: 420px;
     border-radius: 14px;
 
     .date-short {
@@ -459,8 +460,8 @@
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
 
       .polaroid-img {
-        width: 40px;
-        height: 40px;
+        width: 52px;
+        height: 52px;
       }
 
       .polaroid-tape {
@@ -471,16 +472,16 @@
     }
 
     &__stamp {
-      padding: 4px 6px;
+      padding: 6px 8px;
       border-radius: 3px;
 
       .stamp-text {
-        font-size: 6.5px;
+        font-size: 7.5px;
         letter-spacing: 0.04em;
       }
 
       .stamp-icon {
-        font-size: 10px;
+        font-size: 12px;
         margin-top: 1px;
       }
     }

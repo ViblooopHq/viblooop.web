@@ -8,11 +8,12 @@ import { EventCardSkeletonComponent } from '../../../shared/components/event-car
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { RouteService } from '../../../shared/services/route/route.service';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-view-all-events',
   standalone: true,
-  imports: [CommonModule, RouterModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, PastEventCardComponent, EmptyStateComponent],
+  imports: [CommonModule, RouterModule, EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, PastEventCardComponent, EmptyStateComponent, BackButtonComponent],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.scss']
 })

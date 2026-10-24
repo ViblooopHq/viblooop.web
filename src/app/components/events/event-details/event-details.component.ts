@@ -24,7 +24,6 @@ import { Environment } from '../../../../environment';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { EventJoinStatusStore } from '../../../shared/services/events/event-join-status.store';
 import { GalleryImage } from '../../../shared/components/gallery/gallery.component';
-import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { EventDetailsSkeletonComponent } from '../../../shared/components/event-details-skeleton/event-details-skeleton.component';
@@ -89,7 +88,6 @@ const defaultModalState: ActionModalState = {
     EventAboutComponent,
     EventGallerySectionComponent,
     EventPeopleDrawerComponent,
-    ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
     InlineLoaderComponent,
@@ -142,7 +140,6 @@ export class EventDetailsComponent {
   isAuthInitialized = toSignal(this.authService.isAuthInitialized$, { initialValue: false });
   isJoinRequestPending = signal(false);
   isUploadingGallery = signal(false);
-  isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
   requestActionStates = signal<Record<string, RequestActionState>>({});
@@ -236,26 +233,6 @@ export class EventDetailsComponent {
     if (start && end) return `${start} - ${end}`;
     if (start) return start;
     return 'Dates TBA';
-  });
-
-  timeLeftLabel = computed(() => {
-    if (this.isEscapeEvent()) return this.tripDateRangeLabel();
-    const details = this.eventDetails();
-    if (!details?.eventDate || !details?.eventTime) return 'Date TBA';
-
-    const eventDateTime = getEventDateTime(details);
-    if (!eventDateTime) return 'Date TBA';
-
-    const diffMs = eventDateTime.getTime() - this.now();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMs < 0) return this.isEventEnded() ? 'Event ended' : 'Happening now';
-    if (diffMins < 60) return 'Starting soon';
-    if (diffHrs < 24) return `Starts in ${diffHrs} hrs`;
-    if (diffDays === 1) return 'Starts tomorrow';
-    return `Starts in ${diffDays} days`;
   });
 
   remainingSpots = computed(() => {
@@ -414,7 +391,6 @@ export class EventDetailsComponent {
     effect(() => {
       const userId = this.currentUser()?.id || this.currentUser()?._id;
       if (userId && !this.isLoadingEvent()) this.syncJoinStatusForCurrentUser();
-      if (!this.canAccessPrivateEventData()) this.isChatOpen.set(false);
     });
 
     effect(() => {
@@ -790,9 +766,9 @@ export class EventDetailsComponent {
     });
   }
 
-  toggleChat(): void {
+  openChatDrawer(): void {
     if (!this.isChatVisible()) return;
-    this.isChatOpen.update((isOpen) => !isOpen);
+    this.appDrawerService.openChats(this.eventId());
   }
 
   openInGoogleMaps(): void {

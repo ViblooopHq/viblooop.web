@@ -12,16 +12,16 @@
     } @else {
     <div class="info-row">
       <span class="info-row__icon"><span class="material-symbols-outlined" translate="no">calendar_today</span></span>
-      <span>{{ eventDate() | date:'EEEE, d MMMM y' }}@if (isMultiDay() && eventTime()) { · {{ eventTime() | time }} }</span>
+      <span>{{ eventDate() | date:'EEEE, d MMMM y' }}@if (isMultiDay() && eventTime() && !isEscapeEvent()) { · {{ eventTime() | time }} }</span>
     </div>
     @if (isMultiDay()) {
       <div class="info-row">
         <span class="info-row__icon">
           <span class="material-symbols-outlined" translate="no">event</span>
         </span>
-        <span>{{ endDate() | date:'EEEE, d MMMM y' }}@if (endTime()) { · {{ endTime() | time }} }</span>
+      <span>{{ endDate() | date:'EEEE, d MMMM y' }}@if (endTime() && !isEscapeEvent()) { · {{ endTime() | time }} }</span>
       </div>
-    } @else if (eventTime() || endTime()) {
+    } @else if ((eventTime() || endTime()) && !isEscapeEvent()) {
       <div class="info-row">
         <span class="info-row__icon">
           <span class="material-symbols-outlined" translate="no">schedule</span>

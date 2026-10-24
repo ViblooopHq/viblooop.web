@@ -123,6 +123,14 @@
     color: var(--color-primary);
   }
 
+  .event-status-pill__cancelled-dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #ffd9cf;
+  }
+
   &--ended {
     background: var(--color-overlay-scrim);
     border-color: color-mix(in srgb, var(--color-on-primary) 24%, transparent);
@@ -132,6 +140,13 @@
     .event-status-pill__icon {
       color: var(--color-primary);
     }
+  }
+
+  &--cancelled {
+    background: linear-gradient(110deg, #d9475d, #b41744);
+    border-color: rgba(255, 255, 255, 0.14);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(150, 20, 55, 0.28);
   }
 }
 

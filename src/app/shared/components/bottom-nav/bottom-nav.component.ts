@@ -12,7 +12,6 @@ import { AuthService } from '../../services/auth/auth.service';
 import { SharedService } from '../../services/shared.service';
 import { RouteService } from '../../services/route/route.service';
 import { AppDrawerService } from '../../services/drawer/app-drawer.service';
-import { CompleteProfileService } from '../../services/popup/complete-profile.service';
 import { CommonModule } from '@angular/common';
 import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 
@@ -36,7 +35,6 @@ export class BottomNavComponent {
   private readonly router = inject(Router);
   private readonly routeService = inject(RouteService);
   private readonly appDrawerService = inject(AppDrawerService);
-  private readonly completeProfileService = inject(CompleteProfileService);
 
   readonly defaultProfileImage = 'assets/images/default-profile.png';
 
@@ -104,10 +102,7 @@ export class BottomNavComponent {
       this.router.navigateByUrl('/login');
       return;
     }
-    this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
-      if (!isComplete) return;
-      this.appDrawerService.openCreateEvent();
-    });
+    this.appDrawerService.openCreateEvent();
   }
 
   navigateToWishlist(): void {

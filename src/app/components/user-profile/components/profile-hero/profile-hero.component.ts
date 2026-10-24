@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { InterestPillListComponent } from '../interest-pill-list/interest-pill-list.component';
+import { BackButtonComponent } from '../../../../shared/components/back-button/back-button.component';
 
 export type PhotoPreviewItem = {
   url: string;
@@ -9,7 +9,7 @@ export type PhotoPreviewItem = {
 
 @Component({
   selector: 'vl-profile-hero',
-  imports: [InterestPillListComponent],
+  imports: [BackButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './profile-hero.component.html',
   styleUrl: './profile-hero.component.scss',
@@ -22,7 +22,9 @@ export class ProfileHeroComponent {
   bio = input('');
   isVerified = input(false);
   isCurrentUser = input(false);
-  previewInterests = input<any[]>([]);
+  age = input<number | string | null | undefined>(undefined);
+  gender = input('');
+  location = input('');
   photoPreviewItems = input<PhotoPreviewItem[]>([]);
   hiddenPhotoCount = input(0);
 
@@ -30,4 +32,5 @@ export class ProfileHeroComponent {
   editAvatar = output<void>();
   photoSelected = output<number>();
   imageError = output<Event>();
+  goBack = output<void>();
 }

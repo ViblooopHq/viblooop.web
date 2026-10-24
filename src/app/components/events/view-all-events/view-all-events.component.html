@@ -1,15 +1,16 @@
 <section class="vl-view-all vl-section-wrapper vl-section-top-padding">
-  <!-- Top Navigation -->
+  @if (isPastCollection()) {
   <div class="vl-page-header-nav">
-    <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-      <span class="material-symbols-outlined" translate="no">arrow_back</span>
-    </button>
+    <vl-back-button icon="arrow_back" (action)="goBack()"></vl-back-button>
   </div>
+  }
 
   <main class="vl-main-layout">
     <!-- Full-Width Cinematic Hero Cover Banner -->
     @if (!isPastCollection()) {
     <header class="vl-category-hero-cover" [style.--hero-bg]="bannerImage() ? 'url(' + bannerImage() + ')' : 'none'">
+      <vl-back-button class="vl-category-hero-cover__back" icon="arrow_back" size="lg" variant="overlay"
+        (action)="goBack()"></vl-back-button>
       <div class="vl-category-hero-cover__bg" aria-hidden="true"></div>
       <div class="vl-category-hero-cover__overlay" aria-hidden="true"></div>
 

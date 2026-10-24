@@ -49,40 +49,6 @@
     }
   }
 
-  .about-highlights {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem;
-  }
-
-  .about-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-    padding: 0.4rem 0.85rem;
-    border-radius: var(--radius-pill);
-    background-color: var(--color-surface-raised);
-    border: 1px solid var(--color-border);
-    color: var(--color-text-primary);
-    font-size: 0.82rem;
-    font-weight: 600;
-
-    .material-symbols-outlined {
-      font-size: 1rem;
-      color: var(--color-text-secondary);
-    }
-
-    &--accent {
-      background-color: var(--color-primary-soft);
-      border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
-      color: var(--color-primary);
-
-      .material-symbols-outlined {
-        color: var(--color-primary);
-      }
-    }
-  }
-
   .about-subheading {
     display: flex;
     align-items: center;
@@ -129,22 +95,5 @@
     }
   }
 
-  .about-tags-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .tag-chip {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25rem 0.65rem;
-    border-radius: var(--radius-pill);
-    background-color: color-mix(in srgb, var(--color-primary) 8%, var(--color-surface-raised));
-    border: 1px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
-    color: var(--color-primary);
-    font-size: 0.78rem;
-    font-weight: 600;
-  }
 }
 

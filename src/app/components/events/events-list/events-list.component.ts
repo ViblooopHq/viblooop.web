@@ -11,10 +11,11 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { MessageStore } from '../../../shared/store/message.store';
 import { FullPageCarouselComponent } from '../../../shared/components/carousels';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-events-list',
-  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent, EventFiltersComponent],
+  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent, EventFiltersComponent, BackButtonComponent],
   templateUrl: './events-list.component.html',
   styleUrl: './events-list.component.scss'
 })
