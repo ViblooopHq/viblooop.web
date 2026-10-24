@@ -16,9 +16,12 @@
       @if (getEventBadge(); as badge) {
         <div
           class="vl-compact-card__badge"
-          [class.vl-compact-card__badge--schedule]="!isEventEnded"
-          [class.vl-compact-card__badge--ended]="isEventEnded">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          [class.vl-compact-card__badge--schedule]="!isEventEnded && !isEventCancelled"
+          [class.vl-compact-card__badge--ended]="isEventEnded && !isEventCancelled"
+          [class.vl-compact-card__badge--cancelled]="isEventCancelled">
+          @if (badge.icon) {
+            <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+          }
           <span>{{ badge.text }}</span>
         </div>
       }

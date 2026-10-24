@@ -29,7 +29,6 @@ export class EventHeroComponent {
   isJoinRequestPending = input(false);
   eventDate = input<string | undefined>(undefined);
   timeLeftLabel = input('');
-  locationLabel = input('');
   attendeePreviewProfiles = input<AttendeeProfile[]>([]);
   totalAttendeesCount = input(0);
   attendanceSummaryLabel = input('');

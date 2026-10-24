@@ -133,6 +133,12 @@
       color: var(--color-primary);
     }
   }
+
+  &--cancelled {
+    background: #2b090b;
+    border-color: #481316;
+    color: #ff5b61;
+  }
 }
 
 .vl-event-card__attendance-summary {

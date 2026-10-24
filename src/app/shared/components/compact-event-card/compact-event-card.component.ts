@@ -80,6 +80,7 @@ export class CompactEventCardComponent {
 
   getEventBadge(): { text: string; icon: string } | null {
     const config = this.config();
+    if (this.isEventCancelled) return { text: 'Cancelled', icon: '' };
     if (!config?.eventDate) return null;
 
     const eventDateTime = this.getEventDateTime();
@@ -124,6 +125,11 @@ export class CompactEventCardComponent {
     }
 
     return null;
+  }
+
+  get isEventCancelled(): boolean {
+    const status = String(this.config()?.status || '').toLowerCase();
+    return status === 'cancelled' || status === 'canceled';
   }
 
   get isEventEnded(): boolean {
