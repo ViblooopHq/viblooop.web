@@ -19,7 +19,9 @@
           [class.vl-compact-card__badge--schedule]="!isEventEnded && !isEventCancelled"
           [class.vl-compact-card__badge--ended]="isEventEnded && !isEventCancelled"
           [class.vl-compact-card__badge--cancelled]="isEventCancelled">
-          @if (badge.icon) {
+          @if (isEventCancelled) {
+            <span class="vl-compact-card__cancelled-dot" aria-hidden="true"></span>
+          } @else if (badge.icon) {
             <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
           }
           <span>{{ badge.text }}</span>

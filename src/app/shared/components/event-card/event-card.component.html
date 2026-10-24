@@ -12,7 +12,9 @@
         <div class="event-status-pill"
           [class.event-status-pill--ended]="isEventEnded && !isEventCancelled"
           [class.event-status-pill--cancelled]="isEventCancelled">
-          @if (badge.icon) {
+          @if (isEventCancelled) {
+            <span class="event-status-pill__cancelled-dot" aria-hidden="true"></span>
+          } @else if (badge.icon) {
             <span class="material-symbols-outlined event-status-pill__icon" translate="no" aria-hidden="true">{{ badge.icon }}</span>
           }
           {{ badge.text }}

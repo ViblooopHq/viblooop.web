@@ -162,11 +162,57 @@
 
   .hero-title {
     max-width: 44rem;
-    margin: 0 0 var(--space-4);
+    margin: 0 0 var(--space-2);
     color: #ffffff;
     font-size: var(--text-h1);
     font-weight: 800;
     line-height: var(--text-h1-line);
+  }
+
+  .hero-cancelled-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: var(--space-3);
+    padding: 0.45rem 0.85rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: var(--radius-pill);
+    background: linear-gradient(110deg, #d9475d, #b41744);
+    box-shadow: 0 6px 18px rgba(150, 20, 55, 0.28);
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-weight: 650;
+    line-height: 1;
+  }
+
+  .hero-cancelled-pill__dot {
+    width: 0.55rem;
+    height: 0.55rem;
+    flex: 0 0 auto;
+    border-radius: var(--radius-full);
+    background: #ffd9cf;
+  }
+
+  .hero-schedule-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: var(--space-3);
+    color: rgba(255, 255, 255, 0.96);
+    font-size: var(--text-body-sm);
+    font-weight: 650;
+
+    &__icon {
+      display: grid;
+      width: 2.5rem;
+      height: 2.5rem;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 0.75rem;
+      background: rgba(148, 163, 184, 0.28);
+      color: #ffffff;
+      font-size: 1.3rem;
+    }
   }
 
   .event-status-pill {
@@ -206,15 +252,6 @@
       }
     }
 
-    &--cancelled {
-      min-height: 26px;
-      padding: 2px 8px;
-      background: #2b090b;
-      color: #ff5b61;
-      border-color: #481316;
-      font-size: 0.7rem;
-      font-weight: 650;
-    }
   }
 
   .btn-leave-hero {

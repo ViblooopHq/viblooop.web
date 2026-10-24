@@ -24,7 +24,24 @@
   </div>
 
   <div class="hero-bottom">
+    @if (isCancelled()) {
+      <div class="hero-cancelled-pill">
+        <span class="hero-cancelled-pill__dot" aria-hidden="true"></span>
+        <span>Cancelled</span>
+      </div>
+    }
+
     <h1 class="hero-title">{{ event()?.title }}</h1>
+
+    <div class="hero-schedule-row">
+      <span class="hero-schedule-row__icon material-symbols-outlined" translate="no" aria-hidden="true">event</span>
+      <span>
+        {{ event()?.eventDate | date:'EEEE, d MMM y' }}
+        @if (event()?.eventTime && !isEscapeEvent()) {
+          · {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} }
+        }
+      </span>
+    </div>
 
     <div class="hero-action-row">
       <div class="hero-attendance-group">
@@ -48,11 +65,7 @@
         </button>
         }
 
-        @if (isCancelled()) {
-        <span class="event-status-pill event-status-pill--cancelled">
-          <span>Cancelled</span>
-        </span>
-        } @else if (isEventEnded()) {
+        @if (isEventEnded() && !isCancelled()) {
         <span class="event-status-pill event-status-pill--ended">
           <span class="event-status-pill__dot" aria-hidden="true"></span>
           <span>Ended</span>
