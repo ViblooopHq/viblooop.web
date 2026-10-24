@@ -162,49 +162,11 @@
 
   .hero-title {
     max-width: 44rem;
-    margin: 0 0 var(--space-2);
+    margin: 0 0 var(--space-4);
     color: #ffffff;
     font-size: var(--text-h1);
     font-weight: 800;
     line-height: var(--text-h1-line);
-  }
-
-  .hero-meta {
-    display: grid;
-    gap: var(--space-2);
-    margin-bottom: var(--space-3);
-
-    .meta-badge {
-      display: inline-flex;
-      align-items: flex-start;
-      gap: 6px;
-      color: rgba(255, 255, 255, 0.9);
-      font-size: var(--text-body-sm);
-      font-weight: 600;
-
-      &--schedule { align-items: center; flex-wrap: wrap; }
-
-      .duration-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        margin-left: 8px;
-        padding: 3px 10px;
-        border-radius: 999px;
-        background: rgba(139, 92, 246, 0.48);
-        color: #fff;
-        font-size: var(--text-caption);
-        font-weight: 700;
-        .material-symbols-outlined { color: inherit; font-size: 1rem; }
-      }
-
-      .material-symbols-outlined,
-      i {
-        color: rgba(255, 255, 255, 0.78);
-        font-size: 1.125rem;
-        flex-shrink: 0;
-      }
-    }
   }
 
   .event-status-pill {
@@ -245,13 +207,13 @@
     }
 
     &--cancelled {
-      background-color: var(--color-warning-soft);
-      color: var(--color-warning);
-      border-color: var(--color-warning-soft);
-
-      .event-status-pill__icon {
-        color: var(--color-warning);
-      }
+      min-height: 26px;
+      padding: 2px 8px;
+      background: #2b090b;
+      color: #ff5b61;
+      border-color: #481316;
+      font-size: 0.7rem;
+      font-weight: 650;
     }
   }
 

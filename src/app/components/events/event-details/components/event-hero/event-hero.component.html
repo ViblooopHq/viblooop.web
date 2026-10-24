@@ -26,39 +26,6 @@
   <div class="hero-bottom">
     <h1 class="hero-title">{{ event()?.title }}</h1>
 
-    <div class="hero-meta">
-      @if (isSocialEvent()) {
-        <span class="meta-badge meta-badge--schedule">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
-          <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if (event()?.eventTime && !isEscapeEvent()) { &nbsp;|&nbsp; {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} } }</span>
-          @if (durationLabel()) {
-            <span class="duration-pill"><span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>{{ durationLabel() }}</span>
-          }
-        </span>
-      } @else {
-      <span class="meta-badge">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">calendar_today</span>
-        <span>{{ (eventDate() || event()?.eventDate) | date:'EEE, d MMM y' }}@if ((isMultiDay() || isSocialEvent()) && event()?.eventTime) { · {{ event()?.eventTime | time }} }</span>
-      </span>
-      @if (isSocialEvent() && durationLabel()) {
-        <span class="meta-badge">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
-          <span>{{ durationLabel() }}</span>
-        </span>
-      } @else if (isMultiDay() && !isSocialEvent()) {
-        <span class="meta-badge">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
-          <span>{{ event()?.endDate | date:'EEE, d MMM y' }}@if (event()?.endTime && !isEscapeEvent()) { · {{ event()?.endTime | time }} }</span>
-        </span>
-      } @else if ((event()?.eventTime || event()?.endTime) && !isEscapeEvent()) {
-        <span class="meta-badge">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">schedule</span>
-          <span>{{ event()?.eventTime | time }}@if (event()?.eventTime && event()?.endTime) { – }{{ event()?.endTime | time }}</span>
-        </span>
-      }
-      }
-    </div>
-
     <div class="hero-action-row">
       <div class="hero-attendance-group">
         @if (totalAttendeesCount() > 0) {
@@ -83,8 +50,7 @@
 
         @if (isCancelled()) {
         <span class="event-status-pill event-status-pill--cancelled">
-          <span class="material-symbols-outlined event-status-pill__icon" translate="no">block</span>
-          <span>Event cancelled</span>
+          <span>Cancelled</span>
         </span>
         } @else if (isEventEnded()) {
         <span class="event-status-pill event-status-pill--ended">

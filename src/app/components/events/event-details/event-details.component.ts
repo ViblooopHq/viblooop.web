@@ -235,26 +235,6 @@ export class EventDetailsComponent {
     return 'Dates TBA';
   });
 
-  timeLeftLabel = computed(() => {
-    if (this.isEscapeEvent()) return this.tripDateRangeLabel();
-    const details = this.eventDetails();
-    if (!details?.eventDate || !details?.eventTime) return 'Date TBA';
-
-    const eventDateTime = getEventDateTime(details);
-    if (!eventDateTime) return 'Date TBA';
-
-    const diffMs = eventDateTime.getTime() - this.now();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMs < 0) return this.isEventEnded() ? 'Event ended' : 'Happening now';
-    if (diffMins < 60) return 'Starting soon';
-    if (diffHrs < 24) return `Starts in ${diffHrs} hrs`;
-    if (diffDays === 1) return 'Starts tomorrow';
-    return `Starts in ${diffDays} days`;
-  });
-
   remainingSpots = computed(() => {
     const details = this.eventDetails();
     if (!details?.attendeeLimit) return 0;
