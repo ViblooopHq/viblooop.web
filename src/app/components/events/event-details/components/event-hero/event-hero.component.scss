@@ -219,20 +219,20 @@
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    min-height: 26px;
-    padding: 2px 8px;
+    min-height: 32px;
+    padding: 4px 10px;
     border-radius: var(--radius-pill);
     background-color: var(--color-surface-glass-strong);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid var(--color-border);
     color: var(--color-text-primary);
-    font-size: 0.7rem;
+    font-size: 0.75rem;
     font-weight: 650;
     line-height: 1;
 
     &__icon {
-      font-size: 0.85rem;
+      font-size: 1rem;
       color: var(--color-primary);
     }
 
