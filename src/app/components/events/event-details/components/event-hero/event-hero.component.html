@@ -24,13 +24,6 @@
   </div>
 
   <div class="hero-bottom">
-    @if (isCancelled()) {
-      <div class="hero-cancelled-pill">
-        <span class="hero-cancelled-pill__dot" aria-hidden="true"></span>
-        <span>Cancelled</span>
-      </div>
-    }
-
     <h1 class="hero-title">{{ event()?.title }}</h1>
 
     <div class="hero-schedule-row">
@@ -63,6 +56,13 @@
             <span class="material-symbols-outlined hero-attendance__arrow" translate="no" aria-hidden="true">chevron_right</span>
           </span>
         </button>
+        }
+
+        @if (isCancelled()) {
+          <div class="hero-cancelled-pill">
+            <span class="hero-cancelled-pill__dot" aria-hidden="true"></span>
+            <span>Cancelled</span>
+          </div>
         }
 
         @if (isEventEnded() && !isCancelled()) {
