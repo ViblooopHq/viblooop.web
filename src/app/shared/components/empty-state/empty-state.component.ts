@@ -1,6 +1,6 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { RouteService } from '../../services/route/route.service';
 
 type EmptyStateKind = 'party' | 'escape' | 'sports' | 'hangouts' | 'shopping' | 'past' | 'events';
 type EmptyStateFilter = 'all' | 'tonight' | 'weekend' | 'free' | 'nearby' | 'search';
@@ -128,12 +128,13 @@ const EMPTY_STATE_MESSAGES: Record<EmptyStateKind, Record<EmptyStateFilter, Empt
 @Component({
   selector: 'vl-empty-state',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './empty-state.component.html',
   styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {
   private authService = inject(AuthService);
+  private routeService = inject(RouteService);
 
   @Input() subject = 'events';
   @Input() context = 'all';
@@ -193,7 +194,12 @@ export class EmptyStateComponent {
     return 'all';
   }
 
-  get createLink(): string {
-    return this.authService.isLoggedIn() ? this.createRoute : '/login';
+  createVibe(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.routeService.navigateByUrl('/login');
+      return;
+    }
+
+    this.routeService.navigateToDrawer('create-event', this.createRoute);
   }
 }
