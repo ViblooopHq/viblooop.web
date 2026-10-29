@@ -16,6 +16,7 @@ import {
 import { UserService } from '../../../shared/services/user/user.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
+import { SELFIE_VERIFICATION_CONSTANTS } from '../constants/selfie-verification.constants';
 
 export type SelfieVerificationStep =
   | 'selfie'
@@ -48,6 +49,8 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
   private userService = inject(UserService);
   private sharedService = inject(SharedService);
   private cdr = inject(ChangeDetectorRef);
+
+  readonly selfieConstants = SELFIE_VERIFICATION_CONSTANTS;
 
   selfieVerificationFile: File | null = null;
   selfiePreviewUrl = '';
@@ -143,7 +146,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
     const oval = this.selfieOval?.nativeElement;
 
     if (!video || !oval || !video.videoWidth || !video.videoHeight) {
-      this.selfieCameraError = 'Camera is still loading. Please try again.';
+      this.selfieCameraError = this.selfieConstants.CAMERA_LOADING_ERROR;
       this.cdr.markForCheck();
       return;
     }
@@ -158,7 +161,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
       const { blob, frameTimeMs, encodeTimeMs } = await this.captureFrameToBlob(video, oval);
 
       if (!blob) {
-        this.selfieCameraError = 'Unable to capture selfie. Please try again.';
+        this.selfieCameraError = this.selfieConstants.CAPTURE_FAILED_ERROR;
         this.isCapturing = false;
         this.cdr.markForCheck();
         return;
@@ -182,7 +185,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
       this.cdr.markForCheck();
     } catch (e) {
       console.error('[SelfieVerification] Capture error:', e);
-      this.selfieCameraError = 'Error capturing selfie. Please try again.';
+      this.selfieCameraError = this.selfieConstants.CAPTURE_EXCEPTION_ERROR;
       this.isCapturing = false;
       this.cdr.markForCheck();
     }
@@ -251,7 +254,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
     }
 
     if (!profileBlob || profileBlob.size === 0) {
-      this.selfieCameraError = 'Please update your profile image before starting the selfie verification process.';
+      this.selfieCameraError = this.selfieConstants.NO_PROFILE_PHOTO_NOTICE;
       this.selfieVerificationStep = 'no-profile-photo';
       this.stopSelfieCamera();
       this.cdr.markForCheck();
@@ -275,8 +278,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
         if (!res?.success) {
           this.selfieVerificationStep = 'failed';
           this.verificationFailureMessage =
-            res?.message ||
-            'We could not match your selfie with your profile photo. Please try again with good lighting.';
+            res?.message || this.selfieConstants.FAILED_DEFAULT_MESSAGE;
           this.cdr.markForCheck();
           return;
         }
@@ -291,7 +293,7 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
         this.verificationErrorMessage =
           err?.error?.message ||
           err?.message ||
-          'A technical error occurred while verifying your selfie. Please try again.';
+          this.selfieConstants.API_VERIFICATION_FALLBACK_ERROR;
         this.cdr.markForCheck();
       },
       complete: () => {
@@ -427,13 +429,13 @@ export class SelfieVerificationComponent implements OnChanges, OnDestroy {
       this.isCameraInitializing = false;
       this.isCameraReady = false;
       if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
-        this.selfieCameraError = 'Camera access was blocked. Please allow camera permissions in your browser settings and try again.';
+        this.selfieCameraError = this.selfieConstants.CAMERA_PERMISSION_DENIED_ERROR;
       } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
-        this.selfieCameraError = 'No camera was found on this device. Please connect a camera and try again.';
+        this.selfieCameraError = this.selfieConstants.CAMERA_NOT_FOUND_ERROR;
       } else if (err?.name === 'NotReadableError' || err?.name === 'TrackStartError') {
-        this.selfieCameraError = 'Camera is currently in use by another application. Please close other camera apps and try again.';
+        this.selfieCameraError = this.selfieConstants.CAMERA_IN_USE_ERROR;
       } else {
-        this.selfieCameraError = 'Unable to start camera. Please check your camera settings and try again.';
+        this.selfieCameraError = this.selfieConstants.CAMERA_GENERIC_ERROR;
       }
       this.cdr.markForCheck();
     }

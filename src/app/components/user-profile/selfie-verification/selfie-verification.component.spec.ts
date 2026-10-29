@@ -6,6 +6,7 @@ import { of, Subject, throwError } from 'rxjs';
 import { SelfieVerificationComponent } from './selfie-verification.component';
 import { UserService } from '../../../shared/services/user/user.service';
 import { SharedService } from '../../../shared/services/shared.service';
+import { SELFIE_VERIFICATION_CONSTANTS } from '../constants/selfie-verification.constants';
 
 describe('SelfieVerificationComponent', () => {
   let component: SelfieVerificationComponent;
@@ -82,7 +83,7 @@ describe('SelfieVerificationComponent', () => {
       const element: HTMLElement = fixture.nativeElement;
       const notice = element.querySelector('.vl-selfie-verification__notice');
       expect(notice?.textContent?.trim()).toContain(
-        'Please update your profile image before starting the selfie verification process.'
+        SELFIE_VERIFICATION_CONSTANTS.NO_PROFILE_PHOTO_NOTICE
       );
     }));
 
@@ -195,13 +196,12 @@ describe('SelfieVerificationComponent', () => {
       const element: HTMLElement = fixture.nativeElement;
       const verifyButton = element.querySelector('.vl-selfie-verification__primary') as HTMLButtonElement;
       const retakeButton = element.querySelector('.vl-selfie-verification__secondary') as HTMLButtonElement;
-      const btnSpinner = element.querySelector('.vl-selfie-verification__btn-spinner');
-      const statusPill = element.querySelector('.vl-selfie-verification__status--loading');
+      const inlineLoaders = element.querySelectorAll('vl-inline-loader');
 
       expect(verifyButton?.disabled).toBeTrue();
       expect(retakeButton?.disabled).toBeTrue();
-      expect(btnSpinner).toBeTruthy();
-      expect(statusPill?.textContent?.trim()).toContain('Verifying Identity...');
+      expect(inlineLoaders.length).toBeGreaterThan(0);
+      expect(element.textContent).toContain(SELFIE_VERIFICATION_CONSTANTS.VERIFYING_IDENTITY_STATUS);
 
       // Complete request
       responseSubject.next({ success: true, message: 'Verified' });
@@ -231,7 +231,7 @@ describe('SelfieVerificationComponent', () => {
       expect(component.verificationFailureMessage).toBe('Faces do not match');
 
       const element: HTMLElement = fixture.nativeElement;
-      expect(element.textContent).toContain('Face match was not confirmed');
+      expect(element.textContent).toContain(SELFIE_VERIFICATION_CONSTANTS.FAILED_PANEL_TITLE);
     }));
 
     it('should display technical error UI when API throws an error with retry verification option', fakeAsync(() => {
@@ -252,7 +252,7 @@ describe('SelfieVerificationComponent', () => {
       expect(component.verificationErrorMessage).toBe('Network connection lost');
 
       const element: HTMLElement = fixture.nativeElement;
-      expect(element.textContent).toContain('Technical error occurred');
+      expect(element.textContent).toContain(SELFIE_VERIFICATION_CONSTANTS.ERROR_PANEL_TITLE);
     }));
   });
 });
