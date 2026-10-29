@@ -1,4 +1,5 @@
 import { inject, Injectable } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import { HttpService } from '../http/http.service';
 import { Observable } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -26,7 +27,8 @@ export class UserService {
   }
 
   verifySelfieProfile(data: FormData) {
-    return this.httpService.post(this.baseUrl + `/verifySelfieProfile`, data);
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    return this.httpService.post(this.baseUrl + `/verifySelfieProfile`, data, headers);
   }
 
   getIntrestList(): Observable<any> {

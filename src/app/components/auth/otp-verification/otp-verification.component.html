@@ -2,15 +2,14 @@
     <div class="login-card vl-surface vl-surface--glass">
         @if (isUserAlreadyExist) {
         <header class="header-nav">
-            <button class="icon-btn back-btn vl-icon-button" (click)="onBack()" [disabled]="isLoading()">
-                <span class="material-symbols-outlined">arrow_back</span>
-            </button>
+            <vl-back-button (click)="onBack()" [disabled]="isLoading()"></vl-back-button>
         </header>
         }
 
         <div class="content-wrapper">
             <div class="logo-section">
-                <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="logo-icon">
+                <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;"
+                    class="logo-icon">
             </div>
 
             @if (!isUserAlreadyExist) {
@@ -21,7 +20,7 @@
                     Choose a unique username for your Viblooop account.
                 </p>
             </div>
-            
+
             <form class="email-form" [formGroup]="createUsernameForm" (ngSubmit)="createUsername()">
                 <div class="input-group">
                     <span class="material-symbols-outlined input-icon">person</span>
@@ -30,9 +29,9 @@
 
                 <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isLoading()">
                     @if (isLoading()) {
-                        <vl-inline-loader size="sm" color="white" text="Creating..."></vl-inline-loader>
+                    <vl-inline-loader size="sm" color="white" text="Creating..."></vl-inline-loader>
                     } @else {
-                        <span>Create Username</span>
+                    <span>Create Username</span>
                     }
                 </button>
             </form>
@@ -57,26 +56,26 @@
             </div>
 
             <!-- Main Verify Button -->
-            <button class="vl-button vl-button--primary vl-button--block" (click)="verifyOtp()" [disabled]="isLoading() || otp.join('').length < 4">
+            <button class="vl-button vl-button--primary vl-button--block" (click)="verifyOtp()"
+                [disabled]="isLoading() || otp.join('').length < 4">
                 @if (isLoading()) {
-                    <vl-inline-loader size="sm" color="white" text="Verifying..."></vl-inline-loader>
+                <vl-inline-loader size="sm" color="white" text="Verifying..."></vl-inline-loader>
                 } @else {
-                    <span>Verify & Continue</span>
+                <span>Verify & Continue</span>
                 }
             </button>
 
             <!-- Resend Code Button -->
-            <button class="vl-button vl-button--secondary btn-outlined btn-icon-gap" 
-                (click)="resendOtp()" 
+            <button class="vl-button vl-button--secondary btn-outlined btn-icon-gap" (click)="resendOtp()"
                 [disabled]="resendTimer() > 0 || isResending()">
                 @if (isResending()) {
-                    <vl-inline-loader size="sm" color="primary" text="Sending..."></vl-inline-loader>
+                <vl-inline-loader size="sm" color="primary" text="Sending..."></vl-inline-loader>
                 } @else if (resendTimer() > 0) {
-                    <span class="material-symbols-outlined">schedule</span>
-                    <span>Resend code in {{ formatTime(resendTimer()) }}</span>
+                <span class="material-symbols-outlined">schedule</span>
+                <span>Resend code in {{ formatTime(resendTimer()) }}</span>
                 } @else {
-                    <span class="material-symbols-outlined">refresh</span>
-                    <span>Resend code</span>
+                <span class="material-symbols-outlined">refresh</span>
+                <span>Resend code</span>
                 }
             </button>
 

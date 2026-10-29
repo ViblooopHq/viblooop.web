@@ -77,6 +77,7 @@ export class UserProfileComponent implements OnInit {
   showAllHostedEvents = false;
   defaultProfileImage = 'assets/images/default-profile.png';
   isSelfieVerificationOpen = false;
+  isMissingProfileImageModalOpen = false;
   showVerificationPrompt = true;
   isLogoutModalOpen = false;
   isUpdateAvatarModalOpen = false;
@@ -403,8 +404,32 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  verifyGovernmentID() {
+  hasValidProfileImage(): boolean {
+    const img = this.userProfile?.profileImage;
+    if (!img || typeof img !== 'string') return false;
+    const normalized = img.trim().toLowerCase();
+    if (
+      !normalized ||
+      normalized === this.defaultProfileImage.toLowerCase() ||
+      normalized.includes('default-profile.png') ||
+      normalized.includes('default-avatar')
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  verifyGovernmentID(): void {
+    if (!this.hasValidProfileImage()) {
+      this.isMissingProfileImageModalOpen = true;
+      return;
+    }
     this.isSelfieVerificationOpen = true;
+  }
+
+  onUpdateProfilePhotoFromVerification(): void {
+    this.isMissingProfileImageModalOpen = false;
+    this.openUpdateAvatarModal();
   }
 
   closeSelfieVerification() {
