@@ -18,6 +18,8 @@ describe('EditProfileComponent', () => {
       isAuthInitialized$: of(true),
       userDetails: { id: 'user-1' },
       logout: jasmine.createSpy('logout'),
+      updateUserDetails: jasmine.createSpy('updateUserDetails'),
+      refreshUserDetails: jasmine.createSpy('refreshUserDetails').and.returnValue(of(null)),
     };
 
     const mockSharedService = {
@@ -32,6 +34,7 @@ describe('EditProfileComponent', () => {
 
     const mockAppDrawerService = {
       close: jasmine.createSpy('close'),
+      notifyProfileUpdated: jasmine.createSpy('notifyProfileUpdated'),
     };
 
     const mockRouteService = {

@@ -174,8 +174,27 @@ export class EditProfileComponent implements OnInit {
           return;
         }
 
+        const serverData = res?.data || {};
+        const updatedDetails: any = {};
+        if (serverData.profileImage) {
+          updatedDetails.profileImage = serverData.profileImage;
+        } else if (this.profilePreview && typeof this.profilePreview === 'string') {
+          updatedDetails.profileImage = this.profilePreview;
+        }
+        if (serverData.userName || this.profileForm.value.name) {
+          updatedDetails.userName = serverData.userName || this.profileForm.value.name;
+        }
+        if (serverData.username || this.profileForm.value.username) {
+          updatedDetails.username = serverData.username || this.profileForm.value.username;
+        }
+
+        if (Object.keys(updatedDetails).length > 0) {
+          this.authService.updateUserDetails?.(updatedDetails);
+        }
+
         this.profileForm.markAsPristine();
         this.appDrawerService.notifyProfileUpdated();
+        this.authService.refreshUserDetails?.().subscribe();
         this.appDrawerService.close();
         this.drawerClosed.emit();
       },
@@ -405,6 +424,9 @@ export class EditProfileComponent implements OnInit {
 
   onSelfieVerified(): void {
     this.isVerified = true;
+    this.authService.updateUserDetails?.({ verified: true, isVerified: true });
+    this.appDrawerService.notifyProfileUpdated();
+    this.authService.refreshUserDetails?.().subscribe();
     this.profileForm.markAsPristine();
     this.routeService.closeDrawerAndNavigateByUrl('/profile');
   }

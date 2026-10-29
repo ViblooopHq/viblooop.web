@@ -99,6 +99,13 @@ export class UserProfileComponent implements OnInit {
         profileImage: newImageUrl,
       };
     }
+    if (this.isCurrentUser) {
+      if (newImageUrl) {
+        this.authSerivice.updateUserDetails?.({ profileImage: newImageUrl });
+      }
+      this.appDrawerService.notifyProfileUpdated();
+      this.authSerivice.refreshUserDetails?.().subscribe();
+    }
     // Refresh full profile in background
     this.loadProfile();
   }
@@ -168,6 +175,14 @@ export class UserProfileComponent implements OnInit {
       next: (response: any) => {
         if (response?.profile?.success && response.profile.statusCode === 200) {
           this.userProfile = this.normalizeProfile(response.profile.data);
+          if (this.isCurrentUser && response.profile.data) {
+            const data = response.profile.data;
+            this.authSerivice.updateUserDetails?.({
+              profileImage: data.profileImage,
+              userName: data.userName || data.name,
+              username: data.username,
+            });
+          }
         } else {
           console.warn('Unexpected profile response format or status code:', response?.profile);
         }
@@ -442,6 +457,11 @@ export class UserProfileComponent implements OnInit {
         ...this.userProfile,
         verified: true,
       };
+    }
+    if (this.isCurrentUser) {
+      this.authSerivice.updateUserDetails?.({ verified: true, isVerified: true });
+      this.appDrawerService.notifyProfileUpdated();
+      this.authSerivice.refreshUserDetails?.().subscribe();
     }
     this.router.navigateByUrl('/profile');
   }
