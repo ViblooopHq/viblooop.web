@@ -77,7 +77,7 @@
       <button type="button" [matTooltip]="'Profile'" class="header-profile-trigger" aria-label="Open profile menu"
         [attr.aria-expanded]="isUserProfileVisible" (click)="$event.stopPropagation(); toggleUserProfile()">
         <div class="header-profile-avatar">
-          <img [src]="getMobileProfileImage()" alt="Your profile" />
+          <img [src]="getProfileImage()" alt="Your profile" (error)="onAvatarError($event)" />
         </div>
       </button>
 

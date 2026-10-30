@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
 import { PillComponent } from '../../../shared/components/pill/pill.component';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { ActionModalComponent } from '../../../shared/components/action-modal/action-modal.component';
 import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 
 type SocialPlatform = {
@@ -48,6 +49,7 @@ type ProfilePhotoItem = {
     DatepickerComponent,
     PillComponent,
     BackButtonComponent,
+    ActionModalComponent,
   ]
 })
 export class EditProfileComponent implements OnInit {
@@ -68,6 +70,7 @@ export class EditProfileComponent implements OnInit {
   profilePhotoFile: File | null = null;
   profilePhotos: ProfilePhotoItem[] = [];
   isSelfieVerificationOpen = false;
+  isMissingProfileImageModalOpen = false;
   isVerified = false;
   isSaving = false;
   isProfilePhotosSaving = false;
@@ -171,8 +174,27 @@ export class EditProfileComponent implements OnInit {
           return;
         }
 
+        const serverData = res?.data || {};
+        const updatedDetails: any = {};
+        if (serverData.profileImage) {
+          updatedDetails.profileImage = serverData.profileImage;
+        } else if (this.profilePreview && typeof this.profilePreview === 'string') {
+          updatedDetails.profileImage = this.profilePreview;
+        }
+        if (serverData.userName || this.profileForm.value.name) {
+          updatedDetails.userName = serverData.userName || this.profileForm.value.name;
+        }
+        if (serverData.username || this.profileForm.value.username) {
+          updatedDetails.username = serverData.username || this.profileForm.value.username;
+        }
+
+        if (Object.keys(updatedDetails).length > 0) {
+          this.authService.updateUserDetails?.(updatedDetails);
+        }
+
         this.profileForm.markAsPristine();
         this.appDrawerService.notifyProfileUpdated();
+        this.authService.refreshUserDetails?.().subscribe();
         this.appDrawerService.close();
         this.drawerClosed.emit();
       },
@@ -293,8 +315,36 @@ export class EditProfileComponent implements OnInit {
     }
   }
 
+  hasValidProfileImage(): boolean {
+    if (this.profilePhotoFile && this.profilePhotoFile.size > 0) return true;
+    const img = this.profilePreview;
+    if (!img || typeof img !== 'string') return false;
+    const normalized = img.trim().toLowerCase();
+    if (
+      !normalized ||
+      normalized === this.defaultProfile.toLowerCase() ||
+      normalized.includes('default-profile.png') ||
+      normalized.includes('default-avatar')
+    ) {
+      return false;
+    }
+    return true;
+  }
+
   verifySelfie(): void {
+    if (!this.hasValidProfileImage()) {
+      this.isMissingProfileImageModalOpen = true;
+      return;
+    }
     this.isSelfieVerificationOpen = true;
+  }
+
+  onUpdateProfilePhotoFromVerification(): void {
+    this.isMissingProfileImageModalOpen = false;
+    const fileInput = document.querySelector<HTMLInputElement>('.vl-edit-profile__avatar-input');
+    if (fileInput) {
+      fileInput.click();
+    }
   }
 
   async onProfileSelected(event: Event): Promise<void> {
@@ -374,6 +424,9 @@ export class EditProfileComponent implements OnInit {
 
   onSelfieVerified(): void {
     this.isVerified = true;
+    this.authService.updateUserDetails?.({ verified: true, isVerified: true });
+    this.appDrawerService.notifyProfileUpdated();
+    this.authService.refreshUserDetails?.().subscribe();
     this.profileForm.markAsPristine();
     this.routeService.closeDrawerAndNavigateByUrl('/profile');
   }

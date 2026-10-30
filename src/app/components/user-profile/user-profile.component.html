@@ -92,8 +92,19 @@
     [compareImage]="userProfile?.profileImage || defaultProfileImage"
     [defaultImage]="defaultProfileImage"
     (closed)="closeSelfieVerification()"
-    (verified)="onSelfieVerified()">
+    (verified)="onSelfieVerified()"
+    (requestUpdateProfile)="openUpdateAvatarModal()">
   </vl-selfie-verification>
+
+  <vl-action-modal
+    [isOpen]="isMissingProfileImageModalOpen"
+    variant="info"
+    title="Profile Photo Required"
+    message="Please update your profile image before starting the selfie verification process."
+    confirmLabel="Update Photo"
+    cancelLabel="Cancel"
+    (confirmed)="onUpdateProfilePhotoFromVerification()"
+    (cancelled)="isMissingProfileImageModalOpen = false" />
 
   <vl-update-avatar-modal
     [isOpen]="isUpdateAvatarModalOpen"

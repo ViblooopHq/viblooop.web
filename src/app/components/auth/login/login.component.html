@@ -47,9 +47,7 @@
     <!-- Right Section: Login Card -->
     <section class="login-section">
       <div class="login-card vl-surface vl-surface--glass">
-        <button class="login-back-btn vl-icon-button" type="button" aria-label="Go back" (click)="goBack()">
-          <span class="material-symbols-outlined" translate="no">arrow_back_ios_new</span>
-        </button>
+        <vl-back-button (back)="handleBack()"></vl-back-button>
 
         <div class="login-brand">
           <img [src]="themeService.logoSrc()" alt="Viblooop Logo" style="height: 38px; width: auto;" class="logo-icon">
@@ -60,7 +58,8 @@
           <p class="vl-body-sm">Sign in to continue your vibe</p>
         </div>
 
-        <button class="btn-google vl-button vl-button--secondary vl-button--block" (click)="loginWithGoogle()" aria-label="Continue with Google">
+        <button class="btn-google vl-button vl-button--secondary vl-button--block" (click)="loginWithGoogle()"
+          aria-label="Continue with Google">
           <span class="google-icon-wrapper"><i class="fa-brands fa-google"></i></span>
           <span>Continue with Google</span>
         </button>
@@ -79,7 +78,11 @@
           </div>
 
           <button type="submit" class="vl-button vl-button--primary vl-button--block" [disabled]="isOtpSending()">
-            {{isOtpSending() ? "Sending OTP..." : "Send OTP"}}
+            @if (isOtpSending()) {
+            <vl-inline-loader size="sm" color="white" text="Sending OTP..."></vl-inline-loader>
+            } @else {
+            <span>Send OTP</span>
+            }
           </button>
 
           @if (otpError()) {
@@ -99,7 +102,8 @@
         </div>
 
         <p class="terms-text">
-          By continuing, you agree to our <a routerLink="/terms" class="footer-link">Terms</a> & <a routerLink="/privacy" class="footer-link">Privacy Policy</a>.
+          By continuing, you agree to our <a routerLink="/terms" class="footer-link">Terms</a> & <a
+            routerLink="/privacy" class="footer-link">Privacy Policy</a>.
         </p>
       </div>
     </section>

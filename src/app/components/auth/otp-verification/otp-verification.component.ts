@@ -11,11 +11,12 @@ import { AppSplashService } from '../../../shared/services/app-splash/app-splash
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { ThemeService } from '../../../shared/services/theme/theme.service';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-otp-verification',
   standalone: true,
-  imports: [ReactiveFormsModule, MatSnackBarModule, InlineLoaderComponent],
+  imports: [ReactiveFormsModule, MatSnackBarModule, InlineLoaderComponent, BackButtonComponent],
   templateUrl: './otp-verification.component.html',
   styleUrl: './otp-verification.component.scss',
 })
@@ -156,8 +157,6 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
   }
 
   saveLoginData(data: any, isNewUser: boolean = false) {
-    this.appSplashService.showLoginSplash(isNewUser);
-
     this.authService.initAuth();
 
     // Show success toast then navigate
@@ -166,12 +165,7 @@ export class OtpVerificationComponent implements OnInit, OnDestroy {
 
     const redirectUrl = this.route.snapshot.queryParams['redirect'] || this.route.snapshot.queryParams['returnUrl'] || '/';
 
-    // Navigate to redirectUrl (or homepage) and smoothly hide splash after 3s
-    setTimeout(() => {
-      this.router.navigateByUrl(redirectUrl).then(() => {
-        this.appSplashService.hide(3000);
-      });
-    }, 600);
+    this.router.navigateByUrl(redirectUrl)
   }
 
   onInput(index: number, event: Event) {
