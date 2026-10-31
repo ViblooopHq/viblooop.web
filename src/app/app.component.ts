@@ -40,6 +40,12 @@ import { injectSpeedInsights } from '@vercel/speed-insights';
 import { SeoService } from './shared/services/seo/seo.service';
 import { ActivatedRoute } from '@angular/router';
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
 @Component({
   selector: 'vl-app-root',
   imports: [
@@ -94,7 +100,10 @@ export class AppComponent implements OnInit {
         this.updateFooterVisibility(event.urlAfterRedirects);
         this.scrollToTopOnNavigation(event.urlAfterRedirects);
         this.updateSeoOnNavigation(event.urlAfterRedirects);
+        this.trackPageView(event.urlAfterRedirects);
       });
+
+    this.trackPageView(this.angularRouter.url);
 
     this.authService.initAuth();
 
@@ -135,6 +144,16 @@ export class AppComponent implements OnInit {
     } else {
       this.seoService.updateCanonicalUrl(canonicalUrl);
     }
+  }
+
+  private trackPageView(url: string) {
+    if (!this.browserService.isBrowserPlatform()) return;
+
+    window.gtag?.('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: url,
+    });
   }
 
   private updateFooterVisibility(url: string) {
