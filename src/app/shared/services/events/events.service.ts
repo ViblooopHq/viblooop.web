@@ -10,6 +10,13 @@ export class EventsService {
   private readonly eventUpdatedSubject = new Subject<string>();
   readonly eventUpdated$ = this.eventUpdatedSubject.asObservable();
 
+  private readonly refreshUpcomingEventsSubject = new Subject<void>();
+  readonly refreshUpcomingEvents$ = this.refreshUpcomingEventsSubject.asObservable();
+
+  refreshUpcomingEvents(): void {
+    this.refreshUpcomingEventsSubject.next();
+  }
+
   eventCategories: any = []
   eventDetails: any = []
   selectedCategory: any = {};
@@ -155,7 +162,13 @@ export class EventsService {
   }
 
   createEvent(eventData: any): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/createEvent`, eventData);
+    return this.httpService.http.post(`${this.baseUrl}/createEvent`, eventData).pipe(
+      tap((response: any) => {
+        if (response?.success) {
+          this.refreshUpcomingEvents();
+        }
+      })
+    );
   }
 
   updateEvent(eventData: any): Observable<any> {

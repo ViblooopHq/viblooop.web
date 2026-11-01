@@ -4,11 +4,10 @@
 
 <div class="vl-form-drawer__backdrop" (click)="closeDrawer()" aria-hidden="true"></div>
 
-<section
-  class="vl-form-drawer"
-  [class.vl-form-drawer--closing]="isClosing"
-  [attr.aria-label]="ariaLabel">
-  <div class="vl-form-drawer__handle-bar" aria-hidden="true" (click)="closeDrawer()">
+<section class="vl-form-drawer" [class.vl-form-drawer--closing]="isClosing" [attr.aria-label]="ariaLabel">
+  <div class="vl-form-drawer__handle-bar" aria-hidden="true" (click)="closeDrawer()" (touchstart)="onTouchStart($event)"
+    (touchend)="onTouchEnd($event)" (touchcancel)="onTouchCancel()" (pointerdown)="onPointerDown($event)"
+    (pointerup)="onPointerUp($event)" (pointercancel)="onPointerCancel()">
     <div class="vl-form-drawer__handle"></div>
   </div>
   <ng-content></ng-content>

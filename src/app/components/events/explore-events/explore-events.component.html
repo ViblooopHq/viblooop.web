@@ -13,8 +13,8 @@
       </div>
     </div>
 
-    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId"
-      placeholder="Search events or vibes" (filterChange)="setActiveFilter($event)" />
+    <vl-event-filters [filters]="filters" [activeFilterId]="activeFilterId" placeholder="Search events or vibes"
+      (filterChange)="setActiveFilter($event)" />
   </header>
 
   <!-- Categories -->
@@ -69,26 +69,26 @@
       @if (isTrendingLoading()) {
       <vl-event-card-skeleton [count]="4" />
       } @else {
-        @for (event of trendingEvents().slice(0, 4); track event._id || $index) {
-        <div class="trending-card">
-          <div class="vl-card-desktop">
-            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
-          </div>
-          <div class="vl-card-mobile">
-            <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
-          </div>
+      @for (event of trendingEvents().slice(0, eventLimitOffset); track event._id || $index) {
+      <div class="trending-card">
+        <div class="vl-card-desktop">
+          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
         </div>
-        }
-        @if (trendingEvents().length === 0) {
-        <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
-          [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
-          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" [compact]="true"
-          (exploreAll)="resetFilters()">
-        </vl-empty-state>
-        }
+        <div class="vl-card-mobile">
+          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+        </div>
+      </div>
+      }
+      @if (trendingEvents().length === 0) {
+      <vl-empty-state [subject]="emptyStateSubject" [context]="emptyStateContext"
+        [contextPrefix]="emptyStateContextPrefix" image="assets/images/empty-states/explore.png"
+        imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" [compact]="true"
+        (exploreAll)="resetFilters()">
+      </vl-empty-state>
+      }
       }
     </div>
-    @if (!isTrendingLoading() && trendingEvents().length > 4) {
+    @if (!isTrendingLoading() && trendingEvents().length > eventLimitOffset) {
     <div class="section-footer">
       <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: activeFilterId }">
         See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -114,8 +114,7 @@
     <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
       @if (pastEvents().length > 0) {
       <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
-        [breakpoints]="pastVibeBreakpoints"
-        preTitle="Memories" title="Past Vibes" headerActionLabel="See More"
+        [breakpoints]="pastVibeBreakpoints" preTitle="Memories" title="Past Vibes" headerActionLabel="See More"
         headerActionLink="/events/view-all/past-vibes"
         [showHeaderAction]="hasMorePastEvents() && showPastEventsSeeMore()"
         (endVisibilityChange)="showPastEventsSeeMore.set($event)">
