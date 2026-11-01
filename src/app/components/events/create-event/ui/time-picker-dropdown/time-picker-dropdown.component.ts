@@ -82,9 +82,12 @@ export class TimePickerDropdownComponent {
 
   private syncFromValue(): void {
     const val = this.value();
-    if (!val) return;
+    // A blank picker should not highlight its default 12:00 AM option when
+    // that time is already in the past for the selected date.
+    const timeToSync = val || this.minTime();
+    if (!timeToSync || timeToSync >= '24:00') return;
 
-    const [h, m] = val.split(':');
+    const [h, m] = timeToSync.split(':');
     let hour = parseInt(h, 10);
     this.selectedPeriod.set(hour >= 12 ? 'PM' : 'AM');
     hour = hour % 12 || 12;

@@ -7,6 +7,7 @@ import { ImageUrlPipe } from '../../pipes/image-url.pipe';
 import { TimePipe } from '../../pipes/time.pipe';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { isThisCalendarWeekend } from '../../utils/date-badge.util';
+import { eventDateRangeDurationLabel } from '../../utils/event-date-range.util';
 
 @Component({
   selector: 'vl-compact-event-card',
@@ -242,14 +243,9 @@ export class CompactEventCardComponent {
       .some((name) => categoryTitle.includes(name));
   }
 
-  get tripDateRangeLabel(): string {
+  get tripDurationLabel(): string {
     const config = this.config();
-    const start = this.formatTripDate(config?.eventDate);
-    const end = this.formatTripDate(config?.endDate);
-
-    if (start && end) return `${start} - ${end}`;
-    if (start) return start;
-    return 'Dates TBA';
+    return eventDateRangeDurationLabel(config?.eventDate, config?.endDate) || 'Duration TBA';
   }
 
   get isMultiDay(): boolean {
@@ -286,13 +282,4 @@ export class CompactEventCardComponent {
     return eventDateTime;
   }
 
-  private formatTripDate(value: string | Date | null | undefined): string {
-    if (!value) return '';
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) return '';
-    return new Intl.DateTimeFormat('en-US', {
-      month: 'short',
-      day: 'numeric',
-    }).format(date);
-  }
 }

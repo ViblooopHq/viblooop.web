@@ -62,7 +62,6 @@ export class ExploreEventsComponent implements OnInit {
 
   isCategoriesLoading = signal(true);
   isTrendingLoading = signal(true);
-  isForYouLoading = signal(true);
   isPastEventsLoading = signal(true);
   isLoading = computed(() => this.isTrendingLoading() || this.isCategoriesLoading());
 
@@ -71,7 +70,6 @@ export class ExploreEventsComponent implements OnInit {
 
   categories = signal<any[]>([]);
   trendingEvents = signal<any[]>([]);
-  justForYouEvents = signal<any[]>([]);
   pastEvents = signal<any[]>([]);
   hasMorePastEvents = signal(false);
   showPastEventsSeeMore = signal(false);
@@ -273,7 +271,6 @@ export class ExploreEventsComponent implements OnInit {
   private loadInitialData() {
     this.loadCategories();
     this.loadEvents();
-    this.loadForYouEvents();
     this.loadPastEvents();
   }
 
@@ -317,24 +314,6 @@ export class ExploreEventsComponent implements OnInit {
         if (requestId !== this.eventsRequestId) return;
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
-      }
-    });
-  }
-
-  private loadForYouEvents() {
-    this.isForYouLoading.set(true);
-    this.eventsService.getEventForYou('all', undefined, undefined, 8).pipe(
-      catchError((error) => {
-        console.error('Failed to load recommended events', error);
-        return of({ data: [] });
-      }),
-      finalize(() => {
-        this.isForYouLoading.set(false);
-      })
-    ).subscribe({
-      next: (res: any) => {
-        const recommendedEvents = Array.isArray(res?.data) ? res.data : [];
-        this.justForYouEvents.set(recommendedEvents);
       }
     });
   }
