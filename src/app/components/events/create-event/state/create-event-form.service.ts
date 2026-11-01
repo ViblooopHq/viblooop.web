@@ -659,6 +659,7 @@ export class CreateEventFormService {
     Object.keys(this.eventForm.controls).forEach(key => {
       let value = this.eventForm.get(key)?.value;
       if (key === 'durationHours') return;
+      if (key === 'eventDate' || key === 'endDate') value = this.toDateOnlyFormValue(value);
       if (key === 'eventTime' && this.isEscapeCreation()) value = value || '00:00';
       if (key === 'endTime' && !this.usesDuration()) value = '';
 
@@ -672,6 +673,30 @@ export class CreateEventFormService {
     });
 
     return formData;
+  }
+
+  private toDateOnlyFormValue(value: Date | string | null | undefined): string {
+    if (!value) return '';
+
+    // Event dates are calendar dates, not instants. Sending Date.toString()
+    // applies the browser's timezone and can make the API store the prior day.
+    if (value instanceof Date && !Number.isNaN(value.getTime())) {
+      const year = value.getFullYear();
+      const month = String(value.getMonth() + 1).padStart(2, '0');
+      const day = String(value.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const raw = String(value);
+    const dateOnly = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (dateOnly) return dateOnly[1];
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    const day = String(parsed.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private hasValidDurationDateTimeRange(): boolean {

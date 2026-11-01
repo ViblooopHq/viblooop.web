@@ -97,43 +97,6 @@
     }
   </section>
 
-  <!-- Just for You Grid -->
-  <section class="just-for-you-section">
-    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <h2 class="section-title" style="margin: 0;">Just for you</h2>
-    </div>
-    <div class="trending-scroll" [class.single-result]="!isForYouLoading() && justForYouEvents().length === 1"
-      [class.empty-result]="!isForYouLoading() && justForYouEvents().length === 0">
-      @if (isForYouLoading()) {
-      <vl-event-card-skeleton [count]="4" />
-      } @else {
-        @for (event of justForYouEvents().slice(0, 4); track event._id || $index) {
-        <div class="trending-card">
-          <div class="vl-card-desktop">
-            <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
-          </div>
-          <div class="vl-card-mobile">
-            <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
-          </div>
-        </div>
-        }
-        @if (justForYouEvents().length === 0) {
-        <vl-empty-state subject="events" context="near you" contextPrefix=""
-          image="assets/images/empty-states/explore.png"
-          imageAlt="Compass connecting Party, Escape, Sports, Hangouts, and Shopping" (exploreAll)="resetFilters()">
-        </vl-empty-state>
-        }
-      }
-    </div>
-    @if (!isForYouLoading() && justForYouEvents().length > 4) {
-    <div class="section-footer">
-      <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: 'all' }">
-        See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
-      </a>
-    </div>
-    }
-  </section>
-
   <!-- Past Vibes Section -->
   <section class="past-vibes-section">
     @if (isPastEventsLoading()) {

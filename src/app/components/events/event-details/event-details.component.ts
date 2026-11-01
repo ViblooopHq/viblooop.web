@@ -155,7 +155,6 @@ export class EventDetailsComponent {
     const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
     return this.attendeeProfiles().filter((attendee) => attendee.userId !== creatorId);
   });
-  attendeePreviewProfiles = computed(() => this.nonHostAttendeeProfiles().slice(0, 5));
 
   currentUserId = computed(() => this.currentUser()?.id || this.currentUser()?._id || '');
 
@@ -245,24 +244,6 @@ export class EventDetailsComponent {
     isCapacityUnlimited(this.eventDetails()?.attendeeLimit, this.openCapacityLimit) ? 'No limit' : `${this.remainingSpots()} left`);
   isUrgent = computed(() => this.remainingSpots() > 0 && this.remainingSpots() <= 5);
 
-  attendanceSummaryLabel = computed(() => {
-    const attendees = this.nonHostAttendeeProfiles();
-    const total = attendees.length;
-    const userId = this.currentUserId();
-    const isListedAttendee = !!userId && attendees.some((attendee) => attendee.userId === userId);
-    const status = this.isEventEnded() ? 'Attended' : 'Going';
-
-    if (total === 0) return '';
-    if (total === 1) return status;
-
-    if (isListedAttendee) {
-      const others = total - 1;
-      return `You + ${others} ${others === 1 ? 'other' : 'others'}`;
-    }
-
-    return `${total} ${total === 1 ? 'person' : 'people'} ${this.isEventEnded() ? 'attended' : 'going'}`;
-  });
-
   eventPriceLabel = computed(() => {
     if (this.isEventEnded()) return '';
 
@@ -320,7 +301,7 @@ export class EventDetailsComponent {
 
   hostEventCount = computed(() => {
     const count = Number(this.eventDetails()?.createdBy?.eventCount);
-    return Number.isFinite(count) && count > 0 ? count : 1;
+    return Number.isFinite(count) && count >= 0 ? count : 1;
   });
   isNewHost = computed(() => this.hostEventCount() <= 1);
   hostRating = computed(() => {

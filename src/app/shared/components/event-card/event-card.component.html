@@ -72,6 +72,11 @@
             <span class="material-symbols-outlined" aria-hidden="true">schedule</span>
             <span>{{ config()?.eventTime | time }}</span>
           </div>
+        } @else if (isEscapeEvent) {
+          <div class="vl-event-card__schedule-row">
+            <span class="material-symbols-outlined" aria-hidden="true">hourglass_empty</span>
+            <span>{{ tripDurationLabel }}</span>
+          </div>
         } @else if (isMultiDay) {
           <div class="vl-event-card__schedule-row">
             <span class="material-symbols-outlined" aria-hidden="true">event</span>
