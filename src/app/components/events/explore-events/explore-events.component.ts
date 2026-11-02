@@ -1,7 +1,8 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, computed, CUSTOM_ELEMENTS_SCHEMA, DestroyRef, inject, NgZone, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
@@ -13,6 +14,7 @@ import { MultiCarouselComponent, FullPageCarouselComponent } from '../../../shar
 import { RouterModule } from '@angular/router';
 import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
+import { EVENT_LIMIT_OFFSET } from '../../../shared/constants/common.constants';
 
 const CATEGORY_FILTER_IMAGES: Record<string, string> = {
   party: 'assets/images/category-filter/party.png',
@@ -54,10 +56,10 @@ export class ExploreEventsComponent implements OnInit {
   readonly pastVibeBreakpoints = {
     320: { slidesPerView: 2.15, spaceBetween: 10 },
     480: { slidesPerView: 2.25, spaceBetween: 12 },
-    640: { slidesPerView: 3.2, spaceBetween: 14 },
-    1024: { slidesPerView: 4.2, spaceBetween: 16 },
-    1280: { slidesPerView: 4.8, spaceBetween: 18 },
-    1440: { slidesPerView: 5.2, spaceBetween: 20 },
+    640: { slidesPerView: 2.8, spaceBetween: 14 },
+    1024: { slidesPerView: 3.2, spaceBetween: 16 },
+    1280: { slidesPerView: 3.8, spaceBetween: 20 },
+    1440: { slidesPerView: 4.2, spaceBetween: 20 },
   };
 
   isCategoriesLoading = signal(true);
@@ -73,9 +75,13 @@ export class ExploreEventsComponent implements OnInit {
   pastEvents = signal<any[]>([]);
   hasMorePastEvents = signal(false);
   showPastEventsSeeMore = signal(false);
+
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
   private messageStore = inject(MessageStore);
+  private destroyRef = inject(DestroyRef);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   private eventsRequestId = 0;
 
   filters = [
@@ -102,8 +108,24 @@ export class ExploreEventsComponent implements OnInit {
 
   private platformId = inject(PLATFORM_ID);
 
+  eventLimitOffset = EVENT_LIMIT_OFFSET;
+  totalUpcomingEvents = 0;
+
   ngOnInit() {
     this.loadInitialData();
+
+    this.eventsService.refreshUpcomingEvents$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.ngZone.run(() => {
+          if (this.activeFilterId === 'nearby') {
+            this.requestBrowserLocation();
+          } else {
+            this.loadEvents();
+          }
+          this.cdr.markForCheck();
+        });
+      });
   }
 
   activeFilterId: string = 'all'; // Default active filter
@@ -139,6 +161,7 @@ export class ExploreEventsComponent implements OnInit {
           finalize(() => {
             if (requestId === this.eventsRequestId) {
               this.isTrendingLoading.set(false);
+              this.cdr.markForCheck();
             }
           })
         ).subscribe({
@@ -154,11 +177,13 @@ export class ExploreEventsComponent implements OnInit {
               this.trendingEvents.set([]);
               this.messageStore.addMessage('Failed to load nearby events.', 'error');
             }
+            this.cdr.markForCheck();
           },
           error: () => {
             if (requestId !== this.eventsRequestId) return;
             this.trendingEvents.set([]);
             this.messageStore.addMessage('Failed to load nearby events.', 'error');
+            this.cdr.markForCheck();
           }
         });
       },
@@ -283,6 +308,7 @@ export class ExploreEventsComponent implements OnInit {
       }),
       finalize(() => {
         this.isCategoriesLoading.set(false);
+        this.cdr.markForCheck();
       })
     ).subscribe((categories: any) => {
       if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
@@ -290,6 +316,7 @@ export class ExploreEventsComponent implements OnInit {
       } else {
         this.categories.set([]);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -298,7 +325,7 @@ export class ExploreEventsComponent implements OnInit {
     this.isTrendingLoading.set(true);
     const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
 
-    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).pipe(
+    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, this.eventLimitOffset).pipe(
       catchError((error) => {
         console.error('Failed to load events', error);
         this.messageStore.addMessage('Failed to load events.', 'error');
@@ -307,13 +334,16 @@ export class ExploreEventsComponent implements OnInit {
       finalize(() => {
         if (requestId === this.eventsRequestId) {
           this.isTrendingLoading.set(false);
+          this.cdr.markForCheck();
         }
       })
     ).subscribe({
       next: (events: any) => {
         if (requestId !== this.eventsRequestId) return;
+        this.totalUpcomingEvents = events.totalCount;
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -327,6 +357,7 @@ export class ExploreEventsComponent implements OnInit {
       }),
       finalize(() => {
         this.isPastEventsLoading.set(false);
+        this.cdr.markForCheck();
       })
     ).subscribe({
       next: (events: any) => {
@@ -334,6 +365,7 @@ export class ExploreEventsComponent implements OnInit {
         this.pastEvents.set(Array.isArray(data?.events) ? data.events : []);
         this.hasMorePastEvents.set(Boolean(data?.nextCursor));
         this.showPastEventsSeeMore.set(false);
+        this.cdr.markForCheck();
       }
     });
   }

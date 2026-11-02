@@ -88,7 +88,10 @@ export class CompactEventCardComponent {
     if (!eventDateTime) return null;
 
     if (this.isEventEnded) {
-      return { text: 'Ended', icon: 'history' };
+      return {
+        text: 'Completed',
+        icon: 'check_circle'
+      };
     }
 
     if (this.isEventOngoing) {
@@ -133,8 +136,20 @@ export class CompactEventCardComponent {
     return status === 'cancelled' || status === 'canceled';
   }
 
+  get isExplicitlyCompleted(): boolean {
+    const status = String(this.config()?.status || this.config()?.eventStatus || '').toLowerCase();
+    return status === 'completed';
+  }
+
   get isEventEnded(): boolean {
     const config = this.config();
+    if (!config) return false;
+
+    const status = String(config.status || config.eventStatus || '').toLowerCase();
+    if (status === 'completed' || status === 'ended' || status === 'closed' || status === 'past') {
+      return true;
+    }
+
     if (config?.endTime) {
       const end = this.getEventDateTime(config.endTime, config.endDate || config.eventDate);
       const start = config.eventTime ? this.getEventDateTime(config.eventTime, config.eventDate) : null;

@@ -23,8 +23,7 @@ export class FooterComponent {
   ];
 
   socialLinks = [
-    { name: 'Instagram', icon: 'fa-instagram', url: 'https://instagram.com' },
-    { name: 'LinkedIn', icon: 'fa-linkedin-in', url: 'https://linkedin.com' },
-    { name: 'Facebook', icon: 'fa-facebook-f', url: 'https://facebook.com' }
+    { name: 'Instagram', icon: 'fa-instagram', url: 'https://www.instagram.com/viblooop/' },
+    { name: 'YouTube', icon: 'fa-youtube', url: 'https://www.youtube.com/@viblooopofficial' }
   ];
 }

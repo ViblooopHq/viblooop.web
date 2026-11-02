@@ -204,14 +204,16 @@
 }
 
 .events-grid.events-grid--past {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
 
   .grid-card-wrapper {
     height: auto;
   }
 
   @media (max-width: 1024px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
   }
 
   @media (max-width: 640px) {

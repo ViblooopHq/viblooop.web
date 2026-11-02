@@ -216,12 +216,19 @@
 }
 
 .section-footer {
-  display: flex;
+  display: none;
   justify-content: flex-end;
   margin-top: var(--space-4);
+  width: 100%;
+
+  @media (max-width: 640px) {
+    display: flex;
+  }
 }
 
+.section-footer>.see-more-link,
 .see-more-link {
+  @include button;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -229,6 +236,8 @@
   color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
+  justify-content: center;
 
   &:hover {
     text-decoration: underline;
@@ -238,6 +247,20 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 4px;
     border-radius: var(--radius-sm);
+  }
+
+  &--header {
+    display: inline-flex;
+
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+}
+
+.section-footer>.see-more-link {
+  @include screenSize(xs) {
+    width: 100%;
   }
 }
 
@@ -269,12 +292,10 @@
 
 /* ── Shimmer & Section Skeleton Styles ── */
 .vl-shimmer {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
-    color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent) 50%,
-    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 100%
-  );
+  background: linear-gradient(90deg,
+      color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
+      color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent) 50%,
+      color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 100%);
   background-size: 250% 100%;
   animation: vl-shimmer-anim 1.5s infinite ease-in-out;
 }
@@ -283,6 +304,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }

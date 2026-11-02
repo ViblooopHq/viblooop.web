@@ -1,0 +1,1 @@
+export const EVENT_LIMIT_OFFSET = 8;

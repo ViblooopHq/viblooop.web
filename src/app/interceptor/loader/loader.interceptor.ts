@@ -15,10 +15,17 @@ export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
     url.includes('/verify-otp') ||
     url.includes('/send-otp') ||
     url.includes('/wishlist') ||
+    url.includes('/getalleventsbyuser') ||
     url.includes('/getAllEventsByUser') ||
+    url.includes('/review/geteventreviews') ||
     url.includes('/review/getEventReviews') ||
     url.includes('/verifyselfieprofile') ||
-    req.headers.has('X-Skip-Global-Loader');
+    url.includes('/acceptjoinrequest') ||
+    url.includes('/rejectjoineventrequest') ||
+    url.includes('/uploadeventgalleryimages') ||
+    url.includes('/removeeventgalleryimage') ||
+    req.headers.has('X-Skip-Global-Loader') ||
+    req.headers.has('x-skip-global-loader');
 
   const shouldShowLoader = isBrowser && isMutating && !isExcluded;
 

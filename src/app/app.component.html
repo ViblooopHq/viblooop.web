@@ -9,9 +9,7 @@
 @if ((appDrawerService.drawer$ | async); as activeDrawer) {
   @switch (activeDrawer.type) {
     @case ('calendar') {
-      <vl-form-drawer ariaLabel="My Plans" (closed)="appDrawerService.close()">
-        <vl-my-plans />
-      </vl-form-drawer>
+      <vl-my-plans (drawerClosed)="appDrawerService.close()" />
     }
     @case ('edit-profile') {
       <vl-edit-profile (drawerClosed)="appDrawerService.close()" />

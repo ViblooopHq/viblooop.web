@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import { } from '../../../../assets/json/data.json'
 import { HttpService } from '../http/http.service';
 import { map, Observable, shareReplay, Subject, tap } from 'rxjs';
@@ -9,6 +10,13 @@ import { Environment } from '../../../../environment';
 export class EventsService {
   private readonly eventUpdatedSubject = new Subject<string>();
   readonly eventUpdated$ = this.eventUpdatedSubject.asObservable();
+
+  private readonly refreshUpcomingEventsSubject = new Subject<void>();
+  readonly refreshUpcomingEvents$ = this.refreshUpcomingEventsSubject.asObservable();
+
+  refreshUpcomingEvents(): void {
+    this.refreshUpcomingEventsSubject.next();
+  }
 
   eventCategories: any = []
   eventDetails: any = []
@@ -155,7 +163,13 @@ export class EventsService {
   }
 
   createEvent(eventData: any): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/createEvent`, eventData);
+    return this.httpService.http.post(`${this.baseUrl}/createEvent`, eventData).pipe(
+      tap((response: any) => {
+        if (response?.success) {
+          this.refreshUpcomingEvents();
+        }
+      })
+    );
   }
 
   updateEvent(eventData: any): Observable<any> {
@@ -170,11 +184,13 @@ export class EventsService {
   }
 
   uploadEventGalleryImages(eventData: FormData): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/uploadEventGalleryImages`, eventData);
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    return this.httpService.http.post(`${this.baseUrl}/uploadEventGalleryImages`, eventData, { headers });
   }
 
   removeEventGalleryImage(eventId: string, imagePath: string): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath });
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath }, { headers });
   }
 
   getInfoByPostalCode(postalCode: string): Observable<any> {

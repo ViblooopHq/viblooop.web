@@ -7,6 +7,7 @@ import {
   Inject,
   Input,
   NgZone,
+  OnDestroy,
   OnInit,
   Output,
   PLATFORM_ID,
@@ -49,7 +50,7 @@ import { StepReviewComponent } from './steps/step-review/step-review.component';
   styleUrl: './create-event.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateEventComponent implements OnInit {
+export class CreateEventComponent implements OnInit, OnDestroy {
   @Input() drawerMode: 'create' | 'edit' | null = null;
   @Input() drawerEventId: string | null = null;
   @Output() drawerClosed = new EventEmitter<void>();
@@ -114,6 +115,12 @@ export class CreateEventComponent implements OnInit {
     }
 
     this.formService.init();
+  }
+
+  ngOnDestroy(): void {
+    if (this.createdEventId) {
+      this.eventsService.refreshUpcomingEvents();
+    }
   }
 
   private applyDrawerMode(): void {
@@ -221,7 +228,6 @@ export class CreateEventComponent implements OnInit {
     }
 
     this.isSubmittingEvent.set(true);
-    this.creationState.set('loading');
     this.creationErrorMessage.set('');
 
     const formData = this.formService.buildFormData();
@@ -265,25 +271,32 @@ export class CreateEventComponent implements OnInit {
     request$.subscribe({
       next: res => {
         this.isSubmittingEvent.set(false);
-        const eventId = res?.data?.event?._id;
+        const eventId =
+          res?.data?.event?._id ||
+          res?.data?._id ||
+          res?.data?.id ||
+          res?.event?._id ||
+          res?.eventId ||
+          res?._id ||
+          null;
 
-        if (isEditMode && res?.success && (res.statusCode === 200 || res.statusCode === 201) && eventId) {
+        const isSuccess = res?.success || res?.statusCode === 200 || res?.statusCode === 201;
+
+        if (isEditMode && isSuccess) {
           this.formService.eventForm.markAsPristine();
+          this.eventsService.refreshUpcomingEvents();
           this.appDrawerService.close();
           this.drawerClosed.emit();
-          this.router.navigateByUrl(`/events/${eventId}`);
+          if (eventId) {
+            this.router.navigateByUrl(`/events/${eventId}`);
+          }
           return;
         }
 
-        if (!isEditMode && res?.success && res.statusCode === 201 && eventId) {
+        if (!isEditMode && isSuccess) {
           this.createdEventId = eventId;
           this.creationState.set('success');
-          return;
-        }
-
-        if (res?.success && eventId) {
-          this.createdEventId = eventId;
-          this.creationState.set('success');
+          this.eventsService.refreshUpcomingEvents();
           return;
         }
 
@@ -311,6 +324,7 @@ export class CreateEventComponent implements OnInit {
   viewCreatedEvent(): void {
     if (!this.createdEventId) return;
     const eventId = this.createdEventId;
+    this.eventsService.refreshUpcomingEvents();
     this.ngZone.run(() => {
       this.appDrawerService.close();
       this.drawerClosed.emit();
@@ -319,6 +333,7 @@ export class CreateEventComponent implements OnInit {
   }
 
   finishEventCreation(): void {
+    this.eventsService.refreshUpcomingEvents();
     this.ngZone.run(() => {
       this.formService.eventForm.reset();
       this.formService.setEditMode(false, null);

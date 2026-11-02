@@ -8,7 +8,6 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  height: 38px;
   padding: 0 0.85rem;
   border-radius: var(--radius-pill, 9999px);
   border: 1px dashed var(--color-border-strong, var(--color-border));
@@ -32,4 +31,3 @@
     font-size: 0.7rem;
   }
 }
-

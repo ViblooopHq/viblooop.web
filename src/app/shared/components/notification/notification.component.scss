@@ -385,6 +385,11 @@
   gap: 0.45rem;
   flex-wrap: wrap;
   margin-top: 0.45rem;
+
+  &--processing {
+    min-height: 32px;
+    padding: 0.15rem 0;
+  }
 }
 
 .notification-action {
@@ -397,6 +402,16 @@
   border-radius: var(--radius-pill);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+  }
 
   &-primary {
     background-color: var(--color-primary);
