@@ -244,18 +244,41 @@ export class CreateEventFormService {
   readonly hostNotesMaxLength = CREATE_EVENT_HOST_NOTES_MAX_LENGTH;
 
   addHostNote(note: string): void {
-    const control = this.eventForm.get('description');
-    const current = (control?.value || '').toString().trim();
-    if (current.includes(note)) return;
+    this.toggleHostNote(note);
+  }
 
-    const nextValue = current ? `${current}\n${note}` : note;
+  toggleHostNote(note: string): void {
+    const control = this.eventForm.get('description');
+    const current = (control?.value || '').toString();
+
+    if (this.isHostNoteSelected(note)) {
+      const lines = current.split('\n');
+      const filtered = lines.filter(line => line.trim() !== note.trim());
+
+      let nextValue: string;
+      if (filtered.length < lines.length) {
+        nextValue = filtered.join('\n');
+      } else {
+        nextValue = current.replace(note, '');
+      }
+
+      nextValue = nextValue.replace(/\n{3,}/g, '\n\n').trim();
+      control?.setValue(nextValue);
+      control?.markAsDirty();
+      control?.markAsTouched();
+      return;
+    }
+
+    const trimmed = current.trim();
+    const nextValue = trimmed ? `${trimmed}\n${note}` : note;
     control?.setValue(nextValue.slice(0, this.hostNotesMaxLength));
     control?.markAsDirty();
     control?.markAsTouched();
   }
 
   isHostNoteSelected(note: string): boolean {
-    return (this.eventForm.get('description')?.value || '').toString().includes(note);
+    const desc = this.descriptionValue?.() ?? this.eventForm.get('description')?.value ?? '';
+    return desc.toString().includes(note);
   }
 
   // ── Expectations chips (previously orphaned, now wired to Step 3) ─
