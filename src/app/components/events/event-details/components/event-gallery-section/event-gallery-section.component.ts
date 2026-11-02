@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, output, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, ElementRef, input, output, signal, ViewChild } from '@angular/core';
 import { GalleryComponent, GalleryImage } from '../../../../../shared/components/gallery/gallery.component';
 import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
 
@@ -24,6 +24,20 @@ export class EventGallerySectionComponent {
   uploadPhotos = output<File[]>();
   deleteImage = output<string>();
 
+  isGridExpanded = signal(false);
+
+  visibleImages = computed(() => {
+    const list = this.images();
+    return list.slice(0, 6);
+  });
+
+  hasMoreImages = computed(() => this.images().length > 6);
+  remainingCount = computed(() => Math.max(0, this.images().length - 5));
+
+  toggleViewMode() {
+    this.isGridExpanded.update((expanded) => !expanded);
+  }
+
   openPreview(index: number) {
     this.galleryPreview?.openAtIndex(index);
   }
@@ -34,7 +48,7 @@ export class EventGallerySectionComponent {
   }
 
   triggerUpload() {
-    if (!this.canUpload()) return;
+    if (!this.canUpload() || this.isUploading()) return;
     this.photoUploadInput.nativeElement.click();
   }
 

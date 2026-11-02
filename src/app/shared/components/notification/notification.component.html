@@ -64,27 +64,33 @@
                   </p>
                 }
 
-                @switch (notificationState(n)) {
-                  @case ('processing') {
-                    <div class="notification-status processing-spinner">
-                      <i class="fa-solid fa-circle-notch fa-spin"></i>
-                      <span>Wait...</span>
+                @if (isProcessing(n)) {
+                  <div class="notification-actions notification-actions--processing">
+                    <vl-inline-loader size="sm" color="primary" [text]="isAccepting(n) ? 'Confirming...' : 'Declining...'"></vl-inline-loader>
+                  </div>
+                } @else if (notificationState(n) === 'accepted') {
+                  @if (!notificationSubtitle(n)) {
+                    <div class="notification-actions">
+                      <span class="notification-inline-status notification-inline-status-confirmed">Confirmed</span>
                     </div>
                   }
-                  @case ('pending') {
-                    @if (n.type === notificationType.JOIN_REQUEST) {
-                      <div class="notification-actions">
-                        <button type="button" class="notification-action notification-action-primary"
-                          (click)="acceptJoinRequest(n)">
-                          Confirm
-                        </button>
-                        <button type="button" class="notification-action notification-action-secondary"
-                          (click)="rejectJoinRequest(n)">
-                          Decline
-                        </button>
-                      </div>
-                    }
+                } @else if (notificationState(n) === 'rejected') {
+                  @if (!notificationSubtitle(n)) {
+                    <div class="notification-actions">
+                      <span class="notification-inline-status notification-inline-status-rejected">Rejected</span>
+                    </div>
                   }
+                } @else if (n.type === notificationType.JOIN_REQUEST) {
+                  <div class="notification-actions">
+                    <button type="button" class="notification-action notification-action-primary"
+                      (click)="acceptJoinRequest(n, $event)">
+                      Confirm
+                    </button>
+                    <button type="button" class="notification-action notification-action-secondary"
+                      (click)="rejectJoinRequest(n, $event)">
+                      Decline
+                    </button>
+                  </div>
                 }
               </div>
             </article>
@@ -164,27 +170,33 @@
                 </p>
               }
 
-              @switch (notificationState(n)) {
-                @case ('processing') {
-                  <div class="notification-status processing-spinner">
-                    <i class="fa-solid fa-circle-notch fa-spin"></i>
-                    <span>Wait...</span>
+              @if (isProcessing(n)) {
+                <div class="notification-actions notification-actions--processing">
+                  <vl-inline-loader size="sm" color="primary" [text]="isAccepting(n) ? 'Confirming...' : 'Declining...'"></vl-inline-loader>
+                </div>
+              } @else if (notificationState(n) === 'accepted') {
+                @if (!notificationSubtitle(n)) {
+                  <div class="notification-actions">
+                    <span class="notification-inline-status notification-inline-status-confirmed">Confirmed</span>
                   </div>
                 }
-                @case ('pending') {
-                  @if (n.type === notificationType.JOIN_REQUEST) {
-                    <div class="notification-actions">
-                      <button type="button" class="notification-action notification-action-primary"
-                        (click)="acceptJoinRequest(n)">
-                        Confirm
-                      </button>
-                      <button type="button" class="notification-action notification-action-secondary"
-                        (click)="rejectJoinRequest(n)">
-                        Decline
-                      </button>
-                    </div>
-                  }
+              } @else if (notificationState(n) === 'rejected') {
+                @if (!notificationSubtitle(n)) {
+                  <div class="notification-actions">
+                    <span class="notification-inline-status notification-inline-status-rejected">Rejected</span>
+                  </div>
                 }
+              } @else if (n.type === notificationType.JOIN_REQUEST) {
+                <div class="notification-actions">
+                  <button type="button" class="notification-action notification-action-primary"
+                    (click)="acceptJoinRequest(n, $event)">
+                    Confirm
+                  </button>
+                  <button type="button" class="notification-action notification-action-secondary"
+                    (click)="rejectJoinRequest(n, $event)">
+                    Decline
+                  </button>
+                </div>
               }
             </div>
           </article>

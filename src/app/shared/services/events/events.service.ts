@@ -1,4 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
 import { } from '../../../../assets/json/data.json'
 import { HttpService } from '../http/http.service';
 import { map, Observable, shareReplay, Subject, tap } from 'rxjs';
@@ -183,11 +184,13 @@ export class EventsService {
   }
 
   uploadEventGalleryImages(eventData: FormData): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/uploadEventGalleryImages`, eventData);
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    return this.httpService.http.post(`${this.baseUrl}/uploadEventGalleryImages`, eventData, { headers });
   }
 
   removeEventGalleryImage(eventId: string, imagePath: string): Observable<any> {
-    return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath });
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    return this.httpService.http.post(`${this.baseUrl}/removeEventGalleryImage`, { eventId, imagePath }, { headers });
   }
 
   getInfoByPostalCode(postalCode: string): Observable<any> {
