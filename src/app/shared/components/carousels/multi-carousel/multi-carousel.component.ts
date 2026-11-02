@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, ElementRef, viewChild, afterNextRender, inject, ContentChild, TemplateRef } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output, ElementRef, viewChild, afterNextRender, inject, ContentChild, TemplateRef, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { SwiperConfigService } from '../swiper-registry.service';
@@ -43,15 +43,41 @@ export class MultiCarouselComponent {
   swiperContainer = viewChild<ElementRef>('swiperContainer');
   isServer = isPlatformServer(this.platformId);
 
+  readonly canSlide = signal<boolean>(false);
+  readonly isBeginning = signal<boolean>(true);
+  readonly isEnd = signal<boolean>(false);
+
+  private updateNavState(swiper: any): void {
+    if (!swiper) return;
+    const isLocked = Boolean(swiper.isLocked) || (swiper.snapGrid && swiper.snapGrid.length <= 1);
+    this.canSlide.set(!isLocked);
+    this.isBeginning.set(Boolean(swiper.isBeginning));
+    this.isEnd.set(Boolean(swiper.isEnd));
+    this.endVisibilityChange.emit(Boolean(swiper.isEnd));
+  }
+
   slidePrev() {
-    this.swiperContainer()?.nativeElement.swiper.slidePrev();
+    this.swiperContainer()?.nativeElement?.swiper?.slidePrev();
   }
 
   slideNext() {
-    this.swiperContainer()?.nativeElement.swiper.slideNext();
+    this.swiperContainer()?.nativeElement?.swiper?.slideNext();
   }
 
   constructor() {
+    effect(() => {
+      // Re-evaluate navigation state when items list changes
+      const itemsList = this.items();
+      const swiperEl = this.swiperContainer()?.nativeElement;
+      const swiper = swiperEl?.swiper;
+      if (swiper) {
+        requestAnimationFrame(() => {
+          swiper.update();
+          this.updateNavState(swiper);
+        });
+      }
+    });
+
     afterNextRender(async () => {
       await this.swiperRegistry.registerSwiperElements();
       
@@ -70,11 +96,16 @@ export class MultiCarouselComponent {
           observeParents: true,
           observeSlideChildren: true,
           on: {
-            init: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
-            slideChange: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
-            resize: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd)),
-            reachEnd: () => this.endVisibilityChange.emit(true),
-            fromEdge: (swiper: any) => this.endVisibilityChange.emit(Boolean(swiper.isEnd))
+            init: (swiper: any) => this.updateNavState(swiper),
+            slideChange: (swiper: any) => this.updateNavState(swiper),
+            resize: (swiper: any) => this.updateNavState(swiper),
+            reachEnd: (swiper: any) => this.updateNavState(swiper),
+            reachBeginning: (swiper: any) => this.updateNavState(swiper),
+            fromEdge: (swiper: any) => this.updateNavState(swiper),
+            lock: (swiper: any) => this.updateNavState(swiper),
+            unlock: (swiper: any) => this.updateNavState(swiper),
+            update: (swiper: any) => this.updateNavState(swiper),
+            observerUpdate: (swiper: any) => this.updateNavState(swiper)
           }
         };
         
@@ -84,7 +115,10 @@ export class MultiCarouselComponent {
         requestAnimationFrame(() => {
           const tryInit = () => {
             if (swiperEl && typeof swiperEl.initialize === 'function') {
-              if (!swiperEl.initialized) swiperEl.initialize();
+              if (!swiperEl.initialized) {
+                swiperEl.initialize();
+                this.updateNavState(swiperEl.swiper);
+              }
             } else {
               setTimeout(tryInit, 50);
             }

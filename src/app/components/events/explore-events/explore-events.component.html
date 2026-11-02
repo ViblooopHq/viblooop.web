@@ -113,7 +113,7 @@
     } @else {
     <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
       @if (pastEvents().length > 0) {
-      <vl-multi-carousel [gap]="16" [showNavigation]="true" [showPagination]="false" [items]="pastEvents()"
+      <vl-multi-carousel [gap]="16" [showNavigation]="pastEvents().length > 1" [showPagination]="false" [items]="pastEvents()"
         [breakpoints]="pastVibeBreakpoints" preTitle="Memories" title="Past Vibes" headerActionLabel="See More"
         headerActionLink="/events/view-all/past-vibes"
         [showHeaderAction]="hasMorePastEvents() && showPastEventsSeeMore()"

@@ -30,13 +30,13 @@
             {{ headerActionLabel() }} <i class="fa-solid fa-arrow-right"></i>
           </a>
         }
-      @if (showNavigation()) {
+      @if (showNavigation() && canSlide()) {
         <div class="custom-nav">
-          <button class="nav-btn prev-btn" (click)="slidePrev()">
-            <i class="fa-solid fa-chevron-left"></i>
+          <button class="nav-btn prev-btn" [disabled]="!loop() && isBeginning()" (click)="slidePrev()" aria-label="Previous slide">
+            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
           </button>
-          <button class="nav-btn next-btn" (click)="slideNext()">
-            <i class="fa-solid fa-chevron-right"></i>
+          <button class="nav-btn next-btn" [disabled]="!loop() && isEnd()" (click)="slideNext()" aria-label="Next slide">
+            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
           </button>
         </div>
       }

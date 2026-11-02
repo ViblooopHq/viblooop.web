@@ -56,10 +56,10 @@ export class ExploreEventsComponent implements OnInit {
   readonly pastVibeBreakpoints = {
     320: { slidesPerView: 2.15, spaceBetween: 10 },
     480: { slidesPerView: 2.25, spaceBetween: 12 },
-    640: { slidesPerView: 3.2, spaceBetween: 14 },
-    1024: { slidesPerView: 4.2, spaceBetween: 16 },
-    1280: { slidesPerView: 4.8, spaceBetween: 18 },
-    1440: { slidesPerView: 5.2, spaceBetween: 20 },
+    640: { slidesPerView: 2.8, spaceBetween: 14 },
+    1024: { slidesPerView: 3.2, spaceBetween: 16 },
+    1280: { slidesPerView: 3.8, spaceBetween: 20 },
+    1440: { slidesPerView: 4.2, spaceBetween: 20 },
   };
 
   isCategoriesLoading = signal(true);
