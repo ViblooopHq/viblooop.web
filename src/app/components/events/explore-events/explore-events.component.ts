@@ -10,7 +10,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
-import { MultiCarouselComponent, FullPageCarouselComponent } from '../../../shared/components/carousels';
+import { MultiCarouselComponent, FullPageCarouselComponent, FullPageSlideComponent, FullPageSlideConfig } from '../../../shared/components/carousels';
 import { RouterModule } from '@angular/router';
 import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
@@ -45,6 +45,7 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
     PastEventCardComponent,
     MultiCarouselComponent,
     FullPageCarouselComponent,
+    FullPageSlideComponent,
     EventCardSkeletonComponent,
     EventFiltersComponent,
   ],
@@ -91,18 +92,58 @@ export class ExploreEventsComponent implements OnInit {
     { id: 'free', label: 'Free', icon: 'flight_takeoff' }
   ];
 
-  marketingSlides = [
+  marketingSlides: FullPageSlideConfig[] = [
     {
-      image: 'assets/images/explore-hero/image-3.webp',
-      alt: 'Friends making plans together on a rooftop at sunset'
-    },
-    {
+      kicker: 'ESCAPE THE ORDINARY',
+      title: 'ESCAPE<br>TOGETHER!',
+      description: 'Conquer breathtaking mountain trails, scenic summits, and unforgettable outdoor getaways with companions who share your wanderlust.',
+      ctaText: 'DISCOVER ESCAPES',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'this_weekend' },
       image: 'assets/images/explore-hero/escape-together.jpg',
-      alt: 'Friends taking a mountain adventure selfie together'
+      imageAlt: 'Friends trekking together on a mountain summit with Himalayan backdrop',
+      accentColor: '#38bdf8',
+      slideIndex: 1,
+      totalSlides: 4
     },
     {
+      kicker: 'LIVE & ELECTRIC',
+      title: 'NEON<br>NIGHTS!',
+      description: 'Immerse yourself in pulsating festival beats, electric laser stages, and high-energy crowds that keep the vibe alive all night long.',
+      ctaText: 'FIND CONCERTS',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'tonight' },
+      image: 'assets/images/explore-hero/image-1.webp',
+      imageAlt: 'Live music concert stage with lasers, EDM DJ, and vibrant crowd',
+      accentColor: '#ec4899',
+      slideIndex: 2,
+      totalSlides: 4
+    },
+    {
+      kicker: 'CONNECT & CREATE',
+      title: 'WORKATION<br>HITS DIFFERENT!',
+      description: 'Trade routine for inspiring mountain cafés. Co-work with ambitious creators, remote nomads, and innovators in scenic destinations.',
+      ctaText: 'JOIN HANGOUTS',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'all' },
       image: 'assets/images/explore-hero/image-2.webp',
-      alt: 'Friends working together from a mountain café'
+      imageAlt: 'Remote creators co-working on laptops at a scenic outdoor mountain café',
+      accentColor: '#f59e0b',
+      slideIndex: 3,
+      totalSlides: 4
+    },
+    {
+      kicker: 'GOOD PEOPLE, BETTER PLANS',
+      title: 'ROOFTOP<br>SOCIALS!',
+      description: 'Experience intimate sunset gatherings, craft cocktails, and genuine connections against glowing city skylines with your city\'s coolest crowd.',
+      ctaText: 'EXPLORE VIBES',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'tonight' },
+      image: 'assets/images/explore-hero/image-3.webp',
+      imageAlt: 'Friends relaxing on a sunset rooftop terrace couch with illuminated city skyline',
+      accentColor: '#c084fc',
+      slideIndex: 4,
+      totalSlides: 4
     }
   ];
 
@@ -396,3 +437,4 @@ export class ExploreEventsComponent implements OnInit {
   }
 
 }
+

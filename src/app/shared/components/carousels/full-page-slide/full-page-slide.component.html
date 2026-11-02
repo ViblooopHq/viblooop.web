@@ -1,0 +1,68 @@
+<div class="vl-full-page-slide" [style.--slide-accent]="slide().accentColor || '#f59e0b'">
+
+  <!-- Atmospheric Background Visual & Vignette Scrims -->
+  <div class="vl-slide-bg-stage">
+    <img class="vl-slide-bg-image" [src]="slide().image" [alt]="slide().imageAlt || 'Slide image'"
+      [style.object-position]="slide().position || 'center center'" decoding="async" />
+
+    <div class="vl-slide-vignette vl-slide-vignette--left" aria-hidden="true"></div>
+    <div class="vl-slide-vignette vl-slide-vignette--right" aria-hidden="true"></div>
+    <div class="vl-slide-vignette vl-slide-vignette--perimeter" aria-hidden="true"></div>
+  </div>
+
+  <!-- Content 3-Column Grid matching the reference layout -->
+  <div class="vl-slide-content">
+    <!-- LEFT: Kicker, Big Display Title, Pill Outline CTA -->
+    <div class="vl-slide-col vl-slide-col--left">
+      @if (slide().kicker) {
+      <span class="vl-slide-kicker">{{ slide().kicker }}</span>
+      }
+
+      <h1 class="vl-slide-title" [innerHTML]="slide().title"></h1>
+
+      <!-- @if (slide().ctaText) {
+        <a
+          class="vl-slide-btn"
+          [routerLink]="slide().ctaLink || '/events'"
+          [queryParams]="slide().ctaQuery">
+          <span>{{ slide().ctaText }}</span>
+        </a>
+      } -->
+    </div>
+
+    <!-- CENTER: Dedicated visual focal zone for the centered subject -->
+    <div class="vl-slide-col vl-slide-col--center">
+      @if (slide().centerImage) {
+      <div class="vl-slide-center-stage">
+        <img class="vl-slide-center-image" [src]="slide().centerImage" [alt]="slide().imageAlt || 'Featured subject'"
+          decoding="async" />
+        <div class="vl-slide-floor-shadow" aria-hidden="true"></div>
+      </div>
+      }
+
+      @if (slide().floatingItems) {
+      @for (item of slide().floatingItems; track $index) {
+      <div
+        class="vl-slide-floating-chip vl-slide-floating-chip--{{ item.position || 'top-right' }} vl-chip-float-{{ ($index % 2) + 1 }}">
+        @if (item.icon) {
+        <i [class]="item.icon" aria-hidden="true"></i>
+        }
+        @if (item.text) {
+        <span>{{ item.text }}</span>
+        }
+      </div>
+      }
+      }
+    </div>
+
+    <!-- RIGHT: Slide Counter (01 / 04) & Paragraph Description -->
+    <div class="vl-slide-col vl-slide-col--right">
+      <div class="vl-slide-counter">
+        <span class="vl-slide-counter__current">{{ formattedIndex() }}</span>
+        <span class="vl-slide-counter__total"> / {{ formattedTotal() }}</span>
+      </div>
+
+      <p class="vl-slide-description">{{ slide().description }}</p>
+    </div>
+  </div>
+</div>

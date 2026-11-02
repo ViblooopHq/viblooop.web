@@ -4,10 +4,9 @@
     <div class="explore-hero-carousel-wrap">
       <div class="explore-hero-carousel">
         <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="marketingSlides">
-          <ng-template let-item>
-            <div class="full-page-slide">
-              <img class="slide-image" [src]="item.image" [alt]="item.alt">
-            </div>
+          <ng-template let-item let-i="index">
+            <vl-full-page-slide [slide]="item" [slideIndex]="item.slideIndex" [totalSlides]="marketingSlides.length">
+            </vl-full-page-slide>
           </ng-template>
         </vl-full-page-carousel>
       </div>

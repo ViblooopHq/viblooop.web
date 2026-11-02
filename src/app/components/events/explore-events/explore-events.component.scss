@@ -33,8 +33,9 @@
   height: auto;
   overflow: hidden;
   border-radius: var(--radius-xl);
-  background: var(--color-surface);
+  background: #080706;
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
 
   @media (min-width: 1024px) {
     aspect-ratio: 2 / 1;
@@ -42,25 +43,7 @@
 
   @media (max-width: 768px) {
     border-radius: var(--radius-lg);
-  }
-}
-
-.full-page-slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.slide-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-
-  @media (min-width: 1024px) {
-    // Keep the full artwork at navbar width in the shorter desktop hero.
-    object-fit: fill;
+    min-height: 320px;
   }
 }
 
@@ -290,7 +273,7 @@
   width: 100%;
 }
 
-/* ── Shimmer & Section Skeleton Styles ── */
+/* Shimmer & Section Skeleton Styles */
 .vl-shimmer {
   background: linear-gradient(90deg,
       color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
