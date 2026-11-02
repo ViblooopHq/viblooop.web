@@ -24,6 +24,7 @@ export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
     url.includes('/rejectjoineventrequest') ||
     url.includes('/uploadeventgalleryimages') ||
     url.includes('/removeeventgalleryimage') ||
+    url.includes('/toggleWishlistEvent') ||
     req.headers.has('X-Skip-Global-Loader') ||
     req.headers.has('x-skip-global-loader');
 
