@@ -28,10 +28,10 @@
   z-index: 1;
 }
 
-.vl-form-drawer:has(vl-my-plans) {
+.vl-form-drawer:has(vl-my-plans),
+.vl-form-drawer:has(.my-plans) {
   scrollbar-width: none;
   overscroll-behavior-y: contain;
-  background-color: color-mix(in srgb, var(--color-primary) 7%, var(--color-surface));
 
   &::-webkit-scrollbar {
     display: none;

@@ -226,6 +226,7 @@
   }
 }
 
+.section-footer>.see-more-link,
 .see-more-link {
   @include button;
   display: inline-flex;
@@ -236,7 +237,6 @@
   font-weight: 600;
   text-decoration: none;
   white-space: nowrap;
-  width: 100%;
   justify-content: center;
 
   &:hover {
@@ -255,6 +255,12 @@
     @media (max-width: 640px) {
       display: none;
     }
+  }
+}
+
+.section-footer>.see-more-link {
+  @include screenSize(xs) {
+    width: 100%;
   }
 }
 
