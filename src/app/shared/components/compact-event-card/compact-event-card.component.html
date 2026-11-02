@@ -1,5 +1,7 @@
 <article
   class="vl-compact-card"
+  [class.vl-compact-card--ended]="isEventEnded"
+  [class.vl-compact-card--cancelled]="isEventCancelled"
   (click)="onViewEventClick()">
   <!-- Image Header with Title Overlay & Badges -->
   <div class="vl-compact-card__media">
@@ -17,6 +19,7 @@
         <div
           class="vl-compact-card__badge"
           [class.vl-compact-card__badge--schedule]="!isEventEnded && !isEventCancelled"
+          [class.vl-compact-card__badge--completed]="isEventEnded && !isEventCancelled"
           [class.vl-compact-card__badge--ended]="isEventEnded && !isEventCancelled"
           [class.vl-compact-card__badge--cancelled]="isEventCancelled">
           @if (isEventCancelled) {
@@ -121,15 +124,22 @@
           @if (attendees.length > 0) {
             <div class="vl-compact-card__attendee-avatars" aria-hidden="true">
               @for (attendee of (attendees | slice:0:3); track $index) {
-                <img
-                  [src]="($any(attendee).profileImage | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
-                  alt="" />
+                <div class="vl-compact-card__attendee-avatar" [style.z-index]="3 - $index">
+                  <img
+                    [src]="($any(attendee).profileImage | imageUrl) || ('assets/images/default-profile.png' | imageUrl)"
+                    alt="" />
+                </div>
               }
             </div>
           } @else {
             <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
           }
-          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'No attendees' }}</span>
+          <span>{{ attendees.length > 0 ? (attendees.length + ' attended') : 'Event ended' }}</span>
+        </div>
+
+        <div class="vl-compact-card__ended-status">
+          <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
+          <span>Completed</span>
         </div>
       } @else {
         <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">

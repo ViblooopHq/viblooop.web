@@ -5,6 +5,7 @@ import { CompactEventCardComponent } from '../../../../shared/components/compact
 import { EventCardSkeletonComponent } from '../../../../shared/components/event-card-skeleton/event-card-skeleton.component';
 import { InterestPillListComponent } from '../interest-pill-list/interest-pill-list.component';
 import { RouteService } from '../../../../shared/services/route/route.service';
+import { AppDrawerService } from '../../../../shared/services/drawer/app-drawer.service';
 
 @Component({
   selector: 'vl-profile-content-panel',
@@ -15,6 +16,7 @@ import { RouteService } from '../../../../shared/services/route/route.service';
 })
 export class ProfileContentPanelComponent {
   private readonly routeService = inject(RouteService);
+  private readonly appDrawerService = inject(AppDrawerService);
 
   tabs = input<string[]>([]);
   activeTab = input('');
@@ -33,6 +35,7 @@ export class ProfileContentPanelComponent {
   tabChange = output<string>();
   showMoreJoined = output<void>();
   showMoreHosted = output<void>();
+  editTags = output<void>();
 
   exploreEvents(): void {
     this.routeService.navigateByUrl('/');
@@ -40,6 +43,11 @@ export class ProfileContentPanelComponent {
 
   createEvent(): void {
     this.routeService.navigateToDrawer('create-event', '/create-event');
+  }
+
+  onEditTags(): void {
+    this.editTags.emit();
+    this.appDrawerService.openEditProfile();
   }
 
   getTabIcon(tab: string): string {
