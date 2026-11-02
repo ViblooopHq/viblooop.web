@@ -1,6 +1,6 @@
-import { Component, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output, PLATFORM_ID } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
+import { Component, EventEmitter, HostBinding, inject, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { AppDrawerService } from '../../services/drawer/app-drawer.service';
+import { ScrollLockService } from '../../services/scroll-lock/scroll-lock.service';
 
 @Component({
   selector: 'vl-form-drawer',
@@ -9,16 +9,14 @@ import { AppDrawerService } from '../../services/drawer/app-drawer.service';
   styleUrl: './form-drawer.component.scss',
 })
 export class FormDrawerComponent implements OnInit, OnDestroy {
-  private appDrawerService = inject(AppDrawerService);
-  private platformId = inject(PLATFORM_ID);
+  private readonly appDrawerService = inject(AppDrawerService);
+  private readonly scrollLockService = inject(ScrollLockService);
 
   @Input() ariaLabel = 'Form drawer';
   @Output() closed = new EventEmitter<void>();
 
   @HostBinding('class.vl-form-drawer-host--closing') isClosing = false;
-  private bodyPreviousOverflow = '';
-  private pagePreviousOverflow = '';
-  private pageContainer: HTMLElement | null = null;
+  private isLocked = false;
 
   private touchStartY = 0;
   private touchStartX = 0;
@@ -30,37 +28,18 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
   private isPointerDown = false;
 
   ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') return;
-
-    try {
-      this.bodyPreviousOverflow = document.body?.style?.overflow || '';
-      this.pageContainer = document.querySelector('.vl-body-container');
-      this.pagePreviousOverflow = this.pageContainer?.style?.overflow || '';
-
-      if (document.body) {
-        document.body.style.overflow = 'hidden';
-      }
-      if (this.pageContainer) {
-        this.pageContainer.style.overflow = 'hidden';
-      }
-    } catch {
-      // Ignore DOM access issues in non-standard environments
-    }
+    this.scrollLockService.lock();
+    this.isLocked = true;
   }
 
   ngOnDestroy(): void {
-    if (!isPlatformBrowser(this.platformId) || typeof document === 'undefined') return;
+    this.unlockScroll();
+  }
 
-    try {
-      if (document.body) {
-        document.body.style.overflow = this.bodyPreviousOverflow;
-      }
-      if (this.pageContainer) {
-        this.pageContainer.style.overflow = this.pagePreviousOverflow;
-      }
-    } catch {
-      // Ignore cleanup error
-    }
+  private unlockScroll(): void {
+    if (!this.isLocked) return;
+    this.isLocked = false;
+    this.scrollLockService.unlock();
   }
 
   onTouchStart(event: TouchEvent): void {
@@ -137,6 +116,7 @@ export class FormDrawerComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.closed.emit();
       this.appDrawerService.close();
+      this.unlockScroll();
     }, 280);
   }
 }

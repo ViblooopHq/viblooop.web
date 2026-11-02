@@ -8,6 +8,7 @@
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   display: flex;
+  overscroll-behavior: contain;
   animation: vl-form-drawer-fade-in 0.25s ease both;
 
   &.vl-form-drawer-host--closing {
@@ -50,6 +51,7 @@
     margin-left: auto;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
     border-left: 1px solid var(--color-border);
     background-color: var(--color-surface);
     box-shadow: var(--shadow-modal, 0 25px 50px -12px rgba(0, 0, 0, 0.4));
@@ -108,6 +110,7 @@
     max-height: 94dvh;
     overflow-y: auto;
     overflow-x: hidden;
+    overscroll-behavior: contain;
     -webkit-overflow-scrolling: touch;
     border-radius: 24px 24px 0 0;
     border: 1px solid var(--color-border);
