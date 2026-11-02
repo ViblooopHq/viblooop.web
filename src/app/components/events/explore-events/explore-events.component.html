@@ -59,11 +59,18 @@
   </section>
   }
 
-  <!-- Trending Events -->
+  <!-- Upcoming Events -->
   <section class="trending-section">
     <div class="section-header" style="display: flex; justify-content: space-between; align-items: center;">
       <h2 class="section-title" style="margin: 0;">Upcoming Vibes</h2>
+
+      @if (totalUpcomingEvents > eventLimitOffset) {
+      <a class="see-more-link see-more-link--header" routerLink="/events" [queryParams]="{ filter: activeFilterId }">
+        See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
+      </a>
+      }
     </div>
+
     <div class="trending-scroll" [class.single-result]="!isTrendingLoading() && trendingEvents().length === 1"
       [class.empty-result]="!isTrendingLoading() && trendingEvents().length === 0">
       @if (isTrendingLoading()) {
@@ -88,7 +95,8 @@
       }
       }
     </div>
-    @if (!isTrendingLoading() && trendingEvents().length > eventLimitOffset) {
+
+    @if (totalUpcomingEvents > eventLimitOffset) {
     <div class="section-footer">
       <a class="see-more-link" routerLink="/events" [queryParams]="{ filter: activeFilterId }">
         See More <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
@@ -113,9 +121,9 @@
     } @else {
     <div class="past-vibes-carousel" [class.empty-result]="pastEvents().length === 0">
       @if (pastEvents().length > 0) {
-      <vl-multi-carousel [gap]="16" [showNavigation]="pastEvents().length > 1" [showPagination]="false" [items]="pastEvents()"
-        [breakpoints]="pastVibeBreakpoints" preTitle="Memories" title="Past Vibes" headerActionLabel="See More"
-        headerActionLink="/events/view-all/past-vibes"
+      <vl-multi-carousel [gap]="16" [showNavigation]="pastEvents().length > 1" [showPagination]="false"
+        [items]="pastEvents()" [breakpoints]="pastVibeBreakpoints" preTitle="Memories" title="Past Vibes"
+        headerActionLabel="See More" headerActionLink="/events/view-all/past-vibes"
         [showHeaderAction]="hasMorePastEvents() && showPastEventsSeeMore()"
         (endVisibilityChange)="showPastEventsSeeMore.set($event)">
         <ng-template let-event>

@@ -109,6 +109,7 @@ export class ExploreEventsComponent implements OnInit {
   private platformId = inject(PLATFORM_ID);
 
   eventLimitOffset = EVENT_LIMIT_OFFSET;
+  totalUpcomingEvents = 0;
 
   ngOnInit() {
     this.loadInitialData();
@@ -339,6 +340,7 @@ export class ExploreEventsComponent implements OnInit {
     ).subscribe({
       next: (events: any) => {
         if (requestId !== this.eventsRequestId) return;
+        this.totalUpcomingEvents = events.totalCount;
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
         this.cdr.markForCheck();
