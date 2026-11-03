@@ -1,3 +1,5 @@
+@use "../../../../../../styles/index" as *;
+
 .event-detail-drawer-backdrop {
   position: fixed;
   inset: 0;
@@ -251,8 +253,8 @@
 
 .event-request-action,
 .event-request-status {
+  @include button;
   display: inline-flex;
-  min-height: 2.25rem;
   align-items: center;
   justify-content: center;
   gap: 6px;
@@ -260,6 +262,8 @@
   font-size: var(--text-caption);
   font-weight: 700;
   transition: all var(--transition-fast);
+  min-height: fit-content;
+  height: auto;
 
   .material-symbols-rounded {
     font-size: 1rem;
@@ -314,6 +318,7 @@
     opacity: 0.8;
     transform: translateX(100%);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -325,6 +330,7 @@
     opacity: 0.8;
     transform: translateY(100%);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);

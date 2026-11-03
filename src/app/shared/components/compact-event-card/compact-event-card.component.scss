@@ -19,8 +19,8 @@
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.25s ease;
+    box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease;
 
   &:hover {
     border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
@@ -67,13 +67,11 @@
   &__overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(15, 23, 42, 0.35) 0%,
-      transparent 35%,
-      rgba(15, 23, 42, 0.6) 60%,
-      rgba(15, 23, 42, 0.92) 100%
-    );
+    background: linear-gradient(180deg,
+        rgba(15, 23, 42, 0.35) 0%,
+        transparent 35%,
+        rgba(15, 23, 42, 0.6) 60%,
+        rgba(15, 23, 42, 0.92) 100%);
     pointer-events: none;
     z-index: 1;
   }
@@ -359,8 +357,10 @@
   }
 
   &__ended-status {
-    display: inline-flex;
+    display: flex;
     align-items: center;
+    justify-content: center;
+    width: 100%;
     gap: 0.28rem;
     padding: 0.18rem 0.55rem;
     border-radius: var(--radius-pill);
@@ -389,7 +389,7 @@
     font-weight: 700;
     white-space: nowrap;
 
-    > .material-symbols-outlined {
+    >.material-symbols-outlined {
       font-size: 0.9rem;
       color: var(--color-text-tertiary);
       flex-shrink: 0;
@@ -402,7 +402,7 @@
     flex-shrink: 0;
 
     .vl-compact-card__attendee-avatar,
-    > img {
+    >img {
       position: relative;
       width: 1.15rem;
       height: 1.15rem;
@@ -432,7 +432,7 @@
       }
     }
 
-    > img {
+    >img {
       object-fit: cover;
       display: block;
     }

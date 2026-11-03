@@ -46,16 +46,16 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(90deg,
-        rgba(8, 7, 6, 0.95) 0%,
-        rgba(8, 7, 6, 0.85) 30%,
-        rgba(8, 7, 6, 0.35) 55%,
+        rgba(8, 7, 6, 0.5) 0%,
+        rgba(8, 7, 6, 0.25) 30%,
+        rgba(8, 7, 6, 0.12) 55%,
         transparent 72%);
 
     @media (max-width: 900px) {
       background: linear-gradient(180deg,
-          rgba(8, 7, 6, 0.4) 0%,
-          rgba(8, 7, 6, 0.8) 45%,
-          rgba(8, 7, 6, 0.98) 100%);
+          rgba(8, 7, 6, 0.2) 0%,
+          rgba(8, 7, 6, 0.4) 45%,
+          rgba(8, 7, 6, 0.6) 100%);
     }
   }
 
@@ -64,9 +64,9 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(270deg,
-        rgba(8, 7, 6, 0.75) 0%,
-        rgba(8, 7, 6, 0.2) 28%,
-        rgba(8, 7, 6, 0.5) 48%,
+        rgba(8, 7, 6, 0.744) 0%,
+        rgba(8, 7, 6, 0.179) 28%,
+        rgba(8, 7, 6, 0.107) 48%,
         transparent 68%);
 
     @media (max-width: 900px) {
