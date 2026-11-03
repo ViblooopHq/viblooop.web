@@ -3,107 +3,98 @@
   <div class="ed-section-header">
     <div class="ed-section-title-wrap">
       <h2 class="ed-section-title">
-        <span class="material-symbols-outlined" translate="no">photo_library</span>
-        <span>Event Gallery</span>
+        <span class="material-symbols-outlined icon" translate="no">photo_library</span>
+        <span class="title-text">Event Gallery</span>
       </h2>
       @if (images().length > 0) {
-        <span class="gallery-count-pill">{{ images().length }}</span>
+      <span class="gallery-count-pill">{{ images().length }}</span>
       }
     </div>
 
     <div class="ed-section-actions">
       @if (images().length > 1) {
-        <button type="button"
-          class="btn-gallery-action btn-view-all"
-          [class.btn-view-all--active]="isGridExpanded()"
-          (click)="toggleViewMode()"
-          [attr.aria-label]="isGridExpanded() ? 'Show carousel view' : 'View all event photos in grid'">
-          <span class="material-symbols-outlined" translate="no">{{ isGridExpanded() ? 'view_carousel' : 'grid_view' }}</span>
-          <span>{{ isGridExpanded() ? 'Show Less' : ('View All (' + images().length + ')') }}</span>
-        </button>
+      <button type="button" class="btn-gallery-action btn-view-all" [class.btn-view-all--active]="isGridExpanded()"
+        (click)="toggleViewMode()"
+        [attr.aria-label]="isGridExpanded() ? 'Show carousel view' : 'View all event photos in grid'">
+        <span class="material-symbols-outlined" translate="no">{{ isGridExpanded() ? 'view_carousel' : 'grid_view'
+          }}</span>
+        <span>{{ isGridExpanded() ? 'Show Less' : ('View All (' + images().length + ')') }}</span>
+      </button>
       }
 
       @if (canUpload()) {
-        <label for="photoUploadInput" class="sr-only">Upload event photos</label>
-        <input #photoUploadInput id="photoUploadInput" type="file" accept="image/*,.heic,.heif" multiple (change)="onFilesSelected($event)" hidden />
-        <button type="button"
-          class="btn-gallery-action btn-upload"
-          (click)="triggerUpload()"
-          [disabled]="isUploading()"
-          aria-label="Upload event photos">
-          @if (isUploading()) {
-            <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
-          } @else {
-            <span class="material-symbols-outlined" translate="no">add_a_photo</span>
-            <span>Upload Photos</span>
-          }
-        </button>
+      <label for="photoUploadInput" class="sr-only">Upload event photos</label>
+      <input #photoUploadInput id="photoUploadInput" type="file" accept="image/*,.heic,.heif" multiple
+        (change)="onFilesSelected($event)" hidden />
+      <button type="button" class="btn-gallery-action btn-upload" (click)="triggerUpload()" [disabled]="isUploading()"
+        aria-label="Upload event photos">
+        @if (isUploading()) {
+        <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
+        } @else {
+        <span class="material-symbols-outlined" translate="no">add_a_photo</span>
+        <span>Upload Photos</span>
+        }
+      </button>
       }
     </div>
   </div>
 
   @if (images().length > 0) {
-    @if (isGridExpanded()) {
-      <!-- Expanded In-Place Grid of All Photos -->
-      <div class="gallery-in-place-grid">
-        @for (galleryImage of images(); track galleryImage.path || galleryImage.url; let i = $index) {
-          <button type="button"
-            class="gallery-grid-item"
-            [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'"
-            (click)="openPreview(i)">
-            <img [src]="galleryImage.url" alt="" loading="lazy">
-            <div class="gallery-item-hover">
-              <span class="material-symbols-outlined" translate="no">zoom_in</span>
-            </div>
-          </button>
-        }
+  @if (isGridExpanded()) {
+  <!-- Expanded In-Place Grid of All Photos -->
+  <div class="gallery-in-place-grid">
+    @for (galleryImage of images(); track galleryImage.path || galleryImage.url; let i = $index) {
+    <button type="button" class="gallery-grid-item" [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'"
+      (click)="openPreview(i)">
+      <img [src]="galleryImage.url" alt="" loading="lazy">
+      <div class="gallery-item-hover">
+        <span class="material-symbols-outlined" translate="no">zoom_in</span>
       </div>
-    } @else {
-      <!-- Horizontal Scroll Strip -->
-      <div class="gallery-scroll">
-        @for (galleryImage of visibleImages(); track galleryImage.path || galleryImage.url; let i = $index) {
-          @if (hasMoreImages() && i === 5) {
-            <button type="button"
-              class="gallery-item gallery-item--more"
-              (click)="toggleViewMode()"
-              [attr.aria-label]="'View all ' + images().length + ' photos in grid'">
-              <img [src]="galleryImage.url" alt="" loading="lazy">
-              <div class="gallery-item--more-overlay">
-                <span class="material-symbols-outlined" translate="no">grid_view</span>
-                <span class="more-count">+{{ remainingCount() }}</span>
-                <span class="more-label">View all</span>
-              </div>
-            </button>
-          } @else {
-            <button type="button"
-              class="gallery-item"
-              [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'"
-              (click)="openPreview(i)">
-              <img [src]="galleryImage.url" alt="" loading="lazy">
-              <div class="gallery-item-hover">
-                <span class="material-symbols-outlined" translate="no">zoom_in</span>
-              </div>
-            </button>
-          }
-        }
-      </div>
+    </button>
     }
+  </div>
   } @else {
-    <div class="gallery-empty-state">
-      <span class="material-symbols-outlined gallery-empty-icon" translate="no">add_photo_alternate</span>
-      <p class="gallery-empty-title">No photos shared yet</p>
-      <p class="gallery-empty-text">Be the first to upload and share memories from this event!</p>
-      @if (canUpload()) {
-        <button type="button" class="btn-empty-upload" (click)="triggerUpload()" [disabled]="isUploading()">
-          @if (isUploading()) {
-            <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
-          } @else {
-            <span class="material-symbols-outlined" translate="no">add_a_photo</span>
-            <span>Upload First Photo</span>
-          }
-        </button>
+  <!-- Horizontal Scroll Strip -->
+  <div class="gallery-scroll">
+    @for (galleryImage of visibleImages(); track galleryImage.path || galleryImage.url; let i = $index) {
+    @if (hasMoreImages() && i === 5) {
+    <button type="button" class="gallery-item gallery-item--more" (click)="toggleViewMode()"
+      [attr.aria-label]="'View all ' + images().length + ' photos in grid'">
+      <img [src]="galleryImage.url" alt="" loading="lazy">
+      <div class="gallery-item--more-overlay">
+        <span class="material-symbols-outlined" translate="no">grid_view</span>
+        <span class="more-count">+{{ remainingCount() }}</span>
+        <span class="more-label">View all</span>
+      </div>
+    </button>
+    } @else {
+    <button type="button" class="gallery-item" [attr.aria-label]="'Photo ' + (i + 1) + ' of event gallery'"
+      (click)="openPreview(i)">
+      <img [src]="galleryImage.url" alt="" loading="lazy">
+      <div class="gallery-item-hover">
+        <span class="material-symbols-outlined" translate="no">zoom_in</span>
+      </div>
+    </button>
+    }
+    }
+  </div>
+  }
+  } @else {
+  <div class="gallery-empty-state">
+    <span class="material-symbols-outlined gallery-empty-icon" translate="no">add_photo_alternate</span>
+    <p class="gallery-empty-title">No photos shared yet</p>
+    <p class="gallery-empty-text">Be the first to upload and share memories from this event!</p>
+    @if (canUpload()) {
+    <button type="button" class="btn-empty-upload" (click)="triggerUpload()" [disabled]="isUploading()">
+      @if (isUploading()) {
+      <vl-inline-loader size="sm" color="primary" text="Uploading..."></vl-inline-loader>
+      } @else {
+      <span class="material-symbols-outlined" translate="no">add_a_photo</span>
+      <span>Upload First Photo</span>
       }
-    </div>
+    </button>
+    }
+  </div>
   }
 </section>
 }

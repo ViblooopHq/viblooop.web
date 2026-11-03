@@ -12,29 +12,39 @@
       <span class="material-symbols-outlined" translate="no">share</span>
     </button>
 
-    @if (isEventCreator() && !isEventEnded()) {
+    @if (!isEventEnded() && !isCancelled()) {
+    @if (isEventCreator()) {
     <div class="hero-owner-menu">
-      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="dialog" [attr.aria-expanded]="isEventMenuOpen()"
-        aria-label="Event options" (click)="toggleMenu.emit()">
+      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="dialog"
+        [attr.aria-expanded]="isEventMenuOpen()" aria-label="Event options" matTooltip="Event options"
+        (click)="toggleMenu.emit()">
         <span class="material-symbols-outlined" translate="no">more_horiz</span>
       </button>
-
     </div>
+    } @else if (isUserAttendee()) {
+    <div class="hero-attendee-menu">
+      <button type="button" class="hero-menu-trigger vl-icon-button" aria-haspopup="dialog"
+        [attr.aria-expanded]="isAttendeeMenuOpen()" aria-label="Event options" matTooltip="Event options"
+        (click)="toggleAttendeeMenu()">
+        <span class="material-symbols-outlined" translate="no">more_horiz</span>
+      </button>
+    </div>
+    }
     }
   </div>
 
   <div class="hero-bottom">
     @if (isUserAttendee() && !isEventCreator() && !isEventEnded() && !isCancelled()) {
-      <div class="hero-going-pill">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">check_circle</span>
-        <span>You're Going</span>
-      </div>
+    <div class="hero-going-pill">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">check_circle</span>
+      <span>You're Going</span>
+    </div>
     }
     @if (isEventEnded() && !isCancelled()) {
-      <div class="hero-ended-pill">
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
-        <span>Event ends</span>
-      </div>
+    <div class="hero-ended-pill">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">event</span>
+      <span>Event ends</span>
+    </div>
     }
     <h1 class="hero-title">{{ event()?.title }}</h1>
 
@@ -43,7 +53,7 @@
       <span>
         {{ event()?.eventDate | date:'EEEE, d MMM y' }}
         @if (event()?.eventTime && !isEscapeEvent()) {
-          · {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} }
+        · {{ event()?.eventTime | time }}@if (event()?.endTime) { – {{ event()?.endTime | time }} }
         }
       </span>
     </div>
@@ -52,10 +62,10 @@
     <div class="hero-action-row">
       <div class="hero-attendance-group">
         @if (isCancelled()) {
-          <div class="hero-cancelled-pill">
-            <span class="hero-cancelled-pill__dot" aria-hidden="true"></span>
-            <span>Cancelled</span>
-          </div>
+        <div class="hero-cancelled-pill">
+          <span class="hero-cancelled-pill__dot" aria-hidden="true"></span>
+          <span>Cancelled</span>
+        </div>
         }
       </div>
     </div>
@@ -64,70 +74,82 @@
 </section>
 
 @if (totalAttendeesCount() > 0 || (!isEventEnded() && !isCancelled())) {
-  <section class="event-attendee-summary" aria-label="Event attendees">
-    @if (totalAttendeesCount() > 0) {
-      <button type="button" class="event-attendee-summary__people" (click)="openAttendees.emit()"
-        [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'">
-        <span class="event-attendee-summary__icon material-symbols-outlined" translate="no" aria-hidden="true">groups</span>
-        <span class="event-attendee-summary__copy">
-          <strong>{{ totalAttendeesCount() }} {{ totalAttendeesCount() === 1 ? 'person' : 'people' }} {{ isEventEnded() ? 'attended' : 'attending' }}</strong>
-          <span>Be part of the vibe!</span>
-        </span>
-      </button>
-    } @else {
-      <div class="event-attendee-summary__people event-attendee-summary__people--empty">
-        <span class="event-attendee-summary__icon material-symbols-outlined" translate="no" aria-hidden="true">groups</span>
-        <span class="event-attendee-summary__copy">
-          <strong>No attendees yet</strong>
-          <span>Be the first to join!</span>
-        </span>
-      </div>
-    }
+<section class="event-attendee-summary" aria-label="Event attendees">
+  @if (totalAttendeesCount() > 0) {
+  <button type="button" class="event-attendee-summary__people" (click)="openAttendees.emit()"
+    [attr.aria-label]="'View ' + totalAttendeesCount() + ' attendees'" matTooltip="View attendee list">
+    <span class="event-attendee-summary__icon material-symbols-outlined" translate="no" aria-hidden="true">groups</span>
+    <span class="event-attendee-summary__copy">
+      <strong>{{ totalAttendeesCount() }} {{ totalAttendeesCount() === 1 ? 'person' : 'people' }} {{ isEventEnded() ?
+        'attended' : 'attending' }}</strong>
+      <span class="event-attendee-summary__subtext">
+        <span>See who's going</span>
+        <span class="material-symbols-outlined event-attendee-summary__arrow" translate="no"
+          aria-hidden="true">chevron_right</span>
+      </span>
+    </span>
+  </button>
+  } @else {
+  <div class="event-attendee-summary__people event-attendee-summary__people--empty">
+    <span class="event-attendee-summary__icon material-symbols-outlined" translate="no" aria-hidden="true">groups</span>
+    <span class="event-attendee-summary__copy">
+      <strong>No attendees yet</strong>
+      <span>Be the first to join!</span>
+    </span>
+  </div>
+  }
 
-    @if (!isEventEnded() && !isCancelled()) {
-      @if (!isAuthInitialized()) {
-        <div class="event-attendee-summary__actions"><div class="hero-action-skeleton"></div></div>
-      } @else if (isEventCreator()) {
-        <div #heroActionContainer class="event-attendee-summary__actions">
-          <button type="button" class="event-attendee-summary__request vl-button vl-button--secondary" (click)="openRequests.emit()">
-            <span class="material-symbols-outlined" translate="no">group</span>
-            <span>View Requests</span>
-            @if (pendingJoinRequestCount() > 0) {
-              <span class="event-attendee-summary__count">{{ pendingJoinRequestCount() }}</span>
-            }
-          </button>
-        </div>
-      } @else if (isUserAttendee()) {
-        <button type="button" class="event-attendee-summary__more" aria-label="Attendee options"
-          aria-haspopup="dialog" [attr.aria-expanded]="isAttendeeMenuOpen()" (click)="toggleAttendeeMenu()">
-          <span class="material-symbols-outlined" translate="no" aria-hidden="true">more_horiz</span>
-        </button>
-      } @else if (joinRequestStatus() === 'Requested') {
-        <div #heroActionContainer class="event-attendee-summary__actions">
-          <button type="button" class="event-attendee-summary__request event-attendee-summary__request--cancel vl-button vl-button--danger-subtle"
-            (click)="cancelJoinRequest.emit()" matTooltip="Withdraw your request to join this event" matTooltipPosition="above">
-            <span class="material-symbols-outlined" translate="no">undo</span>
-            <span>Cancel Request</span>
-          </button>
-        </div>
-      } @else {
-        <div #heroActionContainer class="event-attendee-summary__actions">
-          <button #heroCtaBtn type="button" class="event-attendee-summary__join vl-button vl-button--primary"
-            (click)="requestJoin.emit()"
-            [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
-            [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''" matTooltipPosition="above">
-            @if (isJoinRequestPending()) {
-              <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
-            } @else {
-              <span class="material-symbols-outlined" translate="no">local_fire_department</span>
-              <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
-              <span class="material-symbols-outlined" translate="no">arrow_forward</span>
-            }
-          </button>
-        </div>
+  @if (!isEventEnded() && !isCancelled()) {
+  @if (!isAuthInitialized()) {
+  <div class="event-attendee-summary__actions">
+    <div class="hero-action-skeleton"></div>
+  </div>
+  } @else if (isEventCreator()) {
+  <div #heroActionContainer class="event-attendee-summary__actions">
+    <button type="button" class="event-attendee-summary__request vl-button vl-button--secondary"
+      (click)="openRequests.emit()">
+      <span class="material-symbols-outlined" translate="no">group</span>
+      <span>View Requests</span>
+      @if (pendingJoinRequestCount() > 0) {
+      <span class="event-attendee-summary__count">{{ pendingJoinRequestCount() }}</span>
       }
-    }
-  </section>
+    </button>
+  </div>
+  } @else if (isUserAttendee()) {
+  <div class="event-attendee-summary__actions">
+    <button type="button" class="event-attendee-summary__view-btn vl-button vl-button--secondary"
+      (click)="openAttendees.emit()" aria-label="View all attendees">
+      <span>View Attendees</span>
+      <span class="material-symbols-outlined" translate="no">chevron_right</span>
+    </button>
+  </div>
+  } @else if (joinRequestStatus() === 'Requested') {
+  <div #heroActionContainer class="event-attendee-summary__actions">
+    <button type="button"
+      class="event-attendee-summary__request event-attendee-summary__request--cancel vl-button vl-button--danger-subtle"
+      (click)="cancelJoinRequest.emit()" matTooltip="Withdraw your request to join this event"
+      matTooltipPosition="above">
+      <span class="material-symbols-outlined" translate="no">undo</span>
+      <span>Cancel Request</span>
+    </button>
+  </div>
+  } @else {
+  <div #heroActionContainer class="event-attendee-summary__actions">
+    <button #heroCtaBtn type="button" class="event-attendee-summary__join vl-button vl-button--primary"
+      (click)="requestJoin.emit()" [disabled]="(isLoggedIn() && !canRequestJoin()) || isJoinRequestPending()"
+      [matTooltip]="!isLoggedIn() ? 'Sign in to join this event' : ''" matTooltipPosition="above">
+      @if (isJoinRequestPending()) {
+      <vl-inline-loader size="sm" color="white" text="Sending Request..."></vl-inline-loader>
+      } @else {
+      <span class="material-symbols-outlined" translate="no">local_fire_department</span>
+      <span>{{ joinRequestStatus() === 'Request Join' ? 'Join ' + eventPriceLabel() : joinRequestStatus() }}</span>
+      <span class="material-symbols-outlined" translate="no">arrow_forward</span>
+      }
+    </button>
+  </div>
+  }
+  }
+</section>
 }
 
 <dialog #attendeeActionsDialog class="attendee-actions-sheet" aria-labelledby="attendee-actions-title"
@@ -150,15 +172,17 @@
     <h2 id="event-actions-title">Event actions</h2>
     <button type="button" class="event-action" (click)="editEvent.emit()">
       <span class="event-action__icon material-symbols-outlined" aria-hidden="true">edit</span>
-      <span class="event-action__copy"><strong>Edit Event</strong><small>Update event details, time, location etc.</small></span>
+      <span class="event-action__copy"><strong>Edit Event</strong><small>Update event details, time, location
+          etc.</small></span>
       <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
     </button>
     @if (!isEventEnded() && !isCancelled()) {
-      <button type="button" class="event-action event-action--warning" (click)="cancelEvent.emit()">
-        <span class="event-action__icon material-symbols-outlined" aria-hidden="true">block</span>
-        <span class="event-action__copy"><strong>Cancel Event</strong><small>Cancel and notify all attendees</small></span>
-        <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
-      </button>
+    <button type="button" class="event-action event-action--warning" (click)="cancelEvent.emit()">
+      <span class="event-action__icon material-symbols-outlined" aria-hidden="true">block</span>
+      <span class="event-action__copy"><strong>Cancel Event</strong><small>Cancel and notify all
+          attendees</small></span>
+      <span class="material-symbols-outlined event-action__arrow" aria-hidden="true">chevron_right</span>
+    </button>
     }
     <div class="event-actions-sheet__divider"></div>
     <button type="button" class="event-action event-action--danger" (click)="deleteEvent.emit()">

@@ -5,7 +5,8 @@
     </span>
     <div>
       <h2 class="vl-title-md">Location</h2>
-      <p class="vl-body-sm">{{ showLocationSubtitle() && locationSubtitle() ? locationSubtitle() : (isMapVisible() ? 'Venue & interactive map' : 'Exact address shared after joining') }}</p>
+      <p class="vl-body-sm">{{ showLocationSubtitle() && locationSubtitle() ? locationSubtitle() : (isMapVisible() ?
+        'Venue & interactive map' : 'Exact address shared after joining') }}</p>
     </div>
   </div>
 
@@ -17,23 +18,27 @@
         </span>
         <div class="location-card__text">
           <strong class="location-card__address">{{ locationLabel() }}</strong>
-          @if (isMapVisible()) {
-            <small class="location-card__hint">Venue coordinates verified</small>
+          <!-- @if (isMapVisible()) {
+          <small class="location-card__hint">Venue coordinates verified</small>
           } @else if (!canAccessPrivateLocation()) {
-            <small class="location-card__hint">Full landmark and directions will be unlocked</small>
-          }
+          <small class="location-card__hint">Full landmark and directions will be unlocked</small>
+          } -->
+
+          <button matTooltip="Copy" class="vl-copy-button" (click)="copyAddress()">
+            <span><i class="fas fa-copy"></i></span>
+          </button>
         </div>
       </div>
 
-      @if (isMapVisible()) {
-        <button type="button" class="btn-open-maps vl-button vl-button--secondary" (click)="openInMaps.emit()">
-          <span class="material-symbols-outlined" translate="no">directions</span>
-          <span>Directions</span>
-        </button>
-      }
+      <!-- @if (isMapVisible()) {
+      <button type="button" class="btn-open-maps vl-button vl-button--secondary" (click)="openInMaps.emit()">
+        <span class="material-symbols-outlined" translate="no">directions</span>
+        <span>Directions</span>
+      </button>
+      } -->
     </div>
 
-    @if (isMapVisible()) {
+    <!-- @if (isMapVisible()) {
       <div class="map-preview-wrap" role="button" tabindex="0" aria-label="Open location in Google Maps"
         (click)="openInMaps.emit()"
         (keydown.enter)="openInMaps.emit()" (keydown.space)="$event.preventDefault(); openInMaps.emit()">
@@ -45,11 +50,11 @@
           <span>View on Google Maps</span>
         </div>
       </div>
-    } @else if (!canAccessPrivateLocation()) {
-      <div class="location-privacy-banner">
-        <span class="material-symbols-outlined" translate="no">lock</span>
-        <span>Exact directions and interactive map are shared once you join this vibe.</span>
-      </div>
-    }
+    } @else if (!canAccessPrivateLocation()) { -->
+    <div class="location-privacy-banner">
+      <span class="material-symbols-outlined" translate="no">lock</span>
+      <span>Exact directions and interactive map are shared once you join this vibe.</span>
+    </div>
+    <!-- } -->
   </div>
 </section>

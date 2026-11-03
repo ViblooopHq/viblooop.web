@@ -26,15 +26,14 @@
       <vl-event-hero [event]="eventDetails()" [isEventCreator]="isEventCreator()" [isEventMenuOpen]="isEventMenuOpen()"
         [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()" [isUserAttendee]="isUserAttendee()"
         [isCancelled]="isCancelled()" [isLoggedIn]="isLoggedIn()" [isAuthInitialized]="isAuthInitialized()"
-        [isJoinRequestPending]="isJoinRequestPending()"
-        [totalAttendeesCount]="nonHostAttendeeProfiles().length"
-        [joinRequestStatus]="joinRequestStatus()"
-        [canRequestJoin]="canRequestJoin()" [eventPriceLabel]="eventPriceLabel()"
-        [pendingJoinRequestCount]="pendingJoinRequestCount()" (goBack)="goBack()" (shareEvent)="shareCurrentEvent()"
-        (toggleMenu)="toggleEventMenu()" (editEvent)="openEditEvent()" (closeMenu)="closeEventMenu()"
-        (requestJoin)="requestJoinEvent()" (openAttendees)="openAttendeesDrawer()" (openRequests)="openRequestsDrawer()"
-        (deleteEvent)="openDeleteConfirmation()" (cancelEvent)="openCancelConfirmation()"
-        (leaveEvent)="openLeaveConfirmation()" (cancelJoinRequest)="openCancelRequestConfirmation()" />
+        [isJoinRequestPending]="isJoinRequestPending()" [totalAttendeesCount]="nonHostAttendeeProfiles().length"
+        [joinRequestStatus]="joinRequestStatus()" [canRequestJoin]="canRequestJoin()"
+        [eventPriceLabel]="eventPriceLabel()" [pendingJoinRequestCount]="pendingJoinRequestCount()" (goBack)="goBack()"
+        (shareEvent)="shareCurrentEvent()" (toggleMenu)="toggleEventMenu()" (editEvent)="openEditEvent()"
+        (closeMenu)="closeEventMenu()" (requestJoin)="requestJoinEvent()" (openAttendees)="openAttendeesDrawer()"
+        (openRequests)="openRequestsDrawer()" (deleteEvent)="openDeleteConfirmation()"
+        (cancelEvent)="openCancelConfirmation()" (leaveEvent)="openLeaveConfirmation()"
+        (cancelJoinRequest)="openCancelRequestConfirmation()" />
 
       <div class="mobile-event-overview">
         <vl-event-host-card class="host-panel--mobile" [host]="eventDetails()?.createdBy"
@@ -49,8 +48,7 @@
           [totalAttendeesCount]="totalAttendeesCount()" [remainingSpotsLabel]="remainingSpotsLabel()" />
       </div>
 
-      <vl-event-about [description]="eventDetails()?.description ?? ''"
-        [expectations]="eventDetails()?.expectations" />
+      <vl-event-about [description]="eventDetails()?.description ?? ''" [expectations]="eventDetails()?.expectations" />
 
       @if (eventGalleryImages().length > 0 || isUserAttendee()) {
       @defer (on viewport) {
@@ -67,9 +65,8 @@
 
       <vl-event-map-panel class="map-panel--mobile" [locationLabel]="locationLabel()"
         [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
-        [canAccessPrivateLocation]="canAccessPrivateEventData()"
-        [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
-        (openInMaps)="openInGoogleMaps()" />
+        [canAccessPrivateLocation]="canAccessPrivateEventData()" [isMapVisible]="isMapVisible()"
+        [mapOptions]="mapOptions()" [mapPosition]="mapPosition()" (openInMaps)="openInGoogleMaps()" />
 
       @if (isUserAttendee()) {
       <vl-event-chat-card class="chat-card--mobile" [totalAttendeesCount]="totalAttendeesCount()"
@@ -94,16 +91,15 @@
 
       <vl-event-facts class="event-facts--desktop" [isEscapeEvent]="isEscapeEvent()" [isEventEnded]="isEventEnded()"
         [tripDateRangeLabel]="tripDateRangeLabel()" [eventDate]="eventDetails()?.eventDate"
-        [endDate]="eventDetails()?.endDate" [eventTime]="eventDetails()?.eventTime" [isSocialEvent]="isSocialEvent()" [endTime]="eventDetails()?.endTime"
-        [eventPriceLabel]="eventPriceLabel()" [audiencePreferenceIcon]="audiencePreferenceIcon()"
-        [audiencePreferenceLabel]="audiencePreferenceLabel()" [totalAttendeesCount]="totalAttendeesCount()"
-        [remainingSpotsLabel]="remainingSpotsLabel()" />
+        [endDate]="eventDetails()?.endDate" [eventTime]="eventDetails()?.eventTime" [isSocialEvent]="isSocialEvent()"
+        [endTime]="eventDetails()?.endTime" [eventPriceLabel]="eventPriceLabel()"
+        [audiencePreferenceIcon]="audiencePreferenceIcon()" [audiencePreferenceLabel]="audiencePreferenceLabel()"
+        [totalAttendeesCount]="totalAttendeesCount()" [remainingSpotsLabel]="remainingSpotsLabel()" />
 
       <vl-event-map-panel class="map-panel--desktop" [locationLabel]="locationLabel()"
         [locationSubtitle]="locationSubtitle()" [showLocationSubtitle]="showHostLocationVisibilityCopy()"
-        [canAccessPrivateLocation]="canAccessPrivateEventData()"
-        [isMapVisible]="isMapVisible()" [mapOptions]="mapOptions()" [mapPosition]="mapPosition()"
-        (openInMaps)="openInGoogleMaps()" />
+        [canAccessPrivateLocation]="canAccessPrivateEventData()" [isMapVisible]="isMapVisible()"
+        [mapOptions]="mapOptions()" [mapPosition]="mapPosition()" (openInMaps)="openInGoogleMaps()" />
 
       @if (isUserAttendee()) {
       <vl-event-chat-card class="chat-card--desktop" [totalAttendeesCount]="totalAttendeesCount()"

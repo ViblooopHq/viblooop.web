@@ -127,6 +127,7 @@
 }
 
 @media (min-width: 981px) {
+
   .chat-card--mobile,
   .map-panel--mobile,
   .host-panel--mobile,
@@ -192,13 +193,13 @@
     display: none;
   }
 
-  .vl-ed__main > vl-event-about,
-  .vl-ed__main > vl-event-gallery-section,
-  .vl-ed__main > vl-event-map-panel,
-  .vl-ed__main > vl-event-chat-card,
-  .vl-ed__main > vl-event-comments,
-  .vl-ed__main > vl-event-related,
-  .vl-ed__main > .ed-section-placeholder {
+  .vl-ed__main>vl-event-about,
+  .vl-ed__main>vl-event-gallery-section,
+  .vl-ed__main>vl-event-map-panel,
+  .vl-ed__main>vl-event-chat-card,
+  .vl-ed__main>vl-event-comments,
+  .vl-ed__main>vl-event-related,
+  .vl-ed__main>.ed-section-placeholder {
     display: block;
     min-width: 0;
     max-width: calc(100% - var(--space-8));
@@ -248,8 +249,8 @@
 
     &__info {
       display: flex;
-      flex-direction: column;
-      gap: 1px;
+      align-items: center;
+      gap: 8px;
     }
 
     &__price {
