@@ -479,7 +479,7 @@ export class CreateEventFormService {
       description: event.description || '',
       shortDescription: event.shortDescription || '',
       eventDate: this.toDateControlValue(event.eventDate),
-      endDate: this.toDateControlValue(event.endDate || event.eventDate),
+      endDate: this.toDateControlValue(event.endDate),
       eventTime: this.toTimeControlValue(event.eventTime),
       endTime: this.toTimeControlValue(event.endTime),
       durationHours: this.getDurationHours(
