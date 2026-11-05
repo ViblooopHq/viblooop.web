@@ -16,11 +16,13 @@
   height: auto;
   max-height: 440px;
   overflow: hidden;
-  border-radius: 20px;
+  border-radius: var(--radius-lg);
   background-color: #0b1120;
-  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
+  // box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.45);
   cursor: pointer;
   user-select: none;
+  outline: transparent;
+  border: 0;
   transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
 
   .date-full {
@@ -32,8 +34,8 @@
   }
 
   &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.65);
+    // transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 
     .vl-past-card__bg-img {
       transform: scale(1.05);

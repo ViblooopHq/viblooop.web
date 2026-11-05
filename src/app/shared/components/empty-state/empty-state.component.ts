@@ -1,6 +1,7 @@
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 
 type EmptyStateKind = 'party' | 'escape' | 'sports' | 'hangouts' | 'shopping' | 'past' | 'events';
 type EmptyStateFilter = 'all' | 'tonight' | 'weekend' | 'free' | 'nearby' | 'search';
@@ -34,7 +35,7 @@ const EMPTY_STATE_PRESENTATIONS: Record<EmptyStateKind, EmptyStatePresentation> 
     secondaryIcon: 'flight',
   },
   sports: {
-    action: 'Start Game',
+    action: 'Ready to Play',
     image: 'assets/images/empty-states/sports.png',
     imageAlt: 'Equipment for football, cricket, badminton, and running',
     primaryIcon: 'sports_basketball',
@@ -128,23 +129,25 @@ const EMPTY_STATE_MESSAGES: Record<EmptyStateKind, Record<EmptyStateFilter, Empt
 @Component({
   selector: 'vl-empty-state',
   standalone: true,
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './empty-state.component.html',
   styleUrl: './empty-state.component.scss'
 })
 export class EmptyStateComponent {
+  private router = inject(Router);
   private authService = inject(AuthService);
+  private appDrawerService = inject(AppDrawerService);
 
   @Input() subject = 'events';
   @Input() context = 'all';
   @Input() contextPrefix = 'for';
   @Input() description = '';
-  @Input() createRoute = '/create-event';
   @Input() image = '';
   @Input() imageAlt = '';
   @Input() compact = false;
 
   @Output() exploreAll = new EventEmitter<void>();
+  @Output() create = new EventEmitter<void>();
 
   get presentation(): EmptyStatePresentation {
     return EMPTY_STATE_PRESENTATIONS[this.kind];
@@ -170,6 +173,16 @@ export class EmptyStateComponent {
     return this.description.trim() || this.message.description;
   }
 
+  onCreate(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigateByUrl('/login');
+      return;
+    }
+
+    this.appDrawerService.openCreateEvent();
+    this.create.emit();
+  }
+
   private get kind(): EmptyStateKind {
     const subject = this.subject.trim().toLowerCase();
 
@@ -191,9 +204,5 @@ export class EmptyStateComponent {
     if (context === 'free' || context.includes('for free')) return 'free';
     if (context === 'nearby' || context.includes('near you')) return 'nearby';
     return 'all';
-  }
-
-  get createLink(): string {
-    return this.authService.isLoggedIn() ? this.createRoute : '/login';
   }
 }

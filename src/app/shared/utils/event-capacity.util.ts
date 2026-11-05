@@ -1,0 +1,1 @@
+export const OPEN_EVENT_CAPACITY_LIMIT = 999_999;

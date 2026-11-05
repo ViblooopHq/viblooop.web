@@ -10,14 +10,13 @@
     <!-- Top Left Schedule Badge -->
     <div class="vl-compact-card__badges">
       @if (getEventBadge(); as badge) {
-      <div class="vl-compact-card__badge" [class.vl-compact-card__badge--schedule]="!isEventEnded && !isEventCancelled"
-        [class.vl-compact-card__badge--completed]="isEventEnded && !isEventCancelled"
-        [class.vl-compact-card__badge--ended]="isEventEnded && !isEventCancelled"
-        [class.vl-compact-card__badge--cancelled]="isEventCancelled">
+      <div class="event-status-pill" [class.event-status-pill--completed]="isEventEnded && !isEventCancelled"
+        [class.event-status-pill--ended]="isEventEnded && !isEventCancelled"
+        [class.event-status-pill--cancelled]="isEventCancelled">
         @if (isEventCancelled) {
-        <span class="vl-compact-card__cancelled-dot" aria-hidden="true"></span>
+        <span class="event-status-pill__cancelled-dot" aria-hidden="true"></span>
         } @else if (badge.icon) {
-        <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ badge.icon }}</span>
+        <span class="material-symbols-outlined event-status-pill__icon" translate="no" aria-hidden="true">{{ badge.icon }}</span>
         }
         <span>{{ badge.text }}</span>
       </div>
@@ -39,7 +38,7 @@
     <!-- Event Title On Top of Image (Bottom Overlay) -->
     <div class="vl-compact-card__title-overlay">
       @if (!isEventEnded && shouldShowAudiencePreference) {
-      <div class="vl-compact-card__badge vl-compact-card__badge--aud vl-compact-card__audience-pill"
+      <div class="vl-compact-card__audience-pill"
         [attr.data-type]="audiencePreferenceType" [title]="audiencePreferenceLabel">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">{{ audiencePreferenceIcon }}</span>
         <span>{{ audiencePreferenceLabel }}</span>
@@ -103,27 +102,39 @@
     </div>
 
     <!-- Bottom Meta -->
-    <div class="vl-compact-card__footer" [class.vl-compact-card__footer--ended]="isEventEnded">
+    <div class="vl-compact-card__footer" [class.vl-compact-card__footer--ended]="isEventEnded"
+      [class.vl-compact-card__footer--discovery]="!showAttendeeCount()">
       @if (isEventEnded) {
       <div class="vl-compact-card__ended-status">
         <span class="material-symbols-outlined" aria-hidden="true">check_circle</span>
         <span>Completed</span>
       </div>
       } @else {
+      @if (!showAttendeeCount()) {
+      @if (shouldShowRemainingSpots) {
+      <div class="vl-compact-card__spots">
+        <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
+        <span>{{ getRemainingSpots() }} spots</span>
+      </div>
+      }
       <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
         {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
       </div>
-
+      } @else {
+      <div class="vl-compact-card__price" [class.vl-compact-card__price--free]="isFree">
+        {{ isFree ? 'Free' : (config()?.price | currency:'INR':'symbol':'1.0-0') }}
+      </div>
       @if (attendees.length > 0) {
       <div class="vl-compact-card__attendees">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">group</span>
         <span>{{ attendees.length }} going</span>
       </div>
-      } @else if (getRemainingSpots() > 0) {
+      } @else if (shouldShowRemainingSpots) {
       <div class="vl-compact-card__spots">
         <span class="material-symbols-outlined" translate="no" aria-hidden="true">bolt</span>
         <span>{{ getRemainingSpots() }} spots</span>
       </div>
+      }
       }
       }
     </div>

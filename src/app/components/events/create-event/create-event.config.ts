@@ -1,3 +1,5 @@
+import { OPEN_EVENT_CAPACITY_LIMIT } from '../../../shared/utils/event-capacity.util';
+
 export type CreationKind = 'event' | 'play' | 'escape' | 'hangout';
 
 export interface CategoryDisplayConfig {
@@ -55,7 +57,7 @@ export const CREATE_EVENT_CAPACITY_CONFIG = {
   quickOptions: [10, 20, 50, 100],
   min: 2,
   max: 250,
-  openLimit: 999999,
+  openLimit: OPEN_EVENT_CAPACITY_LIMIT,
   defaultLimitedValue: 2,
 };
 

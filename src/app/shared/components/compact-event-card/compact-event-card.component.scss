@@ -88,89 +88,47 @@
     max-width: calc(100% - 2.5rem);
   }
 
-  &__badge {
+  &__audience-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.18rem;
-    padding: 0.15rem 0.45rem;
+    align-self: flex-end;
+    gap: 0.22rem;
+    min-height: 26px;
+    padding: 2px 8px;
     border-radius: var(--radius-pill);
-    font-size: 0.62rem;
-    font-weight: 750;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    line-height: 1;
     white-space: nowrap;
     letter-spacing: 0.01em;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
 
     .material-symbols-outlined {
-      font-size: 0.72rem;
+      font-size: 0.82rem;
     }
 
-    &--schedule {
+    &[data-type="women"] {
       .material-symbols-outlined {
-        color: var(--color-primary);
+        color: #fb5b8d;
       }
     }
 
-    &--aud {
-      background: rgba(15, 23, 42, 0.8);
-      border-color: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.2);
-
-      &[data-type="women"] {
-        .material-symbols-outlined {
-          color: #fb5b8d;
-        }
-      }
-
-      &[data-type="men"] {
-        .material-symbols-outlined {
-          color: #60a5fa;
-        }
-      }
-
-      &[data-type="open"] {
-        .material-symbols-outlined {
-          color: #9b6cff;
-        }
-      }
-    }
-
-    &--completed,
-    &--ended {
-      background: linear-gradient(135deg, var(--color-badge-completed-bg), var(--color-badge-completed-bg-hover));
-      border: 1px solid var(--color-badge-completed-border);
-      color: var(--color-badge-completed-text);
-      box-shadow: 0 4px 10px var(--color-badge-completed-shadow);
-      font-weight: 700;
-
+    &[data-type="men"] {
       .material-symbols-outlined {
-        color: var(--color-badge-completed-text);
-        font-size: 0.9rem;
-        font-variation-settings: 'FILL' 1;
+        color: #60a5fa;
       }
     }
 
-    &--cancelled {
-      background: linear-gradient(110deg, #d9475d, #b41744);
-      border-color: rgba(255, 255, 255, 0.14);
-      color: #ffffff;
-      box-shadow: 0 6px 18px rgba(150, 20, 55, 0.28);
+    &[data-type="open"] {
+      .material-symbols-outlined {
+        color: #9b6cff;
+      }
     }
-  }
-
-  &__cancelled-dot {
-    width: 0.42rem;
-    height: 0.42rem;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: #ffd9cf;
-  }
-
-  &__audience-pill {
-    align-self: flex-end;
   }
 
   /* ── Top Right Wishlist ── */
@@ -354,6 +312,13 @@
     &--ended {
       justify-content: space-between;
     }
+
+    &--discovery {
+      .vl-compact-card__price {
+        margin-left: auto;
+      }
+    }
+
   }
 
   &__ended-status {

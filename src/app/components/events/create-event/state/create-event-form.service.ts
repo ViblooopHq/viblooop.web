@@ -514,6 +514,13 @@ export class CreateEventFormService {
     this.updateMinTime();
     this.updateDateValidatorsForCreationKind();
     this.updateEndFromDuration();
+
+    // Keep the event's persisted date range after category and duration rules run.
+    this.eventForm.patchValue({
+      eventDate: this.toDateControlValue(event.eventDate),
+      endDate: this.toDateControlValue(event.endDate || event.eventDate),
+    }, { emitEvent: false });
+
     this.eventForm.markAsPristine();
     this.eventForm.markAsUntouched();
   }
@@ -545,8 +552,22 @@ export class CreateEventFormService {
 
   private toDateControlValue(value: string | Date | null | undefined): Date | string {
     if (!value) return '';
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date;
+
+    if (value instanceof Date) {
+      if (Number.isNaN(value.getTime())) return '';
+      return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    }
+
+    const raw = String(value).trim();
+    const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T)/);
+    if (dateOnly) {
+      return new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+    }
+
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime())
+      ? ''
+      : new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
   }
 
   private toTimeControlValue(value: string | null | undefined): string {

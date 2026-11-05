@@ -171,6 +171,41 @@ export class GalleryComponent implements OnDestroy {
     this.deleteImage.emit(image);
   }
 
+  async downloadImage(url: string): Promise<void> {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Download failed: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const anchor = document.createElement('a');
+      anchor.href = blobUrl;
+      anchor.download = this.getFileName(url);
+      anchor.style.display = 'none';
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (error) {
+      console.error('Image download failed:', error);
+    }
+  }
+
+  private getFileName(url: string): string {
+    try {
+      const pathname = new URL(url).pathname;
+      return pathname.split('/').pop() || 'photo.jpg';
+    } catch {
+      return 'photo.jpg';
+    }
+  }
+
   private lockScroll(): void {
     if (!this.hasScrollLock) {
       this.scrollLockService.lock();
