@@ -24,7 +24,6 @@ import { Environment } from '../../../../environment';
 import { SocketService } from '../../../shared/services/socket/socket.service';
 import { EventJoinStatusStore } from '../../../shared/services/events/event-join-status.store';
 import { GalleryImage } from '../../../shared/components/gallery/gallery.component';
-import { ChatComponent } from '../../chat/chat.component';
 import { EventCommentsComponent } from '../../../shared/components/event-comments/event-comments.component';
 import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
 import { EventDetailsSkeletonComponent } from '../../../shared/components/event-details-skeleton/event-details-skeleton.component';
@@ -89,7 +88,6 @@ const defaultModalState: ActionModalState = {
     EventAboutComponent,
     EventGallerySectionComponent,
     EventPeopleDrawerComponent,
-    ChatComponent,
     EventCommentsComponent,
     ActionModalComponent,
     InlineLoaderComponent,
@@ -142,7 +140,6 @@ export class EventDetailsComponent {
   isAuthInitialized = toSignal(this.authService.isAuthInitialized$, { initialValue: false });
   isJoinRequestPending = signal(false);
   isUploadingGallery = signal(false);
-  isChatOpen = signal(false);
   isEventMenuOpen = signal(false);
   activeDrawer = signal<'requests' | 'attendees' | null>(null);
   requestActionStates = signal<Record<string, RequestActionState>>({});
@@ -158,7 +155,6 @@ export class EventDetailsComponent {
     const creatorId = creator?._id || creator?.id || (typeof creator === 'string' ? creator : '');
     return this.attendeeProfiles().filter((attendee) => attendee.userId !== creatorId);
   });
-  attendeePreviewProfiles = computed(() => this.nonHostAttendeeProfiles().slice(0, 5));
 
   currentUserId = computed(() => this.currentUser()?.id || this.currentUser()?._id || '');
 
@@ -238,26 +234,6 @@ export class EventDetailsComponent {
     return 'Dates TBA';
   });
 
-  timeLeftLabel = computed(() => {
-    if (this.isEscapeEvent()) return this.tripDateRangeLabel();
-    const details = this.eventDetails();
-    if (!details?.eventDate || !details?.eventTime) return 'Date TBA';
-
-    const eventDateTime = getEventDateTime(details);
-    if (!eventDateTime) return 'Date TBA';
-
-    const diffMs = eventDateTime.getTime() - this.now();
-    const diffMins = Math.floor(diffMs / (1000 * 60));
-    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-    if (diffMs < 0) return this.isEventEnded() ? 'Event ended' : 'Happening now';
-    if (diffMins < 60) return 'Starting soon';
-    if (diffHrs < 24) return `Starts in ${diffHrs} hrs`;
-    if (diffDays === 1) return 'Starts tomorrow';
-    return `Starts in ${diffDays} days`;
-  });
-
   remainingSpots = computed(() => {
     const details = this.eventDetails();
     if (!details?.attendeeLimit) return 0;
@@ -267,24 +243,6 @@ export class EventDetailsComponent {
   remainingSpotsLabel = computed(() =>
     isCapacityUnlimited(this.eventDetails()?.attendeeLimit, this.openCapacityLimit) ? 'No limit' : `${this.remainingSpots()} left`);
   isUrgent = computed(() => this.remainingSpots() > 0 && this.remainingSpots() <= 5);
-
-  attendanceSummaryLabel = computed(() => {
-    const attendees = this.nonHostAttendeeProfiles();
-    const total = attendees.length;
-    const userId = this.currentUserId();
-    const isListedAttendee = !!userId && attendees.some((attendee) => attendee.userId === userId);
-    const status = this.isEventEnded() ? 'Attended' : 'Going';
-
-    if (total === 0) return '';
-    if (total === 1) return status;
-
-    if (isListedAttendee) {
-      const others = total - 1;
-      return `You + ${others} ${others === 1 ? 'other' : 'others'}`;
-    }
-
-    return `${total} ${total === 1 ? 'person' : 'people'} ${this.isEventEnded() ? 'attended' : 'going'}`;
-  });
 
   eventPriceLabel = computed(() => {
     if (this.isEventEnded()) return '';
@@ -343,7 +301,7 @@ export class EventDetailsComponent {
 
   hostEventCount = computed(() => {
     const count = Number(this.eventDetails()?.createdBy?.eventCount);
-    return Number.isFinite(count) && count > 0 ? count : 1;
+    return Number.isFinite(count) && count >= 0 ? count : 1;
   });
   isNewHost = computed(() => this.hostEventCount() <= 1);
   hostRating = computed(() => {
@@ -414,7 +372,6 @@ export class EventDetailsComponent {
     effect(() => {
       const userId = this.currentUser()?.id || this.currentUser()?._id;
       if (userId && !this.isLoadingEvent()) this.syncJoinStatusForCurrentUser();
-      if (!this.canAccessPrivateEventData()) this.isChatOpen.set(false);
     });
 
     effect(() => {
@@ -541,12 +498,12 @@ export class EventDetailsComponent {
         const eventDesc = details.description
           ? (details.description.length > 155 ? `${details.description.slice(0, 152)}...` : details.description)
           : `Experience ${eventTitle} on Viblooop. Connect with attendees and view details.`;
-        const bannerImg = galleryImages[0]?.url || (details as any).banner || 'https://www.viblooop.com/og.png';
+        const bannerImg = galleryImages[0]?.url || (details as any).banner || Environment.ogImageUrl;
 
         this.seoService.updateSeo({
           title: `${eventTitle} | Viblooop`,
           description: eventDesc,
-          canonicalUrl: `https://www.viblooop.com/events/${details._id || this.eventId()}`,
+          canonicalUrl: `${Environment.ogPageUrl}/events/${details._id || this.eventId()}`,
           ogTitle: `${eventTitle} | Viblooop`,
           ogDescription: eventDesc,
           ogImage: bannerImg,
@@ -714,19 +671,15 @@ export class EventDetailsComponent {
 
     this.isUploadingGallery.set(true);
     const eventId = this.eventId();
-    const userId = this.currentUserId();
 
     const formData = new FormData();
     formData.append('eventId', eventId);
-    if (userId) {
-      formData.append('uploaderId', userId);
-    }
     for (const file of files) {
       const finalFile = await this.sharedService.convertHeicToJpg(file);
       formData.append('gallery', finalFile);
     }
 
-    this.eventsService.updateEvent(formData).subscribe({
+    this.eventsService.uploadEventGalleryImages(formData).subscribe({
       next: (res: any) => {
         this.isUploadingGallery.set(false);
         if (!res?.success || res.statusCode !== 200) {
@@ -741,13 +694,13 @@ export class EventDetailsComponent {
             return {
               path: image.path || image.url,
               url: this.sharedService.getImageUrl(image.path || image.url),
-              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy || userId,
+              uploaderId: image.uploaderId || image.uploadedBy || image.userId || image.createdBy,
             };
           }
           return {
             path: image,
             url: this.sharedService.getImageUrl(image),
-            uploaderId: userId,
+            uploaderId: '',
           };
         }));
         this.toastService.success('Photos added to event gallery!', 'Photos Uploaded');
@@ -794,9 +747,9 @@ export class EventDetailsComponent {
     });
   }
 
-  toggleChat(): void {
+  openChatDrawer(): void {
     if (!this.isChatVisible()) return;
-    this.isChatOpen.update((isOpen) => !isOpen);
+    this.appDrawerService.openChats(this.eventId());
   }
 
   openInGoogleMaps(): void {

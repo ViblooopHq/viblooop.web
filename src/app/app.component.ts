@@ -31,13 +31,19 @@ import { MessageService } from './shared/services/message/message.service';
 import { AppSplashLoaderComponent } from './shared/components/app-splash-loader/app-splash-loader.component';
 import { AppSplashService } from './shared/services/app-splash/app-splash.service';
 import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
-import { FormDrawerComponent } from './shared/components/form-drawer/form-drawer.component';
 import { MyPlansComponent } from './components/events/my-plans/my-plans.component';
+import { Environment } from '../environment';
 
 import { inject as injectAnalytics } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { SeoService } from './shared/services/seo/seo.service';
 import { ActivatedRoute } from '@angular/router';
+
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
 
 @Component({
   selector: 'vl-app-root',
@@ -57,7 +63,6 @@ import { ActivatedRoute } from '@angular/router';
     InboxComponent,
     AppSplashLoaderComponent,
     ToastContainerComponent,
-    FormDrawerComponent,
     MyPlansComponent,
   ],
   templateUrl: './app.component.html',
@@ -93,7 +98,10 @@ export class AppComponent implements OnInit {
         this.updateFooterVisibility(event.urlAfterRedirects);
         this.scrollToTopOnNavigation(event.urlAfterRedirects);
         this.updateSeoOnNavigation(event.urlAfterRedirects);
+        this.trackPageView(event.urlAfterRedirects);
       });
+
+    this.trackPageView(this.angularRouter.url);
 
     this.authService.initAuth();
 
@@ -101,11 +109,6 @@ export class AppComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(userData => {
         if (userData) {
-          if (!this.completeProfileService.timerId) {
-            this.completeProfileService.timerId = setTimeout(() => {
-              this.completeProfileService.checkProfileAndShowPopup().subscribe();
-            }, 10000);
-          }
           this.socketService.connect();
         } else {
           this.socketService.disconnect();
@@ -127,7 +130,7 @@ export class AppComponent implements OnInit {
     }
     const data = route.snapshot.data;
     const cleanPath = url.split('?')[0].split('#')[0].replace(/\/$/, '');
-    const canonicalUrl = `https://www.viblooop.com${cleanPath || '/'}`;
+    const canonicalUrl = `${Environment.ogPageUrl}${cleanPath || '/'}`;
 
     if (data && (data['description'] || data['robots'])) {
       this.seoService.updateSeo({
@@ -139,6 +142,16 @@ export class AppComponent implements OnInit {
     } else {
       this.seoService.updateCanonicalUrl(canonicalUrl);
     }
+  }
+
+  private trackPageView(url: string) {
+    if (!this.browserService.isBrowserPlatform()) return;
+
+    window.gtag?.('event', 'page_view', {
+      page_title: document.title,
+      page_location: window.location.href,
+      page_path: url,
+    });
   }
 
   private updateFooterVisibility(url: string) {

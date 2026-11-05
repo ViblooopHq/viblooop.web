@@ -53,6 +53,13 @@
   padding: clamp(1.5rem, 3.5vw, 2.75rem);
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.25), 0 2px 8px rgba(0, 0, 0, 0.08);
 
+  &__back {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    z-index: 3;
+  }
+
   @media (min-width: 768px) {
     min-height: 330px;
   }

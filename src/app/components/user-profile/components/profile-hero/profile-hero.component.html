@@ -1,4 +1,14 @@
 <div class="vl-user-profile__hero" [style.--profile-banner]="'url(' + profileBanner() + ')'">
+  <vl-back-button
+    class="vl-user-profile__back"
+    icon="arrow_back"
+    size="lg"
+    variant="surface"
+    ariaLabel="Go back"
+    title="Back"
+    (action)="goBack.emit()">
+  </vl-back-button>
+
   <div class="vl-user-profile__avatar-wrap">
     <img class="vl-user-profile__avatar" [src]="profileImage()" alt="Profile" referrerpolicy="no-referrer"
       (error)="imageError.emit($event)" />
@@ -23,8 +33,25 @@
     <p class="vl-meta vl-user-profile__handle">{{ handle() }}</p>
     <p class="vl-body vl-user-profile__bio">{{ bio() }}</p>
 
-    <div class="vl-user-profile__vibes">
-      <vl-interest-pill-list [interests]="previewInterests()"></vl-interest-pill-list>
+    <div class="vl-user-profile__demographics">
+      @if (age() !== undefined && age() !== null && age() !== '') {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">cake</span>
+          {{ age() }} years
+        </span>
+      }
+      @if (gender()) {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">person</span>
+          {{ gender() }}
+        </span>
+      }
+      @if (location()) {
+        <span class="vl-user-profile__demographic-chip">
+          <span class="material-symbols-outlined" translate="no">location_on</span>
+          {{ location() }}
+        </span>
+      }
     </div>
   </div>
 

@@ -1,4 +1,6 @@
-import { Component, EventEmitter, HostListener, Input, Output, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output, inject, signal } from '@angular/core';
+import { HttpHeaders } from '@angular/common/http';
+import { forkJoin, timer } from 'rxjs';
 import { SocketService } from '../../services/socket/socket.service';
 import { SharedService } from '../../services/shared.service';
 import { HttpService } from '../../services/http/http.service';
@@ -10,6 +12,7 @@ import { AppDrawerService } from '../../services/drawer/app-drawer.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
 import { FormDrawerComponent } from '../form-drawer/form-drawer.component';
 import { BackButtonComponent } from '../back-button/back-button.component';
+import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
 
 export enum NotificationType {
   JOIN_REQUEST = "JOIN_REQUEST",
@@ -24,7 +27,7 @@ export enum NotificationType {
 
 @Component({
   selector: 'vl-notification',
-  imports: [OutsideClickDirective, FormDrawerComponent, BackButtonComponent],
+  imports: [OutsideClickDirective, FormDrawerComponent, BackButtonComponent, InlineLoaderComponent],
   templateUrl: './notification.component.html',
   styleUrl: './notification.component.scss'
 })
@@ -43,10 +46,11 @@ export class NotificationComponent {
   private router = inject(Router)
   private routeService = inject(RouteService)
   private appDrawerService = inject(AppDrawerService)
+  private cdr = inject(ChangeDetectorRef)
   private readonly pendingSeenNotificationIds = new Set<string>();
 
-  // Track state of actions for each notification
-  actionStates: { [key: string]: 'pending' | 'processing' | 'accepted' | 'rejected' } = {};
+  // Reactive state of actions for each notification using Angular Signals
+  actionStates = signal<Record<string, 'pending' | 'processing' | 'accepting' | 'rejecting' | 'accepted' | 'rejected'>>({});
 
   goBack(): void {
     if (this.presentation === 'popover') {
@@ -65,6 +69,7 @@ export class NotificationComponent {
     this.socketService.notifications$.subscribe((notifications) => {
       this.notifications = notifications;
       this.computeNotification(notifications);
+      this.cdr.markForCheck();
     });
   }
 
@@ -175,13 +180,14 @@ export class NotificationComponent {
     image.src = this.defaultProfileImage;
   }
 
-  notificationState(notification: any): 'pending' | 'processing' | 'accepted' | 'rejected' | 'idle' {
-    const localState = this.actionStates[notification?._id];
+  notificationState(notification: any): 'pending' | 'processing' | 'accepting' | 'rejecting' | 'accepted' | 'rejected' | 'idle' {
+    const id = this.getNotificationId(notification);
+    const localState = id ? this.actionStates()[id] : undefined;
     if (localState) return localState;
 
     const status = String(notification?.status || '').toLowerCase();
     if (status === 'processing' || status === 'accepted' || status === 'rejected' || status === 'pending') {
-      return status;
+      return status as any;
     }
 
     if (notification?.type === NotificationType.JOIN_REQUEST) {
@@ -189,6 +195,24 @@ export class NotificationComponent {
     }
 
     return 'idle';
+  }
+
+  isProcessing(notification: any): boolean {
+    const id = this.getNotificationId(notification);
+    const state = (id && this.actionStates()[id]) || this.notificationState(notification);
+    return state === 'accepting' || state === 'rejecting' || state === 'processing';
+  }
+
+  isAccepting(notification: any): boolean {
+    const id = this.getNotificationId(notification);
+    const state = (id && this.actionStates()[id]) || this.notificationState(notification);
+    return state === 'accepting' || state === 'processing';
+  }
+
+  isRejecting(notification: any): boolean {
+    const id = this.getNotificationId(notification);
+    const state = (id && this.actionStates()[id]) || this.notificationState(notification);
+    return state === 'rejecting';
   }
 
   notificationTone(notification: any): string {
@@ -277,40 +301,55 @@ export class NotificationComponent {
     this.redirectToUserProfile(senderId);
   }
 
-  acceptJoinRequest(notification: any) {
-    if (!notification) return;
+  acceptJoinRequest(notification: any, event?: Event) {
+    event?.stopPropagation();
+    if (!notification || this.isProcessing(notification)) return;
 
-    this.actionStates[notification._id] = 'processing';
+    const notificationId = this.getNotificationId(notification);
+    this.actionStates.update((states) => ({ ...states, [notificationId]: 'accepting' }));
+    this.cdr.detectChanges();
 
-    this.httpService.post(Environment.apiBaseUrl + "/acceptJoinRequest", {
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    const request$ = this.httpService.post(Environment.apiBaseUrl + "/acceptJoinRequest", {
       eventId: this.getNotificationEventId(notification),
-      userId: notification.senderId,
-    }).subscribe({
-      next: (res) => {
-        this.actionStates[notification._id] = 'accepted';
-        // The list will eventually update via socket, but we show feedback first
+      userId: this.getNotificationSenderId(notification),
+    }, headers);
+
+    forkJoin([request$, timer(450)]).subscribe({
+      next: ([res]) => {
+        this.actionStates.update((states) => ({ ...states, [notificationId]: 'accepted' }));
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.actionStates[notification._id] = 'pending';
+        this.actionStates.update((states) => ({ ...states, [notificationId]: 'pending' }));
+        this.cdr.detectChanges();
         console.error('Accept fail:', err);
       }
     });
   }
 
-  rejectJoinRequest(notification: any) {
-    if (!notification) return;
+  rejectJoinRequest(notification: any, event?: Event) {
+    event?.stopPropagation();
+    if (!notification || this.isProcessing(notification)) return;
 
-    this.actionStates[notification._id] = 'processing';
+    const notificationId = this.getNotificationId(notification);
+    this.actionStates.update((states) => ({ ...states, [notificationId]: 'rejecting' }));
+    this.cdr.detectChanges();
 
-    this.httpService.post(Environment.apiBaseUrl + "/rejectJoinEventRequest", {
+    const headers = new HttpHeaders({ 'X-Skip-Global-Loader': 'true' });
+    const request$ = this.httpService.post(Environment.apiBaseUrl + "/rejectJoinEventRequest", {
       eventId: this.getNotificationEventId(notification),
-      userId: notification.senderId,
-    }).subscribe({
-      next: (res) => {
-        this.actionStates[notification._id] = 'rejected';
+      userId: this.getNotificationSenderId(notification),
+    }, headers);
+
+    forkJoin([request$, timer(450)]).subscribe({
+      next: ([res]) => {
+        this.actionStates.update((states) => ({ ...states, [notificationId]: 'rejected' }));
+        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.actionStates[notification._id] = 'pending';
+        this.actionStates.update((states) => ({ ...states, [notificationId]: 'pending' }));
+        this.cdr.detectChanges();
         console.error('Reject fail:', err);
       }
     });
@@ -324,8 +363,12 @@ export class NotificationComponent {
     return notification?.senderId?._id || notification?.sender?._id || notification?.senderId || '';
   }
 
-  private getNotificationId(notification: any): string {
-    return notification?._id || notification?.id || '';
+  getNotificationId(notification: any): string {
+    const raw = notification?._id || notification?.id || '';
+    if (typeof raw === 'object' && raw !== null) {
+      return raw.toString ? raw.toString() : String(raw);
+    }
+    return String(raw || '');
   }
 
 }

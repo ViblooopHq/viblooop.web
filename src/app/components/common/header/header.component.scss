@@ -23,7 +23,8 @@
   &--mobile {
     border-width: 0 0 1px;
     border-radius: 0;
-    padding-top: max(0.75rem, env(safe-area-inset-top, 0.75rem));
+    padding-top: max(0.5rem, env(safe-area-inset-top, 0.5rem));
+    padding-bottom: 0.5rem;
   }
 }
 

@@ -25,8 +25,8 @@ export class BackButtonComponent {
   /** Button size: 'sm' (32px), 'md' (38px - default), 'lg' (44px) */
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
 
-  /** Variant: 'surface' (default white/dark card surface with border), 'ghost' (transparent with hover), 'filled' */
-  @Input() variant: 'surface' | 'ghost' | 'filled' = 'surface';
+  /** Variant: surface, ghost, filled, or a dark glass style for image overlays */
+  @Input() variant: 'surface' | 'ghost' | 'filled' | 'overlay' = 'surface';
 
   /** Button type attribute */
   @Input() type: 'button' | 'submit' | 'reset' = 'button';

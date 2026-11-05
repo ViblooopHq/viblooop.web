@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { ThemeService } from '../../../shared/services/theme/theme.service';
@@ -7,7 +7,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
-import { CompleteProfileService } from '../../../shared/services/popup/complete-profile.service';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { OutsideClickDirective } from '../../../directives/outside-click.directive';
@@ -34,10 +33,10 @@ export class HeaderComponent implements OnInit {
   public themeService = inject(ThemeService);
   public socketService = inject(SocketService);
   sharedService = inject(SharedService);
-  private toastService = inject(ToastService)
-  private angularRouter = inject(Router)
+  private toastService = inject(ToastService);
+  private angularRouter = inject(Router);
   private appDrawerService = inject(AppDrawerService);
-  private completeProfileService = inject(CompleteProfileService);
+  private cdr = inject(ChangeDetectorRef);
   defaultProfileImage = 'assets/images/default-profile.png';
 
   // Computed: hide FAB when user is in create-event flow
@@ -81,8 +80,15 @@ export class HeaderComponent implements OnInit {
         this.userName = nameStr ? nameStr.charAt(0).toUpperCase() : '';
       } else {
         this.userDetails = null;
-        this.userName = ''
+        this.userName = '';
       }
+      this.cdr.markForCheck();
+    });
+
+    this.appDrawerService.profileUpdated$.subscribe(() => {
+      this.authService.refreshUserDetails().subscribe(() => {
+        this.cdr.markForCheck();
+      });
     });
 
     this.socketService.notifications$.subscribe((notifications) => {
@@ -185,10 +191,7 @@ export class HeaderComponent implements OnInit {
       return;
     }
 
-    this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
-      if (!isComplete) return;
-      this.appDrawerService.openCreateEvent();
-    });
+    this.appDrawerService.openCreateEvent();
   }
 
   toggleTheme() {
@@ -201,9 +204,20 @@ export class HeaderComponent implements OnInit {
     return this.isLightTheme() ? 'light_mode' : 'dark_mode';
   }
 
-  getMobileProfileImage(): string {
-    const image = this.userDetails?.profileImage;
+  getProfileImage(): string {
+    const image = this.userDetails?.profileImage || this.userDetails?.avatar;
     return image ? this.sharedService.getImageUrl(image) || this.defaultProfileImage : this.defaultProfileImage;
+  }
+
+  getMobileProfileImage(): string {
+    return this.getProfileImage();
+  }
+
+  onAvatarError(event: Event): void {
+    const target = event.target as HTMLImageElement;
+    if (target && target.src !== this.defaultProfileImage) {
+      target.src = this.defaultProfileImage;
+    }
   }
 
   redirectToLogin() {

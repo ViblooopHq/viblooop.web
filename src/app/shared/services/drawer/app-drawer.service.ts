@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export type AppDrawerState =
   | { type: 'calendar' }
@@ -15,6 +15,8 @@ export type AppDrawerState =
 export class AppDrawerService {
   private readonly drawerSubject = new BehaviorSubject<AppDrawerState | null>(null);
   readonly drawer$ = this.drawerSubject.asObservable();
+  private readonly profileUpdatedSubject = new Subject<void>();
+  readonly profileUpdated$ = this.profileUpdatedSubject.asObservable();
 
   get hasOpenDrawer(): boolean {
     return this.drawerSubject.value !== null;
@@ -30,6 +32,10 @@ export class AppDrawerService {
 
   openEditProfile(): void {
     this.drawerSubject.next({ type: 'edit-profile' });
+  }
+
+  notifyProfileUpdated(): void {
+    this.profileUpdatedSubject.next();
   }
 
   openWishlist(): void {

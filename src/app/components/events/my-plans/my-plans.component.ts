@@ -1,23 +1,30 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, EventEmitter, inject, OnInit, Output, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, take } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { SharedService } from '../../../shared/services/shared.service';
+import { AppDrawerService } from '../../../shared/services/drawer/app-drawer.service';
+import { FormDrawerComponent } from '../../../shared/components/form-drawer/form-drawer.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 import { TicketComponent } from './ticket/ticket.component';
 
 @Component({
   selector: 'vl-my-plans',
   standalone: true,
-  imports: [TicketComponent],
+  imports: [CommonModule, FormDrawerComponent, BackButtonComponent, TicketComponent],
   templateUrl: './my-plans.component.html',
   styleUrl: './my-plans.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MyPlansComponent implements OnInit {
+  @Output() drawerClosed = new EventEmitter<void>();
+
   private readonly authService = inject(AuthService);
   private readonly sharedService = inject(SharedService);
   private readonly routeService = inject(RouteService);
+  private readonly appDrawerService = inject(AppDrawerService);
   private readonly destroyRef = inject(DestroyRef);
 
   readonly plans = signal<any[]>([]);
@@ -35,14 +42,27 @@ export class MyPlansComponent implements OnInit {
       .subscribe(() => this.loadPlans());
   }
 
+  goBack(): void {
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
+  }
+
+  onDrawerClosed(): void {
+    this.drawerClosed.emit();
+  }
+
   openPlan(plan: any): void {
     const eventId = plan?.eventId;
     if (eventId) {
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
       this.routeService.navigate('/events', eventId);
     }
   }
 
   signIn(): void {
+    this.appDrawerService.close();
+    this.drawerClosed.emit();
     this.routeService.navigateByUrl('/login');
   }
 

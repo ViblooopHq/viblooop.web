@@ -13,17 +13,19 @@
       @case ('Joined') {
         @if (isJoinedLoading()) {
           <div class="vl-user-profile__event-list">
-            <vl-event-card-skeleton [count]="3"></vl-event-card-skeleton>
+            <vl-event-card-skeleton [count]="4"></vl-event-card-skeleton>
           </div>
         } @else if (visibleJoinedEvents().length > 0) {
           <div class="vl-user-profile__event-list">
             @for (event of visibleJoinedEvents(); track event?._id || $index) {
               <div class="vl-user-profile__event-card-wrap">
                 <div class="vl-card-desktop">
-                  <vl-event-card [config]="event" profileStatus="attended" class="block w-full h-full"></vl-event-card>
+                  <vl-event-card [config]="event" profileStatus="attended" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-event-card>
                 </div>
                 <div class="vl-card-mobile">
-                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                  <vl-compact-event-card [config]="event" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-compact-event-card>
                 </div>
               </div>
             }
@@ -57,17 +59,19 @@
       @case ('Hosted') {
         @if (isHostedLoading()) {
           <div class="vl-user-profile__event-list">
-            <vl-event-card-skeleton [count]="3"></vl-event-card-skeleton>
+            <vl-event-card-skeleton [count]="4"></vl-event-card-skeleton>
           </div>
         } @else if (visibleHostedEvents().length > 0) {
           <div class="vl-user-profile__event-list">
             @for (event of visibleHostedEvents(); track event?._id || $index) {
               <div class="vl-user-profile__event-card-wrap">
                 <div class="vl-card-desktop">
-                  <vl-event-card [config]="event" profileStatus="hosted" class="block w-full h-full"></vl-event-card>
+                  <vl-event-card [config]="event" profileStatus="hosted" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-event-card>
                 </div>
                 <div class="vl-card-mobile">
-                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                  <vl-compact-event-card [config]="event" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-compact-event-card>
                 </div>
               </div>
             }
@@ -131,9 +135,42 @@
   </div>
 
   <div class="vl-user-profile__interests">
-    <h2 class="vl-title-md">Interests</h2>
-    <div class="vl-user-profile__interest-list">
-      <vl-interest-pill-list [interests]="visibleInterests()" [extraCount]="hiddenInterestCount()"></vl-interest-pill-list>
+    <div class="vl-user-profile__interests-header">
+      <h2 class="vl-title-md">Tags</h2>
+      @if (isCurrentUser() && visibleInterests().length > 0) {
+        <button type="button" class="vl-user-profile__tags-manage-btn" (click)="onEditTags()" aria-label="Manage tags">
+          <span class="material-symbols-outlined" translate="no">tune</span>
+          <span>Manage</span>
+        </button>
+      }
     </div>
+
+    @if (visibleInterests().length > 0) {
+      <div class="vl-user-profile__interest-list">
+        <vl-interest-pill-list [interests]="visibleInterests()" [extraCount]="hiddenInterestCount()"></vl-interest-pill-list>
+      </div>
+    } @else {
+      <div class="vl-user-profile__empty">
+        <div class="vl-user-profile__empty-icon">
+          <span class="material-symbols-outlined" translate="no">local_offer</span>
+        </div>
+        <div class="vl-user-profile__empty-text">
+          <p class="vl-user-profile__empty-title">No tags added yet</p>
+          <p class="vl-user-profile__empty-desc">
+            @if (isCurrentUser()) {
+              Add your interests and vibe tags to connect with people who share your passions.
+            } @else {
+              This user hasn’t added any tags or interests yet.
+            }
+          </p>
+        </div>
+        @if (isCurrentUser()) {
+          <button type="button" class="vl-button vl-button--secondary vl-user-profile__empty-action" (click)="onEditTags()">
+            <span class="material-symbols-outlined" translate="no">add</span>
+            <span>Add Tags</span>
+          </button>
+        }
+      </div>
+    }
   </div>
 </section>

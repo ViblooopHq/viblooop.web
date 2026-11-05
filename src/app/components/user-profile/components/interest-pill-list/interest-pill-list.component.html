@@ -1,4 +1,4 @@
-@for (interest of interests(); track interest) {
+@for (interest of displayedInterests; track $index) {
   <vl-pill
     [label]="getInterestLabel(interest)"
     [size]="size()">
@@ -6,6 +6,12 @@
 }
 
 @if (extraCount() > 0) {
-  <span class="vl-pill-extra">+{{ extraCount() }} more</span>
+  <button
+    class="vl-pill-extra"
+    type="button"
+    [attr.aria-expanded]="expanded()"
+    (click)="toggleExpanded()">
+    {{ expanded() ? 'Show less' : '+' + extraCount() + ' more' }}
+  </button>
 }
 

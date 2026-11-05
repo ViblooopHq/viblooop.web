@@ -2,7 +2,6 @@ import { inject, Injectable } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BrowserService } from '../browser/browser.service';
 import { AppDrawerService } from '../drawer/app-drawer.service';
-import { CompleteProfileService } from '../popup/complete-profile.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +11,6 @@ export class RouteService {
   router: Router = inject(Router)
   browserService = inject(BrowserService);
   private readonly appDrawerService = inject(AppDrawerService);
-  private readonly completeProfileService = inject(CompleteProfileService);
 
   constructor() { }
 
@@ -39,15 +37,11 @@ export class RouteService {
 
   navigateToDrawer(drawerPath: string, mobileFallbackPath: string, queryParams?: Record<string, string>) {
     if (drawerPath === 'create-event') {
-      this.completeProfileService.checkProfileAndShowPopup().subscribe((isComplete) => {
-        if (!isComplete) return;
-
-        if (queryParams?.['mode'] === 'edit' && queryParams?.['eventId']) {
-          this.appDrawerService.openEditEvent(queryParams['eventId']);
-        } else {
-          this.appDrawerService.openCreateEvent();
-        }
-      });
+      if (queryParams?.['mode'] === 'edit' && queryParams?.['eventId']) {
+        this.appDrawerService.openEditEvent(queryParams['eventId']);
+      } else {
+        this.appDrawerService.openCreateEvent();
+      }
       return;
     }
 

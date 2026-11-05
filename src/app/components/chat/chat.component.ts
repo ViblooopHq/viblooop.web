@@ -15,6 +15,7 @@ import { DatePipe } from '@angular/common';
 import { SocketService } from '../../shared/services/socket/socket.service';
 import { AuthService } from '../../shared/services/auth/auth.service';
 import { BackButtonComponent } from '../../shared/components/back-button/back-button.component';
+import { ImageUrlPipe } from '../../shared/pipes/image-url.pipe';
 
 export interface ChatMessage {
   _id?: string;
@@ -28,7 +29,7 @@ export interface ChatMessage {
 
 @Component({
   selector: 'vl-chat',
-  imports: [FormsModule, DatePipe, BackButtonComponent],
+  imports: [FormsModule, DatePipe, BackButtonComponent, ImageUrlPipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -45,8 +46,10 @@ export class ChatComponent {
 
   newMessage = signal('');
   messages = signal<ChatMessage[]>([]);
+  firstNewMessageId = signal<string | null>(null);
   canSendMessages = signal<boolean | null>(null);
   currentUserId = '';
+  private failedSenderImages = new Set<string>();
 
   private socketService = inject(SocketService);
   private authService = inject(AuthService);
@@ -59,6 +62,8 @@ export class ChatComponent {
       if (history.eventId !== this.eventId()) return;
 
       this.messages.set(history.messages);
+      this.firstNewMessageId.set(null);
+      this.failedSenderImages.clear();
       this.canSendMessages.set(history.canSendMessages);
       this.scrollToBottom();
     });
@@ -66,6 +71,9 @@ export class ChatComponent {
     const messageSub = this.socketService.chatMessage$.subscribe((msg) => {
       if (msg && msg.eventId === this.eventId()) {
         this.messages.update((messages) => [...messages, msg]);
+        if (!this.isOwnMessage(msg) && !this.firstNewMessageId()) {
+          this.firstNewMessageId.set(msg._id || `${msg.senderId}-${msg.createdAt}`);
+        }
         this.scrollToBottom();
       }
     });
@@ -87,6 +95,8 @@ export class ChatComponent {
       if (isRoomSwitch) {
         // Clear messages list immediately for UX
         this.messages.set([]);
+        this.firstNewMessageId.set(null);
+        this.failedSenderImages.clear();
       }
 
       this.canSendMessages.set(null);
@@ -115,6 +125,41 @@ export class ChatComponent {
 
   getSenderInitial(msg: ChatMessage): string {
     return (msg.senderName || 'V').charAt(0).toUpperCase();
+  }
+
+  hasSenderImage(msg: ChatMessage): boolean {
+    return !!msg.senderImage && !this.failedSenderImages.has(msg.senderImage);
+  }
+
+  onSenderImageError(msg: ChatMessage): void {
+    if (msg.senderImage) this.failedSenderImages.add(msg.senderImage);
+  }
+
+  isFirstNewMessage(msg: ChatMessage): boolean {
+    const messageId = msg._id || `${msg.senderId}-${msg.createdAt}`;
+    return this.firstNewMessageId() === messageId;
+  }
+
+  shouldShowDate(index: number): boolean {
+    const current = this.messages()[index];
+    if (!current) return false;
+    if (index === 0) return true;
+    return this.getDateKey(current.createdAt) !== this.getDateKey(this.messages()[index - 1].createdAt);
+  }
+
+  getDateLabel(value: string): string {
+    const date = new Date(value);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(today.getDate() - 1);
+    if (this.getDateKey(value) === this.getDateKey(today.toISOString())) return 'Today';
+    if (this.getDateKey(value) === this.getDateKey(yesterday.toISOString())) return 'Yesterday';
+    return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: date.getFullYear() === today.getFullYear() ? undefined : 'numeric' }).format(date);
+  }
+
+  private getDateKey(value: string): string {
+    const date = new Date(value);
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
 
   shouldShowSenderName(index: number, msg: ChatMessage): boolean {

@@ -19,8 +19,7 @@ export class CreateEventFormService {
   private readonly eventsService = inject(EventsService);
   private readonly categoryPresentation = inject(EventCategoryPresentationService);
 
-  readonly today = new Date();
-  readonly minDate = new Date();
+  readonly minDate = this.getStartOfToday();
 
   readonly eventForm: FormGroup = this.fb.group({
     title: ['', Validators.required],
@@ -111,7 +110,8 @@ export class CreateEventFormService {
   readonly eventCreatedAnimationPath = computed(() => this.selectedCreationConfig().animationPath);
 
   readonly minEndDate = computed<Date>(() => this.eventDateValue() || this.minDate);
-  readonly datePickerMinDate = computed<Date | null>(() => (this.isEditMode() ? null : this.minDate));
+  readonly datePickerMinDate = computed<Date>(() => this.minDate);
+  readonly timePickerMinTime = computed(() => this.minTime());
 
   getSelectedCategoryTitle(): string {
     const cat = this.selectedCategory();
@@ -244,18 +244,41 @@ export class CreateEventFormService {
   readonly hostNotesMaxLength = CREATE_EVENT_HOST_NOTES_MAX_LENGTH;
 
   addHostNote(note: string): void {
-    const control = this.eventForm.get('description');
-    const current = (control?.value || '').toString().trim();
-    if (current.includes(note)) return;
+    this.toggleHostNote(note);
+  }
 
-    const nextValue = current ? `${current}\n${note}` : note;
+  toggleHostNote(note: string): void {
+    const control = this.eventForm.get('description');
+    const current = (control?.value || '').toString();
+
+    if (this.isHostNoteSelected(note)) {
+      const lines = current.split('\n');
+      const filtered = lines.filter(line => line.trim() !== note.trim());
+
+      let nextValue: string;
+      if (filtered.length < lines.length) {
+        nextValue = filtered.join('\n');
+      } else {
+        nextValue = current.replace(note, '');
+      }
+
+      nextValue = nextValue.replace(/\n{3,}/g, '\n\n').trim();
+      control?.setValue(nextValue);
+      control?.markAsDirty();
+      control?.markAsTouched();
+      return;
+    }
+
+    const trimmed = current.trim();
+    const nextValue = trimmed ? `${trimmed}\n${note}` : note;
     control?.setValue(nextValue.slice(0, this.hostNotesMaxLength));
     control?.markAsDirty();
     control?.markAsTouched();
   }
 
   isHostNoteSelected(note: string): boolean {
-    return (this.eventForm.get('description')?.value || '').toString().includes(note);
+    const desc = this.descriptionValue?.() ?? this.eventForm.get('description')?.value ?? '';
+    return desc.toString().includes(note);
   }
 
   // ── Expectations chips (previously orphaned, now wired to Step 3) ─
@@ -282,6 +305,7 @@ export class CreateEventFormService {
 
   private updateMinTime(): void {
     const selectedDate = this.eventForm.get('eventDate')?.value;
+    this.minTime.set('');
     if (!selectedDate) return;
 
     const now = new Date();
@@ -289,12 +313,21 @@ export class CreateEventFormService {
     const isToday = selDate.toDateString() === now.toDateString();
 
     if (isToday) {
+      now.setMinutes(now.getMinutes() + 1, 0, 0);
+      if (now.toDateString() !== selDate.toDateString()) {
+        this.minTime.set('24:00');
+        return;
+      }
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       this.minTime.set(`${hours}:${minutes}`);
-    } else {
-      this.minTime.set('');
     }
+  }
+
+  private getStartOfToday(): Date {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today;
   }
 
   private keepEndDateOnOrAfterStartDate(): void {
@@ -446,7 +479,7 @@ export class CreateEventFormService {
       description: event.description || '',
       shortDescription: event.shortDescription || '',
       eventDate: this.toDateControlValue(event.eventDate),
-      endDate: this.toDateControlValue(event.endDate || event.eventDate),
+      endDate: this.toDateControlValue(event.endDate),
       eventTime: this.toTimeControlValue(event.eventTime),
       endTime: this.toTimeControlValue(event.endTime),
       durationHours: this.getDurationHours(
@@ -481,6 +514,13 @@ export class CreateEventFormService {
     this.updateMinTime();
     this.updateDateValidatorsForCreationKind();
     this.updateEndFromDuration();
+
+    // Keep the event's persisted date range after category and duration rules run.
+    this.eventForm.patchValue({
+      eventDate: this.toDateControlValue(event.eventDate),
+      endDate: this.toDateControlValue(event.endDate || event.eventDate),
+    }, { emitEvent: false });
+
     this.eventForm.markAsPristine();
     this.eventForm.markAsUntouched();
   }
@@ -512,8 +552,22 @@ export class CreateEventFormService {
 
   private toDateControlValue(value: string | Date | null | undefined): Date | string {
     if (!value) return '';
-    const date = new Date(value);
-    return Number.isNaN(date.getTime()) ? '' : date;
+
+    if (value instanceof Date) {
+      if (Number.isNaN(value.getTime())) return '';
+      return new Date(value.getFullYear(), value.getMonth(), value.getDate());
+    }
+
+    const raw = String(value).trim();
+    const dateOnly = raw.match(/^(\d{4})-(\d{2})-(\d{2})(?:$|T)/);
+    if (dateOnly) {
+      return new Date(Number(dateOnly[1]), Number(dateOnly[2]) - 1, Number(dateOnly[3]));
+    }
+
+    const parsed = new Date(raw);
+    return Number.isNaN(parsed.getTime())
+      ? ''
+      : new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
   }
 
   private toTimeControlValue(value: string | null | undefined): string {
@@ -595,20 +649,29 @@ export class CreateEventFormService {
       const selectedDate = this.eventForm.get('eventDate')?.value;
       const selectedTime = this.eventForm.get('eventTime')?.value;
 
+      if (selectedDate) {
+        const selectedDay = new Date(selectedDate);
+        selectedDay.setHours(0, 0, 0, 0);
+        if (selectedDay < this.getStartOfToday()) {
+          alert('Event date cannot be in the past. Please select today or a future date.');
+          return false;
+        }
+
+        if (!this.isEscapeCreation() && selectedTime) {
+          const [hours, minutes] = selectedTime.split(':').map(Number);
+          const eventDateTime = new Date(selectedDate);
+          eventDateTime.setHours(hours, minutes, 0, 0);
+          if (eventDateTime < new Date()) {
+            alert('Event time cannot be in the past. Please select a future time.');
+            return false;
+          }
+        }
+      }
+
       if (this.isEscapeCreation()) {
         const endDate = this.eventForm.get('endDate')?.value;
         if (selectedDate && endDate && new Date(endDate) < new Date(selectedDate)) {
           alert('Trip end date cannot be before the start date.');
-          return false;
-        }
-      } else if (!this.isEditMode() && selectedDate && selectedTime) {
-        const now = new Date();
-        const [hours, minutes] = selectedTime.split(':');
-        const eventDateTime = new Date(selectedDate);
-        eventDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-        if (eventDateTime < now) {
-          alert('Event cannot be in the past! Please select a future date and time.');
           return false;
         }
       }
@@ -640,6 +703,7 @@ export class CreateEventFormService {
     Object.keys(this.eventForm.controls).forEach(key => {
       let value = this.eventForm.get(key)?.value;
       if (key === 'durationHours') return;
+      if (key === 'eventDate' || key === 'endDate') value = this.toDateOnlyFormValue(value);
       if (key === 'eventTime' && this.isEscapeCreation()) value = value || '00:00';
       if (key === 'endTime' && !this.usesDuration()) value = '';
 
@@ -653,6 +717,30 @@ export class CreateEventFormService {
     });
 
     return formData;
+  }
+
+  private toDateOnlyFormValue(value: Date | string | null | undefined): string {
+    if (!value) return '';
+
+    // Event dates are calendar dates, not instants. Sending Date.toString()
+    // applies the browser's timezone and can make the API store the prior day.
+    if (value instanceof Date && !Number.isNaN(value.getTime())) {
+      const year = value.getFullYear();
+      const month = String(value.getMonth() + 1).padStart(2, '0');
+      const day = String(value.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const raw = String(value);
+    const dateOnly = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+    if (dateOnly) return dateOnly[1];
+
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return raw;
+    const year = parsed.getFullYear();
+    const month = String(parsed.getMonth() + 1).padStart(2, '0');
+    const day = String(parsed.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   private hasValidDurationDateTimeRange(): boolean {

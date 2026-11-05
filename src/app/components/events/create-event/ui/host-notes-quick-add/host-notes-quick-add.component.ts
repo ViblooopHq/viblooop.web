@@ -61,8 +61,12 @@ export class HostNotesQuickAddComponent {
     this.isExpanded.update(v => !v);
   }
 
+  toggleNote(note: string): void {
+    this.formService.toggleHostNote(note);
+  }
+
   addNote(note: string): void {
-    this.formService.addHostNote(note);
+    this.toggleNote(note);
   }
 
   isNoteSelected(note: string): boolean {

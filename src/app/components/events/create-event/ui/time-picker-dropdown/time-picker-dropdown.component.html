@@ -18,17 +18,17 @@
     <div class="custom-time-picker" role="listbox" aria-label="Select time" (keydown)="onPickerKeydown($event)">
       <div class="picker-col">
         @for (h of hours; track h) {
-          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedHour() === h" [class.active]="selectedHour() === h" (click)="selectHour(h)">{{ h }}</button>
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedHour() === h" [class.active]="selectedHour() === h" [disabled]="isHourDisabled(h)" (click)="selectHour(h)">{{ h }}</button>
         }
       </div>
       <div class="picker-col">
         @for (m of minutes; track m) {
-          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedMinute() === m" [class.active]="selectedMinute() === m" (click)="selectMinute(m)">{{ m }}</button>
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedMinute() === m" [class.active]="selectedMinute() === m" [disabled]="isMinuteDisabled(m)" (click)="selectMinute(m)">{{ m }}</button>
         }
       </div>
       <div class="picker-col picker-col-period">
         @for (p of periods; track p) {
-          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedPeriod() === p" [class.active]="selectedPeriod() === p" (click)="selectPeriod(p)">{{ p }}</button>
+          <button type="button" class="picker-item" role="option" [attr.aria-selected]="selectedPeriod() === p" [class.active]="selectedPeriod() === p" [disabled]="isPeriodDisabled(p)" (click)="selectPeriod(p)">{{ p }}</button>
         }
       </div>
     </div>

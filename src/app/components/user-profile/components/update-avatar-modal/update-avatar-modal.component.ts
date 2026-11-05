@@ -4,6 +4,7 @@ import { UserService } from '../../../../shared/services/user/user.service';
 import { SharedService } from '../../../../shared/services/shared.service';
 import { ToastService } from '../../../../shared/services/toast/toast.service';
 import { AuthService } from '../../../../shared/services/auth/auth.service';
+import { AppDrawerService } from '../../../../shared/services/drawer/app-drawer.service';
 
 @Component({
   selector: 'vl-update-avatar-modal',
@@ -18,6 +19,7 @@ export class UpdateAvatarModalComponent {
   private sharedService = inject(SharedService);
   private toastService = inject(ToastService);
   private authService = inject(AuthService);
+  private appDrawerService = inject(AppDrawerService);
 
   isOpen = input<boolean>(false);
   currentImage = input<string>('');
@@ -144,9 +146,17 @@ export class UpdateAvatarModalComponent {
     this.userService.updateUserProfile(formData).subscribe({
       next: (res: any) => {
         this.isUploading.set(false);
-        const newUrl = this.previewUrl() || '';
+        const serverImageUrl = res?.data?.profileImage || res?.profileImage || '';
+        const displayImage = serverImageUrl || this.previewUrl() || '';
+
+        if (displayImage) {
+          this.authService.updateUserDetails?.({ profileImage: displayImage });
+        }
+        this.appDrawerService.notifyProfileUpdated();
+        this.authService.refreshUserDetails?.().subscribe();
+
         this.toastService.success('Profile picture updated successfully!');
-        this.imageUpdated.emit(newUrl);
+        this.imageUpdated.emit(displayImage);
         this.closeModal();
       },
       error: (err: any) => {

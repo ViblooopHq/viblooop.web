@@ -81,6 +81,30 @@
   --gradient-purple-accent: var(--color-primary);
   --gradient-hero-card: var(--color-surface);
 
+  /* --- Ticket & Pass Tokens --- */
+  --color-ticket-bg: var(--color-surface);
+  --color-ticket-border: var(--color-border);
+  --color-ticket-border-hover: var(--color-border-strong);
+  --color-ticket-media-bg: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --color-ticket-category-bg: color-mix(in srgb, var(--color-primary) 12%, var(--color-surface));
+  --color-ticket-category-border: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --color-ticket-category-color: var(--color-primary-active);
+  --color-ticket-badge-bg: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface));
+  --color-ticket-badge-border: color-mix(in srgb, var(--color-primary) 22%, transparent);
+  --color-ticket-badge-color: var(--color-primary-active);
+  --color-ticket-icon-bg: color-mix(in srgb, var(--color-primary) 10%, var(--color-surface));
+  --color-ticket-icon-color: var(--color-primary);
+  --color-ticket-qr-bg: var(--text-white);
+  --color-ticket-shadow: color-mix(in srgb, var(--color-primary-active) 12%, transparent);
+  --color-ticket-shadow-hover: color-mix(in srgb, var(--color-primary-active) 18%, transparent);
+
+  /* --- Event Status Badge Tokens --- */
+  --color-badge-completed-bg: #15803D;
+  --color-badge-completed-bg-hover: #166534;
+  --color-badge-completed-text: #FFFFFF;
+  --color-badge-completed-border: #16A34A;
+  --color-badge-completed-shadow: rgba(21, 128, 61, 0.35);
+
   /* --- Legacy Variable Aliases --- */
   --bg-surface: var(--color-bg);
   --bg-surface-canvas: var(--color-bg);
@@ -188,6 +212,30 @@
   --gradient-brand-cta: var(--color-primary);
   --gradient-purple-accent: var(--color-primary);
   --gradient-hero-card: var(--color-surface);
+
+  /* --- Ticket & Pass Tokens --- */
+  --color-ticket-bg: var(--color-surface-elevated);
+  --color-ticket-border: var(--color-border-strong);
+  --color-ticket-border-hover: color-mix(in srgb, var(--color-primary) 40%, var(--color-border-strong));
+  --color-ticket-media-bg: color-mix(in srgb, var(--color-primary) 14%, var(--color-surface-elevated));
+  --color-ticket-category-bg: color-mix(in srgb, var(--color-primary) 22%, var(--color-surface-elevated));
+  --color-ticket-category-border: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  --color-ticket-category-color: color-mix(in srgb, var(--color-primary) 80%, white);
+  --color-ticket-badge-bg: color-mix(in srgb, var(--color-primary) 25%, var(--color-surface-elevated));
+  --color-ticket-badge-border: color-mix(in srgb, var(--color-primary) 35%, transparent);
+  --color-ticket-badge-color: color-mix(in srgb, var(--color-primary) 80%, white);
+  --color-ticket-icon-bg: color-mix(in srgb, var(--color-primary) 16%, var(--color-surface-elevated));
+  --color-ticket-icon-color: color-mix(in srgb, var(--color-primary) 70%, white);
+  --color-ticket-qr-bg: var(--text-white);
+  --color-ticket-shadow: color-mix(in srgb, var(--color-overlay-scrim) 85%, transparent);
+  --color-ticket-shadow-hover: color-mix(in srgb, var(--color-primary) 18%, var(--color-overlay-scrim));
+
+  /* --- Event Status Badge Tokens --- */
+  --color-badge-completed-bg: #16A34A;
+  --color-badge-completed-bg-hover: #15803D;
+  --color-badge-completed-text: #FFFFFF;
+  --color-badge-completed-border: rgba(134, 239, 172, 0.45);
+  --color-badge-completed-shadow: rgba(34, 197, 94, 0.4);
 
   /* --- Legacy Variable Aliases --- */
   --bg-surface: var(--color-bg);

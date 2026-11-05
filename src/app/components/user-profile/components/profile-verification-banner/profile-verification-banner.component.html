@@ -2,22 +2,44 @@
   class="vl-user-profile__photo-verification"
   [class.vl-user-profile__photo-verification--verified]="isVerified()"
   aria-label="Photo verification">
-  <span class="vl-user-profile__photo-verification-icon">
-    <span class="material-symbols-outlined" translate="no">{{ isVerified() ? 'verified' : 'person_check' }}</span>
-  </span>
+  <div class="vl-user-profile__photo-verification-content">
+    <div class="vl-user-profile__photo-verification-icon" aria-hidden="true">
+      <span class="material-symbols-outlined" translate="no">
+        {{ isVerified() ? 'verified' : 'verified_user' }}
+      </span>
+    </div>
 
-  <span class="vl-user-profile__photo-verification-copy">
-    <span class="vl-user-profile__photo-verification-heading">
-      <strong>Photo Verification</strong>
-      <span>{{ isVerified() ? 'Verified' : 'Pending' }}</span>
-    </span>
-    <small>{{ isVerified() ? 'Your profile has the verified badge' : 'Verify your selfie to get the verified badge' }}</small>
-  </span>
+    <div class="vl-user-profile__photo-verification-copy">
+      <div class="vl-user-profile__photo-verification-title-row">
+        <strong>{{ isVerified() ? 'You’re verified' : 'Verify for free' }}</strong>
+        @if (isVerified()) {
+          <span class="vl-user-profile__photo-verification-badge">
+            <span class="material-symbols-outlined" translate="no">check</span>
+            <span>Verified</span>
+          </span>
+        }
+      </div>
+      <p>{{ isVerified() ? 'Your profile has the verified badge.' : 'Show authenticity to boost trust.' }}</p>
+    </div>
+  </div>
 
   @if (!isVerified()) {
-    <button class="vl-button vl-button--primary vl-user-profile__photo-verification-action" type="button" (click)="verify.emit()">
-      Verify Selfie
-      <span class="material-symbols-outlined" translate="no">chevron_right</span>
+    <div class="vl-user-profile__photo-verification-action-wrap">
+      <button
+        class="vl-user-profile__photo-verification-action"
+        type="button"
+        (click)="verify.emit()">
+        <span class="material-symbols-outlined" translate="no">verified</span>
+        <span>Get verified</span>
+      </button>
+    </div>
+
+    <button
+      class="vl-user-profile__photo-verification-dismiss"
+      type="button"
+      (click)="dismiss.emit()"
+      aria-label="Dismiss verification prompt">
+      <span class="material-symbols-outlined" translate="no" aria-hidden="true">close</span>
     </button>
   }
 </section>

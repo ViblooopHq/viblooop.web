@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Title, Meta } from '@angular/platform-browser';
 import { DOCUMENT } from '@angular/common';
+import { Environment } from '../../../../environment';
 
 export interface SeoConfig {
   title?: string;
@@ -30,8 +31,8 @@ export class SeoService {
   readonly defaultTitle = 'Viblooop — Discover, Experience & Connect';
   readonly defaultDescription =
     'Discover vibrant local events, meet genuine people, and experience real-life social gatherings near you with Viblooop.';
-  readonly defaultImage = 'https://www.viblooop.com/og.png';
-  readonly baseUrl = 'https://www.viblooop.com';
+  readonly defaultImage = Environment.ogImageUrl;
+  readonly baseUrl = Environment.ogPageUrl;
 
   /**
    * Update full SEO metadata at once
@@ -116,7 +117,7 @@ export class SeoService {
       if (script && script.parentNode) {
         script.parentNode.removeChild(script);
       }
-    } catch (e) {}
+    } catch (e) { }
   }
 
   /**

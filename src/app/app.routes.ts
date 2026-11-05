@@ -6,7 +6,6 @@ import { LoginComponent } from './components/auth/login/login.component';
 import { authGuard } from './guards/auth/auth.guard';
 import { ProfileSetupComponent } from './components/user-profile/profile-setup/profile-setup.component';
 import { NotificationComponent } from './shared/components/notification/notification.component';
-import { profileScoreGuard } from './guards/profile-score/profile-score.guard';
 import { unsavedChangeGuard } from './guards/unsave-changes/unsave-change.guard';
 import { CreateEventComponent } from './components/events/create-event/create-event.component';
 import { EditProfileComponent } from './components/user-profile/edit-profile/edit-profile.component';
@@ -106,7 +105,7 @@ export const routes: Routes = [
   },
   {
     path: 'create-event',
-    canActivate: [authGuard, profileScoreGuard],
+    canActivate: [authGuard],
     canDeactivate: [unsavedChangeGuard],
     component: CreateEventComponent,
     title: 'Host an Event | Viblooop',

@@ -1,6 +1,5 @@
 import { Component, EventEmitter, inject, OnInit, Output } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { AuthService } from '../../../shared/services/auth/auth.service';
 import { SharedService } from '../../../shared/services/shared.service';
 import { UserService } from '../../../shared/services/user/user.service';
@@ -13,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { DatepickerComponent } from '../../../shared/components/datepicker/datepicker.component';
 import { PillComponent } from '../../../shared/components/pill/pill.component';
 import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
+import { ActionModalComponent } from '../../../shared/components/action-modal/action-modal.component';
+import { PROFILE_CONSTANTS } from '../constants/profile.constants';
 
 type SocialPlatform = {
   key: string;
@@ -48,10 +49,13 @@ type ProfilePhotoItem = {
     DatepickerComponent,
     PillComponent,
     BackButtonComponent,
+    ActionModalComponent,
   ]
 })
 export class EditProfileComponent implements OnInit {
   @Output() drawerClosed = new EventEmitter<void>();
+
+  readonly profileConstants = PROFILE_CONSTANTS;
 
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
@@ -59,7 +63,6 @@ export class EditProfileComponent implements OnInit {
   private userService = inject(UserService);
   private routeService = inject(RouteService);
   private appDrawerService = inject(AppDrawerService);
-  private router = inject(Router);
 
   profileForm!: FormGroup;
   defaultProfile = 'assets/images/default-profile.png';
@@ -67,12 +70,21 @@ export class EditProfileComponent implements OnInit {
   profilePhotoFile: File | null = null;
   profilePhotos: ProfilePhotoItem[] = [];
   isSelfieVerificationOpen = false;
+  isMissingProfileImageModalOpen = false;
   isVerified = false;
   isSaving = false;
   isProfilePhotosSaving = false;
   saveError = '';
   showLogoutDialog = false;
   showDeleteDialog = false;
+  isDeletingAccount = false;
+  isAccountDeleted = false;
+  deleteResultModal: {
+    type: 'success' | 'info' | 'error';
+    title: string;
+    message: string;
+    details?: string[];
+  } | null = null;
   selectedSocialPlatform = 'instagram';
   socialLinkDraft = '';
   socialLinks: SocialLink[] = [];
@@ -143,12 +155,12 @@ export class EditProfileComponent implements OnInit {
 
     const selectedInterests = this.interests.value || [];
     if (selectedInterests.length > this.maxInterests) {
-      this.saveError = `You can select up to ${this.maxInterests} interests.`;
+      this.saveError = PROFILE_CONSTANTS.MAX_INTERESTS_ERROR(this.maxInterests);
       return;
     }
 
     if (selectedInterests.length && !this.interestCategories.length) {
-      this.saveError = 'Interest options are still loading. Please try again.';
+      this.saveError = PROFILE_CONSTANTS.INTEREST_OPTIONS_LOADING_ERROR;
       return;
     }
 
@@ -158,16 +170,36 @@ export class EditProfileComponent implements OnInit {
     this.userService.updateUserProfile(formData).subscribe({
       next: (res: any) => {
         if (!res?.success) {
-          this.saveError = res?.message || 'Unable to update profile.';
+          this.saveError = res?.message || PROFILE_CONSTANTS.PROFILE_UPDATE_ERROR;
           return;
         }
 
+        const serverData = res?.data || {};
+        const updatedDetails: any = {};
+        if (serverData.profileImage) {
+          updatedDetails.profileImage = serverData.profileImage;
+        } else if (this.profilePreview && typeof this.profilePreview === 'string') {
+          updatedDetails.profileImage = this.profilePreview;
+        }
+        if (serverData.userName || this.profileForm.value.name) {
+          updatedDetails.userName = serverData.userName || this.profileForm.value.name;
+        }
+        if (serverData.username || this.profileForm.value.username) {
+          updatedDetails.username = serverData.username || this.profileForm.value.username;
+        }
+
+        if (Object.keys(updatedDetails).length > 0) {
+          this.authService.updateUserDetails?.(updatedDetails);
+        }
+
         this.profileForm.markAsPristine();
+        this.appDrawerService.notifyProfileUpdated();
+        this.authService.refreshUserDetails?.().subscribe();
         this.appDrawerService.close();
         this.drawerClosed.emit();
       },
       error: (err) => {
-        this.saveError = err?.error?.message || err?.message || 'Unable to update profile.';
+        this.saveError = err?.error?.message || err?.message || PROFILE_CONSTANTS.PROFILE_UPDATE_ERROR;
         this.isSaving = false;
       },
       complete: () => {
@@ -177,8 +209,11 @@ export class EditProfileComponent implements OnInit {
   }
 
   canDeactivate(): boolean {
+    if (this.isAccountDeleted) {
+      return true;
+    }
     if (this.profileForm?.dirty && !this.isSaving) {
-      return confirm('You have unsaved changes! Are you sure you want to leave this page?');
+      return confirm(PROFILE_CONSTANTS.UNSAVED_CHANGES_CONFIRM);
     }
     return true;
   }
@@ -189,7 +224,7 @@ export class EditProfileComponent implements OnInit {
   }
 
   logout(): void {
-    if (!confirm('Do you want to log out from this device?')) return;
+    if (!confirm(PROFILE_CONSTANTS.LOGOUT_CONFIRM)) return;
     this.authService.logout();
   }
 
@@ -213,16 +248,103 @@ export class EditProfileComponent implements OnInit {
   }
 
   closeDeleteDialog(): void {
+    if (this.isDeletingAccount) return;
     this.showDeleteDialog = false;
   }
 
   confirmDeleteAccount(): void {
-    this.showDeleteDialog = false;
-    alert('Delete account is not connected yet.');
+    if (this.isDeletingAccount) return;
+    this.isDeletingAccount = true;
+
+    this.userService.deleteAccount().subscribe({
+      next: (res: any) => {
+        this.isDeletingAccount = false;
+        this.showDeleteDialog = false;
+
+        if (!res?.success) {
+          const errorMessage = res?.message || PROFILE_CONSTANTS.DELETE_ACCOUNT_ERROR_MESSAGE;
+          this.saveError = errorMessage;
+          this.deleteResultModal = {
+            type: 'error',
+            title: res?.title || PROFILE_CONSTANTS.DELETE_ACCOUNT_ERROR_TITLE,
+            message: errorMessage,
+            details: Array.isArray(res?.details) ? res.details : undefined,
+          };
+          return;
+        }
+
+        const message = res?.message || PROFILE_CONSTANTS.DELETE_ACCOUNT_DEFAULT_MESSAGE;
+        const isInfo = res?.type === 'info' ||
+          message.toLowerCase().includes('initiated') ||
+          message.toLowerCase().includes('scheduled') ||
+          message.toLowerCase().includes('pending');
+
+        this.isAccountDeleted = true;
+        this.profileForm.markAsPristine();
+
+        this.deleteResultModal = {
+          type: res?.type === 'info' || res?.type === 'success' ? res.type : (isInfo ? 'info' : 'success'),
+          title: res?.title || (isInfo ? PROFILE_CONSTANTS.DELETE_ACCOUNT_INFO_TITLE : PROFILE_CONSTANTS.DELETE_ACCOUNT_SUCCESS_TITLE),
+          message,
+          details: Array.isArray(res?.details) ? res.details : undefined,
+        };
+      },
+      error: (err) => {
+        this.isDeletingAccount = false;
+        this.showDeleteDialog = false;
+        const errorMessage = err?.error?.message || err?.message || PROFILE_CONSTANTS.DELETE_ACCOUNT_ERROR_MESSAGE;
+        this.saveError = errorMessage;
+        this.deleteResultModal = {
+          type: 'error',
+          title: err?.error?.title || PROFILE_CONSTANTS.DELETE_ACCOUNT_ERROR_TITLE,
+          message: errorMessage,
+        };
+      }
+    });
+  }
+
+  closeDeleteResultModal(): void {
+    const shouldLogout = this.deleteResultModal?.type === 'success' || this.deleteResultModal?.type === 'info';
+    this.deleteResultModal = null;
+
+    if (shouldLogout) {
+      this.profileForm.markAsPristine();
+      this.appDrawerService.close();
+      this.drawerClosed.emit();
+      this.authService.logout();
+    }
+  }
+
+  hasValidProfileImage(): boolean {
+    if (this.profilePhotoFile && this.profilePhotoFile.size > 0) return true;
+    const img = this.profilePreview;
+    if (!img || typeof img !== 'string') return false;
+    const normalized = img.trim().toLowerCase();
+    if (
+      !normalized ||
+      normalized === this.defaultProfile.toLowerCase() ||
+      normalized.includes('default-profile.png') ||
+      normalized.includes('default-avatar')
+    ) {
+      return false;
+    }
+    return true;
   }
 
   verifySelfie(): void {
+    if (!this.hasValidProfileImage()) {
+      this.isMissingProfileImageModalOpen = true;
+      return;
+    }
     this.isSelfieVerificationOpen = true;
+  }
+
+  onUpdateProfilePhotoFromVerification(): void {
+    this.isMissingProfileImageModalOpen = false;
+    const fileInput = document.querySelector<HTMLInputElement>('.vl-edit-profile__avatar-input');
+    if (fileInput) {
+      fileInput.click();
+    }
   }
 
   async onProfileSelected(event: Event): Promise<void> {
@@ -234,7 +356,7 @@ export class EditProfileComponent implements OnInit {
     try {
       finalFile = await this.sharedService.convertHeicToJpg(file);
     } catch {
-      this.saveError = 'Unable to convert HEIC photo. Please try another image.';
+      this.saveError = PROFILE_CONSTANTS.HEIC_CONVERT_ERROR;
       return;
     }
 
@@ -254,7 +376,7 @@ export class EditProfileComponent implements OnInit {
     this.saveError = '';
     const remainingSlots = this.maxProfilePhotos - this.profilePhotos.length;
     if (remainingSlots <= 0) {
-      this.saveError = `You can upload up to ${this.maxProfilePhotos} profile photos.`;
+      this.saveError = PROFILE_CONSTANTS.MAX_PROFILE_PHOTOS_ERROR(this.maxProfilePhotos);
       return;
     }
 
@@ -267,12 +389,12 @@ export class EditProfileComponent implements OnInit {
         formData.append('profilePhotos', await this.sharedService.convertHeicToJpg(file));
         uploadedFileCount++;
       } catch {
-        this.saveError = 'Unable to convert one of the HEIC photos. Please try another image.';
+        this.saveError = PROFILE_CONSTANTS.HEIC_CONVERT_MULTI_ERROR;
       }
     }
 
     if (files.length > remainingSlots) {
-      this.saveError = `Only ${remainingSlots} more photo${remainingSlots === 1 ? '' : 's'} can be added.`;
+      this.saveError = PROFILE_CONSTANTS.REMAINING_PHOTOS_LIMIT_ERROR(remainingSlots);
     }
 
     if (!uploadedFileCount) return;
@@ -302,6 +424,9 @@ export class EditProfileComponent implements OnInit {
 
   onSelfieVerified(): void {
     this.isVerified = true;
+    this.authService.updateUserDetails?.({ verified: true, isVerified: true });
+    this.appDrawerService.notifyProfileUpdated();
+    this.authService.refreshUserDetails?.().subscribe();
     this.profileForm.markAsPristine();
     this.routeService.closeDrawerAndNavigateByUrl('/profile');
   }
@@ -315,7 +440,7 @@ export class EditProfileComponent implements OnInit {
     }
 
     if (this.interests.length >= this.maxInterests) {
-      this.saveError = `You can select up to ${this.maxInterests} interests.`;
+      this.saveError = PROFILE_CONSTANTS.MAX_INTERESTS_ERROR(this.maxInterests);
       return;
     }
 
@@ -461,7 +586,7 @@ export class EditProfileComponent implements OnInit {
         this.profilePhotos = this.normalizeProfilePhotos(res.data?.profilePhotos);
       },
       error: (err) => {
-        this.saveError = err?.error?.message || err?.message || 'Unable to refresh profile photos.';
+        this.saveError = err?.error?.message || err?.message || PROFILE_CONSTANTS.PROFILE_PHOTOS_REFRESH_ERROR;
       }
     });
   }
@@ -473,14 +598,15 @@ export class EditProfileComponent implements OnInit {
     this.userService.updateUserProfile(formData).subscribe({
       next: (res: any) => {
         if (!res?.success) {
-          this.saveError = res?.message || 'Unable to update profile photos.';
+          this.saveError = res?.message || PROFILE_CONSTANTS.PROFILE_PHOTOS_UPDATE_ERROR;
           return;
         }
 
+        this.appDrawerService.notifyProfileUpdated();
         this.refreshProfilePhotos();
       },
       error: (err) => {
-        this.saveError = err?.error?.message || err?.message || 'Unable to update profile photos.';
+        this.saveError = err?.error?.message || err?.message || PROFILE_CONSTANTS.PROFILE_PHOTOS_UPDATE_ERROR;
       },
       complete: () => {
         this.isProfilePhotosSaving = false;
@@ -575,7 +701,7 @@ export class EditProfileComponent implements OnInit {
 
     const normalizedUrl = this.normalizeSocialUrl(this.socialLinkDraft, this.selectedSocialPlatform);
     if (!normalizedUrl) {
-      this.saveError = `Enter a valid ${this.selectedSocial.label} link.`;
+      this.saveError = PROFILE_CONSTANTS.INVALID_SOCIAL_LINK_ERROR(this.selectedSocial.label);
       return false;
     }
 

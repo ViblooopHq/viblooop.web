@@ -33,8 +33,9 @@
   height: auto;
   overflow: hidden;
   border-radius: var(--radius-xl);
-  background: var(--color-surface);
+  background: #080706;
   box-shadow: var(--shadow-sm);
+  max-width: 100%;
 
   @media (min-width: 1024px) {
     aspect-ratio: 2 / 1;
@@ -42,25 +43,7 @@
 
   @media (max-width: 768px) {
     border-radius: var(--radius-lg);
-  }
-}
-
-.full-page-slide {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-.slide-image {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  object-position: center;
-
-  @media (min-width: 1024px) {
-    // Keep the full artwork at navbar width in the shorter desktop hero.
-    object-fit: fill;
+    min-height: 0;
   }
 }
 
@@ -216,12 +199,19 @@
 }
 
 .section-footer {
-  display: flex;
+  display: none;
   justify-content: flex-end;
   margin-top: var(--space-4);
+  width: 100%;
+
+  @media (max-width: 640px) {
+    display: flex;
+  }
 }
 
+.section-footer>.see-more-link,
 .see-more-link {
+  @include button;
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
@@ -229,6 +219,8 @@
   color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
+  white-space: nowrap;
+  justify-content: center;
 
   &:hover {
     text-decoration: underline;
@@ -238,6 +230,20 @@
     outline: 2px solid var(--color-primary);
     outline-offset: 4px;
     border-radius: var(--radius-sm);
+  }
+
+  &--header {
+    display: inline-flex;
+
+    @media (max-width: 640px) {
+      display: none;
+    }
+  }
+}
+
+.section-footer>.see-more-link {
+  @include screenSize(xs) {
+    width: 100%;
   }
 }
 
@@ -267,14 +273,12 @@
   width: 100%;
 }
 
-/* ── Shimmer & Section Skeleton Styles ── */
+/* Shimmer & Section Skeleton Styles */
 .vl-shimmer {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
-    color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent) 50%,
-    color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 100%
-  );
+  background: linear-gradient(90deg,
+      color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 0%,
+      color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent) 50%,
+      color-mix(in srgb, var(--color-surface-raised, #f1f5f9) 80%, var(--color-border, #e2e8f0)) 100%);
   background-size: 250% 100%;
   animation: vl-shimmer-anim 1.5s infinite ease-in-out;
 }
@@ -283,6 +287,7 @@
   0% {
     background-position: 200% 0;
   }
+
   100% {
     background-position: -200% 0;
   }

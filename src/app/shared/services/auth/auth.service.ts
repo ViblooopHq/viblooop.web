@@ -33,7 +33,7 @@ export class AuthService {
       message: 'Connecting to Google...',
       subtitle: 'Redirecting to secure login',
     });
-    const url = this.logInbaseUrl + "/auth/google";
+    const url = `${this.logInbaseUrl}/google`;
     window.location.href = url;
   }
 
@@ -167,6 +167,46 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return !!this.userDetails$.value;
+  }
+
+  updateUserDetails(updatedData: any): void {
+    if (!updatedData) return;
+    const current = this.userDetails || this.userDetails$.value || {};
+    const filteredUpdate: any = {};
+    for (const key of Object.keys(updatedData)) {
+      if (updatedData[key] !== undefined) {
+        filteredUpdate[key] = updatedData[key];
+      }
+    }
+    this.userDetails = {
+      ...current,
+      ...filteredUpdate,
+    };
+    this.userDetails$.next(this.userDetails);
+  }
+
+  refreshUserDetails(): Observable<any> {
+    if (!isPlatformBrowser(this.platformId)) {
+      return of(null);
+    }
+
+    return this.http.get(`${this.logInbaseUrl}/me`, { withCredentials: true }).pipe(
+      tap((res: any) => {
+        if (res?.success && res.data) {
+          this.updateUserDetails(res.data);
+        }
+      }),
+      catchError(() => {
+        return this.getMyProfile().pipe(
+          tap((profileRes: any) => {
+            if (profileRes?.success && profileRes.data) {
+              this.updateUserDetails(profileRes.data);
+            }
+          }),
+          catchError(() => of(null))
+        );
+      })
+    );
   }
 
   refreshToken(): Observable<any> {

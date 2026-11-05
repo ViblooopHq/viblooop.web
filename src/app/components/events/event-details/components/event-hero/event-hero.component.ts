@@ -1,15 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, computed, effect, viewChild, input, output } from '@angular/core';
-import { TimePipe } from '../../../../../shared/pipes/time.pipe';
+import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, effect, viewChild, input, output, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { MatTooltip } from '@angular/material/tooltip';
-import { ImageUrlPipe } from '../../../../../shared/pipes/image-url.pipe';
-import { AttendeeProfile, EventDetails } from '../../../../../shared/interfaces/event.interface';
+import { TimePipe } from '../../../../../shared/pipes/time.pipe';
+import { EventDetails } from '../../../../../shared/interfaces/event.interface';
 import { InlineLoaderComponent } from '../../../../../shared/components/inline-loader/inline-loader.component';
-import { eventDurationLabel, isPartyPlayHangout } from '../../event-schedule.util';
 
 @Component({
   selector: 'vl-event-hero',
-  imports: [MatTooltip, ImageUrlPipe, DatePipe, TimePipe, InlineLoaderComponent],
+  imports: [MatTooltip, DatePipe, TimePipe, InlineLoaderComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './event-hero.component.html',
   styleUrl: './event-hero.component.scss',
@@ -27,34 +25,46 @@ export class EventHeroComponent {
   isLoggedIn = input(false);
   isAuthInitialized = input(false);
   isJoinRequestPending = input(false);
-  eventDate = input<string | undefined>(undefined);
-  timeLeftLabel = input('');
-  locationLabel = input('');
-  attendeePreviewProfiles = input<AttendeeProfile[]>([]);
   totalAttendeesCount = input(0);
-  attendanceSummaryLabel = input('');
   joinRequestStatus = input('Request Join');
   canRequestJoin = input(true);
   eventPriceLabel = input('Free');
   pendingJoinRequestCount = input(0);
 
-  readonly isMultiDay = computed(() => {
-    const start = this.eventDate() || this.event()?.eventDate;
-    const end = this.event()?.endDate;
-    return !!start && !!end && new Date(start).toDateString() !== new Date(end).toDateString();
-  });
-  readonly isSocialEvent = computed(() => isPartyPlayHangout(this.event()?.category));
-  readonly durationLabel = computed(() => eventDurationLabel(this.eventDate() || this.event()?.eventDate, this.event()?.eventTime, this.event()?.endDate, this.event()?.endTime));
-
   private readonly actionsDialog = viewChild<ElementRef<HTMLDialogElement>>('actionsDialog');
+  private readonly attendeeActionsDialog = viewChild<ElementRef<HTMLDialogElement>>('attendeeActionsDialog');
+  readonly isAttendeeMenuOpen = signal(false);
 
   constructor() {
     effect(() => {
       const dialog = this.actionsDialog()?.nativeElement;
-      if (!dialog || typeof dialog.showModal !== 'function') return;
-      if (this.isEventMenuOpen() && !dialog.open) dialog.showModal();
-      if (!this.isEventMenuOpen() && dialog.open) dialog.close();
+      if (dialog && typeof dialog.showModal === 'function') {
+        if (this.isEventMenuOpen() && !dialog.open) dialog.showModal();
+        if (!this.isEventMenuOpen() && dialog.open) dialog.close();
+      }
+
+      const attendeeDialog = this.attendeeActionsDialog()?.nativeElement;
+      if (!attendeeDialog || typeof attendeeDialog.showModal !== 'function') return;
+      if (this.isAttendeeMenuOpen() && !attendeeDialog.open) attendeeDialog.showModal();
+      if (!this.isAttendeeMenuOpen() && attendeeDialog.open) attendeeDialog.close();
     });
+  }
+
+  toggleAttendeeMenu(): void {
+    this.isAttendeeMenuOpen.update((open) => !open);
+  }
+
+  closeAttendeeMenu(): void {
+    this.isAttendeeMenuOpen.set(false);
+  }
+
+  leaveFromAttendeeMenu(): void {
+    this.closeAttendeeMenu();
+    this.leaveEvent.emit();
+  }
+
+  onAttendeeSheetBackdrop(event: MouseEvent): void {
+    if (event.target === event.currentTarget) this.closeAttendeeMenu();
   }
 
   onSheetBackdrop(event: MouseEvent): void {

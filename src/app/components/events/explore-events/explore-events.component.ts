@@ -1,7 +1,8 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { ChangeDetectorRef, Component, computed, CUSTOM_ELEMENTS_SCHEMA, DestroyRef, inject, NgZone, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventsService } from '../../../shared/services/events/events.service';
 import { EventCardComponent } from '../../../shared/components/event-card/event-card.component';
 import { CompactEventCardComponent } from '../../../shared/components/compact-event-card/compact-event-card.component';
@@ -9,10 +10,10 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { PastEventCardComponent, PastEventCardConfig } from '../../../shared/components/past-event-card/past-event-card.component';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { MessageStore } from '../../../shared/store/message.store';
-import { MultiCarouselComponent, FullPageCarouselComponent } from '../../../shared/components/carousels';
+import { MultiCarouselComponent, FullPageCarouselComponent, FullPageSlideComponent, FullPageSlideConfig } from '../../../shared/components/carousels';
 import { RouterModule } from '@angular/router';
 import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
-import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
+import { EVENT_LIMIT_OFFSET } from '../../../shared/constants/common.constants';
 
 const CATEGORY_FILTER_IMAGES: Record<string, string> = {
   party: 'assets/images/category-filter/party.png',
@@ -43,8 +44,8 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
     PastEventCardComponent,
     MultiCarouselComponent,
     FullPageCarouselComponent,
+    FullPageSlideComponent,
     EventCardSkeletonComponent,
-    EventFiltersComponent,
   ],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',
@@ -54,15 +55,14 @@ export class ExploreEventsComponent implements OnInit {
   readonly pastVibeBreakpoints = {
     320: { slidesPerView: 2.15, spaceBetween: 10 },
     480: { slidesPerView: 2.25, spaceBetween: 12 },
-    640: { slidesPerView: 3.2, spaceBetween: 14 },
-    1024: { slidesPerView: 4.2, spaceBetween: 16 },
-    1280: { slidesPerView: 4.8, spaceBetween: 18 },
-    1440: { slidesPerView: 5.2, spaceBetween: 20 },
+    640: { slidesPerView: 2.8, spaceBetween: 14 },
+    1024: { slidesPerView: 3.2, spaceBetween: 16 },
+    1280: { slidesPerView: 3.8, spaceBetween: 20 },
+    1440: { slidesPerView: 4.2, spaceBetween: 20 },
   };
 
   isCategoriesLoading = signal(true);
   isTrendingLoading = signal(true);
-  isForYouLoading = signal(true);
   isPastEventsLoading = signal(true);
   isLoading = computed(() => this.isTrendingLoading() || this.isCategoriesLoading());
 
@@ -71,42 +71,92 @@ export class ExploreEventsComponent implements OnInit {
 
   categories = signal<any[]>([]);
   trendingEvents = signal<any[]>([]);
-  justForYouEvents = signal<any[]>([]);
   pastEvents = signal<any[]>([]);
   hasMorePastEvents = signal(false);
   showPastEventsSeeMore = signal(false);
+
   private eventsService = inject(EventsService);
   private router = inject(RouteService);
   private messageStore = inject(MessageStore);
+  private destroyRef = inject(DestroyRef);
+  private ngZone = inject(NgZone);
+  private cdr = inject(ChangeDetectorRef);
   private eventsRequestId = 0;
 
   filters = [
     { id: 'all', label: 'All', icon: 'celebration' },
     { id: 'tonight', label: 'Tonight', icon: 'sports_tennis' },
-    { id: 'this_weekend', label: 'This weekend', icon: 'self_improvement' },
-    { id: 'free', label: 'Free', icon: 'flight_takeoff' },
-    { id: 'nearby', label: 'Nearby', icon: 'location_on' }
+    { id: 'this_weekend', label: 'Weekend', icon: 'self_improvement' },
+    { id: 'free', label: 'Free', icon: 'flight_takeoff' }
   ];
 
-  marketingSlides = [
+  marketingSlides: FullPageSlideConfig[] = [
     {
-      image: 'assets/images/explore-hero/image-3.webp',
-      alt: 'Friends making plans together on a rooftop at sunset'
-    },
-    {
+      kicker: 'ESCAPE THE ORDINARY',
+      title: 'ESCAPE<br>TOGETHER!',
+      description: 'Conquer breathtaking mountain trails, scenic summits, and unforgettable outdoor getaways with companions who share your wanderlust.',
+      ctaText: 'DISCOVER ESCAPES',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'this_weekend' },
       image: 'assets/images/explore-hero/escape-together.jpg',
-      alt: 'Friends taking a mountain adventure selfie together'
+      imageAlt: 'Friends trekking together on a mountain summit with Himalayan backdrop',
+      accentColor: '#38bdf8',
     },
     {
+      kicker: 'LIVE & ELECTRIC',
+      title: 'NEON<br>NIGHTS!',
+      description: 'Immerse yourself in pulsating festival beats, electric laser stages, and high-energy crowds that keep the vibe alive all night long.',
+      ctaText: 'FIND CONCERTS',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'tonight' },
+      image: 'assets/images/explore-hero/image-1.webp',
+      imageAlt: 'Live music concert stage with lasers, EDM DJ, and vibrant crowd',
+      accentColor: '#ec4899',
+    },
+    {
+      kicker: 'CONNECT & CREATE',
+      title: 'WORKATION<br>HITS DIFFERENT!',
+      description: 'Trade routine for inspiring mountain cafés. Co-work with ambitious creators, remote nomads, and innovators in scenic destinations.',
+      ctaText: 'JOIN HANGOUTS',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'all' },
       image: 'assets/images/explore-hero/image-2.webp',
-      alt: 'Friends working together from a mountain café'
+      imageAlt: 'Remote creators co-working on laptops at a scenic outdoor mountain café',
+      accentColor: '#f59e0b',
+    },
+    {
+      kicker: 'GOOD PEOPLE, BETTER PLANS',
+      title: 'ROOFTOP<br>SOCIALS!',
+      description: 'Experience intimate sunset gatherings, craft cocktails, and genuine connections against glowing city skylines with your city\'s coolest crowd.',
+      ctaText: 'EXPLORE VIBES',
+      ctaLink: '/events',
+      ctaQuery: { filter: 'tonight' },
+      image: 'assets/images/explore-hero/image-3.webp',
+      imageAlt: 'Friends relaxing on a sunset rooftop terrace couch with illuminated city skyline',
+      accentColor: '#c084fc',
     }
   ];
 
   private platformId = inject(PLATFORM_ID);
 
+  eventLimitOffset = EVENT_LIMIT_OFFSET;
+  totalUpcomingEvents = 0;
+
   ngOnInit() {
     this.loadInitialData();
+
+    this.eventsService.refreshUpcomingEvents$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.ngZone.run(() => {
+          if (this.activeFilterId === 'nearby') {
+            this.requestBrowserLocation();
+          } else {
+            this.loadEvents();
+          }
+          this.cdr.markForCheck();
+        });
+      });
   }
 
   activeFilterId: string = 'all'; // Default active filter
@@ -142,6 +192,7 @@ export class ExploreEventsComponent implements OnInit {
           finalize(() => {
             if (requestId === this.eventsRequestId) {
               this.isTrendingLoading.set(false);
+              this.cdr.markForCheck();
             }
           })
         ).subscribe({
@@ -157,11 +208,13 @@ export class ExploreEventsComponent implements OnInit {
               this.trendingEvents.set([]);
               this.messageStore.addMessage('Failed to load nearby events.', 'error');
             }
+            this.cdr.markForCheck();
           },
           error: () => {
             if (requestId !== this.eventsRequestId) return;
             this.trendingEvents.set([]);
             this.messageStore.addMessage('Failed to load nearby events.', 'error');
+            this.cdr.markForCheck();
           }
         });
       },
@@ -274,7 +327,6 @@ export class ExploreEventsComponent implements OnInit {
   private loadInitialData() {
     this.loadCategories();
     this.loadEvents();
-    this.loadForYouEvents();
     this.loadPastEvents();
   }
 
@@ -287,6 +339,7 @@ export class ExploreEventsComponent implements OnInit {
       }),
       finalize(() => {
         this.isCategoriesLoading.set(false);
+        this.cdr.markForCheck();
       })
     ).subscribe((categories: any) => {
       if (categories?.success && categories?.statusCode === 200 && categories?.data?.categories) {
@@ -294,6 +347,7 @@ export class ExploreEventsComponent implements OnInit {
       } else {
         this.categories.set([]);
       }
+      this.cdr.markForCheck();
     });
   }
 
@@ -302,7 +356,7 @@ export class ExploreEventsComponent implements OnInit {
     this.isTrendingLoading.set(true);
     const category = this.activeCategoryId === 'all' ? undefined : this.activeCategoryId;
 
-    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, 8).pipe(
+    this.eventsService.getAllEvents(this.activeFilterId, category, undefined, this.eventLimitOffset).pipe(
       catchError((error) => {
         console.error('Failed to load events', error);
         this.messageStore.addMessage('Failed to load events.', 'error');
@@ -311,31 +365,16 @@ export class ExploreEventsComponent implements OnInit {
       finalize(() => {
         if (requestId === this.eventsRequestId) {
           this.isTrendingLoading.set(false);
+          this.cdr.markForCheck();
         }
       })
     ).subscribe({
       next: (events: any) => {
         if (requestId !== this.eventsRequestId) return;
+        this.totalUpcomingEvents = events.totalCount;
         const filteredEvents = Array.isArray(events?.data) ? events.data : [];
         this.trendingEvents.set(filteredEvents);
-      }
-    });
-  }
-
-  private loadForYouEvents() {
-    this.isForYouLoading.set(true);
-    this.eventsService.getEventForYou('all', undefined, undefined, 8).pipe(
-      catchError((error) => {
-        console.error('Failed to load recommended events', error);
-        return of({ data: [] });
-      }),
-      finalize(() => {
-        this.isForYouLoading.set(false);
-      })
-    ).subscribe({
-      next: (res: any) => {
-        const recommendedEvents = Array.isArray(res?.data) ? res.data : [];
-        this.justForYouEvents.set(recommendedEvents);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -349,6 +388,7 @@ export class ExploreEventsComponent implements OnInit {
       }),
       finalize(() => {
         this.isPastEventsLoading.set(false);
+        this.cdr.markForCheck();
       })
     ).subscribe({
       next: (events: any) => {
@@ -356,6 +396,7 @@ export class ExploreEventsComponent implements OnInit {
         this.pastEvents.set(Array.isArray(data?.events) ? data.events : []);
         this.hasMorePastEvents.set(Boolean(data?.nextCursor));
         this.showPastEventsSeeMore.set(false);
+        this.cdr.markForCheck();
       }
     });
   }
@@ -386,3 +427,4 @@ export class ExploreEventsComponent implements OnInit {
   }
 
 }
+

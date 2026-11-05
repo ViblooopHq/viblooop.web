@@ -10,11 +10,11 @@ import { Location } from '@angular/common';
 import { EmptyStateComponent } from '../../../shared/components/empty-state/empty-state.component';
 import { MessageStore } from '../../../shared/store/message.store';
 import { FullPageCarouselComponent } from '../../../shared/components/carousels';
-import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-events-list',
-  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent, EventFiltersComponent],
+  imports: [EventCardComponent, CompactEventCardComponent, EventCardSkeletonComponent, EmptyStateComponent, FullPageCarouselComponent, BackButtonComponent],
   templateUrl: './events-list.component.html',
   styleUrl: './events-list.component.scss'
 })
@@ -98,9 +98,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
   timeFilters = [
     { id: 'all', label: 'All' },
     { id: 'tonight', label: 'Tonight' },
-    { id: 'this_weekend', label: 'This weekend' },
+    { id: 'this_weekend', label: 'Weekend' },
     { id: 'free', label: 'Free' },
-    { id: 'nearby', label: 'Nearby' },
   ];
 
   goBack(): void {
@@ -157,8 +156,8 @@ export class EventsListComponent implements OnInit, OnDestroy {
         !this.categoryId
           ? { title: 'All Live Events', description: 'Find your next vibe across all categories.' }
           : selectedCategory?._id === this.categoryId
-          ? this.withCatalogDisplayTitle(selectedCategory)
-          : {}
+            ? this.withCatalogDisplayTitle(selectedCategory)
+            : {}
       );
       if (this.categoryId) this.loadCategoryDetails(this.categoryId);
       this.loadEventsByCategory();

@@ -25,6 +25,7 @@ export interface EventCreator {
   profileImage?: string;
   averageRating?: number | string;
   eventCount?: number;
+  verified?: boolean;
   [key: string]: any;
 }
 

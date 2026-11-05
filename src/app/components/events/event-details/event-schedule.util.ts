@@ -11,5 +11,6 @@ export function eventDurationLabel(startDate?: string, startTime?: string, endDa
 
 export function isPartyPlayHangout(category: unknown): boolean {
   const title = String((category as any)?.title || (category as any)?.name || category || '').toLowerCase();
-  return ['party', 'social', 'meetup', 'play', 'sports', 'gaming', 'fitness', 'hangout'].some((name) => title.includes(name));
+  // Hangout creation uses the Events backend category, which the UI presents as Hangouts.
+  return ['party', 'social', 'meetup', 'play', 'sports', 'gaming', 'fitness', 'hangout', 'events', 'local'].some((name) => title.includes(name));
 }

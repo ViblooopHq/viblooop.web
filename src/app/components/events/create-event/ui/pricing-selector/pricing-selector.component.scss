@@ -147,6 +147,16 @@
   display: flex;
   align-items: center;
   border: 1px solid var(--color-border);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-border-strong);
+  }
+
+  &:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+  }
 }
 
 .price-currency {
@@ -154,17 +164,34 @@
   font-weight: 700;
   color: var(--color-text-primary);
   margin-right: var(--space-2);
+  user-select: none;
 }
 
 .price-field-input {
   flex: 1;
-  background: transparent;
-  border: none;
+  background: transparent !important;
+  border: 0 !important;
+  border-color: transparent !important;
+  outline: none !important;
+  box-shadow: none !important;
+  --tw-ring-shadow: none !important;
+  --tw-ring-offset-shadow: none !important;
+  --tw-shadow: 0 0 #0000 !important;
   padding: 10px 0;
   color: var(--color-text-primary);
   font-size: var(--text-body);
   font-weight: 600;
-  outline: none;
+
+  &:focus,
+  &:focus-visible {
+    border: 0 !important;
+    border-color: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    --tw-ring-shadow: none !important;
+    --tw-ring-offset-shadow: none !important;
+    --tw-shadow: 0 0 #0000 !important;
+  }
 
   &::placeholder {
     color: var(--color-text-tertiary);

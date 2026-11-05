@@ -12,9 +12,21 @@ export const loaderInterceptor: HttpInterceptorFn = (req, next) => {
   const isMutating = ['POST', 'PUT', 'PATCH', 'DELETE'].includes(method);
   const url = req.url.toLowerCase();
   const isExcluded =
-    url.includes('createevent') ||
-    url.includes('wishlist') ||
-    req.headers.has('X-Skip-Global-Loader');
+    url.includes('/verify-otp') ||
+    url.includes('/send-otp') ||
+    url.includes('/wishlist') ||
+    url.includes('/getalleventsbyuser') ||
+    url.includes('/getAllEventsByUser') ||
+    url.includes('/review/geteventreviews') ||
+    url.includes('/review/getEventReviews') ||
+    url.includes('/verifyselfieprofile') ||
+    url.includes('/acceptjoinrequest') ||
+    url.includes('/rejectjoineventrequest') ||
+    url.includes('/uploadeventgalleryimages') ||
+    url.includes('/removeeventgalleryimage') ||
+    url.includes('/toggleWishlistEvent') ||
+    req.headers.has('X-Skip-Global-Loader') ||
+    req.headers.has('x-skip-global-loader');
 
   const shouldShowLoader = isBrowser && isMutating && !isExcluded;
 

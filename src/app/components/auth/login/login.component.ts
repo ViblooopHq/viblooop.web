@@ -14,11 +14,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { RouteService } from '../../../shared/services/route/route.service';
 import { OtpVerificationComponent } from '../otp-verification/otp-verification.component';
 import type { ISourceOptions } from '@tsparticles/engine';
+import { InlineLoaderComponent } from '../../../shared/components/inline-loader/inline-loader.component';
+import { BackButtonComponent } from '../../../shared/components/back-button/back-button.component';
 
 @Component({
   selector: 'vl-login',
   standalone: true,
-  imports: [ReactiveFormsModule, OtpVerificationComponent, RouterLink],
+  imports: [ReactiveFormsModule, OtpVerificationComponent, RouterLink, InlineLoaderComponent, BackButtonComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -202,7 +204,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   loginWithGoogle() {
-    window.location.href = "https://api.viblooop.com/auth/google";
+    this.authService.googleLogin();
   }
 
   goBack() {
@@ -218,14 +220,13 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     if (this.loginForm.valid) {
       this.userEmail = this.loginForm.value.email ?? '';
       this.otpError.set('');
-      this.isOtpSent.set(true);
-
       this.isOtpSending.set(true);
 
       this.authService.sendOTP(this.userEmail).pipe(
         finalize(() => this.isOtpSending.set(false))
       ).subscribe({
         next: (res) => {
+          this.isOtpSent.set(true);
           this.otpError.set('');
         },
         error: (err) => {

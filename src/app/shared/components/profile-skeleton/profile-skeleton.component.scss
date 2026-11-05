@@ -19,30 +19,9 @@
     animation: vl-skeleton-shimmer 1.5s infinite linear;
   }
 
-  // ── Header Nav ──
-  &__nav {
-    display: flex;
-    align-items: center;
-    gap: var(--space-2, 0.5rem);
-    margin-bottom: var(--space-3, 0.75rem);
-    padding: var(--space-2, 0.5rem) 0;
-  }
-
-  &__back-circle {
-    width: 2.375rem;
-    height: 2.375rem;
-    border-radius: var(--radius-full, 9999px);
-    border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
-  }
-
   // ── Lines ──
   &__line {
     border-radius: var(--radius-sm, 6px);
-
-    &--back-label {
-      width: 44px;
-      height: 16px;
-    }
 
     &--name {
       width: clamp(140px, 30vw, 220px);

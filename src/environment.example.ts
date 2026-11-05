@@ -5,12 +5,14 @@ export const Environment = {
   production: false,
   version: '1.0.0',
 
-
   // API URLs
   serverUrl: apiServerUrl,
   apiBaseUrl: `${apiServerUrl}/api`,
   authBaseUrl: `${apiServerUrl}/auth`,
   imageBaseUrl: `${apiServerUrl}/`,
+
+  // App Base URL
+  appBaseUrl: 'http://localhost:4200',
 
   // Google Maps URLs (external)
   googleMapsSearchUrl: 'https://www.google.com/maps/search/',
@@ -26,6 +28,7 @@ export const Environment = {
     appId: '',
     measurementId: '',
   },
+  vapidKey: '',
 
   // OG Meta
   ogImageUrl: '',

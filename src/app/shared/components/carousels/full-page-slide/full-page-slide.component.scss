@@ -1,0 +1,317 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.vl-full-page-slide {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #353433;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+}
+
+/* ── Background Stage & Cinematic Vignette Scrims ── */
+.vl-slide-bg-stage {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+
+  .vl-slide-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    transform: scale(1);
+    transition: transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+
+    .vl-full-page-slide:hover & {
+      transform: scale(1.025);
+    }
+  }
+
+  /* Left Scrim: Guarantees text contrast for kicker, title & button */
+  .vl-slide-vignette--left {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg,
+        rgba(8, 7, 6, 0.5) 0%,
+        rgba(8, 7, 6, 0.25) 30%,
+        rgba(8, 7, 6, 0.12) 55%,
+        transparent 72%);
+
+    @media (max-width: 900px) {
+      display: none;
+    }
+  }
+
+  /* Right Scrim: Adds cinematic depth along the right edge */
+  .vl-slide-vignette--right {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(270deg,
+        rgba(8, 7, 6, 0.744) 0%,
+        rgba(8, 7, 6, 0.179) 28%,
+        rgba(8, 7, 6, 0.107) 48%,
+        transparent 68%);
+
+    @media (max-width: 900px) {
+      display: none;
+    }
+  }
+
+  /* Perimeter Vignette: Darkens outer corners and frame */
+  .vl-slide-vignette--perimeter {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%,
+        transparent 45%,
+        rgba(8, 7, 6, 0.6) 80%,
+        rgba(8, 7, 6, 0.92) 100%);
+
+    @media (max-width: 900px) {
+      display: none;
+    }
+  }
+}
+
+/* ── Content 3-Column Grid ── */
+.vl-slide-content {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 0.95fr;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 0 clamp(2rem, 5vw, 5rem);
+  box-sizing: border-box;
+  gap: clamp(1rem, 2.5vw, 2.5rem);
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1.1fr 0.8fr 1fr;
+    padding: 0 clamp(1.5rem, 3vw, 3rem);
+    gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    padding: clamp(1.5rem, 4vw, 2rem) 1.25rem clamp(2.5rem, 5vw, 3.5rem) 1.25rem;
+    gap: 1.25rem;
+    align-content: flex-end;
+  }
+}
+
+/* ── Left Column: Kicker, Title, CTA Button ── */
+.vl-slide-col--left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  z-index: 3;
+  transform: translateY(0.75rem);
+
+  @media (max-width: 900px) {
+    display: none;
+  }
+
+  .vl-slide-kicker {
+    font-size: clamp(0.75rem, 0.95vw, 0.875rem);
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--slide-accent, #f59e0b);
+    margin-bottom: 0.25rem;
+    display: inline-block;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+
+    @media (max-width: 900px) {
+      font-size: clamp(0.625rem, 2.4vw, 0.75rem);
+    }
+  }
+
+  .vl-slide-title {
+    font-size: clamp(1.9rem, 3.6vw, 3.35rem);
+    font-weight: 900;
+    font-style: italic;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    color: #ffffff;
+    margin: 0 0 1.5rem 0;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+
+    @media (max-width: 900px) {
+      font-size: clamp(1.35rem, 6vw, 1.75rem);
+    }
+
+    ::ng-deep br {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      margin-bottom: 1rem;
+    }
+  }
+
+  .vl-slide-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 2.1rem;
+    border-radius: 999px;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #ffffff;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+
+    &:hover {
+      background: #ffffff;
+      color: #080706;
+      border-color: #ffffff;
+      box-shadow: 0 0 24px rgba(255, 255, 255, 0.45);
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      padding: 0.65rem 1.6rem;
+      font-size: 0.75rem;
+    }
+  }
+}
+
+/* ── Center Column: Visual Focal Area ── */
+.vl-slide-col--center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+  pointer-events: none;
+
+  @media (max-width: 900px) {
+    display: none; // On small screens, background image handles the visual
+  }
+
+  .vl-slide-center-stage {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    max-height: clamp(240px, 28vw, 360px);
+  }
+
+  .vl-slide-center-image {
+    max-height: 100%;
+    max-width: 90%;
+    object-fit: contain;
+    filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.8));
+    transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+
+    &:hover {
+      transform: scale(1.04) rotate(-1deg);
+    }
+  }
+
+  .vl-slide-floor-shadow {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 75%;
+    height: 24px;
+    background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.85) 0%, transparent 75%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  /* Floating Chips / Accents */
+  .vl-slide-floating-chip {
+    position: absolute;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    pointer-events: none;
+
+    &--top-right {
+      top: 14%;
+      right: 5%;
+    }
+
+    &--bottom-left {
+      bottom: 18%;
+      left: 5%;
+    }
+  }
+
+  @keyframes vl-chip-float-1 {
+
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-7px) rotate(2deg);
+    }
+  }
+
+  @keyframes vl-chip-float-2 {
+
+    0%,
+    100% {
+      transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(7px) rotate(-2deg);
+    }
+  }
+
+  .vl-chip-float-1 {
+    animation: vl-chip-float-1 4s ease-in-out infinite;
+  }
+
+  .vl-chip-float-2 {
+    animation: vl-chip-float-2 4.5s ease-in-out infinite;
+  }
+}
+

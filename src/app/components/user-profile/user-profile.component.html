@@ -4,12 +4,6 @@
       <vl-profile-skeleton />
     } @else {
       <section class="vl-user-profile">
-        <div class="vl-page-header-nav">
-          <button type="button" class="vl-back-btn" (click)="goBack()" aria-label="Go back" title="Back">
-            <span class="material-symbols-outlined" translate="no">arrow_back</span>
-          </button>
-          <span class="text-sm font-semibold text-secondary hover:text-primary transition-colors cursor-pointer" (click)="goBack()">Back</span>
-        </div>
         <vl-profile-hero
           [profileImage]="userProfile?.profileImage || defaultProfileImage"
           [profileBanner]="userProfile?.profileBanner"
@@ -18,9 +12,12 @@
           [bio]="shortBio"
           [isVerified]="isVerified"
           [isCurrentUser]="isCurrentUser"
-          [previewInterests]="previewInterests"
+          [age]="userProfile?.age"
+          [gender]="userProfile?.gender || ''"
+          [location]="userProfile?.location || ''"
           [photoPreviewItems]="photoPreviewItems"
           [hiddenPhotoCount]="hiddenPhotoCount"
+          (goBack)="goBack()"
           (editProfile)="editProfile()"
           (editAvatar)="openUpdateAvatarModal()"
           (photoSelected)="openProfilePhoto($event)"
@@ -38,10 +35,11 @@
           </vl-gallery>
         }
 
-        @if (isCurrentUser && !isVerified) {
+        @if (isCurrentUser && !isVerified && showVerificationPrompt) {
           <vl-profile-verification-banner
             [isVerified]="isVerified"
-            (verify)="verifyGovernmentID()">
+            (verify)="verifyGovernmentID()"
+            (dismiss)="showVerificationPrompt = false">
           </vl-profile-verification-banner>
         }
 
@@ -68,12 +66,9 @@
           [hiddenInterestCount]="hiddenInterestCount"
           (tabChange)="setActiveTab($event)"
           (showMoreJoined)="showAllJoined()"
-          (showMoreHosted)="showAllHosted()">
+          (showMoreHosted)="showAllHosted()"
+          (editTags)="editProfile()">
         </vl-profile-content-panel>
-
-        @if (userReviews.length > 0) {
-          <vl-reviews [reviews]="userReviews"></vl-reviews>
-        }
 
         @if (visibleSocialLinks.length > 0 || isCurrentUser) {
           <vl-profile-social-links
@@ -98,8 +93,19 @@
     [compareImage]="userProfile?.profileImage || defaultProfileImage"
     [defaultImage]="defaultProfileImage"
     (closed)="closeSelfieVerification()"
-    (verified)="onSelfieVerified()">
+    (verified)="onSelfieVerified()"
+    (requestUpdateProfile)="openUpdateAvatarModal()">
   </vl-selfie-verification>
+
+  <vl-action-modal
+    [isOpen]="isMissingProfileImageModalOpen"
+    variant="info"
+    title="Profile Photo Required"
+    message="Please update your profile image before starting the selfie verification process."
+    confirmLabel="Update Photo"
+    cancelLabel="Cancel"
+    (confirmed)="onUpdateProfilePhotoFromVerification()"
+    (cancelled)="isMissingProfileImageModalOpen = false" />
 
   <vl-update-avatar-modal
     [isOpen]="isUpdateAvatarModalOpen"

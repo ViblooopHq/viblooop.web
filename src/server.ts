@@ -4,6 +4,7 @@ import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
+import { Environment } from './environment';
 
 // SSR Mocks for browser-only globals
 const mock = () => {};
@@ -127,7 +128,7 @@ app.get('/robots.txt', (req, res) => {
   const filePath = join(browserDistFolder, 'robots.txt');
   res.sendFile(filePath, (err) => {
     if (err) {
-      res.send(`User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /profile/\nDisallow: /notifications\nDisallow: /chats\nDisallow: /my-wishlist\nDisallow: /create-event\n\nSitemap: https://www.viblooop.com/sitemap.xml\n`);
+      res.send(`User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /profile/\nDisallow: /notifications\nDisallow: /chats\nDisallow: /my-wishlist\nDisallow: /create-event\n\nSitemap: ${Environment.ogPageUrl}/sitemap.xml\n`);
     }
   });
 });

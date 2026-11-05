@@ -1,106 +1,169 @@
 <div class="vl-gallery">
   @if(showHeader()) {
-    <div class="vl-gallery__header">
-      <h3 class="vl-title-md">Gallery</h3>
-    </div>
+  <div class="vl-gallery__header">
+    <h3 class="vl-title-md">Gallery</h3>
+  </div>
   }
 
   @if(showGrid()) {
-    <div class="vl-gallery__grid">
-      @for(img of images(); track img) {
-      <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
-        <button type="button" class="vl-gallery__item-trigger" [attr.aria-label]="'Open ' + (img.title || 'gallery photo')" (click)="onImageSelect(img)">
-          <img [src]="img.url" [alt]="img.title || 'Gallery photo'" />
-        </button>
+  <div class="vl-gallery__grid">
+    @for(img of images(); track img.path || img.url; let i = $index) {
+    <div class="vl-gallery__item" [class.vl-gallery__item--archived]="img.archived">
+      <button type="button" class="vl-gallery__item-trigger"
+        [attr.aria-label]="'Open ' + (img.title || 'gallery photo ' + (i + 1))" (click)="onImageSelect(img)">
+        <img [src]="img.url" [alt]="img.title || 'Gallery photo'" loading="lazy" />
+      </button>
 
-        @if(showArchiveAction()) {
-          <div class="vl-gallery__overlay">
-            <button type="button" (click)="toggleArchive(img)">
-              {{ img.archived ? 'Unarchive' : 'Archive' }}
-            </button>
-          </div>
-        }
+      @if(showArchiveAction()) {
+      <div class="vl-gallery__overlay">
+        <button type="button" (click)="toggleArchive(img)">
+          {{ img.archived ? 'Unarchive' : 'Archive' }}
+        </button>
       </div>
       }
     </div>
+    }
+  </div>
   }
 
-  <!-- Modal Preview -->
-@if(selectedImage(); as image) {
-    <div class="vl-gallery__modal" role="dialog" aria-modal="true" [attr.aria-label]="image.title || 'Photo preview'">
-      <div class="vl-gallery__modal-content">
-        <!-- Close Button -->
-        <button class="close" type="button" aria-label="Close preview" (click)="closePreview()">
-          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+  <!-- Premium Modern Lightbox Modal -->
+  @if(isOpen) {
+  <div class="vl-gallery__modal" role="dialog" aria-modal="true" (click)="closePreview()">
+    <!-- Top Bar Controls -->
+    <header class="vl-gallery__topbar" (click)="$event.stopPropagation()">
+      <div class="vl-gallery__topbar-left">
+        @if (!isGridView()) {
+        <span class="vl-gallery__counter">
+          <span class="material-symbols-outlined" translate="no">photo_library</span>
+          <span>{{ currentIndex() + 1 }} / {{ images().length }}</span>
+        </span>
+        } @else {
+        <span class="vl-gallery__counter">
+          <span class="material-symbols-outlined" translate="no">grid_view</span>
+          <span>All Photos ({{ images().length }})</span>
+        </span>
+        }
+
+        @if (images().length > 1) {
+        <button type="button" class="vl-gallery__btn-pill" [class.vl-gallery__btn-pill--active]="isGridView()"
+          (click)="toggleGridView()" [attr.aria-label]="isGridView() ? 'View single photo' : 'View all photos grid'">
+          <span class="material-symbols-outlined" translate="no">{{ isGridView() ? 'photo' : 'grid_view' }}</span>
+          <span>{{ isGridView() ? 'Photo View' : 'All Photos' }}</span>
         </button>
+        }
+      </div>
 
-        <!-- Left Arrow (hide if at first image) -->
-        @if(currentIndex() > 0) {
-          <button class="vl-gallery__nav vl-gallery__nav--left" type="button" aria-label="Previous image" (click)="showPrevImage()">
-            <i class="fa-solid fa-chevron-left" aria-hidden="true"></i>
-          </button>
+      <div class="vl-gallery__topbar-right">
+        @if (selectedImage(); as image) {
+        @if (!isGridView()) {
+        @if (canDownload()) {
+        <button type="button" class="vl-gallery__icon-btn" title="Download photo" aria-label="Download photo"
+          (click)="downloadImage(image.url)">
+          <span class="material-symbols-outlined" translate="no">download</span>
+        </button>
         }
 
-        <!-- Image -->
-        <img [src]="image.url" [alt]="image.title || 'Gallery photo preview'" />
-        @if (image.title) {
-          <p class="vl-body-sm">{{ image.title }}</p>
+        @if (canDeleteSelectedImage()) {
+        <button type="button" class="vl-gallery__icon-btn vl-gallery__icon-btn--danger" (click)="openDeleteConfirm()"
+          title="Delete photo" aria-label="Delete photo">
+          <span class="material-symbols-outlined" translate="no">delete</span>
+        </button>
+        }
+        }
         }
 
-        @if (shouldShowActions) {
-          <button type="button" class="vl-gallery__menu-trigger" aria-haspopup="menu" [attr.aria-expanded]="isActionsOpen()" aria-label="Photo options" (click)="toggleActions()">
-            <i class="fa-solid fa-ellipsis" aria-hidden="true"></i>
-          </button>
+        <button type="button" class="vl-gallery__icon-btn vl-gallery__icon-btn--close" (click)="closePreview()"
+          title="Close (Esc)" aria-label="Close preview">
+          <span class="material-symbols-outlined" translate="no">close</span>
+        </button>
+      </div>
+    </header>
 
-          @if (isActionsOpen()) {
-            <div class="vl-gallery__menu" role="menu">
-              @if (canDownload()) {
-                <a class="vl-gallery__menu-item" role="menuitem" [href]="image.url" download>
-                  <i class="fa-solid fa-download" aria-hidden="true"></i>
-                  <span>Download</span>
-                </a>
-              }
-              @if (canDeleteSelectedImage()) {
-                <button type="button" role="menuitem" class="vl-gallery__menu-item vl-gallery__menu-item--danger" (click)="openDeleteConfirm()">
-                  <i class="fa-solid fa-trash" aria-hidden="true"></i>
-                  <span>Delete</span>
-                </button>
-              }
+    <!-- All Photos Grid View Inside Lightbox -->
+    @if (isGridView()) {
+    <main class="vl-gallery__all-photos" (click)="$event.stopPropagation()">
+      <div class="vl-gallery__all-photos-container">
+        <div class="vl-gallery__all-photos-grid">
+          @for (img of images(); track img.path || img.url; let i = $index) {
+          <button type="button" class="vl-gallery__all-photos-item"
+            [class.vl-gallery__all-photos-item--active]="i === currentIndex()" [attr.aria-label]="'Photo ' + (i + 1)"
+            (click)="openAtIndex(i)">
+            <img [src]="img.url" alt="" loading="lazy" />
+            <div class="vl-gallery__all-photos-overlay">
+              <span class="material-symbols-outlined" translate="no">zoom_in</span>
             </div>
-          }
-        }
-
-        <!-- Right Arrow (hide if at last image) -->
-        @if(currentIndex() < images().length - 1) {
-          <button class="vl-gallery__nav vl-gallery__nav--right" type="button" aria-label="Next image" (click)="showNextImage()">
-            <i class="fa-solid fa-chevron-right" aria-hidden="true"></i>
           </button>
+          }
+        </div>
+      </div>
+    </main>
+    } @else if (selectedImage(); as image) {
+    <!-- Single Photo Stage -->
+    <main class="vl-gallery__stage">
+      @if (images().length > 1) {
+      <button type="button" class="vl-gallery__nav-arrow vl-gallery__nav-arrow--left" [disabled]="currentIndex() <= 0"
+        (click)="showPrevImage(); $event.stopPropagation()" title="Previous photo (Left arrow)"
+        aria-label="Previous photo">
+        <span class="material-symbols-outlined" translate="no">arrow_back_ios_new</span>
+      </button>
+      }
+
+      <div class="vl-gallery__image-box" (click)="$event.stopPropagation()">
+        <img [src]="image.url" [alt]="image.title || 'Event gallery photo'" class="vl-gallery__main-img" />
+        @if (image.title) {
+        <p class="vl-gallery__caption">{{ image.title }}</p>
         }
       </div>
 
-      @if (canDeleteSelectedImage() && isDeleteConfirmOpen()) {
-        <section class="vl-gallery__delete-confirm" role="alertdialog" aria-modal="true" aria-label="Confirm delete photo" (click)="$event.stopPropagation()">
-          <div class="vl-gallery__delete-confirm-icon">
-            <i class="fa-solid fa-trash" aria-hidden="true"></i>
-          </div>
-          <h3 class="vl-title-md">Delete this photo?</h3>
-          <p class="vl-body">This photo will be permanently deleted and cannot be recovered.</p>
-          <div class="vl-gallery__delete-confirm-actions">
-            <button type="button" class="vl-gallery__delete-confirm-cancel" (click)="closeDeleteConfirm()">Cancel</button>
-            <button type="button"
-              class="vl-gallery__delete-confirm-delete"
-              [disabled]="deletingImagePath() === selectedImageKey"
-              (click)="requestDelete()">
-              @if (deletingImagePath() === selectedImageKey) {
-                <vl-inline-loader size="sm" color="white" text="Deleting..."></vl-inline-loader>
-              } @else {
-                <span>Delete</span>
-              }
-            </button>
-          </div>
-        </section>
+      @if (images().length > 1) {
+      <button type="button" class="vl-gallery__nav-arrow vl-gallery__nav-arrow--right"
+        [disabled]="currentIndex() >= images().length - 1" (click)="showNextImage(); $event.stopPropagation()"
+        title="Next photo (Right arrow)" aria-label="Next photo">
+        <span class="material-symbols-outlined" translate="no">arrow_forward_ios</span>
+      </button>
       }
-    </div>
-  }
+    </main>
 
+    <!-- Bottom Filmstrip -->
+    @if (images().length > 1) {
+    <footer class="vl-gallery__filmstrip" (click)="$event.stopPropagation()">
+      <div class="vl-gallery__filmstrip-track">
+        @for (img of images(); track img.path || img.url; let i = $index) {
+        <button type="button" class="vl-gallery__filmstrip-thumb"
+          [class.vl-gallery__filmstrip-thumb--active]="i === currentIndex()" [attr.aria-label]="'View photo ' + (i + 1)"
+          (click)="selectFromFilmstrip(i)">
+          <img [src]="img.url" alt="" loading="lazy" />
+        </button>
+        }
+      </div>
+    </footer>
+    }
+    }
+
+    <!-- Delete Confirmation Dialog -->
+    @if (canDeleteSelectedImage() && isDeleteConfirmOpen()) {
+    <div class="vl-gallery__confirm-scrim" (click)="closeDeleteConfirm()">
+      <section class="vl-gallery__delete-confirm" role="alertdialog" aria-modal="true" aria-label="Confirm delete photo"
+        (click)="$event.stopPropagation()">
+        <div class="vl-gallery__delete-confirm-icon">
+          <span class="material-symbols-outlined" translate="no">delete_forever</span>
+        </div>
+        <h3 class="vl-title-md">Delete this photo?</h3>
+        <p class="vl-body">This photo will be permanently removed from the event gallery.</p>
+        <div class="vl-gallery__delete-confirm-actions">
+          <button type="button" class="vl-gallery__delete-confirm-cancel" (click)="closeDeleteConfirm()">Cancel</button>
+          <button type="button" class="vl-gallery__delete-confirm-delete"
+            [disabled]="deletingImagePath() === selectedImageKey" (click)="requestDelete()">
+            @if (deletingImagePath() === selectedImageKey) {
+            <vl-inline-loader size="sm" color="white" text="Deleting..."></vl-inline-loader>
+            } @else {
+            <span>Delete Photo</span>
+            }
+          </button>
+        </div>
+      </section>
+    </div>
+    }
+  </div>
+  }
 </div>

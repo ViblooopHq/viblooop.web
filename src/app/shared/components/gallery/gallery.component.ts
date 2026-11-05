@@ -1,5 +1,6 @@
-import { ChangeDetectionStrategy, Component, computed, HostListener, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, HostListener, inject, input, OnDestroy, output, signal } from '@angular/core';
 import { InlineLoaderComponent } from '../inline-loader/inline-loader.component';
+import { ScrollLockService } from '../../services/scroll-lock/scroll-lock.service';
 
 export interface GalleryImage {
   url: string;
@@ -16,8 +17,10 @@ export interface GalleryImage {
   templateUrl: './gallery.component.html',
   styleUrl: './gallery.component.scss'
 })
-export class GalleryComponent {
-  images = input<GalleryImage[]>([]);  // Images will come from events API
+export class GalleryComponent implements OnDestroy {
+  private readonly scrollLockService = inject(ScrollLockService);
+
+  images = input<GalleryImage[]>([]);
   showHeader = input(true);
   showGrid = input(true);
   showArchiveAction = input(true);
@@ -32,9 +35,11 @@ export class GalleryComponent {
 
   selectedImage = signal<GalleryImage | null>(null);
   currentIndex = signal(-1);
+  isGridView = signal(false);
   isActionsOpen = signal(false);
   isDeleteConfirmOpen = signal(false);
-  isDesktop = signal(window.innerWidth >= 768); // tablet & laptop only
+  isDesktop = signal(typeof window !== 'undefined' ? window.innerWidth >= 768 : true);
+  private hasScrollLock = false;
 
   canDeleteSelectedImage = computed(() => {
     if (this.isEventCreator() || this.canDelete()) return true;
@@ -44,55 +49,8 @@ export class GalleryComponent {
     return !!(img.uploaderId && String(img.uploaderId) === String(userId));
   });
 
-  // Update view on resize
-  @HostListener('window:resize')
-  onResize() {
-    this.isDesktop.set(window.innerWidth >= 768);
-  }
-
-  onImageSelect(img: GalleryImage) {
-    this.currentIndex.set(this.images().findIndex(i => i === img));
-    this.selectedImage.set(img);
-    this.closeActionPanels();
-  }
-
-  openAtIndex(index: number) {
-    if (index < 0 || index >= this.images().length) return;
-
-    this.currentIndex.set(index);
-    this.selectedImage.set(this.images()[index]);
-    this.closeActionPanels();
-  }
-
-  closePreview() {
-    this.selectedImage.set(null);
-    this.currentIndex.set(-1);
-    this.closeActionPanels();
-  }
-
-  toggleArchive(img: GalleryImage) {
-    img.archived = !img.archived;
-    // Later you can call API here to update status
-  }
-
-  // Navigate Left
-  showPrevImage() {
-    const index = this.currentIndex();
-    if (index > 0) {
-      this.currentIndex.set(index - 1);
-      this.selectedImage.set(this.images()[index - 1]);
-      this.closeActionPanels();
-    }
-  }
-
-  // Navigate Right
-  showNextImage() {
-    const index = this.currentIndex();
-    if (index < this.images().length - 1) {
-      this.currentIndex.set(index + 1);
-      this.selectedImage.set(this.images()[index + 1]);
-      this.closeActionPanels();
-    }
+  get isOpen(): boolean {
+    return this.selectedImage() !== null || this.isGridView();
   }
 
   get selectedImageKey(): string {
@@ -102,6 +60,94 @@ export class GalleryComponent {
 
   get shouldShowActions(): boolean {
     return this.showActions() && (this.canDownload() || this.canDeleteSelectedImage());
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    if (typeof window !== 'undefined') {
+      this.isDesktop.set(window.innerWidth >= 768);
+    }
+  }
+
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+    if (!this.isOpen) return;
+
+    if (event.key === 'Escape') {
+      if (this.isDeleteConfirmOpen()) {
+        this.closeDeleteConfirm();
+      } else {
+        this.closePreview();
+      }
+    } else if (event.key === 'ArrowLeft') {
+      if (!this.isGridView()) this.showPrevImage();
+    } else if (event.key === 'ArrowRight') {
+      if (!this.isGridView()) this.showNextImage();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.unlockScroll();
+  }
+
+  onImageSelect(img: GalleryImage) {
+    const index = this.images().findIndex(i => i === img);
+    this.openAtIndex(index >= 0 ? index : 0);
+  }
+
+  openAtIndex(index: number) {
+    if (index < 0 || index >= this.images().length) return;
+
+    this.currentIndex.set(index);
+    this.selectedImage.set(this.images()[index]);
+    this.isGridView.set(false);
+    this.closeActionPanels();
+    this.lockScroll();
+  }
+
+  openGridView() {
+    if (this.images().length === 0) return;
+    this.isGridView.set(true);
+    if (this.currentIndex() < 0) {
+      this.currentIndex.set(0);
+      this.selectedImage.set(this.images()[0]);
+    }
+    this.closeActionPanels();
+    this.lockScroll();
+  }
+
+  toggleGridView() {
+    this.isGridView.update((grid) => !grid);
+  }
+
+  closePreview() {
+    this.selectedImage.set(null);
+    this.currentIndex.set(-1);
+    this.isGridView.set(false);
+    this.closeActionPanels();
+    this.unlockScroll();
+  }
+
+  toggleArchive(img: GalleryImage) {
+    img.archived = !img.archived;
+  }
+
+  showPrevImage() {
+    const index = this.currentIndex();
+    if (index > 0) {
+      this.openAtIndex(index - 1);
+    }
+  }
+
+  showNextImage() {
+    const index = this.currentIndex();
+    if (index < this.images().length - 1) {
+      this.openAtIndex(index + 1);
+    }
+  }
+
+  selectFromFilmstrip(index: number) {
+    this.openAtIndex(index);
   }
 
   toggleActions() {
@@ -123,6 +169,55 @@ export class GalleryComponent {
     const image = this.selectedImage();
     if (!this.canDeleteSelectedImage() || !image) return;
     this.deleteImage.emit(image);
+  }
+
+  async downloadImage(url: string): Promise<void> {
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`Download failed: ${response.status}`);
+      }
+
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+
+      const anchor = document.createElement('a');
+      anchor.href = blobUrl;
+      anchor.download = this.getFileName(url);
+      anchor.style.display = 'none';
+
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+    } catch (error) {
+      console.error('Image download failed:', error);
+    }
+  }
+
+  private getFileName(url: string): string {
+    try {
+      const pathname = new URL(url).pathname;
+      return pathname.split('/').pop() || 'photo.jpg';
+    } catch {
+      return 'photo.jpg';
+    }
+  }
+
+  private lockScroll(): void {
+    if (!this.hasScrollLock) {
+      this.scrollLockService.lock();
+      this.hasScrollLock = true;
+    }
+  }
+
+  private unlockScroll(): void {
+    if (this.hasScrollLock) {
+      this.scrollLockService.unlock();
+      this.hasScrollLock = false;
+    }
   }
 
   private closeActionPanels() {
