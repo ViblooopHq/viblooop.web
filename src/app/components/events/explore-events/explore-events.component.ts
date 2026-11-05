@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, computed, CUSTOM_ELEMENTS_SCHEMA, DestroyRef, inject, NgZone, OnInit, PLATFORM_ID, signal } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { of } from 'rxjs';
 import { catchError, finalize } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -13,7 +13,6 @@ import { MessageStore } from '../../../shared/store/message.store';
 import { MultiCarouselComponent, FullPageCarouselComponent, FullPageSlideComponent, FullPageSlideConfig } from '../../../shared/components/carousels';
 import { RouterModule } from '@angular/router';
 import { EventCardSkeletonComponent } from '../../../shared/components/event-card-skeleton/event-card-skeleton.component';
-import { EventFiltersComponent } from '../../../shared/components/event-filters/event-filters.component';
 import { EVENT_LIMIT_OFFSET } from '../../../shared/constants/common.constants';
 
 const CATEGORY_FILTER_IMAGES: Record<string, string> = {
@@ -47,7 +46,6 @@ const CATEGORY_FILTER_IMAGES: Record<string, string> = {
     FullPageCarouselComponent,
     FullPageSlideComponent,
     EventCardSkeletonComponent,
-    EventFiltersComponent,
   ],
   templateUrl: './explore-events.component.html',
   styleUrl: './explore-events.component.scss',

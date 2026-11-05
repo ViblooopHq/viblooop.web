@@ -57,10 +57,10 @@
         @if (selectedImage(); as image) {
         @if (!isGridView()) {
         @if (canDownload()) {
-        <a class="vl-gallery__icon-btn" [href]="image.url" download target="_blank" rel="noopener noreferrer"
-          title="Download photo" aria-label="Download photo">
+        <button type="button" class="vl-gallery__icon-btn" title="Download photo" aria-label="Download photo"
+          (click)="downloadImage(image.url)">
           <span class="material-symbols-outlined" translate="no">download</span>
-        </a>
+        </button>
         }
 
         @if (canDeleteSelectedImage()) {

@@ -13,7 +13,7 @@ import { OPEN_EVENT_CAPACITY_LIMIT } from '../../utils/event-capacity.util';
 @Component({
   selector: 'vl-compact-event-card',
   standalone: true,
-  imports: [DatePipe, TimePipe, ImageUrlPipe, CurrencyPipe, SlicePipe, DatePipe, TruncatePipe],
+  imports: [DatePipe, TimePipe, ImageUrlPipe, CurrencyPipe, DatePipe, TruncatePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './compact-event-card.component.html',
   styleUrl: './compact-event-card.component.scss'
