@@ -104,7 +104,7 @@ export class AppSplashService {
   /**
    * Gracefully hide the splash loader after ensuring minimum display duration (default 3 seconds)
    */
-  hide(minDurationMs: number = 3000): void {
+  hide(minDurationMs): void {
     if (!isPlatformBrowser(this.platformId) || !this.isVisible()) return;
 
     this.clearTimeouts();
