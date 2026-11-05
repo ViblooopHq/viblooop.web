@@ -1,4 +1,4 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -21,8 +21,6 @@ export interface FullPageSlideConfig {
   centerImage?: string;
   accentColor?: string;
   position?: string;
-  slideIndex?: number;
-  totalSlides?: number;
   floatingItems?: FloatingElement[];
 }
 
@@ -35,17 +33,5 @@ export interface FullPageSlideConfig {
 })
 export class FullPageSlideComponent {
   slide = input.required<FullPageSlideConfig>();
-  slideIndex = input<number | undefined>();
-  totalSlides = input<number | undefined>();
-
-  readonly formattedIndex = computed(() => {
-    const idx = this.slideIndex() ?? this.slide().slideIndex ?? 1;
-    return idx.toString().padStart(2, '0');
-  });
-
-  readonly formattedTotal = computed(() => {
-    const tot = this.totalSlides() ?? this.slide().totalSlides ?? 3;
-    return tot.toString().padStart(2, '0');
-  });
 }
 

@@ -5,7 +5,7 @@
       <div class="explore-hero-carousel">
         <vl-full-page-carousel direction="horizontal" [autoplay]="true" [items]="marketingSlides">
           <ng-template let-item let-i="index">
-            <vl-full-page-slide [slide]="item" [slideIndex]="item.slideIndex" [totalSlides]="marketingSlides.length">
+            <vl-full-page-slide [slide]="item">
             </vl-full-page-slide>
           </ng-template>
         </vl-full-page-carousel>
@@ -78,10 +78,10 @@
       @for (event of trendingEvents().slice(0, eventLimitOffset); track event._id || $index) {
       <div class="trending-card">
         <div class="vl-card-desktop">
-          <vl-event-card [config]="event" class="block w-full h-full"></vl-event-card>
+          <vl-event-card [config]="event" [showAttendeeCount]="false" class="block w-full h-full"></vl-event-card>
         </div>
         <div class="vl-card-mobile">
-          <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+          <vl-compact-event-card [config]="event" [showAttendeeCount]="false" class="block w-full h-full"></vl-compact-event-card>
         </div>
       </div>
       }

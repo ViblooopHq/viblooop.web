@@ -38,7 +38,7 @@
       } -->
     </div>
 
-    <!-- @if (isMapVisible()) {
+    @if (isMapVisible()) {
       <div class="map-preview-wrap" role="button" tabindex="0" aria-label="Open location in Google Maps"
         (click)="openInMaps.emit()"
         (keydown.enter)="openInMaps.emit()" (keydown.space)="$event.preventDefault(); openInMaps.emit()">
@@ -50,11 +50,11 @@
           <span>View on Google Maps</span>
         </div>
       </div>
-    } @else if (!canAccessPrivateLocation()) { -->
+    } @else if (!canAccessPrivateLocation()) {
     <div class="location-privacy-banner">
       <span class="material-symbols-outlined" translate="no">lock</span>
       <span>Exact directions and interactive map are shared once you join this vibe.</span>
     </div>
-    <!-- } -->
+    }
   </div>
 </section>

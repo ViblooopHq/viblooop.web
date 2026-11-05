@@ -20,10 +20,12 @@
             @for (event of visibleJoinedEvents(); track event?._id || $index) {
               <div class="vl-user-profile__event-card-wrap">
                 <div class="vl-card-desktop">
-                  <vl-event-card [config]="event" profileStatus="attended" class="block w-full h-full"></vl-event-card>
+                  <vl-event-card [config]="event" profileStatus="attended" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-event-card>
                 </div>
                 <div class="vl-card-mobile">
-                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                  <vl-compact-event-card [config]="event" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-compact-event-card>
                 </div>
               </div>
             }
@@ -64,10 +66,12 @@
             @for (event of visibleHostedEvents(); track event?._id || $index) {
               <div class="vl-user-profile__event-card-wrap">
                 <div class="vl-card-desktop">
-                  <vl-event-card [config]="event" profileStatus="hosted" class="block w-full h-full"></vl-event-card>
+                  <vl-event-card [config]="event" profileStatus="hosted" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-event-card>
                 </div>
                 <div class="vl-card-mobile">
-                  <vl-compact-event-card [config]="event" class="block w-full h-full"></vl-compact-event-card>
+                  <vl-compact-event-card [config]="event" [showAttendeeCount]="false"
+                    class="block w-full h-full"></vl-compact-event-card>
                 </div>
               </div>
             }

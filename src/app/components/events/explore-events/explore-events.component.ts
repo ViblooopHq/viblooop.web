@@ -103,8 +103,6 @@ export class ExploreEventsComponent implements OnInit {
       image: 'assets/images/explore-hero/escape-together.jpg',
       imageAlt: 'Friends trekking together on a mountain summit with Himalayan backdrop',
       accentColor: '#38bdf8',
-      slideIndex: 1,
-      totalSlides: 4
     },
     {
       kicker: 'LIVE & ELECTRIC',
@@ -116,8 +114,6 @@ export class ExploreEventsComponent implements OnInit {
       image: 'assets/images/explore-hero/image-1.webp',
       imageAlt: 'Live music concert stage with lasers, EDM DJ, and vibrant crowd',
       accentColor: '#ec4899',
-      slideIndex: 2,
-      totalSlides: 4
     },
     {
       kicker: 'CONNECT & CREATE',
@@ -129,8 +125,6 @@ export class ExploreEventsComponent implements OnInit {
       image: 'assets/images/explore-hero/image-2.webp',
       imageAlt: 'Remote creators co-working on laptops at a scenic outdoor mountain café',
       accentColor: '#f59e0b',
-      slideIndex: 3,
-      totalSlides: 4
     },
     {
       kicker: 'GOOD PEOPLE, BETTER PLANS',
@@ -142,8 +136,6 @@ export class ExploreEventsComponent implements OnInit {
       image: 'assets/images/explore-hero/image-3.webp',
       imageAlt: 'Friends relaxing on a sunset rooftop terrace couch with illuminated city skyline',
       accentColor: '#c084fc',
-      slideIndex: 4,
-      totalSlides: 4
     }
   ];
 

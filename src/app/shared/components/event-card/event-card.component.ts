@@ -10,6 +10,7 @@ import { TimePipe } from '../../pipes/time.pipe';
 import { TruncatePipe } from '../../pipes/truncate.pipe';
 import { isThisCalendarWeekend } from '../../utils/date-badge.util';
 import { eventDateRangeDurationLabel } from '../../utils/event-date-range.util';
+import { OPEN_EVENT_CAPACITY_LIMIT } from '../../utils/event-capacity.util';
 
 @Component({
   selector: 'vl-event-card',
@@ -23,6 +24,7 @@ export class EventCardComponent {
   presentation = input<'default' | 'profile'>('default');
   profileStatus = input<'attended' | 'hosted'>('attended');
   showWishlist = input<boolean>(true);
+  showAttendeeCount = input<boolean>(true);
   cardClick = output<any>();
   wishlistChange = output<boolean>();
 
@@ -78,9 +80,15 @@ export class EventCardComponent {
 
   getRemainingSpots(): number {
     const config = this.config();
-    if (!config || !config.attendeeLimit) return 0;
+    const attendeeLimit = Number(config?.attendeeLimit);
+    if (!Number.isFinite(attendeeLimit) || attendeeLimit <= 0 || attendeeLimit >= OPEN_EVENT_CAPACITY_LIMIT) return 0;
     const totalCurrentAttendees = (config.attendees?.length || 0) + 1; // +1 includes creator
-    return Math.max(0, config.attendeeLimit - totalCurrentAttendees);
+    return Math.max(0, attendeeLimit - totalCurrentAttendees);
+  }
+
+  get shouldShowRemainingSpots(): boolean {
+    const remainingSpots = this.getRemainingSpots();
+    return remainingSpots > 0 && remainingSpots < 20;
   }
 
   get isFree(): boolean {
